@@ -23,8 +23,7 @@
 
 package eionet.gdem.conversion.excel;
 
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 /**
  * This class is mapping styles between xml (fo:style) and sytles defined in poi HSSF.
@@ -37,10 +36,10 @@ public class ExcelStyle implements ExcelStyleIF {
     private String name = null;
     private String family = null;
     private boolean italic = false;
-    private short font_weight = HSSFFont.BOLDWEIGHT_NORMAL;
+    private boolean isBold = false;
     private short font_size = 12;
     private String font_name = null;
-    private short text_align = HSSFCellStyle.ALIGN_GENERAL;
+    private HorizontalAlignment text_align = HorizontalAlignment.GENERAL;
     private short workbook_index = -1;
     // width - - the width in units of 1/256th of a character width
     private short column_width = 0;
@@ -75,8 +74,8 @@ public class ExcelStyle implements ExcelStyleIF {
     }
 
     @Override
-    public short getFontWeight() {
-        return font_weight;
+    public boolean isBold() {
+        return isBold;
     }
 
     @Override
@@ -90,7 +89,7 @@ public class ExcelStyle implements ExcelStyleIF {
     }
 
     @Override
-    public short getTextAlign() {
+    public HorizontalAlignment getTextAlign() {
         return text_align;
     }
 
@@ -111,12 +110,12 @@ public class ExcelStyle implements ExcelStyleIF {
     }
 
     @Override
-    public void setFontWeight(String str_bold) {
+    public void setBold(String str_bold) {
         if (str_bold == null) {
             return;
         }
         if (str_bold.equalsIgnoreCase("bold")) {
-            font_weight = HSSFFont.BOLDWEIGHT_BOLD;
+            isBold = true;
         }
     }
 
@@ -153,19 +152,19 @@ public class ExcelStyle implements ExcelStyleIF {
             return;
         }
         if (str_align.equalsIgnoreCase("center")) {
-            text_align = HSSFCellStyle.ALIGN_CENTER;
+            text_align = HorizontalAlignment.CENTER;
         } else if (str_align.equalsIgnoreCase("left")) {
-            text_align = HSSFCellStyle.ALIGN_LEFT;
+            text_align = HorizontalAlignment.LEFT;
         } else if (str_align.equalsIgnoreCase("right") || str_align.equalsIgnoreCase("end")) {
-            text_align = HSSFCellStyle.ALIGN_RIGHT;
+            text_align = HorizontalAlignment.RIGHT;
         } else if (str_align.equalsIgnoreCase("justify")) {
-            text_align = HSSFCellStyle.ALIGN_JUSTIFY;
+            text_align = HorizontalAlignment.JUSTIFY;
         } else if (str_align.equalsIgnoreCase("left")) {
-            text_align = HSSFCellStyle.ALIGN_LEFT;
+            text_align = HorizontalAlignment.LEFT;
         } else if (str_align.equalsIgnoreCase("start")) {
-            text_align = HSSFCellStyle.ALIGN_GENERAL;
+            text_align = HorizontalAlignment.GENERAL;
         } else {
-            text_align = HSSFCellStyle.ALIGN_GENERAL;
+            text_align = HorizontalAlignment.GENERAL;
         }
     }
 

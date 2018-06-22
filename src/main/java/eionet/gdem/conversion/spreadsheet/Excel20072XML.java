@@ -1,6 +1,7 @@
 package eionet.gdem.conversion.spreadsheet;
 
-import eionet.gdem.conversion.excel.ExcelUtils;
+import eionet.gdem.conversion.excel.reader.ExcelReader;
+import eionet.gdem.conversion.excel.reader.ExcelStreamingReader;
 
 /**
  * This class is returns MS Excel specific handlers for DDXMLConverter.
@@ -20,7 +21,7 @@ public class Excel20072XML extends DDXMLConverter {
 
     @Override
     public SourceReaderIF getSourceReader() {
-        return ExcelUtils.getExcel2007Reader();
+        return new ExcelReader(true);
     }
 
     @Override

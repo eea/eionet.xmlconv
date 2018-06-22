@@ -22,7 +22,6 @@ package eionet.gdem.conversion.excel.reader;
 import java.io.File;
 
 import eionet.gdem.test.ApplicationTestContext;
-import junit.framework.TestCase;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -75,6 +74,7 @@ public class ExcelReaderFormulaTest {
         assertEquals("2010.123", value4);
     }
 
+    @Test
     public void testGetFormulaValueXls2007() throws Exception{
         File inFile = new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_FORMULAS_XLSX)
                 .getFile());

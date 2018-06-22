@@ -23,7 +23,7 @@
 
 package eionet.gdem.conversion.spreadsheet;
 
-import eionet.gdem.conversion.excel.ExcelUtils;
+import eionet.gdem.conversion.excel.reader.ExcelReader;
 
 /**
  * This class is returns MS Excel specific handlers for DDXMLConverter.
@@ -43,7 +43,7 @@ public class Excel2XML extends DDXMLConverter {
 
     @Override
     public SourceReaderIF getSourceReader() {
-        return ExcelUtils.getExcelReader();
+        return new ExcelReader(false);
     }
 
     @Override

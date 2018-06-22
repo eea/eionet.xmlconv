@@ -13,11 +13,19 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
+import org.apache.poi.xssf.streaming.SXSSFFormulaEvaluator;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -69,8 +77,7 @@ public class ExcelStreamingReader implements SourceReaderIF {
                     .rowCacheSize(100)                          // number of rows to keep in memory (defaults to 10)
                     .bufferSize(4096)                           // buffer size to use when reading InputStream to file (defaults to 1024)
                     .open(new FileInputStream(inputFile));      // InputStream or File for XLSX file (required)
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
             throw new XMLConvException("ErrorConversionHandler - couldn't open Excel file: " + e.toString());
         }
     }
@@ -91,7 +98,7 @@ public class ExcelStreamingReader implements SourceReaderIF {
     private List<String> getSheetNames() {
         List<String> list = new ArrayList<String>();
 
-        for ( Sheet sheet : wb ) {
+        for (Sheet sheet : wb) {
             String sheetName = sheet.getSheetName();
             list.add(sheetName);
         }
@@ -137,7 +144,7 @@ public class ExcelStreamingReader implements SourceReaderIF {
 
             setColumnMappings(firstRow, elements, true);
 
-            if ( metaSheet != null && metaSheet.iterator().hasNext() ) {
+            if (metaSheet != null && metaSheet.iterator().hasNext()) {
                 metaRow = metaSheet.iterator().next();
                 setColumnMappings(metaRow, elements, false);
             }
@@ -157,7 +164,7 @@ public class ExcelStreamingReader implements SourceReaderIF {
             int countRows = 0;
 
             // iterate over the sheet rows using iterator instead of random accessing
-            for ( Row row : sheet ) {
+            for (Row row : sheet) {
                 metaRow = (metaSheet != null && metaSheet.iterator().hasNext()) ? metaSheet.iterator().next() : null;
                 // don't convert empty rows.
                 if (isEmptyRow(row)) {
@@ -214,8 +221,8 @@ public class ExcelStreamingReader implements SourceReaderIF {
      */
     private Sheet getSheet(String name) {
 
-        if ( wb.getSheetIndex(name.trim()) < 0 ) {
-            for ( Sheet s : wb ) {
+        if (wb.getSheetIndex(name.trim()) < 0) {
+            for (Sheet s : wb) {
                 String sheetName = s.getSheetName();
                 if (sheetName.trim().equalsIgnoreCase(name.trim())) {
                     return wb.getSheet(sheetName);
@@ -282,8 +289,8 @@ public class ExcelStreamingReader implements SourceReaderIF {
         String value = "";
 
         if (cell != null) {
-            switch ( cell.getCellType()) {
-                case HSSFCell.CELL_TYPE_NUMERIC:
+            switch (cell.getCellTypeEnum()) {
+                case NUMERIC:
                     if (HSSFDateUtil.isCellDateFormatted(cell) && !isYearValue(cell.getNumericCellValue())) {
                         Date dateValue = cell.getDateCellValue();
                         value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
@@ -295,15 +302,20 @@ public class ExcelStreamingReader implements SourceReaderIF {
                         value = NumberToTextConverter.toText(cell.getNumericCellValue());
                     }
                     break;
-                case HSSFCell.CELL_TYPE_STRING:
+                case STRING:
                     value = cell.getStringCellValue();
                     break;
-                case HSSFCell.CELL_TYPE_BOOLEAN:
+                case BOOLEAN:
                     value = Boolean.toString(cell.getBooleanCellValue());
                     break;
-                case HSSFCell.CELL_TYPE_ERROR:
+                case ERROR:
                     break;
-                case HSSFCell.CELL_TYPE_FORMULA:
+                case FORMULA:
+                    try {
+                        value = NumberToTextConverter.toText(cell.getNumericCellValue());
+                    } catch (RuntimeException ex) {
+                        value = cell.getStringCellValue();
+                    }
                     break;
                 default:
                     break;
@@ -438,10 +450,10 @@ public class ExcelStreamingReader implements SourceReaderIF {
         }
 
         Sheet schemaSheet = wb.getSheet(SCHEMA_SHEET_NAME);
-        for ( Row row : schemaSheet ) {
-            for ( Cell cell : row ) {
+        for (Row row : schemaSheet) {
+            for (Cell cell : row) {
                 String cellStr = cell.getStringCellValue();
-                if (cellStr.startsWith("http://") && cellStr.toLowerCase().indexOf("/getschema") > 0 && Utils.isURL(cellStr)) {
+                if (cellStr.startsWith("http://") && Utils.isURL(cellStr)) {
                     return cellStr;
                 }
             }
@@ -478,7 +490,11 @@ public class ExcelStreamingReader implements SourceReaderIF {
             String sheetValue  = sheetCell.getStringCellValue();
             String schemaValue = schemaCell.getStringCellValue();
 
-            if (schemaValue.startsWith("http://") && schemaValue.toLowerCase().indexOf("/getschema") > 0  && Utils.isURL(schemaValue)) {
+            if (schemaValue.startsWith("http://") && (schemaValue.toLowerCase().indexOf("/getschema") > 0 || schemaValue.toLowerCase().indexOf("/schema-tbl-") > 0)
+                    && Utils.isURL(schemaValue)) {
+                if (sheetValue != null && sheetValue.length() > 31) {
+                    sheetValue = sheetValue.substring(0, 31);
+                }
                 sheetSchemas.put(sheetValue, schemaValue);
             }
         }

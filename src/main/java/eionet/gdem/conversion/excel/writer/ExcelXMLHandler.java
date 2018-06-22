@@ -23,6 +23,7 @@
 
 package eionet.gdem.conversion.excel.writer;
 
+import eionet.gdem.conversion.excel.ExcelStyle;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -116,10 +117,10 @@ public class ExcelXMLHandler extends DefaultHandler implements ExcelXMLTags {
             String style_name = attributes.getValue(STYLE_NAME_ATTR);
             String style_family = attributes.getValue(STYLE_FAMILY_ATTR);
 
-            style = ExcelUtils.getExcelStyle();
+            style = new ExcelStyle();
             style.setExcelStyle(style_name, style_family);
         } else if (name.equals(STYLE_PROP_TAG)) {
-            style.setFontWeight(attributes.getValue(FONT_WEIGHT_ATTR));
+            style.setBold(attributes.getValue(FONT_WEIGHT_ATTR));
             style.setFontName(attributes.getValue(FONT_FAMILY_ATTR));
             style.setFontSize(attributes.getValue(FONT_SIZE_ATTR));
             style.setItalic(attributes.getValue(FONT_STYLE_ATTR));

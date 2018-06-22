@@ -138,6 +138,21 @@ public class DDXMLConverterTest {
 
     }
     @Test
+    public void testConvertDDExcelStreaming2007ToXml_MultipleValues() throws Exception {
+
+        MockDDXMLConverter converter = new MockDDXMLConverter(new Excel2XMLStreamingConverter(), new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_XLSX)
+                .getFile()));
+        Map<String, String> dataset = new HashMap<String, String>();
+        dataset.put("id", "6585");
+        dataset.put("status", "Released");
+        dataset.put("isLatestReleased", "true");
+        converter.setDataset(dataset);
+
+        ConversionResultDto conversionResult = converter.convertDD_XML_split(null, null);
+        assertTestConvertDD_MultipleValuesresults(conversionResult);
+
+    }
+    @Test
     public void testConvertDDOdsToXml_MultipleValues() throws Exception {
         File inFile = new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS)
                 .getFile());
