@@ -147,7 +147,7 @@
                             <name>mysql:5.5</name>
                             <run>
                                 <ports>
-                                    <port>53336:3306</port>
+                                    <port>mysql.port:3306</port>
                                 </ports>
                                 <env>
                                     <MYSQL_ROOT_PASSWORD>12345</MYSQL_ROOT_PASSWORD>
@@ -167,52 +167,8 @@
                             </run>
                         </image>
                         <image>
-                            <alias>tomcat</alias>
-                            <name>tomcat</name>
-                            <build>
-                                <from>tomcat:9-jre8-alpine</from>
-                                <maintainer>George Sofianos</maintainer>
-                                <tags>
-                                    <tag>latest</tag>
-                                    <tag>${project.version}</tag>
-                                </tags>
-                                <assembly>
-                                    <basedir>/usr/local/tomcat/webapps</basedir>
-                                    <descriptorRef>rootWar</descriptorRef>
-                                </assembly>
-                                <runCmds>
-                                    <run>rm -rf /usr/local/tomcat/webapps/ROOT</run>
-                                    <run>rm -rf /usr/local/tomcat/conf/logging.properties</run>
-                                </runCmds>
-                                <optimise>true</optimise>
-                                <nocache>true</nocache>
-                            </build>
-                            <run>
-                                <env>
-                                    <CATALINA_OPTS>-Dconfig.gdem.url=http://localhost:8080 -Dapp.home=/opt/xmlconv -Dapp.host=localhost:8080 -Dconfig.db.jdbcurl=jdbc:mysql://mysql:3306/xmlconv -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=testuser -Dconfig.db.password=testpassword -Dbasexserver.host=basex -Dbasexserver.port=1984 -Dbasexserver.user=admin -Dbasexserver.password=admin -Dfme_user=fme_user -Dfme_password=fme_password -Dquartz.db.url=jdbc:mysql://mysql:3306/quartz?createDatabaseIfNotExist=true -Dquartz.db.user=root -Dquartz.db.pwd=12345</CATALINA_OPTS>
-                                    <JAVA_OPTS>-Xmx3072m</JAVA_OPTS>
-                                </env>
-                                <ports>
-                                    <port>58080:8080</port>
-                                </ports>
-                                <wait>
-                                    <tcp>
-                                        <mode>direct</mode>
-                                        <ports>
-                                            <port>8080</port>
-                                        </ports>
-                                    </tcp>
-                                    <time>200000</time>
-                                </wait>
-                                <links>
-                                    <link>mysql:mysql</link>
-                                    <link>httpd:httpd</link>
-                                </links>
-                            </run>
-                        </image>
-                        <image>
+                            <name>eworxeea/httpd</name>
                             <alias>httpd</alias>
-                            <name>httpd</name>
                             <build>
                                 <from>httpd:alpine</from>
                                 <maintainer>George Sofianos</maintainer>
@@ -229,7 +185,7 @@
                             </build>
                             <run>
                                 <ports>
-                                    <port>58081:80</port>
+                                    <port>httpd.port:80</port>
                                 </ports>
                                 <wait>
                                     <tcp>
@@ -253,7 +209,6 @@
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>stop</goal>
-                            <goal>build</goal>
                             <goal>start</goal>
                         </goals>
                     </execution>
@@ -366,6 +321,9 @@
                     <reportFormat>xml</reportFormat>
                     <systemPropertyVariables>
                         <docker.host.address>${docker.host.address}</docker.host.address>
+                        <mysql.port>${mysql.port}</mysql.port>
+                        <tomcat.port>${tomcat.port}</tomcat.port>
+                        <httpd.port>${httpd.port}</httpd.port>
                     </systemPropertyVariables>
                     <includes>
                         <include>**/*Test.java</include>
