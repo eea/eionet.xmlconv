@@ -2,7 +2,10 @@ package eionet.gdem.utils.cdr;
 
 import eionet.gdem.http.CustomURI;
 import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -13,6 +16,8 @@ import java.util.Map;
  * @author George Sofianos
  */
 public final class UrlUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UrlUtils.class);
 
     private UrlUtils() {
         // do nothing
@@ -73,7 +78,7 @@ public final class UrlUtils {
                 folderName = "";
             }
         } catch (URISyntaxException e) {
-            //
+            LOGGER.error("Could not retrieve file name", e);
         }
         return fileName;
     }
