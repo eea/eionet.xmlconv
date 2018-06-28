@@ -9,27 +9,29 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '4', artifactNumToKeepStr: '2'))
     timeout(time: 60, unit: 'MINUTES')
   }
+  when {
+      branch 'master'
+      beforeAgent true
+  }
   stages {
-    if (env.BRANCH_NAME == 'master') {
-      stage('Project Build') {
-          steps {
-              sh 'mvn clean -B -V verify'
-          }
-          post {
-              success {
-                  archive 'target/*.war'
-              }
+    stage('Project Build') {
+      steps {
+          sh 'mvn clean -B -V verify'
+      }
+      post {
+          success {
+              archive 'target/*.war'
           }
       }
-      stage('Docker push') {
-        steps {
-          script {
-            def date = sh(returnStdout: true, script: 'echo $(date "+%Y-%m-%dT%H%M")').trim()
-            image = docker.build("sofiageo/xmlconv:latest")
-            docker.withRegistry('https://index.docker.io/v1/', 'sofiageo-hub') {
-              image.push()
-              image.push(date)
-            }
+    }
+    stage('Docker push') {
+      steps {
+        script {
+          def date = sh(returnStdout: true, script: 'echo $(date "+%Y-%m-%dT%H%M")').trim()
+          image = docker.build("sofiageo/xmlconv:latest")
+          docker.withRegistry('https://index.docker.io/v1/', 'sofiageo-hub') {
+            image.push()
+            image.push(date)
           }
         }
       }
