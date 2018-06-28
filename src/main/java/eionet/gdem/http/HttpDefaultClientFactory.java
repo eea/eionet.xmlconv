@@ -18,14 +18,14 @@ public final class HttpDefaultClientFactory {
     }
 
     /**
-     * Get default Http Client.
+     * Get default Http Client (using system properties).
      * @return Default HTTP Client
      */
     public static CloseableHttpClient getInstance() {
         if (client == null) {
             synchronized (CloseableHttpClient.class) {
                 if (client == null) {
-                    client = HttpClients.createDefault();
+                    client = HttpClients.createSystem();
                 }
             }
         }
