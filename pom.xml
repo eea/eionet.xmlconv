@@ -137,7 +137,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.24.0</version>
+                <version>0.26.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <filter>${valid.images}</filter>
