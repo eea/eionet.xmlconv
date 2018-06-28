@@ -11,10 +11,6 @@ pipeline {
   }
   stages {
     stage('Project Build') {
-      when {
-          branch 'master'
-          beforeAgent true
-      }
       steps {
           sh 'mvn clean -B -V verify'
       }
@@ -25,6 +21,10 @@ pipeline {
       }
     }
     stage('Docker push') {
+      when {
+          branch 'master'
+          beforeAgent true
+      }
       steps {
         script {
           def date = sh(returnStdout: true, script: 'echo $(date "+%Y-%m-%dT%H%M")').trim()
