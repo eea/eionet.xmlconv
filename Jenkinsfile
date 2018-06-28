@@ -9,12 +9,12 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '4', artifactNumToKeepStr: '2'))
     timeout(time: 60, unit: 'MINUTES')
   }
-  when {
-    branch 'master'
-    beforeAgent true
-  }
   stages {
     stage('Static analysis') {
+      when {
+        branch 'master'
+        beforeAgent true
+      }
       steps {
         sh 'mvn clean -B -V -Pcobertura verify cobertura:cobertura pmd:pmd pmd:cpd findbugs:findbugs checkstyle:checkstyle'
       }

@@ -9,12 +9,12 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '4', artifactNumToKeepStr: '2'))
     timeout(time: 60, unit: 'MINUTES')
   }
-  when {
-      branch 'master'
-      beforeAgent true
-  }
   stages {
     stage('Project Build') {
+      when {
+          branch 'master'
+          beforeAgent true
+      }
       steps {
           sh 'mvn clean -B -V verify'
       }
@@ -25,6 +25,10 @@ pipeline {
       }
     }
     stage('Docker push') {
+      when {
+          branch 'master'
+          beforeAgent true
+      }
       steps {
         script {
           def date = sh(returnStdout: true, script: 'echo $(date "+%Y-%m-%dT%H%M")').trim()
