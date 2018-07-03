@@ -90,7 +90,7 @@ public class QaController {
             File dest2 = new File(tmpdir + "/" + checklist.getOriginalFilename());
             FileUtils.copyInputStreamToFile(checklist.getInputStream(), dest2);
         }
-        String fileURL = "http://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uuid + "/" + dest1.getName();
+        String fileURL = "https://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uuid + "/" + dest1.getName();
 
         //we set scriptId=-1 to perform only xml validation for now
         Vector results = qaService.runQaScript(fileURL, scriptId);

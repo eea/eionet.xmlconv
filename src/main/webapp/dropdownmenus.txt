@@ -7,7 +7,7 @@
            <li><a href="http://eea.eionet.europa.eu/Public/irc/eionet-circle/Home/main">CIRCA</a></li>
            <li><a href="http://eea.eionet.europa.eu/Members/irc/eionet-circle/Home/central_dir_admin?fn=roles&amp;v=&amp;rd=1&amp;ud=1&amp;od=1">Roles (Restricted)</a></li>
            <li><a href="http://planner.eionet.europa.eu/">Workplan</a></li>
-           <li><a href="http://uns.eionet.europa.eu/">Subscriptions</a></li>
+           <li><a href="https://uns.eionet.europa.eu/">Subscriptions</a></li>
            <li><a href="http://www.eionet.europa.eu/yihawnews_archive">News</a></li>
            <li><a href="http://www.eionet.europa.eu/calendar">Calendar</a></li>
            <li><a href="http://www.eionet.europa.eu/Training">Training</a></li>
@@ -16,11 +16,11 @@
          </li>
          <li><a href="http://www.eionet.europa.eu/reportnet.html">Reportnet</a>
           <ul>
-           <li><a href="http://cdr.eionet.europa.eu/">CDR Repository</a></li>
-           <li><a href="http://rod.eionet.europa.eu/">ROD Obligations</a></li>
-           <li><a href="http://dd.eionet.europa.eu/">Data Dictionary</a></li>
-           <li><a href="http://cr.eionet.europa.eu/">Content Registry</a></li>
-           <li><a href="http://converters.eionet.europa.eu/">Conversion service</a></li>
+           <li><a href="https://cdr.eionet.europa.eu/">CDR Repository</a></li>
+           <li><a href="https://rod.eionet.europa.eu/">ROD Obligations</a></li>
+           <li><a href="https://dd.eionet.europa.eu/">Data Dictionary</a></li>
+           <li><a href="https://cr.eionet.europa.eu/">Content Registry</a></li>
+           <li><a href="https://converters.eionet.europa.eu/">Conversion service</a></li>
            <li><a href="http://dampos.eionet.europa.eu/">Dam Positioning</a></li>
           </ul>
          </li>
