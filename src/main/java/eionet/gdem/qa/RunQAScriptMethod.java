@@ -183,7 +183,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                 result.add((fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM).getBytes()));
 
             }
-        } catch (DCMException e) {
+        } catch (XMLConvException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
             e.printStackTrace();

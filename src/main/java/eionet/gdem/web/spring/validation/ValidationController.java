@@ -1,6 +1,7 @@
 package eionet.gdem.web.spring.validation;
 
 import eionet.gdem.Constants;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
@@ -10,6 +11,7 @@ import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
 import eionet.gdem.web.spring.SpringMessages;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,8 +85,8 @@ public class ValidationController {
                 model.addAttribute("validatedSchema", validatedSchema);
             }
             model.addAttribute("warningMessage", warningMessage);
-        } catch (DCMException e) {
-            throw new RuntimeException("Error validating xml: " + messageService.getMessage(e.getErrorCode()));
+        } catch (XMLConvException e) {
+            throw new RuntimeException("Error validating xml: " + ExceptionUtils.getRootCauseMessage(e));
         }
         return "/validation";
     }

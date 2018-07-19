@@ -344,7 +344,7 @@ public class QASandboxController {
                     //vs.setTrustedMode(false);
                     // result = vs.validateSchema(dataURL, xml_schema);
                     result = vs.validate(sourceUrl);
-                } catch (DCMException de) {
+                } catch (XMLConvException de) {
                     result = de.getMessage();
                 }
                 cForm.setResult(result);

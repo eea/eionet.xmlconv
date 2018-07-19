@@ -35,6 +35,7 @@ import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.quartz.*;
@@ -127,7 +128,7 @@ public class XQueryJob implements Job, InterruptableJob {
                     Utils.saveStrToFile(resultFile, result, null);
                     changeStatus(Constants.XQ_READY);
                 } catch (Exception e) {
-                    handleError("Error during validation:" + e.toString(), true);
+                    handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true);
                 }
             } else {
                 // read query info from DB.
