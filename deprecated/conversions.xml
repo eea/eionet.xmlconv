@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conversions>
+        <conversion id="1">
+                <description>SQL for MySQL</description>
+                <result_type>SQL</result_type>
+                <stylesheet>MySQL.xsl</stylesheet>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="2">
+                <description>SQL for MS SQL Server</description>
+                <result_type>SQL</result_type>
+                <stylesheet>SQLServer.xsl</stylesheet>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="3">
+                <description>SQL for Oracle</description>
+                <result_type>SQL</result_type>
+                <stylesheet>Oracle.xsl</stylesheet>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="4">
+                <description>SQL for MS Access</description>
+                <result_type>SQL</result_type>
+                <stylesheet>Access.xsl</stylesheet>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="5">
+                <description>Simple HTML table</description>
+                <result_type>HTML</result_type>
+                <stylesheet>SimpleHTML.xsl</stylesheet>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="6">
+                <description>Excel</description>
+                <result_type>EXCEL</result_type>
+                <stylesheet>Excel.xsl</stylesheet>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="7">
+                <description>VB for MS Access</description>
+                <result_type>SQL</result_type>
+                <stylesheet>VB_Access.xsl</stylesheet>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="8">
+                <description>XML</description>
+                <result_type>XML</result_type>
+                <stylesheet>XML.xsl</stylesheet>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="9">
+                <description>OpenDocument Spreadsheet</description>
+                <result_type>ODS</result_type>
+                <stylesheet>OpenDocumentSpreadsheet.xsl</stylesheet>
+                <use_local>true</use_local>
+                <ignore_if_manual>false</ignore_if_manual>
+        </conversion>
+        <conversion id="10">
+                <description>RDF</description>
+                <result_type>RDF</result_type>
+                <stylesheet>RDF.xsl</stylesheet>
+                <ignore_if_manual>true</ignore_if_manual>
+        </conversion>
+</conversions>

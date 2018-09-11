@@ -112,7 +112,7 @@ public class QaControllerTestIT {
         MockHttpServletRequestBuilder request = post("/asynctasks/qajobs/batch");
         request.contentType(MediaType.APPLICATION_JSON);
         HashMap<String, String> requestBody = new HashMap<String, String>();
-        requestBody.put("envelopeUrl", "http://cdrtest.eionet.europa.eu/gr/colvjazdw/envvkyrww/AutomaticQA_70556");
+        requestBody.put("envelopeUrl", "https://cdrtest.eionet.europa.eu/gr/colvjazdw/envvkyrww/AutomaticQA_70556");
         request.content(new Gson().toJson(requestBody));
         mockMvc.perform(request).andExpect(status().isOk());
     }

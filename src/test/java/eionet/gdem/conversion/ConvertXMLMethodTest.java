@@ -71,28 +71,11 @@ public class ConvertXMLMethodTest{
     public void testConvertDDTableHTML() throws Exception {
 
         ConversionService cs = new ConversionService();
-        Hashtable h = cs.convert(TestUtils.getSeedURL(TestConstants.SEED_OZONE_STATION_XML, this), "DD_TBL3453_CONV5");
+        Hashtable h = cs.convert(TestUtils.getSeedURL(TestConstants.SEED_OZONE_STATION_XML, this), "DD_TBL3453_CONV1");
 
         // test if the returned hastable contains all the keys and correct values
         assertEquals(TestConstants.HTML_CONTENTYPE_RESULT, h.get(ConvertXMLMethod.CONTENTTYPE_KEY));
         assertEquals(TestConstants.OZ_HTML_FILENAME_RESULT, h.get(ConvertXMLMethod.FILENAME_KEY));
-        byte[] content = (byte[]) h.get(ConvertXMLMethod.CONTENT_KEY);
-        String strContent = new String(content, "UTF-8");
-        // test if the converion result contains some text from seed..xml file
-        assertTrue(strContent.indexOf(TestConstants.STRCONTENT_RESULT) > 0);
-    }
-
-    /**
-     * Tests convert method with generated DD stylehseets - validate the result file and metadata( content type and file name)
-     */
-    @Test
-    public void testConvertDDTableSQL() throws Exception {
-        ConversionService cs = new ConversionService();
-        Hashtable h = cs.convert(TestUtils.getSeedURL(TestConstants.SEED_OZONE_STATION_XML, this), "DD_TBL3453_CONV1");
-
-        // test if the returned hastable contains all the keys and correct values
-        assertEquals(TestConstants.TEXT_CONTENTYPE_RESULT, h.get(ConvertXMLMethod.CONTENTTYPE_KEY));
-        assertEquals(TestConstants.OZ_SQL_FILENAME_RESULT, h.get(ConvertXMLMethod.FILENAME_KEY));
         byte[] content = (byte[]) h.get(ConvertXMLMethod.CONTENT_KEY);
         String strContent = new String(content, "UTF-8");
         // test if the converion result contains some text from seed..xml file

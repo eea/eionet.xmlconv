@@ -56,7 +56,7 @@ public class QaServiceTest {
     @Test
     public void testExtractLinksAndSchemasFromEnvelopeUrl() throws URISyntaxException, ParserConfigurationException, SAXException, IOException, XMLConvException {
         URL url = this.getClass().getResource("/envelope-xml.xml");
-        String envelopeUrl = "http://cdrtest.eionet.europa.eu/gr/colvjazdw/envvkyrww/AutomaticQA_70556";
+        String envelopeUrl = "https://cdrtest.eionet.europa.eu/gr/colvjazdw/envvkyrww/AutomaticQA_70556";
         File XmlFile = new File(url.toURI());
         QaServiceImpl spy = spy(qaService);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
