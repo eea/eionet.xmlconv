@@ -101,6 +101,10 @@
     <definition name="/xmlfiles/edit" extends="base">
         <put-attribute name="body" value="/WEB-INF/view/old/xmlfiles/edit.jsp" />
     </definition>
+    <definition name="/admin/users" extends="base">
+        <put-attribute name="title" value="label.admin.users" />
+        <put-attribute name="body" value="/WEB-INF/view/old/admin/users.jsp" />
+    </definition>
     <definition name="/admin/purge" extends="base">
         <put-attribute name="title" value="label.admin.purge" />
         <put-attribute name="body" value="/WEB-INF/view/old/admin/purge.jsp" />
