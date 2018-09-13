@@ -13,25 +13,26 @@
   <form:form action="/admin/users" method="post" modelAttribute="form">
 
     <form:errors path="*" cssClass="error-msg" element="div"/>
-    <%--<h3><spring:message code="label.admin.users.title"/></h3>--%>
     <div style="display: flex; flex-wrap: wrap;">
       <fieldset v-for="(group, key, groupIndex) in groups" class="fieldset" style="display: inline-block;">
-      <%--<fieldset v-for="(group, key, groupIndex) in groups" class="fieldset" style="display: inline-block;">--%>
         <legend>{{ key }}</legend>
         <ul>
-          <li v-for="(user, userKey, userIndex) in group">
-            <input v:name="group[groupIndex].user[userIndex]" type="text" v:value="user"/>
+          <li v-for="(user, userIndex) in group" style="display: flex; flex-wrap:wrap;">
+            <div class="input-group">
+              <input type="text" v-bind:name="'groups[' + [groupIndex] + '].name'" v-bind:value="user">
+              <div class="input-group-button" style="height:39px;">
+                <button class="button" type="button" v-on:click="del(key, userIndex)">-</button>
+              </div>
+            </div>
           </li>
         </ul>
-        <button class="btn btn-primary" type="button" v-on:click="add(${group.key})">ADD+</button>
+        <%--<input hidden="hidden" v-bind:name="'groups[' + [groupIndex] + '].name'" v-bind:value="key"/>--%>
+        <button class="button" type="button" v-on:click="add(key)">Add user</button>
       </fieldset>
     </div>
-    <button type="submit" class="button" name="edit">
+    <button type="submit" class="button">
       <spring:message code="label.admin.users.edit"/>
     </button>
-    <%--<button type="submit" class="button" name="delete">
-      <spring:message code="label.admin.users.delete"/>
-    </button>--%>
 
   </form:form>
 
@@ -40,27 +41,29 @@
 <script>
   var app = new Vue({
     el: '#app',
-    data: {
-      message: 'Hello Vue!',
-      users: [],
-      input: [],
-      groups: {}
+    data: function() {
+        return {
+        groups: {
+        <c:forEach items="${groups}" var="group" varStatus="groupStatus">
+         ${group.key} : "",
+        </c:forEach>
+        }
+      }
     },
     mounted: function() {
       <c:forEach items="${groups}" var="group" varStatus="groupStatus">
-        <%--this.input['${group.key}'] = {}--%>
-        this.input['${group.key}'] = [];
         this.groups['${group.key}'] = [];
         <c:forEach items="${group.value}" var="user" varStatus="userStatus">
           this.groups['${group.key}'].push('${user}');
         </c:forEach>
       </c:forEach>
-      this.message = "Hello Vuex!";
-      // console.log(JSON.stringify(this.groups));
     },
     methods: {
       add: function(group) {
-        this.input[group].users.push("");
+        this.groups[group].push("");
+      },
+      del: function(group, index) {
+          this.groups[group].splice(index, 1);
       }
     }
   })

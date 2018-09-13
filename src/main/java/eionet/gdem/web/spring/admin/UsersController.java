@@ -6,9 +6,7 @@ import eionet.gdem.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.acl.Group;
 import java.sql.SQLException;
@@ -41,6 +39,12 @@ public class UsersController {
         model.addAttribute("groups", groups);
         model.addAttribute("form", form);
         return "/admin/users/list";
+    }
+
+    @PostMapping
+    public String submit(@ModelAttribute("form") GroupForm form) {
+        form.getGroups();
+        return "redirect:/admin/users";
     }
 
     @GetMapping("/edit")
