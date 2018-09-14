@@ -19,14 +19,14 @@
         <ul>
           <li v-for="(user, userIndex) in group" style="display: flex; flex-wrap:wrap;">
             <div class="input-group">
-              <input type="text" v-bind:name="'groups[' + [groupIndex] + '].name'" v-bind:value="user">
+              <input type="text" v-bind:name="'groups[' + [groupIndex] + '].users'" v-model="groups[key][userIndex]">
               <div class="input-group-button" style="height:39px;">
                 <button class="button" type="button" v-on:click="del(key, userIndex)">-</button>
               </div>
             </div>
           </li>
         </ul>
-        <%--<input hidden="hidden" v-bind:name="'groups[' + [groupIndex] + '].name'" v-bind:value="key"/>--%>
+        <input hidden="hidden" v-bind:name="'groups[' + [groupIndex] + '].name'" :value="key"/>
         <button class="button" type="button" v-on:click="add(key)">Add user</button>
       </fieldset>
     </div>
@@ -61,6 +61,7 @@
     methods: {
       add: function(group) {
         this.groups[group].push("");
+        console.log(JSON.stringify(this.groups));
       },
       del: function(group, index) {
           this.groups[group].splice(index, 1);

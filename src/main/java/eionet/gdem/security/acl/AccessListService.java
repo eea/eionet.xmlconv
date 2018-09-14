@@ -2,19 +2,14 @@ package eionet.gdem.security.acl;
 
 import eionet.acl.PersistenceFile;
 import eionet.acl.SignOnException;
-import eionet.acl.XmlFileReaderWriter;
-import eionet.gdem.Properties;
+import eionet.gdem.web.spring.admin.users.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
-import java.security.acl.Group;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class AccessListService {
@@ -22,19 +17,35 @@ public class AccessListService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessListService.class);
 
 
-    public HashMap<String, Group> getGroups() throws SignOnException, SQLException {
+    public HashMap<String, List<String>> getGroups() throws SignOnException, SQLException {
 
-        HashMap<String, Group> groups = new HashMap<>();
+        HashMap<String, java.security.acl.Group> groups = new HashMap<>();
         HashMap<String, Principal> users = new HashMap<>();
 
         PersistenceFile persistenceFile = new PersistenceFile();
         persistenceFile.readGroups(groups, users);
-        return groups;
+
+        HashMap<String, List<String>> groupz = new HashMap<>();
+        for (Map.Entry<String, java.security.acl.Group> group : groups.entrySet()) {
+            List<String> userz = new ArrayList<>();
+            for (Enumeration<?> e =  group.getValue().members(); e.hasMoreElements();) {
+                userz.add(e.nextElement().toString());
+            }
+
+            groupz.put(group.getKey(), userz);
+        }
+        return groupz;
     }
 
-    public void writeGroups(HashMap<String, Group> groups) throws SignOnException {
+    public void writeGroups(List<Group> formGroups) throws SignOnException {
+        HashMap<String, java.security.acl.Group> groups;
+        Hashtable groupsTable = new Hashtable();
+
+
+        for (Group formGroup : formGroups) {
+            groupsTable.put(formGroup.getName(), new Vector<>(formGroup.getUsers()));
+        }
         PersistenceFile persistenceFile = new PersistenceFile();
-        Hashtable groupsTable = new Hashtable(groups);
         persistenceFile.writeGroups(groupsTable);
     }
 }
