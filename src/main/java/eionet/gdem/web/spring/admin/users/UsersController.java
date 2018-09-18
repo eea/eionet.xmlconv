@@ -36,7 +36,7 @@ public class UsersController {
     public String list(Model model, HttpSession httpSession) throws SignOnException, SQLException {
 
         String user = (String) httpSession.getAttribute("user");
-        if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
+        if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_ADMIN_PATH, "u")) {
             throw new AccessDeniedException(messageService.getMessage("label.autorization.config.update"));
         }
 
@@ -49,7 +49,7 @@ public class UsersController {
     @PostMapping
     public String submit(UsersForm form, HttpSession httpSession) throws SignOnException {
         String user = (String) httpSession.getAttribute("user");
-        if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
+        if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_ADMIN_PATH, "u")) {
             throw new AccessDeniedException(messageService.getMessage("label.autorization.config.update"));
         }
 
@@ -62,7 +62,7 @@ public class UsersController {
     public String edit(Model model, HttpSession httpSession) throws SQLException, SignOnException {
 
         String user = (String) httpSession.getAttribute("user");
-        if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_CONFIG_PATH, "u")) {
+        if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_ADMIN_PATH, "u")) {
             throw new AccessDeniedException(messageService.getMessage("label.autorization.config.update"));
         }
 

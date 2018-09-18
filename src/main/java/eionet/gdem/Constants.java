@@ -132,6 +132,7 @@ public interface Constants {
     String ACL_WQ_PATH = "workqueue";
     String ACL_QUERIES_PATH = "queries";
     String ACL_CONFIG_PATH = "config";
+    String ACL_ADMIN_PATH = "admin";
     String ACL_XMLFILE_PATH = "xmlfile";
     String ACL_QASANDBOX_PATH = "qasandbox";
     String ACL_LOGFILE_PATH = "logfile";

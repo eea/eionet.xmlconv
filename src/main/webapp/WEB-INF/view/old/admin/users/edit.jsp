@@ -31,7 +31,7 @@
       </fieldset>
     </div>
     <button type="submit" class="button">
-      <spring:message code="label.admin.users.edit"/>
+      <spring:message code="label.admin.users.save"/>
     </button>
 
   </form:form>
