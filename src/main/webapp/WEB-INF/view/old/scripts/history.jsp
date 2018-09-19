@@ -40,8 +40,7 @@
           <c:forEach varStatus="i" items="${history}" var="backup">
             <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
               <td align="center">
-                <a href="${Constants.QUERY_FOLDER}/${Constants.BACKUP_FOLDER_NAME}/${backup.fileName}"
-                   title="${backup.fileName}">
+                <a href="/queries/backup/${backup.fileName}" title="${backup.fileName}">
                   ${backup.fileName}
                 </a>
               </td>
