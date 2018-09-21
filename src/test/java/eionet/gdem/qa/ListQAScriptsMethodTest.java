@@ -89,8 +89,7 @@ public class ListQAScriptsMethodTest {
         Vector ht = (Vector) listQaResult.get(0);
 
         assertEquals(ht.get(0), "48");
-        System.out.println(ht.get(1) +"inside test method ");
-        assertEquals(ht.get(1), "Checks species names and suggest fuzzy matching alternatves if found from the list of European species");
+        assertEquals(ht.get(1), "Article 17 - General report species check");
         assertEquals(ht.get(3), "20");
     }
 }

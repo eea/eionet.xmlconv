@@ -129,7 +129,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
      * List all XQueries and their modification times for this namespace returns also XML Schema validation.
      *
      * @param schema Schema to use
-     * @return result is an Array of Arrays that contains 3 fields (script_id, description, last modification)
+     * @return result is an Array of Arrays that contains 3 fields (script_id, short_name, last modification)
      * @throws XMLConvException If an error occurs.
      */
     public Vector listQAScripts(String schema) throws XMLConvException {
@@ -146,7 +146,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
             String validate = (String) h.get("validate");
             if (!Utils.isNullStr(validate)) {
                 if (validate.equals("1")) {
-                    resultQuery = new Vector<String>();
+                    resultQuery = new Vector<>();
                     resultQuery.add(String.valueOf(Constants.JOB_VALIDATION));
                     resultQuery.add("XML Schema Validation");
                     resultQuery.add("");
@@ -169,17 +169,10 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                 String queryDescription = (String) hQueries.get(QaScriptView.DESCRIPTION);
                 String queryName = (String) hQueries.get(QaScriptView.SHORT_NAME);
                 String queryUpperLimit = (String) hQueries.get(QaScriptView.UPPER_LIMIT);
-                
-                if (Utils.isNullStr(queryDescription)) {
-                    if (Utils.isNullStr(queryName)) {
-                        queryDescription = "Quality Assurance script";
-                    } else {
-                        queryDescription = queryName;
-                    }
-                }
-                resultQuery = new Vector<String>();
+
+                resultQuery = new Vector<>();
                 resultQuery.add(queryId);
-                resultQuery.add(queryDescription);
+                resultQuery.add(queryName);
                 File f = new File(Properties.queriesFolder + File.separator + queryFile);
                 String last_modified = "";
 
