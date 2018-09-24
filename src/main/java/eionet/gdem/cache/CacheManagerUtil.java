@@ -44,7 +44,6 @@ public final class CacheManagerUtil {
      * @param ddTables data dictionary tables
      */
     public static void updateDDTablesCache(final List<DDDatasetTable> ddTables) {
-        // XXX: This fills the cache without reason.
         cacheManager.getCache(APPLICATION_CACHE).put(new Element(DD_TABLES_CACHE, ddTables));
     }
 
@@ -72,7 +71,7 @@ public final class CacheManagerUtil {
                             .diskStore(new DiskStoreConfiguration()
                                     .path(Properties.CACHE_TEMP_DIR));
                     cacheManager = new CacheManager(cacheManagerConfig);
-                    Cache appCache = new Cache(new CacheConfiguration(APPLICATION_CACHE, 10000)
+                    Cache appCache = new Cache(new CacheConfiguration(APPLICATION_CACHE, 2)
                             .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
                             .eternal(true));
                     cacheManager.addCache(appCache);
