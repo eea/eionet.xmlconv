@@ -2,6 +2,7 @@ package eionet.gdem.http;
 
 import eionet.gdem.XMLConvException;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,7 +17,12 @@ public class CustomURI {
     private URI uri;
 
     public CustomURI(String url) throws URISyntaxException {
-        uri = new URI(url.replace(" ", "%20"));
+        try {
+            uri = new URI(url.replace(" ", "%20"));
+        } catch (URISyntaxException e) {
+            // in case of windows paths...
+            uri = new File(url).toPath().toUri();
+        }
     }
 
     public String getHost() {
