@@ -513,9 +513,8 @@ public class QASandboxController {
          */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
         QAScriptListHolder schemasInSession = QAScriptListLoader.getList(httpServletRequest);
-        Schema oSchema = new Schema();
-        oSchema.setSchema(schema);
-        return schemasInSession.getQascripts().contains(oSchema);
+        boolean exists = schemasInSession.getQascripts().stream().anyMatch(o -> o.getSchema().equals(schema));
+        return exists;
     }
 
     /**

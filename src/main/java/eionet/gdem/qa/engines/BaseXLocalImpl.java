@@ -39,7 +39,6 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
         QueryProcessor proc = null;
         try {
             new Set(MainOptions.INTPARSE, true).execute(context);
-            new Set(MainOptions.QUERYPATH, Properties.queriesFolder).execute(context);
             new Set(MainOptions.MAINMEM, true).execute(context);
 
             String scriptSource = null;
@@ -53,9 +52,10 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
                     throw new XMLConvException("Error while reading XQuery file: " + script.getScriptFileName() + " : " + ExceptionUtils.getStackTrace(e), e);
                 }
             }
-            proc = new QueryProcessor(scriptSource, context);
+            proc = new QueryProcessor(scriptSource, Properties.queriesFolder + "/script", context);
             proc.bind("source_url", script.getSrcFileUrl(), "xs:string");
-            proc.bind("base_url", Properties.gdemURL + Properties.contextPath , "xs:string");
+
+//            proc.bind("base_url", Properties.gdemURL + Properties.contextPath , "xs:string");
 
             // same serialization options with saxon
             SerializerOptions opts = new SerializerOptions();

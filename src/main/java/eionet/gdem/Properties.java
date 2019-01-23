@@ -181,6 +181,7 @@ public class Properties {
         appRootFolder = getStringProperty("root.folder");
         catalogPath = getStringProperty("config.catalog");
         appHost = getStringProperty("app.host");
+        appHome = getStringProperty("app.home");
 
         // DB connection settings
         dbDriver = getStringProperty("db.driver");

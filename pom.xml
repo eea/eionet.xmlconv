@@ -671,14 +671,14 @@
             <dependency>
                 <groupId>org.basex</groupId>
                 <artifactId>basex</artifactId>
-                <version>8.4.4</version>
+                <version>9.1.2</version>
             </dependency>
             <!-- extra basex libraries
                 TODO be careful when upgrading -->
             <dependency>
                 <groupId>org.basex</groupId>
                 <artifactId>basex-api</artifactId>
-                <version>8.4.4</version>
+                <version>9.1.2</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>

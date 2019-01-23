@@ -131,7 +131,6 @@ public class AppServletContextListener implements ApplicationListener {
             Properties.metaXSLFolder = context.getRealPath("/dcm");
             Properties.convFile = context.getRealPath("/dcm/conversions.xml");
             Properties.odsFolder = context.getRealPath("/opendoc/ods");
-            Properties.appHome = context.getRealPath("/WEB-INF/classes");
             Properties.contextPath = context.getContextPath();
             cleanDirectories();
             checkFolders();
