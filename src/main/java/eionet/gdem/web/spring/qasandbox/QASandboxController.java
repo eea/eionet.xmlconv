@@ -5,15 +5,11 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.web.spring.conversions.ConvTypeManager;
-import eionet.gdem.qa.QAScriptManager;
-import eionet.gdem.web.spring.schemas.SchemaManager;
-import eionet.gdem.web.spring.workqueue.WorkqueueManager;
-import eionet.gdem.web.spring.conversions.ConvType;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
@@ -22,13 +18,15 @@ import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
 import eionet.gdem.web.spring.SpringMessages;
+import eionet.gdem.web.spring.conversions.ConvType;
+import eionet.gdem.web.spring.conversions.ConvTypeManager;
+import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
-import org.apache.commons.io.IOUtils;
+import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +34,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -44,7 +41,6 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -239,6 +235,7 @@ public class QASandboxController {
         try {
             if (!Utils.isNullStr(sourceUrl)) {
                 schemaUrl = findSchemaFromXml(sourceUrl);
+
                 if (!Utils.isURL(schemaUrl)) {
                     bindingResult.reject("error.qasandbox.schemaNotFound");
                     return "/qaSandbox/view";
@@ -535,5 +532,4 @@ public class QASandboxController {
         }
         return null;
     }
-
 }

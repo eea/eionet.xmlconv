@@ -1,7 +1,6 @@
 package eionet.gdem.web.spring.qasandbox;
 
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.spring.SpringMessages;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -59,17 +58,12 @@ public class QASandboxValidator implements Validator {
 
         String sourceUrl = cForm.getSourceUrl();
         String content = cForm.getScriptContent();
-        String scriptType = cForm.getScriptType();
         String schemaUrl = cForm.getSchemaUrl();
-        String scriptId = cForm.getScriptId();
-        String schemaId = cForm.getSchemaId();
-        String scriptContent = cForm.getScriptContent();
-        boolean showScripts = cForm.isShowScripts();
-        String action = cForm.getAction();
 
         if (Utils.isNullStr(sourceUrl)) {
             errors.rejectValue("sourceUrl", "error.qasandbox.missingUrl");
         }
+
         if (Utils.isNullStr(content) && !cForm.isShowScripts()) {
             errors.rejectValue("content", "error.qasandbox.missingContent");
         }
@@ -85,14 +79,9 @@ public class QASandboxValidator implements Validator {
         QASandboxForm cForm = (QASandboxForm) o;
 
         String sourceUrl = cForm.getSourceUrl();
-        String content = cForm.getScriptContent();
-        String scriptType = cForm.getScriptType();
-        String schemaUrl = cForm.getSchemaUrl();
         String scriptId = cForm.getScriptId();
-        String schemaId = cForm.getSchemaId();
         String scriptContent = cForm.getScriptContent();
         boolean showScripts = cForm.isShowScripts();
-        String action = cForm.getAction();
 
         if (showScripts && Utils.isNullStr(scriptId)) {
             errors.rejectValue("scriptId", "error.qasandbox.missingId");
