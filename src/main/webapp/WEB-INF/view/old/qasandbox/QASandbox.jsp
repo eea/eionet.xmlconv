@@ -76,17 +76,20 @@
 
 <c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}"/>
 <ed:breadcrumbs-push label="QA sandbox" level="1"/>
-<%--<h1><spring:message code="label.qasandbox.title"/></h1>--%>
 
-<c:if test="${permissions.qsuPrm}">
+<fieldset class="fieldset">
+<legend><spring:message code="label.qasandbox.title"/></legend>
   <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
+  <fieldset class="fieldset">
+    <legend><spring:message code="label.qasandbox.uploadXMLTitle"/></legend>
     <div class="row">
-    <%--style="float:right;" --%>
-    <button class="button" id="clickable">Upload file</button>
-    <form action="/qaSandbox/upload" id="my-dropzone" class="dropzone">
-      <ul id="dropzone-previews" class="dropzone-previews"></ul>
-    </form>
+      <p>Please upload a XML/GML file to run QA scripts (you can provide either a file or an url in "URL of source file" field below.)</p>
+      <button class="button" id="clickable">Upload XML/GML file</button>
+      <form action="/qaSandbox/upload" id="my-dropzone" class="dropzone">
+        <ul id="dropzone-previews" class="dropzone-previews"></ul>
+      </form>
     </div>
+  </fieldset>
     <script type="text/javascript" src="<c:url value='/static/js/dropzone.min.js'/>"></script>
 
     <script id="mypreview" type="text/template">
@@ -97,7 +100,6 @@
             <span>(<span data-dz-size></span>)</span>
             <div style="float:right">
               <button class="dz-remove-button" style="margin-left:5px" type="button" data-dz-remove>Remove</button>
-              <button class="dz-select-button" style="margin-left:5px" type="button">Select</button>
             </div>
           </div>
           <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
@@ -130,8 +132,8 @@
         url: ctx + "/qaSandbox/upload",
         clickable: "#clickable",
         acceptedFiles: ".xml, .gml",
-        maxFiles: "5",
-        maxFilesize: "300",
+        maxFiles: "1",
+        maxFilesize: "300", // MB
         createImageThumbnails: "false",
         addRemoveLinks: "false",
         previewsContainer: "#dropzone-previews",
@@ -145,31 +147,32 @@
                 Dropzone.forElement("#my-dropzone").emit("complete", mockFile);
                 Dropzone.forElement("#my-dropzone").files.push(mockFile);
               });
+            } else {
+              return null;
             }
           });
           this.on("success", function (file, responseText) {
-            $("#txtSourceUrl").val(responseText.url)
+            $("#txtSourceUrl").val(responseText.url);
             var mockFile = {name: file.name, size: file.size, url: responseText.url};
             Dropzone.forElement("#my-dropzone").files.push(mockFile);
           });
-          this.on("uploadprogress", function (file, progress, bytesSent) {
-            //console.log("Progress :" + progress);
-            //$('.dz-upload').text(Math.round(progress) + "%")
-          });
           this.on("removedfile", function (file) {
             $.get(ctx + "/qaSandbox/action", {command: "deleteFile", filename: file.name});
+            $("#txtSourceUrl").val("");
           });
+          this.on("maxfilesexceeded", function (file) {
+            console.dir(file);
+            this.removeAllFiles();
+            this.addFile(file);
+          })
         }
       };
     </script>
   </c:if>
-</c:if>
 
 <form:form servletRelativeAction="/qaSandbox" method="post" modelAttribute="form">
   <form:errors path="*" cssClass="error-msg" element="div" />
   <form:hidden path="showScripts" />
-  <fieldset class="fieldset">
-    <legend><spring:message code="label.qasandbox.title"/></legend>
 
     <div class="row">
       <div class="columns small-4">
@@ -245,7 +248,6 @@
 
       </c:when>
       <c:otherwise>
-        <%--<fieldset class="fieldset">--%>
 
         <div class="row">
           <div class="columns small-4">
@@ -291,8 +293,6 @@
         </div>
       </c:otherwise>
     </c:choose>
-  </fieldset>
-
 
   <%-- QA script type & content --%>
   <c:if test="${!form.showScripts}">
@@ -350,17 +350,14 @@
           </c:if>
         </c:if>
       </div>
-
+      </fieldset>
     </c:if>
   </c:if>
 
   <%-- List of available QA scripts --%>
   <c:if test="${form.showScripts}">
-    <div class="row">
-      <label class="question">
-        <spring:message code="label.qasandbox.qaScripts"/>
-      </label>
-    </div>
+  <fieldset class="fieldset">
+    <legend><spring:message code="label.qasandbox.qaScripts"/></legend>
 
     <div class="row">
       <div class="columns small-4">
@@ -440,8 +437,9 @@
         </button>
       </c:if>
     </div>
+  </fieldset>
   </c:if>
 
   </div>
-  </fieldset>
 </form:form>
+</fieldset>
