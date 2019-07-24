@@ -48,7 +48,7 @@ public class TmpUploadAction extends HttpServlet {
                 String test = "{ \"Data\": [";
                 for (File file : files) {
                     String fileName = file.getName();
-                    String outputUrl = "http://" + Properties.appHost + ("".equals(req.getContextPath()) ? "" : req.getContextPath()) + "/tmpfile/" + session.getId() + "/" + fileName;
+                    String outputUrl = "https://" + Properties.appHost + ("".equals(req.getContextPath()) ? "" : req.getContextPath()) + "/tmpfile/" + session.getId() + "/" + fileName;
                     test = test + "{ \"name\": \"" + fileName + "\", \"size\": \"" + file.length() + "\", \"url\": \"" + outputUrl + "\"}";
                     index++;
                     if (index != all) {
