@@ -43,8 +43,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
-import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
+import static eionet.gdem.JobScheduler.getQuartzHeavyScheduler;
+import static eionet.gdem.JobScheduler.getQuartzScheduler;
 
 /**
  * Work Queue Manager.

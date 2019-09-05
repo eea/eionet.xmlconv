@@ -7,12 +7,15 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  *
  * @author Aris Katsanas <aka@eworx.gr>
  */
-public class quartzConnectionProvider implements org.quartz.utils.ConnectionProvider {
+public class quartzConnectionProvider  {//implements org.quartz.utils.ConnectionProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(MySqlBaseDao.class);
 
     private static class DataSourceHolder {
@@ -20,6 +23,7 @@ public class quartzConnectionProvider implements org.quartz.utils.ConnectionProv
         static {
             try {
                 DATASOURCE = (DataSource) SpringApplicationContext.getBean("quartzDataSource");
+
             } catch (Exception e) {
                 LOGGER.error("quartzDataSource", e);
                 throw new ExceptionInInitializerError(e);
@@ -27,17 +31,18 @@ public class quartzConnectionProvider implements org.quartz.utils.ConnectionProv
         }
     }
     
-    @Override
+   // @Override
     public Connection getConnection() throws SQLException {
+
         return DataSourceHolder.DATASOURCE.getConnection();
     }
 
-    @Override
+  //  @Override
     public void shutdown() throws SQLException {
 
     }
 
-    @Override
+ //   @Override
     public void initialize() throws SQLException {
         
     }

@@ -55,8 +55,8 @@ import java.util.Vector;
 
 import static eionet.gdem.Constants.JOB_VALIDATION;
 import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
-import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
-import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
+import static eionet.gdem.JobScheduler.getQuartzHeavyScheduler;
+import static eionet.gdem.JobScheduler.getQuartzScheduler;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.quartz.JobBuilder.newJob;

@@ -35,4 +35,7 @@
         <property name="changeLog" value="classpath:db/quartz-liquibase.xml" />
     </bean>
 
+    <util:properties id="quartzHeavyProperties" location="classpath:quartz-heavy.properties" />
+    <util:properties id="quartzLocalProperties" location="classpath:local-quartz.properties" />
+
 </beans>
