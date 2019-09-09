@@ -24,6 +24,7 @@ import javax.mail.internet.ContentType;
 import javax.sql.DataSource;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -118,7 +119,7 @@ public class SchemasControllerTest {
     }
 
     @Test
-    public void show() throws Exception {
+    public void displayBySchemaId() throws Exception {
         mockMvc.perform(get("/schemas/1"))
                 .andExpect(model().attributeExists("form"))
                 .andExpect(model().attribute("form", allOf(
@@ -132,6 +133,17 @@ public class SchemasControllerTest {
                 .andExpect(view().name("/schemas/view"));
     }
 
+    @Test
+    public void displayBySchemaUrl() throws Exception {
+        mockMvc.perform(get("/schemas/one").param("schemaUrl","http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd"))
+                .andExpect(model().attributeExists("form"))
+                .andExpect(model().attribute("form", allOf(
+                        hasProperty("schema",is("http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd")),
+                        hasProperty("schemaId",is("83")),
+                        hasProperty("schemaLang", is("XSD")),
+                       hasProperty("doValidation",is(true)))))
+                .andExpect(view().name("/schemas/view"));
+    }
     @Test
     public void showNoPermissions() throws Exception {
         mockMvc.perform(get("/schemas/1"))
