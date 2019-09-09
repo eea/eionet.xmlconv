@@ -24,6 +24,7 @@ import javax.mail.internet.ContentType;
 import javax.sql.DataSource;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -91,9 +92,9 @@ public class SchemasControllerTest {
                 .file(file)
                 .sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("schemaUrl", "http://test.gr/test.xsd"))
-                    .andExpect(model().hasNoErrors())
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(view().name("redirect:/schemas"));
+                .andExpect(model().hasNoErrors())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/schemas"));
     }
 
     @Test
@@ -103,9 +104,9 @@ public class SchemasControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/schemas/add")
                 .file(file)
                 .param("schemaUrl", "http://test.gr/test.xsd"))
-                    .andExpect(model().hasNoErrors())
-                    .andExpect(status().isUnauthorized())
-                    .andExpect(view().name("Error"));
+                .andExpect(model().hasNoErrors())
+                .andExpect(status().isUnauthorized())
+                .andExpect(view().name("Error"));
     }
 
     @Test
@@ -113,12 +114,12 @@ public class SchemasControllerTest {
         mockMvc.perform(post("/schemas/add")
                 .sessionAttr(SESSION_USER, ADMIN_USER)
                 .param("schemaUrl", ""))
-                    .andExpect(model().hasErrors())
-                    .andExpect(view().name("/schemas/add"));
+                .andExpect(model().hasErrors())
+                .andExpect(view().name("/schemas/add"));
     }
 
     @Test
-    public void show() throws Exception {
+    public void displayBySchemaId() throws Exception {
         mockMvc.perform(get("/schemas/1"))
                 .andExpect(model().attributeExists("form"))
                 .andExpect(model().attribute("form", allOf(
@@ -133,6 +134,17 @@ public class SchemasControllerTest {
     }
 
     @Test
+    public void displayBySchemaUrl() throws Exception {
+        mockMvc.perform(get("/schemas/one").param("schemaUrl","http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd"))
+                .andExpect(model().attributeExists("form"))
+                .andExpect(model().attribute("form", allOf(
+                        hasProperty("schema",is("http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd")),
+                        hasProperty("schemaId",is("83")),
+                        hasProperty("schemaLang", is("XSD")),
+                        hasProperty("doValidation",is(true)))))
+                .andExpect(view().name("/schemas/view"));
+    }
+    @Test
     public void showNoPermissions() throws Exception {
         mockMvc.perform(get("/schemas/1"))
                 .andExpect(model().attribute("rootElements", hasProperty("xsduPrm", is(false))));
@@ -142,7 +154,7 @@ public class SchemasControllerTest {
     public void showWithPermissions() throws Exception {
         mockMvc.perform(get("/schemas/1")
                 .sessionAttr(SESSION_USER, ADMIN_USER))
-                    .andExpect(model().attribute("rootElements", hasProperty("xsduPrm", is(true))));
+                .andExpect(model().attribute("rootElements", hasProperty("xsduPrm", is(true))));
     }
 
     @Test
@@ -168,8 +180,8 @@ public class SchemasControllerTest {
                 .param("schema", "http://dd.eionet.europa.eu/GetSchema?id=TBL4564")
                 .param("schemaLang", "XSD")
                 .param("schemaId", "1"))
-                    .andExpect((model().hasNoErrors()))
-                    .andExpect(view().name("redirect:/schemas/1/edit"));
+                .andExpect((model().hasNoErrors()))
+                .andExpect(view().name("redirect:/schemas/1/edit"));
     }
 
     @Test
@@ -179,8 +191,8 @@ public class SchemasControllerTest {
                 .param("schema", "wrong_url_format")
                 .param("schemaLang", "XSD")
                 .param("schemaId", "1"))
-                    .andExpect((model().hasErrors()))
-                    .andExpect(view().name("/schemas/edit"));
+                .andExpect((model().hasErrors()))
+                .andExpect(view().name("/schemas/edit"));
     }
 
     @Test
