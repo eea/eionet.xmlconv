@@ -390,10 +390,15 @@
           <c:set var="scriptId" value="${qascript.scriptId}"/>
           <div class="row">
             <form:radiobutton path="scriptId" property="scriptId" value="${scriptId}" id="rad_${scriptId}"/>
-            <label class="question" for="rad_${scriptId}">${qascript.shortName}</label>
-            <c:if test="${qascript.active}">
-              <span style="color: green;"><strong>(<spring:message code="label.qascript.isActive"/>)</strong></span>
-            </c:if>
+            <c:choose>
+              <c:when test="${qascript.active}">
+                <label class="question" for="rad_${scriptId}">${qascript.shortName}</label>
+                <span style="color: green;"><strong>(<spring:message code="label.qascript.isActive"/>)</strong></span>
+              </c:when>
+              <c:otherwise>
+                <label for="rad_${scriptId}">${qascript.shortName}</label>
+              </c:otherwise>
+            </c:choose>
             <span> -
                 <a href="/scripts/${scriptId}" title="label.qascript.view">
                     ${qascript.fileName}
