@@ -204,6 +204,47 @@ public class QaController {
         return new ResponseEntity<List<LinkedHashMap<String,String>>>(results, HttpStatus.OK);
     }
 
+    /**
+     *Get Qa Scripts for a given schema and status , or if empty , return all schemas.
+     *
+     **/
+    @RequestMapping(value = "/qarpc", method = RequestMethod.GET)
+    @ResponseBody
+    public List<QaResultsWrapper> analyzeXMlFilesXMlRpc(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
+
+        HashMap<String, String> fileLinksAndSchemas =new LinkedHashMap<>();
+        fileLinksAndSchemas.put("http://cdrtest.eionet.europa.eu/ro/colwsyg9g/envxxzquw/LCP-article_72_IED__1.xml","http://dd.eionet.europa.eu/schemas/LCP-article_72_IED/LCP-IED.xsd");
+
+        XQueryService xqService = new XQueryService();
+        Hashtable table = new Hashtable();
+        try {
+            for (Map.Entry<String, String> entry : fileLinksAndSchemas.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (key != "" && value != "") {
+                    Vector files = new Vector();
+                    files.add(key);
+                    table.put(value, files);
+                }
+            }
+            Vector jobIdsAndFileUrls = xqService.analyzeXMLFiles(table);
+            List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
+            for (int i = 0; i < jobIdsAndFileUrls.size(); i++) {
+                Vector<String> KeyValuePair = (Vector<String>) jobIdsAndFileUrls.get(i);
+                QaResultsWrapper qaResult = new QaResultsWrapper();
+                qaResult.setJobId(KeyValuePair.get(0));
+                qaResult.setFileUrl(KeyValuePair.get(1));
+                results.add(qaResult);
+            }
+
+            return results;
+        } catch (XMLConvException ex) {
+            throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
+        }
+        //return new ResponseEntity<List<LinkedHashMap<String,String>>>(results, HttpStatus.OK);
+    }
+
+
 
     @ExceptionHandler(EmptyParameterException.class)
     public ResponseEntity<HashMap<String, String>> HandleEmptyParameterException(Exception exception) {
