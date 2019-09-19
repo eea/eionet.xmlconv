@@ -6,7 +6,14 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import net.xqj.basex.bin.H;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,8 +29,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -81,5 +93,41 @@ public class HttpFileManagerTest {
     @After
     public void tearDown() throws Exception {
         manager.closeQuietly();
+    }
+
+    @Test
+    public void testFollowUrlRedirectIfNeededFor301Returned() throws Exception {
+        URL httpUrl = new URL("http://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
+        HttpGet httpGet = mock(HttpGet.class);
+        BasicHeader header = mock(BasicHeader.class);
+        CloseableHttpClient closeableHttpClient = mock(CloseableHttpClient.class);
+        CloseableHttpResponse closeableHttpResponse = mock(CloseableHttpResponse.class);
+        StatusLine statusLine = mock(StatusLine.class);
+        when(statusLine.getStatusCode()).thenReturn(301);
+        when(closeableHttpResponse.getStatusLine()).thenReturn(statusLine);
+        when(closeableHttpResponse.getFirstHeader(any(String.class))).thenReturn(header);
+       when(header.getValue()).thenReturn("https://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
+        when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
+        HttpFileManager httpFileManager = new HttpFileManager(closeableHttpClient);
+        URL httpsUrl = httpFileManager.followUrlRedirectIfNeeded(httpUrl);
+        assertThat(httpsUrl.toString(),containsString("https://"));
+    }
+
+    @Test
+    public void testFollowUrlRedirectIfNeededFor302Returned() throws Exception {
+        URL httpUrl = new URL("http://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
+        HttpGet httpGet = mock(HttpGet.class);
+        BasicHeader header = mock(BasicHeader.class);
+        CloseableHttpClient closeableHttpClient = mock(CloseableHttpClient.class);
+        CloseableHttpResponse closeableHttpResponse = mock(CloseableHttpResponse.class);
+        StatusLine statusLine = mock(StatusLine.class);
+        when(statusLine.getStatusCode()).thenReturn(302);
+        when(closeableHttpResponse.getStatusLine()).thenReturn(statusLine);
+        when(closeableHttpResponse.getFirstHeader(any(String.class))).thenReturn(header);
+        when(header.getValue()).thenReturn("https://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
+        when(closeableHttpClient.execute(any(HttpGet.class))).thenReturn(closeableHttpResponse);
+        HttpFileManager httpFileManager = new HttpFileManager(closeableHttpClient);
+        URL httpsUrl = httpFileManager.followUrlRedirectIfNeeded(httpUrl);
+        assertThat(httpsUrl.toString(),containsString("https://"));
     }
 }

@@ -39,7 +39,7 @@ public class DCMException extends Exception {
      * @param message Exception message
      */
     public DCMException(String errorCode, String message) {
-        super(message);
+        super("Error Message:"+message);
         this.errorCode = errorCode;
     }
 
