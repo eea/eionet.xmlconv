@@ -205,16 +205,15 @@ public class QaController {
     }
 
     /**
-     *Get Qa Scripts for a given schema and status , or if empty , return all schemas.
+     * Edpoint to test xmlrpc
      *
      **/
     @RequestMapping(value = "/qarpc", method = RequestMethod.GET)
     @ResponseBody
-    public List<QaResultsWrapper> analyzeXMlFilesXMlRpc(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
+    public List<QaResultsWrapper> analyzeXMlFilesXMlRpc(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "file", required = false, defaultValue = "true") String file) throws XMLConvException, BadRequestException {
 
         HashMap<String, String> fileLinksAndSchemas =new LinkedHashMap<>();
-        fileLinksAndSchemas.put("http://cdrtest.eionet.europa.eu/ro/colwsyg9g/envxxzquw/LCP-article_72_IED__1.xml","http://dd.eionet.europa.eu/schemas/LCP-article_72_IED/LCP-IED.xsd");
-
+        fileLinksAndSchemas.put(file,schema);
         XQueryService xqService = new XQueryService();
         Hashtable table = new Hashtable();
         try {
@@ -241,7 +240,6 @@ public class QaController {
         } catch (XMLConvException ex) {
             throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
         }
-        //return new ResponseEntity<List<LinkedHashMap<String,String>>>(results, HttpStatus.OK);
     }
 
 

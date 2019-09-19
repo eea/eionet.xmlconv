@@ -9,12 +9,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -43,6 +47,10 @@ public class HttpFileManager {
 
     public HttpFileManager() {
         this.client = HttpCacheClientFactory.getInstance();
+    }
+
+    public HttpFileManager(CloseableHttpClient client){
+    this.client = client;
     }
 
     /**
@@ -151,12 +159,13 @@ public class HttpFileManager {
     public InputStream getInputStream(String srcUrl, String ticket, boolean isTrustedMode) throws IOException, URISyntaxException {
         CustomURI customURL = new CustomURI(srcUrl);
         URL url = customURL.getRawURL();
-        HttpURLConnection uc = (HttpURLConnection)url.openConnection();
-        if(uc.getResponseCode()==HttpURLConnection.HTTP_MOVED_PERM){
-            String redirectedUrl = uc.getHeaderField("Location");
-            uc =  (HttpURLConnection) new URL(redirectedUrl).openConnection();
-
+        try {
+            url = this.followUrlRedirectIfNeeded(url);
+        } catch (FollowRedirectException e) {
+            LOGGER.error( e.getMessage(), e.getCause() );
+            throw new IOException("Failed to Redirect URL");
         }
+        HttpURLConnection uc = (HttpURLConnection)url.openConnection();
         if (ticket == null && isTrustedMode) {
             ticket = getHostCredentials(customURL.getHost());
         }
@@ -276,6 +285,24 @@ public class HttpFileManager {
             LOGGER.error("Conversion proceeded");
         }
         return null;
+    }
+
+    /**
+     * @param url the Url to check for redirection
+     * @return url the Url redirected if required
+     * */
+    public URL followUrlRedirectIfNeeded(URL url) throws FollowRedirectException {
+        HttpGet request = new HttpGet(url.toString());
+        try {
+            CloseableHttpResponse response = this.client.execute(request);
+            if (response.getStatusLine().getStatusCode() == 302 || response.getStatusLine().getStatusCode() ==301) {
+                String redirectURL = response.getFirstHeader("Location").getValue();
+                return new URL(redirectURL);
+            }
+        } catch (IOException e) {
+            throw new FollowRedirectException("Error trying to invoke Server with Url:"+url.toString(),e.getCause());
+        }
+      return url;
     }
 
 }
