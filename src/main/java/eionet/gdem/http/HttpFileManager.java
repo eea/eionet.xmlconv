@@ -292,6 +292,7 @@ public class HttpFileManager {
      * @return url the Url redirected if required
      * */
     public URL followUrlRedirectIfNeeded(URL url) throws FollowRedirectException {
+
         HttpGet request = new HttpGet(url.toString());
         try {
             CloseableHttpResponse response = this.client.execute(request);
