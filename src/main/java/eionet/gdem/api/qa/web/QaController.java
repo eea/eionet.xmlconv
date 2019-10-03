@@ -8,6 +8,9 @@ import eionet.gdem.api.errors.EmptyParameterException;
 import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.conversion.ConversionService;
+import eionet.gdem.conversion.ConvertDDXMLMethod;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.qa.XQueryService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -240,6 +243,20 @@ public class QaController {
         } catch (XMLConvException ex) {
             throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
         }
+    }
+
+    /**
+     * Edpoint to test xmlrpc
+     *
+     **/
+    @RequestMapping(value = "/excelXML", method = RequestMethod.GET)
+    @ResponseBody
+    public Hashtable<String, Object> convertExcelToXML(@RequestParam(value = "sourceUrl", required = false, defaultValue = "true") String sourceUrl) throws XMLConvException, BadRequestException {
+
+        ConversionService conversionService = new ConversionService();
+        Hashtable<String, Object> result =    conversionService.convertDD_XMLremoveEmptyElems(sourceUrl);
+
+             return result;
     }
 
 

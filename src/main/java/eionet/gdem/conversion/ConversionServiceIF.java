@@ -61,6 +61,18 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      */
     Hashtable<String, Object> convertDD_XML(String sourceURL) throws XMLConvException;
 
+
+    /**
+     * Converts DataDictionary MS Excel file to XML and removes empty elements from the resulting xml
+     *
+     * @param sourceURL - URL of the source Excel file
+     * @return ConversionResultDto result object
+     * @throws XMLConvException If an error occurs
+     */
+    Hashtable<String, Object> convertDD_XMLremoveEmptyElems(String sourceURL) throws XMLConvException;
+
+
+
     /**
      * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
      *
@@ -70,6 +82,17 @@ public interface ConversionServiceIF extends RemoteServiceIF {
      * @throws XMLConvException If an error occurs
      */
     Hashtable<String, Object> convertDD_XML_split(String sourceURL, String sheetParam) throws XMLConvException;
+
+
+    /**
+     * Converts DataDictionary MS Excel sheets to different XML files, where one xml file is dataset table.
+     *
+     * @param sourceURL URL of the source Excel file
+     * @param sheetParam - Sheetname to convert
+     * @return ConversionResultDto result object
+     * @throws XMLConvException If an error occurs
+     */
+    Hashtable<String, Object> convertDD_XML_split_removeEmptyElems(String sourceURL, String sheetParam) throws XMLConvException;
 
     /**
      * If Conversion Service is called through HTTP, then set the HTTP Response object.

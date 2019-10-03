@@ -11,11 +11,11 @@ server = xmlrpc.client.ServerProxy("http://localhost:8080/RpcRouter")
 
 try:
     # excel file
-    param1 = "http://cdr.eionet.europa.eu/se/eea/ewn1/envr8broa/SE_Rivers_Revised_SoE2008.xls"
+    param1 = "http://localhost:8081/BW_IT_2018.xls"
     # sheet name
-    param2 = "Stations2"
+    param2 = ""
 
-    method_result = server.ConversionService.convertDD_XML_split(param1, param2)
+    method_result = server.ConversionService.convertDD_XML_split(param1) #, param2)
 
 except xmlrpc.client.ProtocolError as err:
     print("A protocol error occurred")
