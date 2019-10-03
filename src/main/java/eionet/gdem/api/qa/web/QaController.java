@@ -245,21 +245,6 @@ public class QaController {
         }
     }
 
-    /**
-     * Edpoint to test xmlrpc
-     *
-     **/
-    @RequestMapping(value = "/excelXML", method = RequestMethod.GET)
-    @ResponseBody
-    public Hashtable<String, Object> convertExcelToXML(@RequestParam(value = "sourceUrl", required = false, defaultValue = "true") String sourceUrl) throws XMLConvException, BadRequestException {
-
-        ConversionService conversionService = new ConversionService();
-        Hashtable<String, Object> result =    conversionService.convertDD_XMLremoveEmptyElems(sourceUrl);
-
-             return result;
-    }
-
-
 
     @ExceptionHandler(EmptyParameterException.class)
     public ResponseEntity<HashMap<String, String>> HandleEmptyParameterException(Exception exception) {
