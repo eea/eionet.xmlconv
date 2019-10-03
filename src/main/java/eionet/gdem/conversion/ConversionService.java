@@ -43,7 +43,6 @@ import eionet.gdem.utils.xml.XMLUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
 
 /**
  * Conversion Service Facade. The service is able to execute different conversions that are called through XML/RPC and HTTP POST and
