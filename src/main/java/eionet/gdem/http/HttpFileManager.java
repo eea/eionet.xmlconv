@@ -20,6 +20,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,12 +295,18 @@ public class HttpFileManager {
      * */
     public URL followUrlRedirectIfNeeded(URL url) throws FollowRedirectException {
 
+        LOGGER.info("Checking URL:"+ url.toString()+" for redirects.");
         HttpGet request = new HttpGet(url.toString());
         try {
-            CloseableHttpResponse response = this.client.execute(request);
-            if (response.getStatusLine().getStatusCode() == 302 || response.getStatusLine().getStatusCode() ==301) {
-                String redirectURL = response.getFirstHeader("Location").getValue();
-                return new URL(redirectURL);
+            HttpURLConnection con = (HttpURLConnection)(url.openConnection());
+            con.setInstanceFollowRedirects(false);
+            con.connect();
+            int responseCode = con.getResponseCode();
+            LOGGER.info("URL Redirection Mechanism Response Code :"+ responseCode);
+            if(responseCode==301 || responseCode == 302){
+                String location = con.getHeaderField( "Location" );
+                LOGGER.info("Redirect Location is:"+location);
+                return new URL(con.getHeaderField("Location"));
             }
         } catch (IOException e) {
             throw new FollowRedirectException("Error trying to invoke Server with Url:"+url.toString(),e.getCause());

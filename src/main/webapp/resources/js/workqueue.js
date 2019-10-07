@@ -29,9 +29,12 @@ $(document).ready(function() {
     // initialize the Datatable
     var table = $('#workqueue_table').DataTable( {
         paging:   false,
-        ordering: false,
+        ordering: true,
         info:     true,
+        searching: true,
+
         bAutoWidth: false,
+        "order": [[ 1, "asc" ]],
         "oLanguage": {
             "sInfo": '_TOTAL_ entries<span class="lvllbl"></span>',
             "sInfoEmpty": '0 entries',

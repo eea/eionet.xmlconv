@@ -78,6 +78,7 @@ public abstract class ExternalQueryEngine extends QAScriptEngineStrategy {
             String srcFile = CustomFileUtils.saveFileInLocalStorage(sourceStream, "xml");
 
             String originSourceUrl = script.getOrigFileUrl();
+            LOGGER.info("Original Script Source URL:"+originSourceUrl);
             Map<String, String> params = UrlUtils.getCdrParams(originSourceUrl);
             params.put(Constants.XQ_SOURCE_PARAM_NAME, script.getOrigFileUrl());
 

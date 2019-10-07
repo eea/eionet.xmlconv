@@ -9,7 +9,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <env>default</env>
-        <java_version>11</java_version>
+        <java_version>8</java_version>
         <tomcat.version>9.0.24</tomcat.version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
         <spring.version>4.3.25.RELEASE</spring.version>
@@ -1001,7 +1001,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.2.0</version>
+                <version>2.6.9</version>
                 <scope>test</scope>
             </dependency>
 
