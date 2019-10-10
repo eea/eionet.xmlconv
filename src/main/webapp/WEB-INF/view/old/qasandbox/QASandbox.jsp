@@ -78,12 +78,12 @@
 <ed:breadcrumbs-push label="QA sandbox" level="1"/>
 
 <fieldset class="fieldset">
-<legend><spring:message code="label.qasandbox.title"/></legend>
+  <legend><spring:message code="label.qasandbox.title"/></legend>
   <c:if test="${not(fn:contains(header['User-Agent'],'MSIE 9.0'))}">
   <fieldset class="fieldset">
-    <legend><spring:message code="label.qasandbox.uploadXMLTitle"/></legend>
+    <legend><strong><spring:message code="label.qasandbox.uploadXMLTitle"/></strong></legend>
     <div class="row">
-      <p>Please upload a XML/GML file to run QA scripts (you can provide either a file or an url in "URL of source file" field below.)</p>
+      <p>Please upload a XML/GML file to run QA scripts</p>
       <button class="button" id="clickable">Upload XML/GML file</button>
       <form action="/qaSandbox/upload" id="my-dropzone" class="dropzone">
         <ul id="dropzone-previews" class="dropzone-previews"></ul>
@@ -390,9 +390,15 @@
           <c:set var="scriptId" value="${qascript.scriptId}"/>
           <div class="row">
             <form:radiobutton path="scriptId" property="scriptId" value="${scriptId}" id="rad_${scriptId}"/>
-            <label class="question" for="rad_${scriptId}">
-                ${qascript.shortName}
-            </label>
+            <c:choose>
+              <c:when test="${qascript.active}">
+                <label class="question" for="rad_${scriptId}">${qascript.shortName}</label>
+                <span style="color: green;"><strong>(<spring:message code="label.qascript.isActive"/>)</strong></span>
+              </c:when>
+              <c:otherwise>
+                <label for="rad_${scriptId}">${qascript.shortName}</label>
+              </c:otherwise>
+            </c:choose>
             <span> -
                 <a href="/scripts/${scriptId}" title="label.qascript.view">
                     ${qascript.fileName}
