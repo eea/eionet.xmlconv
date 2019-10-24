@@ -6,13 +6,21 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import net.xqj.basex.bin.H;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,9 +29,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
+import java.net.URL;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -81,5 +96,23 @@ public class HttpFileManagerTest {
     @After
     public void tearDown() throws Exception {
         manager.closeQuietly();
+    }
+
+  //  @Test
+    public void testFollowUrlRedirectIfNeededFor301Returned() throws Exception {
+        URL toTestUrl = new URL("http://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
+        URL spyToTestUrl = Mockito.spy(toTestUrl);
+        URL httpsUrl = new URL("https://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
+        CloseableHttpClient closeableHttpClient = mock(CloseableHttpClient.class);
+         HttpFileManager httpFileManager = new HttpFileManager(closeableHttpClient);
+
+
+        HttpURLConnection mockHttpConnection = mock(HttpURLConnection.class);
+        when(spyToTestUrl.openConnection()).thenReturn(mockHttpConnection);
+        when(mockHttpConnection.getResponseCode()).thenReturn(301);
+        when(mockHttpConnection.getHeaderField(any(String.class))).thenReturn("https://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
+
+         toTestUrl = httpFileManager.followUrlRedirectIfNeeded(toTestUrl);
+        assertThat(spyToTestUrl.toString(),equalTo(httpsUrl));
     }
 }

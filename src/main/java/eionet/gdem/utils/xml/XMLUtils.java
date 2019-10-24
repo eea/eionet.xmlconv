@@ -2,11 +2,17 @@ package eionet.gdem.utils.xml;
 
 import com.ximpleware.*;
 
+import java.io.PrintWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class XMLUtils {
+
 
     /**
      * Returns a string after an XPATH expression evaluation.
-     * @param xml Input XML
+     *
+     * @param xml   Input XML
      * @param xpath Xpath Xpath expression
      * @return Result as string
      */
@@ -32,5 +38,23 @@ public class XMLUtils {
             // do nothing
         }
         return "";
+    }
+
+    public static String removeEmptyElements(String xml) {
+        String[] replaceEmptyElementsFromXmlRegex = new String[]{
+                // This will remove empty elements that look like <ElementName/>
+                "\\s*<\\w+/>",
+                // This will remove empty elements that look like <ElementName></ElementName>
+                "\\s*<\\w+></\\w+>",
+                // This will remove empty elements that look like
+                // <ElementName>
+                // </ElementName>
+                "\\s*<\\w+>\n*\\s*</\\w+>"
+        };
+        for (String pattern : replaceEmptyElementsFromXmlRegex) {
+            Matcher matcher = Pattern.compile(pattern).matcher(xml);
+            xml = matcher.replaceAll("");
+        }
+        return xml;
     }
 }

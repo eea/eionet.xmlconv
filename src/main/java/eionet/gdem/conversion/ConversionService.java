@@ -24,18 +24,22 @@
 
 package eionet.gdem.conversion;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.dto.ConversionResultDto;
+import eionet.gdem.dto.ConvertedFileDto;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.xml.XMLUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +56,9 @@ public class ConversionService extends RemoteService implements ConversionServic
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(ConversionService.class);
+
+
+
 
     /**
      * Default constructor
@@ -133,20 +140,35 @@ public class ConversionService extends RemoteService implements ConversionServic
      */
     @Override
     public Hashtable convertDD_XML(String sourceURL) throws XMLConvException {
-
         if (!isHTTPRequest()) {
             LOGGER.info("ConversionService.convertDD_XML method called through XML-RPC: " + sourceURL);
         }
-
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
         ConversionResultDto result = convertDDXMLMethod.convertDD_XML(sourceURL);
         return ConvertDDXMLMethod.convertExcelResult(result);
     }
 
+
+    /**
+     * Does the same as {@link #convertDD_XML(String)} but also removes empty Elements from the Resulting XML files
+     * **/
+    @Override
+    public Hashtable<String, Object> convertDD_XMLremoveEmptyElems(String sourceURL) throws XMLConvException {
+        if (!isHTTPRequest()) {
+            LOGGER.info("ConversionService.convertDD_XML method called through XML-RPC: " + sourceURL);
+        }
+        ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
+        setGlobalParameters(convertDDXMLMethod);
+        ConversionResultDto result = convertDDXMLMethod.convertDD_XML(sourceURL);
+        this.removeEmptyCellsFromXMLfiles(result.getConvertedFiles());
+        return ConvertDDXMLMethod.convertExcelResult(result);
+
+    }
+
+
     @Override
     public ConversionResultDto convertDD_XML(String sourceURL, boolean split, String sheetName) throws XMLConvException {
-
         ConversionResultDto result = null;
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
@@ -166,14 +188,27 @@ public class ConversionService extends RemoteService implements ConversionServic
      */
     @Override
     public Hashtable convertDD_XML_split(String sourceURL, String sheetParam) throws XMLConvException {
-
         if (!isHTTPRequest()) {
             LOGGER.info("ConversionService.convertDD_XML_split method called through XML-RPC: " + sourceURL);
         }
-
         ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
         setGlobalParameters(convertDDXMLMethod);
         ConversionResultDto result = convertDDXMLMethod.convertDD_XML_split(sourceURL, sheetParam);
+        return ConvertDDXMLMethod.convertExcelResult(result);
+    }
+
+    /**
+     * Does the same as {@link #convertDD_XML_split(String, String)} but also removes empty elements from the resulting XML files.
+     * ***/
+    @Override
+    public Hashtable<String, Object> convertDD_XML_split_removeEmptyElems(String sourceURL, String sheetParam) throws XMLConvException {
+        if (!isHTTPRequest()) {
+            LOGGER.info("ConversionService.convertDD_XML_split method called through XML-RPC: " + sourceURL);
+        }
+        ConvertDDXMLMethod convertDDXMLMethod = new ConvertDDXMLMethod();
+        setGlobalParameters(convertDDXMLMethod);
+        ConversionResultDto result = convertDDXMLMethod.convertDD_XML_split(sourceURL, sheetParam);
+        this.removeEmptyCellsFromXMLfiles(result.getConvertedFiles());
         return ConvertDDXMLMethod.convertExcelResult(result);
     }
 
@@ -230,6 +265,33 @@ public class ConversionService extends RemoteService implements ConversionServic
         ListConversionsMethod method = new ListConversionsMethod();
         return method.getXMLSchemas();
     }
+
+
+    private void removeEmptyCellsFromXMLfiles(List<ConvertedFileDto> convertedFiles) throws XMLConvException {
+        String existingContents;
+        for (ConvertedFileDto fileDto: convertedFiles
+        ) {
+            try {
+                existingContents  = new String(Files.readAllBytes(Paths.get(fileDto.getFilePath())));
+            } catch (IOException e) {
+                LOGGER.error("Could not read file from Path:"+fileDto.getFilePath());
+                throw new XMLConvException(e);
+            }
+            existingContents = XMLUtils.removeEmptyElements(existingContents);
+            PrintWriter prw= null;
+            try {
+                prw = new PrintWriter(fileDto.getFilePath());
+                prw.println(existingContents);
+
+            } catch (FileNotFoundException e) {
+                LOGGER.error("Could not find File:"+fileDto.getFilePath());
+                throw new XMLConvException(e);
+            }finally{
+                prw.close();
+            }
+        }
+    }
+
 
     /**
      * Converts result

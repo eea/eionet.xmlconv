@@ -8,6 +8,9 @@ import eionet.gdem.api.errors.EmptyParameterException;
 import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.conversion.ConversionService;
+import eionet.gdem.conversion.ConvertDDXMLMethod;
+import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.qa.XQueryService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -202,6 +205,44 @@ public class QaController {
         List<LinkedHashMap<String,String>> results = qaService.listQAScripts(schema, active);
        
         return new ResponseEntity<List<LinkedHashMap<String,String>>>(results, HttpStatus.OK);
+    }
+
+    /**
+     * Edpoint to test xmlrpc
+     *
+     **/
+    @RequestMapping(value = "/qarpc", method = RequestMethod.GET)
+    @ResponseBody
+    public List<QaResultsWrapper> analyzeXMlFilesXMlRpc(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "file", required = false, defaultValue = "true") String file) throws XMLConvException, BadRequestException {
+
+        HashMap<String, String> fileLinksAndSchemas =new LinkedHashMap<>();
+        fileLinksAndSchemas.put(file,schema);
+        XQueryService xqService = new XQueryService();
+        Hashtable table = new Hashtable();
+        try {
+            for (Map.Entry<String, String> entry : fileLinksAndSchemas.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (key != "" && value != "") {
+                    Vector files = new Vector();
+                    files.add(key);
+                    table.put(value, files);
+                }
+            }
+            Vector jobIdsAndFileUrls = xqService.analyzeXMLFiles(table);
+            List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
+            for (int i = 0; i < jobIdsAndFileUrls.size(); i++) {
+                Vector<String> KeyValuePair = (Vector<String>) jobIdsAndFileUrls.get(i);
+                QaResultsWrapper qaResult = new QaResultsWrapper();
+                qaResult.setJobId(KeyValuePair.get(0));
+                qaResult.setFileUrl(KeyValuePair.get(1));
+                results.add(qaResult);
+            }
+
+            return results;
+        } catch (XMLConvException ex) {
+            throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
+        }
     }
 
 

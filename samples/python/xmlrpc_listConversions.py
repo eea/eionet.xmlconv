@@ -1,20 +1,23 @@
 #   Script for testing XMLCONV Conversion Service
 #   listConversions
 #
-#   Author: Enriko Kasper
+#   Author: VLF
 
-import xmlrpclib
+import xmlrpc.client
 
-#server_url="http://converters.eionet.eu.int/RpcRouter"
-server_url="http://80.235.29.171:8080/xmlconv/RpcRouter"
-server = xmlrpclib.Server(server_url)
+server = xmlrpc.client.ServerProxy("http://localhost:8080/RpcRouter")
+
 try:
-	#file parameter value encoded as Base64 byte array
+	# file parameter value encoded as Base64 byte array
 	param1 = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd"
 
-	method_result=server.ConversionService.listConversions(param1)
+	method_result = server.ConversionService.listConversions(param1)
 
-except xmlrpclib.ProtocolError, p:
-         err_code=p.errcode    #handle error according to error code
+except xmlrpc.client.ProtocolError as err:
+	print("A protocol error occurred")
+	print("URL: %s" % err.url)
+	print("HTTP/HTTPS headers: %s" % err.headers)
+	print("Error code: %d" % err.errcode)
+	print("Error message: %s" % err.errmsg)
 
-print method_result
+print(method_result)

@@ -2,6 +2,8 @@ package eionet.gdem.qa.engines;
 
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.http.FollowRedirectException;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
@@ -21,6 +23,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.net.URL;
 
 import static java.util.Objects.isNull;
 
@@ -53,6 +56,11 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
                 }
             }
             proc = new QueryProcessor(scriptSource, Properties.queriesFolder + "/script", context);
+
+            HttpFileManager fileManager = new HttpFileManager();
+            URL url = fileManager.followUrlRedirectIfNeeded(new URL(script.getSrcFileUrl()));
+            script.setSrcFileUrl(url.toString());
+            LOGGER.info("Script Source URL:"+script.getSrcFileUrl());
             proc.bind("source_url", script.getSrcFileUrl(), "xs:string");
 
 //            proc.bind("base_url", Properties.gdemURL + Properties.contextPath , "xs:string");
@@ -81,9 +89,9 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
 
             //logger.info("proc info: " + proc.info());
             //logger.info( new String(A.buffer() , "UTF-8" ));
-        } catch (QueryException | IOException e) {
+        } catch (QueryException | IOException | FollowRedirectException e) {
             LOGGER.error("Error executing BaseX xquery script : " + e.getMessage());
-            throw new XMLConvException(e.getMessage());
+            throw new XMLConvException(e.getMessage(),e.getCause());
         } finally {
             if (!isNull(proc))  {
                 proc.close();

@@ -38,6 +38,12 @@ public class SchemasController {
     private SchemasService schemasService;
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemasController.class);
 
+    class schemaViewHelper{
+        Model model;
+        SpringMessages errors;
+        SchemaForm form;
+
+    }
     @Autowired
     public SchemasController(MessageService messageService, SchemasService schemasService) {
         this.messageService = messageService;
@@ -134,8 +140,8 @@ public class SchemasController {
     }
 
     @GetMapping("/{schemaId}")
-    public String show(@PathVariable String schemaId, @ModelAttribute("form") SchemaForm form,
-                       Model model, HttpServletRequest request, HttpSession session) {
+    public String displayBySchemaId(@PathVariable String schemaId, @ModelAttribute("form") SchemaForm form,
+                                    Model model, HttpServletRequest request, HttpSession session) {
         SpringMessages errors = new SpringMessages();
 
         String user = (String) session.getAttribute("user");
@@ -176,6 +182,15 @@ public class SchemasController {
         model.addAttribute(SpringMessages.ERROR_MESSAGES, errors);
         return "/schemas/view";
     }
+
+
+    @GetMapping("/one")
+    public String displayBySchemaUrl(@RequestParam(value="schemaUrl") String schemaUrl, @ModelAttribute("form") SchemaForm form,
+                                     Model model, HttpServletRequest request, HttpSession session) {
+
+        return this.displayBySchemaId(schemaUrl,form,model,request,session);
+    }
+
 
     @GetMapping("/{schemaId}/edit")
     public String edit(@PathVariable String schemaId, @ModelAttribute("form") SchemaForm form,
@@ -302,4 +317,6 @@ public class SchemasController {
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/schemas";
     }
+
+
 }

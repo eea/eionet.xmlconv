@@ -4,6 +4,7 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.utils.Utils;
+import net.xqj.basex.bin.L;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ public class BaseXServerImpl extends QAScriptEngineStrategy {
             }
             try (BaseXClient session = new BaseXClient(basexServerHost, port, basexServerUser, basexServerPassword)) {
                 try (BaseXClient.Query query = session.query(input)) {
+                    LOGGER.info("Script Source URL:"+script.getSrcFileUrl());
                     query.bind("$source_url", script.getSrcFileUrl());
                     query.bind("$base_url", Properties.gdemURL + Properties.contextPath, "xs:string");
                     while (query.more()) {

@@ -1,21 +1,25 @@
 #   Script for testing XMLCONV Conversion Service
 #   convert XML
 #
-#   Author: Enriko Kasper
+#   Author: VLF
 
-import xmlrpclib
+import xmlrpc.client
 
-#server_url="http://converters.eionet.eu.int/RpcRouter"
-server_url="http://80.235.29.171:8080/xmlconv/RpcRouter"
-server = xmlrpclib.Server(server_url)
+# server_url="http://converters.eionet.eu.int/RpcRouter"
+server = xmlrpc.client.ServerProxy("http://localhost:8080/RpcRouter")
+
 try:
-	param1  = "https://svn.eionet.europa.eu/repositories/Reportnet/Dataflows/HabitatsDirectiveArticle17/xmlfiles/general-instancefile.xml"
-	#convert_id parameter
-	param2="26"
+    param1 = "https://svn.eionet.europa.eu/repositories/Reportnet/Dataflows/HabitatsDirectiveArticle17/xmlfiles/general-instancefile.xml"
+    # convert_id parameter
+    param2 = "26"
 
-	method_result=server.ConversionService.convert(param1,param2)
+    method_result = server.ConversionService.convert(param1, param2)
 
-except xmlrpclib.ProtocolError, p:
-         err_code=p.errcode    #handle error according to error code
+except xmlrpc.client.ProtocolError as err:
+    print("A protocol error occurred")
+    print("URL: %s" % err.url)
+    print("HTTP/HTTPS headers: %s" % err.headers)
+    print("Error code: %d" % err.errcode)
+    print("Error message: %s" % err.errmsg)
 
-print method_result
+print(method_result)

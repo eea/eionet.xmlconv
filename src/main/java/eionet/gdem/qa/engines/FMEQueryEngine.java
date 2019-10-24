@@ -86,12 +86,16 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 if (response.getStatusLine().getStatusCode() == 200) { // Valid Result: 200 HTTP status code
                 	HttpEntity entity = response.getEntity();
                     // We get an InputStream and copy it to the 'result' OutputStream
+                    LOGGER.info(FMEQueryEngine.class.getName() +": Response 200 OK From FME SERVER in :"+ count +"retry");
                     IOUtils.copy(entity.getContent(), result);
                 } else { // NOT Valid Result
                     // If the last retry fails a BLOCKER predefined error is returned
                     if (count + 1 == retries){
-                    	IOUtils.copy(IOUtils.toInputStream("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>", "UTF-8"), result);
+                        LOGGER.error(FMEQueryEngine.class.getName() +" Failed for last Retry  number :"+ count );
+
+                        IOUtils.copy(IOUtils.toInputStream("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>", "UTF-8"), result);
                     } else {                    	
+
                         LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString() + "-- #Retry: " + count);
                         Thread.sleep(timeoutMilisecs); // The thread is forced to wait 'timeoutMilisecs' before trying to retry the FME call
                         throw new Exception("The application has encountered an error. The FME QC process request failed.");
@@ -99,9 +103,9 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 }
                 count = retries;
             } catch (SocketTimeoutException e) { // Timeout Exceeded
-                LOGGER.warn("The FME request has exceeded the allotted timeout. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource());
+                LOGGER.error("Retries = "+count+"\n The FME request has exceeded the allotted timeout of :"+Properties.fmeTimeout+" -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource());
             } catch (Exception e) {
-                LOGGER.warn("FME request error: " + e.getMessage());
+                LOGGER.error("Generic Exception handling. FME request error: " + e.getMessage());
             } finally {
                 if (runMethod != null) {
                     runMethod.releaseConnection();

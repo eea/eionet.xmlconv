@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?><report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xml:lang="en" xsi:noNamespaceSchemaLocation="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd">
+	<member-state countrycode="EE" label="Member state">Estonia</member-state>
+	<legal-framework label="1. Legal Framework">
+		<legal-texts label="List of legal texts that transpose the Directive at national and/or regional level (Can be replaced by Internet address where the text is published and a short title)">Conversion works!</legal-texts>
+	</legal-framework>
+
+	<regional label="2. State of designation of Natura 2000">
+		<region desc="Alpine" label="Biogeographic region or marine region">ALP</region>
+		<community-importance label="Sites of community importance">
+			<total label="Total">
+				<number label="Number of sites of community importance">12</number>
+				<area label="Area of sites of community importance (km2)">122</area>
+			</total>
+			<marine label="Marine">
+				<number label="Number of sites of community importance having a marine component">2ÜÕ</number>
+				<area label="Area of sites of community importance having a marine component (km2)">ÖÄ</area>
+			</marine>
+		</community-importance>
+		<areas-of-conservation label="Special areas of conservation">
+			<total label="Total">
+				<number label="Number of special areas of conservation">šž</number>
+				<area label="Area of special areas of conservation (km2)">ŠŽ</area>
+			</total>
+			<marine label="Marine">
+				<number label="Number of special areas of conservation having a marine component">2</number>
+				<area label="Area of special areas of conservation having a marine component (km2)">2</area>
+			</marine>
+		</areas-of-conservation>
+  </regional>
+
+	<regional label="2. State of designation of Natura 2000">
+		<region desc="Atlantic" label="Biogeographic region or marine region">ATL</region>
+		<community-importance label="Sites of community importance">
+			<total label="Total">
+				<number label="Number of sites of community importance">22221212121</number>
+				<area label="Area of sites of community importance (km2)">222222</area>
+			</total>
+			<marine label="Marine">
+				<number label="Number of sites of community importance having a marine component">2212121</number>
+				<area label="Area of sites of community importance having a marine component (km2)">212121</area>
+			</marine>
+		</community-importance>
+		<areas-of-conservation label="Special areas of conservation">
+			<total label="Total">
+				<number label="Number of special areas of conservation">22222</number>
+				<area label="Area of special areas of conservation (km2)">2222</area>
+			</total>
+			<marine label="Marine">
+				<number label="Number of special areas of conservation having a marine component">221212</number>
+				<area label="Area of special areas of conservation having a marine component (km2)">2121</area>
+			</marine>
+		</areas-of-conservation>
+  </regional>
+
+	<regional label="2. State of designation of Natura 2000">
+		<region desc="Boreal" label="Biogeographic region or marine region">BOR</region>
+		<community-importance label="Sites of community importance">
+			<total label="Total">
+				<number label="Number of sites of community importance">2333</number>
+				<area label="Area of sites of community importance (km2)">23333</area>
+			</total>
+			<marine label="Marine">
+				<number label="Number of sites of community importance having a marine component">2</number>
+				<area label="Area of sites of community importance having a marine component (km2)">2</area>
+			</marine>
+		</community-importance>
+		<areas-of-conservation label="Special areas of conservation">
+			<total label="Total">
+				<number label="Number of special areas of conservation">2333</number>
+				<area label="Area of special areas of conservation (km2)">2333</area>
+			</total>
+			<marine label="Marine">
+				<number label="Number of special areas of conservation having a marine component">2</number>
+				<area label="Area of special areas of conservation having a marine component (km2)">2</area>
+			</marine>
+		</areas-of-conservation>
+  </regional>
+
+	<management-tools label="3. Management tools - Art. 6(1)">
+		<management-plans label="3.1 Management plans and Management bodies">
+			<adopted-number label="Number of sites for which comprehensive management plans have been adopted"/>
+			<preparation-number label="Number of sites for which comprehensive management plans are in preparation (optional)">2</preparation-number>
+			<created-number label="Number of sites for which management bodies have been established">2</created-number>
+			<plans-list label="List of sites">
+				<sitecode label="Site code">12</sitecode>
+				<sitename label="Site name">121</sitename>
+				<type-management label="Title of comprehensive management plan and year adopted">2121dfsdfs</type-management>
+				<preparation label="Comprehensive management plan in preparation?"/>
+				<type-management-body label="Title of management body and year established">21</type-management-body>
+			</plans-list>
+		<plans-list label="List of sites">
+				<sitecode label="Site code">12</sitecode>
+				<sitename label="Site name">121</sitename>
+				<type-management label="Title of comprehensive management plan and year adopted">2121sdfsf</type-management>
+				<preparation label="Comprehensive management plan in preparation?"/>
+				<type-management-body label="Title of management body and year established">21</type-management-body>
+			</plans-list></management-plans>
+		<other-planning label="3.2 Other territorial planning instruments">
+			<included-number label="Number of sites which do not have a comprehensive management plan but for which nature conservation objectives have been included in the relevant territorial planning instruments">12</included-number>
+			<other-list label="List of sites">
+				<sitecode label="Site code">23</sitecode>
+				<sitename label="Site name">12321</sitename>
+				<type-plan label="Title and year of territorial planning instrument">3123</type-plan>
+				<coverage label="% site covered by instrument">100</coverage>
+			</other-list>
+		</other-planning>
+		<non-planning label="3.3 Non-territorial planning instruments">
+			<number-non-plan label="Number of sites for which nature conservation objectives are not defined in a territorial planning instrument (nor in a comprehensive management plan) but where other management instruments have been put in place">12</number-non-plan>
+			<not-plan-list label="List of sites">
+				<sitecode label="Site code">12</sitecode>
+				<sitename label="Site name"/>
+				<type-instrument label="Title and year of non-territorial planning instrument"/>
+				<coverage label="% of site covered by instrument">100</coverage>
+			</not-plan-list>
+		<not-plan-list label="List of sites">
+				<sitecode label="Site code">12</sitecode>
+				<sitename label="Site name"/>
+				<type-instrument label="Title and year of non-territorial planning instrument"/>
+				<coverage label="% of site covered by instrument">100</coverage>
+			</not-plan-list></non-planning>
+	</management-tools>
+	<conservation-measures label="4. Conservation measures - Art. 6(1) - and evaluation of their impact on the conservation status - Art. 17(1)">
+		<description label="General description of the main conservation measures taken (overview at national level, not detailed descriptions site by site)">23</description>
+		<impact label="Impact of those measures on conservation status -general overview at national level, indicating species or habitat types affected by the measures, impact on conservation status and area concerned. (optional)">1213</impact>
+		<published label="Published reports and/or websites (optional)">qq</published>
+	</conservation-measures>
+	<deterioration-measures label="5. Measures to avoid deterioration of habitat types/habitats of species and disturbance of species - Art. 6(2)">
+		<description label="General description of the main measures taken (overview at national level, not detailed descriptions site by site)"/>
+		<published label="Published reports and/or websites (optional)"/>
+	</deterioration-measures>
+	<plan-measures label="6. Measures taken in relation to approval of plans and projects - Art. 6(3,4)">
+		<necessary-number label="Number of project/plans for which compensation measures were necessary">1</necessary-number>
+		<requested-number label="Number of project/plans for which a Commission opinion was requested">2</requested-number>
+		<necessary-list label="List of sites affected by projects/plans for which compensation measures were necessary">
+			<sitecode label="Site code">2</sitecode>
+			<sitename label="Site name"/>
+			<project-type label="Title and year of project/plan"/>
+			<commission-opinion label="Was the Commission opinion requested?"/>
+		</necessary-list>
+		<impact label="Impact of projects in need of compensation measures on conservation status (general overview at national level indicating species or habitat types affected by the projects, impact of the projects and of the compensation measures, separately if possible, area concerned and whether a followup of the compensation measures was carried out) - optional">121</impact>
+	</plan-measures>
+	<financing label="7. Financing - Art 8 (optional)">
+		<estimated-average-annual-costs currency="EUR" label="Estimated total annual costs for managing Natura 2000 sites during the reporting period" year="2001">12</estimated-average-annual-costs>
+		<estimated-average-annual-costs currency="EUR" label="Estimated total annual costs for managing Natura 2000 sites during the reporting period" year="2002">12</estimated-average-annual-costs>
+		<estimated-average-annual-costs currency="EUR" label="Estimated total annual costs for managing Natura 2000 sites during the reporting period" year="2003">12</estimated-average-annual-costs>
+		<estimated-average-annual-costs currency="EUR" label="Estimated total annual costs for managing Natura 2000 sites during the reporting period" year="2004">12</estimated-average-annual-costs>
+		<estimated-average-annual-costs currency="EUR" label="Estimated total annual costs for managing Natura 2000 sites during the reporting period" year="2005">12</estimated-average-annual-costs>
+		<estimated-average-annual-costs currency="EUR" label="Estimated total annual costs for managing Natura 2000 sites during the reporting period" year="2006">12</estimated-average-annual-costs>
+		<measures label="Measures undertaken for the maintenance or re-establishment at a favourable conservation status of the PRIORITY habitat types and PRIORITY species - Art. 8(2)"/>
+		<estimated-annual-costs currency="EUR" label="Estimated annual costs for measures covered by Art. 8(2)" year="2001">12</estimated-annual-costs>
+		<estimated-annual-costs currency="EUR" label="Estimated annual costs for measures covered by Art. 8(2)" year="2002">12</estimated-annual-costs>
+		<estimated-annual-costs currency="EUR" label="Estimated annual costs for measures covered by Art. 8(2)" year="2003">12</estimated-annual-costs>
+		<estimated-annual-costs currency="EUR" label="Estimated annual costs for measures covered by Art. 8(2)" year="2004">12</estimated-annual-costs>
+		<estimated-annual-costs currency="EUR" label="Estimated annual costs for measures covered by Art. 8(2)" year="2005">12</estimated-annual-costs>
+		<estimated-annual-costs currency="EUR" label="Estimated annual costs for measures covered by Art. 8(2)" year="2006">12</estimated-annual-costs>
+		<cofinancing-by-eu currency="EUR" label="Co-financing provided by the EU for measures covered by Art. 8(2)"/>
+		<cofinancing-list label="List of co-financed measures concerning priority species and priority habitat types">
+			<source label="Co-financing source"/>
+			<co-financing currency="EUR" label="Amount">12</co-financing>
+			<measures label="Project title and year"/>
+			<published label="Published reports or websites"/>
+		</cofinancing-list>
+	<cofinancing-list label="List of co-financed measures concerning priority species and priority habitat types">
+			<source label="Co-financing source"/>
+			<co-financing currency="EUR" label="Amount">12</co-financing>
+			<measures label="Project title and year"/>
+			<published label="Published reports or websites"/>
+		</cofinancing-list></financing>
+	<coherence-measures label="8. Measures taken to ensure coherence of the Network - Art 10 (optional)">
+		<description label="General description of the main measures taken (overview at national level, not detailed descriptions site by site)"/>
+		<published label="Published reports or websites"/>
+	</coherence-measures>
+	<surveillance-system label="9. Measures taken to establish a surveillance system - Art 11">
+		<description label="Main measures undertaken to establish a system to monitor the conservation status of natural habitats and species referred to in Art.2 of the directive"/>
+		<published label="Published reports or websites (optional)"/>
+	</surveillance-system>
+	<protection-measures label="10. Measures taken to ensure the protection of species (Arts. 12 to 16)">
+		<requisites label="Requisite measures taken to establish a system of strict protection of Annex IV species.">
+			<measures label="Protection measures">2332</measures>
+			<published label="Published reports or websites (optional)">1</published>
+			<species-names label="Species names/groups">12312</species-names>
+		</requisites>
+		<requisites label="Requisite measures taken to establish a system of strict protection of Annex IV species.">
+			<measures label="Protection measures">2332</measures>
+			<published label="Published reports or websites (optional)">1</published>
+			<species-names label="Species names/groups">12312</species-names>
+		</requisites><control-systems label="Control systems for the incidental capture and killing of species (Art. 12(4))">
+			<control-system label="Control system">12312</control-system>
+			<impact label="How does the control system ensure that there will not be a negative impact on the species?">12321</impact>
+			<species-names label="Species names">1231212
+bufo bufon
+ahikito</species-names>
+		</control-systems>
+		<control-systems label="Control systems for the incidental capture and killing of species (Art. 12(4))">
+			<control-system label="Control system">12312</control-system>
+			<impact label="How does the control system ensure that there will not be a negative impact on the species?">12321</impact>
+			<species-names label="Species names">1231212
+Abies grandis
+Abies grandis1
+Abies grandis2</species-names>
+		</control-systems><species-taking label="General main measures established to deal with the taking/exploitation in the wild of specimens of wild species of Annex V (Art. 14)">
+			<measures label="General main measures">12312</measures>
+			<species-names label="Species names">12312</species-names>
+		</species-taking>
+		<indiscriminate-means label="Types of controls to ensure that indiscriminate means of capture and killing of the species of Annex IVa) and Va) are not used (Art. 15)">
+			<type-of-control label="Type of control">321</type-of-control>
+			<species-names label="Species names">123</species-names>
+		</indiscriminate-means>
+	</protection-measures>
+	<supporting-measures label="11. Supporting measures and additional provisions (optional)">
+		<research label="Research (Art. 18)">
+			<main-efforts label="General description of the main efforts and results obtained (identify major projects)">12</main-efforts>
+			<published label="Published reports or websites">12</published>
+		</research>
+		<reintroduction-of-species label="(Re-)introduction of species (Art 22.a)">
+			<species-name label="Species name">1</species-name>
+			<species-author label="Species author (year)">2</species-author>
+			<period label="Re-introduction period">2010</period>
+			<successful label="Was the re-introduction successful?"/>
+			<fcs label="Is the species at FCS?"/>
+		</reintroduction-of-species>
+		<introduction-of-nonnative-species label="Deliberate introduction of non-native species (Art 22.b)">
+			<species-name label="Species name"/>
+			<species-author label="Species author (year)">qqq</species-author>
+			<habitats label="Annex I habitat types concerned by introduction"/>
+			<species-concerned label="Annexes II, IV or V species concerned"/>
+			<period label="Introduction period">2000</period>
+			<measures label="Regulation measures taken to avoid threats/damages"/>
+			<description label="General description of the main measures taken"/>
+		</introduction-of-nonnative-species>
+		<introduction-of-nonnative-species label="Deliberate introduction of non-native species (Art 22.b)">
+			<species-name label="Species name"/>
+			<species-author label="Species author (year)">qqq</species-author>
+			<habitats label="Annex I habitat types concerned by introduction"/>
+			<species-concerned label="Annexes II, IV or V species concerned"/>
+			<period label="Introduction period">2000</period>
+			<measures label="Regulation measures taken to avoid threats/damages"/>
+			<description label="General description of the main measures taken"/>
+		</introduction-of-nonnative-species><education label="Education and information (Art. 22.c)">
+			<measures label="General description of the main measures taken">12</measures>
+			<published label="Published reports or websites">12</published>
+		</education>
+	</supporting-measures>
+</report>
