@@ -1,5 +1,6 @@
 package eionet.gdem.security.acl;
 
+import eionet.acl.AccessController;
 import eionet.acl.PersistenceFile;
 import eionet.acl.SignOnException;
 import eionet.gdem.web.spring.admin.users.Group;
@@ -45,7 +46,7 @@ public class AccessListService {
         for (Group formGroup : formGroups) {
             groupsTable.put(formGroup.getName(), new Vector<>(formGroup.getUsers()));
         }
-        PersistenceFile persistenceFile = new PersistenceFile();
-        persistenceFile.writeGroups(groupsTable);
+        WriteXMLFile writeXMLFile = new WriteXMLFile();
+        writeXMLFile.writeGroups(AccessController.getAclProperties().getFileLocalgroups(), groupsTable);
     }
 }
