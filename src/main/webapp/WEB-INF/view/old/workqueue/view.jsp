@@ -219,6 +219,6 @@
 </div>
 <script>
   $("#selectAll").click(function () {
-    $('input:checkbox').not(this).prop('checked', this.checked);
+    $('input[type="checkbox"]').prop("checked", true);
   });
 </script>
