@@ -7,7 +7,10 @@ import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.configuration.CopyAclFiles;
+import eionet.gdem.exceptions.AclLibraryAccessControllerModifiedException;
+import eionet.gdem.exceptions.AclPropertiesInitializationException;
 import eionet.gdem.security.acl.AccessListService;
+import eionet.gdem.services.AclOperationsService;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.propertyplaceholderresolver.CircularReferenceException;
@@ -42,59 +45,19 @@ public class UsersController {
     private AccessListService accessListService;
 
 
-    //@Value("${owner.permission}")
-    private String  ownerPermission ;
-    //   @Value("${anonymous.access}")
-    private String  anonymousAccess ;
 
-    //  @Value("${authenticated.access}")
-    private String  authenticatedAccess ;
-
-    //  @Value("${defaultdoc.permissions}")
-    private String  defaultdocPermissions ;
-
-    //  @Value("${persistence.provider}")
-    private String  persistenceProvider ;
-
-    // @Value("${initial.admin}")
-    private String  initialAdmin ;
-
-    //  @Value("${file.aclfolder}")
-    private String  fileAclfolder ;
-
-    //  @Value("${file.localusers}")
-    private String  fileLocalusers ;
-
-    //@Value("${file.localgroups}")
-    private String  fileLocalgroups ;
-
-    //   @Value("${file.permissions}")
-    private String  filePermissions ;
-
-    // @Value("${acl.db.driver}")
-    private String  dbDriver ;
-
-    // @Value("${acl.db.url}")
-    private String  dbUrl ;
-
-    // @Value("${acl.db.user}")
-    private String  dbUser ;
-
-    //  @Value("${acl.db.pwd}")
-    private String  dbPwd ;
-
-
-    @Autowired
-    SpringApplicationContext springApplicationContext;
-
-    @Autowired
     ConfigurationPropertyResolver configurationPropertyResolver;
+    AclOperationsService aclOperationsService;
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersController.class);
 
     @Autowired
-    public UsersController(MessageService messageService, AccessListService accessListService) {
+    public UsersController(MessageService messageService, AccessListService accessListService, ConfigurationPropertyResolver configurationPropertyResolver, AclOperationsService aclOperationsService) {
         this.messageService = messageService;
         this.accessListService = accessListService;
+        this.configurationPropertyResolver = configurationPropertyResolver;
+        this.aclOperationsService = aclOperationsService;
     }
 
     @GetMapping
@@ -112,41 +75,14 @@ public class UsersController {
     }
 
     @PostMapping
-    public String submit(UsersForm form, HttpSession httpSession) throws SignOnException, UnresolvedPropertyException, CircularReferenceException {
+    public String submit(UsersForm form, HttpSession httpSession) throws SignOnException, UnresolvedPropertyException, CircularReferenceException, AclLibraryAccessControllerModifiedException, AclPropertiesInitializationException {
         String user = (String) httpSession.getAttribute("user");
         if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_ADMIN_PATH, "u")) {
             throw new AccessDeniedException(messageService.getMessage("label.autorization.config.update"));
         }
         List<Group> groups = form.getGroups();
         accessListService.writeGroups(groups);
-
-        AclProperties aclProperties = new AclProperties();
-        aclProperties.setOwnerPermission(configurationPropertyResolver.resolveValue("owner.permission"));
-        aclProperties.setAnonymousAccess(configurationPropertyResolver.resolveValue("anonymous.access"));
-        aclProperties.setAuthenticatedAccess(configurationPropertyResolver.resolveValue("authenticated.access"));
-        aclProperties.setDefaultdocPermissions(configurationPropertyResolver.resolveValue("defaultdoc.permissions"));
-        aclProperties.setPersistenceProvider(configurationPropertyResolver.resolveValue("persistence.provider"));
-        aclProperties.setInitialAdmin(configurationPropertyResolver.resolveValue("initial.admin"));
-        aclProperties.setFileAclfolder(configurationPropertyResolver.resolveValue("file.aclfolder"));
-        aclProperties.setFileLocalgroups(configurationPropertyResolver.resolveValue("file.localgroups"));
-        aclProperties.setFileLocalusers(configurationPropertyResolver.resolveValue("file.localusers"));
-        aclProperties.setFilePermissions(configurationPropertyResolver.resolveValue("file.permissions"));
-        aclProperties.setDbDriver(configurationPropertyResolver.resolveValue("db.driver"));
-        aclProperties.setDbUrl(configurationPropertyResolver.resolveValue("db.url"));
-        aclProperties.setDbUser(configurationPropertyResolver.resolveValue("db.user"));
-        aclProperties.setDbPwd(configurationPropertyResolver.resolveValue("db.pwd"));
-
-        try {
-            AccessController accessController = new AccessController(aclProperties);
-            Method initAclsMethod = AccessController.class.getDeclaredMethod("initAcls");
-            initAclsMethod.setAccessible(true);
-            initAclsMethod.invoke(accessController);
-            initAclsMethod.setAccessible(false);
-        } catch (Exception ex){
-            LOGGER.error("Could not refresh acl in memory");
-
-        }
-
+        this.aclOperationsService.reinitializeAclRights();
         return "redirect:/admin/users";
     }
 
