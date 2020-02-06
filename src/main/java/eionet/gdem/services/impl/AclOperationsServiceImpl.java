@@ -68,7 +68,7 @@ public class AclOperationsServiceImpl implements AclOperationsService {
         }
     }
 
-    protected AccessController getAclLibraryAccessControllerInstance(AclProperties aclProperties) throws AclAccessControllerInitializationException, AclPropertiesInitializationException {
+    protected AccessController getAclLibraryAccessControllerInstance(AclProperties aclProperties) throws AclAccessControllerInitializationException {
         try {
             AccessController accessController = new AccessController(this.getAclProperties());
             return accessController;

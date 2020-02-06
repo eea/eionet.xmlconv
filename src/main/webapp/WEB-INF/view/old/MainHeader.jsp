@@ -22,20 +22,19 @@
       <%--<a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>--%>
       <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
       <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
-<%--      <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>--%>
-<%--      <form action="https://google.com/search" method="get">--%>
-<%--        <div id="freesrchform">--%>
-<%--          <label class="simple" for="freesrchfld">Search</label>--%>
-<%--          &lt;%&ndash;onfocus="if (this.value == 'Search the site')&ndash;%&gt;--%>
-<%--          &lt;%&ndash;this.value = '';"&ndash;%&gt;--%>
-<%--          &lt;%&ndash;onblur="if (this.value == '')&ndash;%&gt;--%>
-<%--          &lt;%&ndash;this.value = 'Search the site';"&ndash;%&gt;--%>
-<%--          <input type="text" id="freesrchfld" name="q" placeholder="Search the site" />--%>
-<%--          <input type="hidden" name="sitesearch" value="${appHost}"/>--%>
-<%--          <input id="freesrchbtn" type="image" src="<c:url value='/static/images/button_go.gif'/>" alt="Go"/>--%>
-<%--        </div>--%>
-<%--      </form>--%>
-      <a id="eionetlink" title="Go to Eionet portal" href="https://www.eionet.europa.eu/"><span>Eionet portal</span></a>
+      <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>
+      <form action="https://google.com/search" method="get">
+        <div id="freesrchform">
+          <label class="simple" for="freesrchfld">Search</label>
+          <%--onfocus="if (this.value == 'Search the site')--%>
+          <%--this.value = '';"--%>
+          <%--onblur="if (this.value == '')--%>
+          <%--this.value = 'Search the site';"--%>
+          <input type="text" id="freesrchfld" name="q" placeholder="Search the site" />
+          <input type="hidden" name="sitesearch" value="${appHost}"/>
+          <input id="freesrchbtn" type="image" src="<c:url value='/static/images/button_go.gif'/>" alt="Go"/>
+        </div>
+      </form>
     </div>
   </div> <!-- toolribbon -->
 

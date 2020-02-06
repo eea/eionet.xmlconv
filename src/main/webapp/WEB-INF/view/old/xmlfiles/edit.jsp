@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
-
 <ed:breadcrumbs-push label="Edit XML File" level="2"/>
 <h1><spring:message code="label.title.uplXmlFile.edit"/></h1>
 
