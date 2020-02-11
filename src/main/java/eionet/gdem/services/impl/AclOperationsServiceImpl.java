@@ -70,7 +70,7 @@ public class AclOperationsServiceImpl implements AclOperationsService {
 
     protected AccessController getAclLibraryAccessControllerInstance(AclProperties aclProperties) throws AclAccessControllerInitializationException {
         try {
-            AccessController accessController = new AccessController(this.getAclProperties());
+            AccessController accessController = new AccessController(aclProperties);
             return accessController;
         } catch (Exception e) {
             throw new AclAccessControllerInitializationException("Could not initialize eionet.acl AccessController:", e.getCause());
