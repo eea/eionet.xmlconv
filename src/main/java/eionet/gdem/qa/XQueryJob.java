@@ -49,6 +49,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
@@ -97,15 +98,21 @@ public class XQueryJob implements Job, InterruptableJob {
             String srcFile = url;
             //
             int jobRetries = getJobRetries();
+            LOGGER.info("### Job retried " + jobRetries + " times  **");
             if ( jobRetries >= 4) // break execution
+            {
+                LOGGER.info("### This job cannot be executed. Retry count reached.");
                 throw new XMLConvException("Retry count reached");
-
-            // update the Job status on db
+            }
+                // update the Job status on db
             processJob();
 
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 try {
+                    long startTime1 = System.nanoTime();
+                    String methodname1 = "JOB VALIDATION";
+
                     // validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
@@ -127,10 +134,14 @@ public class XQueryJob implements Job, InterruptableJob {
                     LOGGER.debug("Validation proceeded, now store to the result file");
                     Utils.saveStrToFile(resultFile, result, null);
                     changeStatus(Constants.XQ_READY);
+                    long stopTime1 = System.nanoTime();
+                    LOGGER.info( "Method " + methodname1 + " took: " + TimeUnit.SECONDS.convert((stopTime1 - startTime1), TimeUnit.NANOSECONDS) + " seconds");
                 } catch (Exception e) {
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true);
                 }
             } else {
+                long startTime2 = System.nanoTime();
+                String methodname2 = "RUN QUERY";
                 // read query info from DB.
                 Map query = getQueryInfo(queryID);
                 String contentType = null;
@@ -189,6 +200,8 @@ public class XQueryJob implements Job, InterruptableJob {
                     xq.getResult(out);
                     changeStatus(Constants.XQ_READY);
                     LOGGER.info("Job ID=" + jobId + " finished.");
+                    long stopTime2 = System.nanoTime();
+                    LOGGER.info( "Method " + methodname2 + " took: " + TimeUnit.SECONDS.convert((stopTime2 - startTime2), TimeUnit.NANOSECONDS) + " seconds");
                 } catch (XMLConvException e) {
                     changeStatus(Constants.XQ_FATAL_ERR);
                     StringBuilder errBuilder = new StringBuilder();
@@ -197,6 +210,8 @@ public class XQueryJob implements Job, InterruptableJob {
                     errBuilder.append("</div>");
                     IOUtils.write(errBuilder.toString(), out, "UTF-8");
                     LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
+                    long stopTime2 = System.nanoTime();
+                    LOGGER.info( "Method " + methodname2 + " took: " + (stopTime2 - startTime2) + " nanoseconds");
                 } finally {
                         IOUtils.closeQuietly(out);
                 }
@@ -264,6 +279,7 @@ public class XQueryJob implements Job, InterruptableJob {
     private void changeStatus(int status) throws Exception {
         try {
             xqJobDao.changeJobStatus(jobId, status);
+            LOGGER.info("#### Job with id: " + jobId + " has changed status to " + status + ".");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());
             throw e;
