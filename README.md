@@ -15,7 +15,7 @@ Edit the values of system paths, database url and other properties to what is re
 
 "app.home" property represents the system folder which is the root for subfolders where all content files will be stored.
 Tomcat user should have write permissions on "app.home" subdirectories.
-
+    
 ### Development Phase - Building the .war
 
 The default profile is using the docker maven plugin to setup a mysql database for use with the integration tests phase.

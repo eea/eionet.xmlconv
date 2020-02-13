@@ -4,14 +4,14 @@
 #   Author: VLF
 
 import xmlrpc.client
-
+import sys
 # server_url="http://converters.eionet.eu.int/RpcRouter"
-server = xmlrpc.client.ServerProxy("http://localhost:8080/RpcRouter")
+server = xmlrpc.client.ServerProxy(sys.argv[1])
 
 try:
-    param1 = "https://svn.eionet.europa.eu/repositories/Reportnet/Dataflows/HabitatsDirectiveArticle17/xmlfiles/general-instancefile.xml"
+    param1 = sys.argv[2]
     # convert_id parameter
-    param2 = "26"
+    param2 = sys.argv[3]
 
     method_result = server.ConversionService.convert(param1, param2)
 

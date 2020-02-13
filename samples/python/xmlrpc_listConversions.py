@@ -4,12 +4,12 @@
 #   Author: VLF
 
 import xmlrpc.client
-
-server = xmlrpc.client.ServerProxy("http://localhost:8080/RpcRouter")
+import sys
+server = xmlrpc.client.ServerProxy(sys.argv[1])
 
 try:
 	# file parameter value encoded as Base64 byte array
-	param1 = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd"
+	param1 = sys.argv[2]
 
 	method_result = server.ConversionService.listConversions(param1)
 

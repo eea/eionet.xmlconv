@@ -42,14 +42,17 @@ public class XMLUtils {
 
     public static String removeEmptyElements(String xml) {
         String[] replaceEmptyElementsFromXmlRegex = new String[]{
-                // This will remove empty elements that look like <ElementName/>
-                "\\s*<\\w+/>",
-                // This will remove empty elements that look like <ElementName></ElementName>
-                "\\s*<\\w+></\\w+>",
+                // This will remove empty elements that look like <namespace:ElementName/> OR <ElementName/>
+                "\\s*<[\\w:]+/>",
+                // This will remove empty elements that look like <namespace:ElementName></namespace:ElementName> OR <ElementName></ElementName>
+                "\\s*<[\\w:]+></[\\w:]+>",
                 // This will remove empty elements that look like
+                // <namespace:ElementName>
+                // </namespace:ElementName>
+              //  OR
                 // <ElementName>
                 // </ElementName>
-                "\\s*<\\w+>\n*\\s*</\\w+>"
+                "\\s*<[\\w:]+>\n*\\s*</[\\w:]+>"
         };
         for (String pattern : replaceEmptyElementsFromXmlRegex) {
             Matcher matcher = Pattern.compile(pattern).matcher(xml);

@@ -1,17 +1,24 @@
 #   Script for testing XMLCONV Conversion Service
 #   The script is converting Excel file to XML.
 #
-#   Author: VLF ,vskiadas
+#   Author: VLF, Vskiadas
+
 
 import xmlrpc.client
+
 import sys
-server = xmlrpc.client.ServerProxy( sys.argv[1]
+
+server = xmlrpc.client.ServerProxy( sys.argv[1])
 
 try:
     # excel file
+    print(sys.argv)
     param1 = sys.argv[2]
 
-    method_result = server.ConversionService.convertDD_XML(param1)
+    # sheet name
+    param2 = sys.argv[3]
+
+    method_result = server.ConversionService.convertDD_XML_split_removeEmptyElems(param1, param2)
 
 except xmlrpc.client.ProtocolError as err:
     print("A protocol error occurred")
@@ -20,4 +27,5 @@ except xmlrpc.client.ProtocolError as err:
     print("Error code: %d" % err.errcode)
     print("Error message: %s" % err.errmsg)
 
-print(method_result)
+convertedFiles = method_result['convertedFiles']
+print(method_result['convertedFiles'][0]['content'])

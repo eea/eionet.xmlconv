@@ -4,8 +4,9 @@
 #   Author: VLF
 
 import xmlrpc.client
+import sys
 
-server = xmlrpc.client.ServerProxy("http://localhost:8080/RpcRouter")
+server = xmlrpc.client.ServerProxy(sys.argv[1])
 
 try:
     method_result = server.ConversionService.getXMLSchemas()
