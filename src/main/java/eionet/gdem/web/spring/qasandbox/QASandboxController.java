@@ -61,6 +61,11 @@ public class QASandboxController {
     @ModelAttribute
     public void init(HttpServletRequest httpServletRequest, Model model) {
         try {
+            long memory = Runtime.getRuntime().maxMemory();
+            int cpuCores = Runtime.getRuntime().availableProcessors();
+
+            LOGGER.info("Max Java Memory (MB): {}", memory / (1_024 * 1_024));
+            LOGGER.info("Max Java CPU Cores: {}", cpuCores);
             model.addAttribute("scripts", QAScriptListLoader.getList(httpServletRequest));
         } catch (DCMException e) {
             throw new RuntimeException("Error retrieving scripts: " + messageService.getMessage(e.getErrorCode()));

@@ -92,26 +92,27 @@ public class XQueryJob implements Job, InterruptableJob {
     public void execute(JobExecutionContext paramJobExecutionContext) throws JobExecutionException {
         thisThread = Thread.currentThread();
         try {
-            //LOGGER.info("Job ID=  " + jobId + " started.");
+            LOGGER.info("### job with id: " + jobId + " started executing.");
             schemaManager = new SchemaManager();
+            long startTimeSta = System.nanoTime();
             initVariables();
             String srcFile = url;
             //
             int jobRetries = getJobRetries();
-            LOGGER.info("### Job retried " + jobRetries + " times  **");
+            LOGGER.info("### job with id: " + jobId + "retries = " +  jobRetries );
             if ( jobRetries >= 4) // break execution
             {
                 LOGGER.info("### This job cannot be executed. Retry count reached.");
                 throw new XMLConvException("Retry count reached");
             }
-                // update the Job status on db
+            // update the Job status on db
             processJob();
 
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 try {
-                    long startTime1 = System.nanoTime();
-                    String methodname1 = "JOB VALIDATION";
+                    long startTime = System.nanoTime();
+                    long stopTime = System.nanoTime();
 
                     // validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
@@ -134,14 +135,12 @@ public class XQueryJob implements Job, InterruptableJob {
                     LOGGER.debug("Validation proceeded, now store to the result file");
                     Utils.saveStrToFile(resultFile, result, null);
                     changeStatus(Constants.XQ_READY);
-                    long stopTime1 = System.nanoTime();
-                    LOGGER.info( "Method " + methodname1 + " took: " + TimeUnit.SECONDS.convert((stopTime1 - startTime1), TimeUnit.NANOSECONDS) + " seconds");
+                    LOGGER.info("### job with id: " + jobId + " has been Validated. Validation time in nanoseconds = " + (stopTime - startTime));
                 } catch (Exception e) {
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true);
                 }
             } else {
-                long startTime2 = System.nanoTime();
-                String methodname2 = "RUN QUERY";
+
                 // read query info from DB.
                 Map query = getQueryInfo(queryID);
                 String contentType = null;
@@ -199,9 +198,8 @@ public class XQueryJob implements Job, InterruptableJob {
                     out = new FileOutputStream(new File(resultFile));
                     xq.getResult(out);
                     changeStatus(Constants.XQ_READY);
-                    LOGGER.info("Job ID=" + jobId + " finished.");
-                    long stopTime2 = System.nanoTime();
-                    LOGGER.info( "Method " + methodname2 + " took: " + TimeUnit.SECONDS.convert((stopTime2 - startTime2), TimeUnit.NANOSECONDS) + " seconds");
+                    long stopTimeEnd = System.nanoTime();
+                    LOGGER.info("### job with id: " + jobId + " Is ready. Status is " + Constants.XQ_READY + "Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta));
                 } catch (XMLConvException e) {
                     changeStatus(Constants.XQ_FATAL_ERR);
                     StringBuilder errBuilder = new StringBuilder();
@@ -209,9 +207,9 @@ public class XQueryJob implements Job, InterruptableJob {
                     errBuilder.append(Utils.escapeXML(e.toString()));
                     errBuilder.append("</div>");
                     IOUtils.write(errBuilder.toString(), out, "UTF-8");
+                    long stopTimeEnd = System.nanoTime();
+                    LOGGER.info("### job with id: " + jobId + " Is not ready. Status is " + Constants.XQ_FATAL_ERR + "Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta));
                     LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
-                    long stopTime2 = System.nanoTime();
-                    LOGGER.info( "Method " + methodname2 + " took: " + (stopTime2 - startTime2) + " nanoseconds");
                 } finally {
                         IOUtils.closeQuietly(out);
                 }
@@ -279,7 +277,7 @@ public class XQueryJob implements Job, InterruptableJob {
     private void changeStatus(int status) throws Exception {
         try {
             xqJobDao.changeJobStatus(jobId, status);
-            LOGGER.info("#### Job with id: " + jobId + " has changed status to " + status + ".");
+            LOGGER.info("### Job with id: " + jobId + " has changed status to " + status + ".");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());
             throw e;

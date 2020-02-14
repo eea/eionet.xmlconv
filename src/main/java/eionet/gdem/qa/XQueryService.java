@@ -503,31 +503,22 @@ public class XQueryService extends RemoteService {
             }
 
             long startTime4 = System.nanoTime();
-            String methodname4 = "DOWNLOAD FILE";
             sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
             long stopTime4 = System.nanoTime();
 
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
-            LOGGER.info("### file has been downloaded.");
-            LOGGER.info("### method " + methodname4 + " took: " + TimeUnit.SECONDS.convert((stopTime4 - startTime4), TimeUnit.NANOSECONDS) + " seconds");
-            LOGGER.info("### file size is " + sourceSize);
-
+            LOGGER.info("### file with size " + sourceSize + " has been downloaded. Download time in nanoseconds = " + (stopTime4 - startTime4));
             //save the job definition in the DB
             long startTime = System.nanoTime();
             jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
-            String methodname = "Start creating a job";
             long stopTime = System.nanoTime();
             LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
-            LOGGER.info("### Job with id: " + jobId + " has been created");
-            LOGGER.info("### method" + methodname + " took: " + TimeUnit.SECONDS.convert((stopTime - startTime), TimeUnit.NANOSECONDS) + " seconds");
+            LOGGER.info("### job with id: " + jobId + " has been created.  Job creation time in nanoseconds = " + (stopTime - startTime));
 
             long startTime1 = System.nanoTime();
-            String methodname1 = "Start scheduling a job";
             long stopTime1 = System.nanoTime();
             scheduleJob(jobId, sourceSize, scriptType);
-            LOGGER.info("### job with id: " + jobId + " has been scheduled");
-            LOGGER.info("### method " + methodname1 + " took: " + TimeUnit.SECONDS.convert((stopTime1 - startTime1), TimeUnit.NANOSECONDS) + " seconds");
-
+            LOGGER.info("### job with id: " + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1));
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
@@ -607,12 +598,10 @@ public class XQueryService extends RemoteService {
         if (sizeInBytes > heavyJobThreshhold && ! scriptType.equals( XQScript.SCRIPT_LANG_FME) ) {
             Scheduler quartzScheduler = getQuartzHeavyScheduler();
             quartzScheduler.scheduleJob(job1, trigger);
-            LOGGER.info("### heavy job with id: " + job1 + " has been scheduled");
         }
         else {
             Scheduler quartzScheduler = getQuartzScheduler();
             quartzScheduler.scheduleJob(job1, trigger);
-            LOGGER.info("### light job with id: " + job1 + " has been scheduled");
         }
 
     }
