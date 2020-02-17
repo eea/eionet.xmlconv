@@ -199,7 +199,7 @@ public class XQueryJob implements Job, InterruptableJob {
                     xq.getResult(out);
                     changeStatus(Constants.XQ_READY);
                     long stopTimeEnd = System.nanoTime();
-                    LOGGER.info("### job with id: " + jobId + " Is ready. Status is " + Constants.XQ_READY + "Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta));
+                    LOGGER.info("### job with id: " + jobId + " Is ready. Status is " + Constants.XQ_READY + ". Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta));
                 } catch (XMLConvException e) {
                     changeStatus(Constants.XQ_FATAL_ERR);
                     StringBuilder errBuilder = new StringBuilder();
@@ -208,7 +208,7 @@ public class XQueryJob implements Job, InterruptableJob {
                     errBuilder.append("</div>");
                     IOUtils.write(errBuilder.toString(), out, "UTF-8");
                     long stopTimeEnd = System.nanoTime();
-                    LOGGER.info("### job with id: " + jobId + " Is not ready. Status is " + Constants.XQ_FATAL_ERR + "Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta));
+                    LOGGER.info("### job with id: " + jobId + " Is not ready. Status is " + Constants.XQ_FATAL_ERR + ". Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta));
                     LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
                 } finally {
                         IOUtils.closeQuietly(out);
