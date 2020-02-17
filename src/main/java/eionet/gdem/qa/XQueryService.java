@@ -518,7 +518,7 @@ public class XQueryService extends RemoteService {
             long startTime1 = System.nanoTime();
             long stopTime1 = System.nanoTime();
             scheduleJob(jobId, sourceSize, scriptType);
-            LOGGER.info("### Job with id: " + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
+            LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());

@@ -99,7 +99,7 @@ public class XQueryJob implements Job, InterruptableJob {
             String srcFile = url;
             //
             int jobRetries = getJobRetries();
-            LOGGER.info("### job with id=" + jobId + "retries = " +  jobRetries + ".");
+            LOGGER.info("### Job with id=" + jobId + " retries=" +  jobRetries + ".");
             if ( jobRetries >= 4) // break execution
             {
                 LOGGER.info("### This job cannot be executed. Retry count reached.");
@@ -199,7 +199,7 @@ public class XQueryJob implements Job, InterruptableJob {
                     xq.getResult(out);
                     changeStatus(Constants.XQ_READY);
                     long stopTimeEnd = System.nanoTime();
-                    LOGGER.info("### job with id=" + jobId + " status is " + Constants.XQ_READY + ". Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta));
+                    LOGGER.info("### Job with id=" + jobId + " status is READY. Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta)+ ".");
                 } catch (XMLConvException e) {
                     changeStatus(Constants.XQ_FATAL_ERR);
                     StringBuilder errBuilder = new StringBuilder();
@@ -208,7 +208,7 @@ public class XQueryJob implements Job, InterruptableJob {
                     errBuilder.append("</div>");
                     IOUtils.write(errBuilder.toString(), out, "UTF-8");
                     long stopTimeEnd = System.nanoTime();
-                    LOGGER.info("### job with id=" + jobId + " status is " + Constants.XQ_FATAL_ERR + ". Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta));
+                    LOGGER.info("### Job with id=" + jobId + " status is FATAL_ERROR. Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta) + ".");
                     LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
                 } finally {
                         IOUtils.closeQuietly(out);
