@@ -177,7 +177,7 @@ public class XQueryService extends RemoteService {
      */
     public Vector analyzeXMLFiles(String schema, String origFile, Vector result) throws XMLConvException {
 
-        LOGGER.info("analyzeXMLFiles: " + origFile);
+//        LOGGER.info("analyzeXMLFiles: " + origFile);
 
         if (result == null) {
             result = new Vector();
@@ -201,7 +201,7 @@ public class XQueryService extends RemoteService {
             }
         }
 
-        LOGGER.info("Analyze xml result: " + result.toString());
+//        LOGGER.info("Analyze xml result: " + result.toString());
         return result;
     }
 
@@ -507,18 +507,18 @@ public class XQueryService extends RemoteService {
             long stopTime4 = System.nanoTime();
 
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
-            LOGGER.info("### file with size " + sourceSize + " has been downloaded. Download time in nanoseconds = " + (stopTime4 - startTime4));
+            LOGGER.info("### File with size=" + sourceSize + " Bytes has been downloaded. Download time in nanoseconds = " + (stopTime4 - startTime4) + ".");
             //save the job definition in the DB
             long startTime = System.nanoTime();
             jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
             long stopTime = System.nanoTime();
             LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
-            LOGGER.info("### job with id: " + jobId + " has been created.  Job creation time in nanoseconds = " + (stopTime - startTime));
+            LOGGER.info("### Job with id=" + jobId + " has been created.  Job creation time in nanoseconds = " + (stopTime - startTime) + ".");
 
             long startTime1 = System.nanoTime();
             long stopTime1 = System.nanoTime();
             scheduleJob(jobId, sourceSize, scriptType);
-            LOGGER.info("### job with id: " + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1));
+            LOGGER.info("### Job with id: " + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
