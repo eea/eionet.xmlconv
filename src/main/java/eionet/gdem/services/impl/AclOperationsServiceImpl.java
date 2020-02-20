@@ -10,6 +10,8 @@ import eionet.gdem.services.AclOperationsService;
 import eionet.propertyplaceholderresolver.CircularReferenceException;
 import eionet.propertyplaceholderresolver.ConfigurationPropertyResolver;
 import eionet.propertyplaceholderresolver.UnresolvedPropertyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class AclOperationsServiceImpl implements AclOperationsService {
 
 
     ConfigurationPropertyResolver configurationPropertyResolver;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(AclOperationsServiceImpl.class);
 
     @Autowired
     public AclOperationsServiceImpl(ConfigurationPropertyResolver configurationPropertyResolver) {
@@ -62,7 +64,7 @@ public class AclOperationsServiceImpl implements AclOperationsService {
             aclProperties.setDbPwd(configurationPropertyResolver.resolveValue("db.pwd"));
             return aclProperties;
         } catch (UnresolvedPropertyException | CircularReferenceException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(),e.getCause());
 
             throw new AclPropertiesInitializationException(e.getMessage(), e.getCause());
         }
