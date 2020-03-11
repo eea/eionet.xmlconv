@@ -59,7 +59,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
-    @Override
+    /*@Override
     protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
 
         HttpPost runMethod = null;
@@ -114,6 +114,29 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             }
         }
 
+    }*/
+
+    @Override
+    protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
+
+        Integer jobId = submitJobToFME(script);
+        getJobStatus(jobId, result);
+
+    }
+
+    private Integer submitJobToFME (XQScript script){
+        /*
+        TODO submit job to FME based on sample 3
+            Send request and get job id from response
+         */
+        return 0;
+    }
+
+    private void getJobStatus(Integer jobId, OutputStream result){
+        /*
+            TODO create a loop where we send request to find out job status as many times as the property in default.properties
+                if status is valid then we handle the response the same way it is handled above and we copy it to the result else we have a timeout.
+         */
     }
 
     /**
