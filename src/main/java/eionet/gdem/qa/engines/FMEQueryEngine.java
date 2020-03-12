@@ -6,15 +6,21 @@ import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
+import com.sun.net.httpserver.Headers;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,11 +131,57 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     }
 
     private Integer submitJobToFME (XQScript script){
-        /*
-        TODO submit job to FME based on sample 3
-            Send request and get job id from response
-         */
-        return 0;
+        LOGGER.info("Began asynchronous job submission in FME for script " + script.getScriptSource());
+        HttpPost request = null;
+        CloseableHttpResponse response = null;
+        Integer jobId = null;
+        try {
+            java.net.URI uri = new URIBuilder(script.getScriptSource())
+                    .build(); // Output format
+            request = new HttpPost(uri);
+            String headerAuthorizationValue = "fmetoken token="+token_;
+            Header[] headers = {
+                    new BasicHeader("Content-type", "application/json"),
+                    new BasicHeader("Accept", "application/json"),
+                    new BasicHeader("Authorization", headerAuthorizationValue)
+            };
+            request.setHeaders(headers);
+            JSONObject jsonParams = createJSONObjectForJobSubmission(script.getOrigFileUrl());
+            StringEntity params =new StringEntity(jsonParams.toString());
+            request.setEntity(params);
+
+            response = client_.execute(request);
+            jobId = 0;
+            LOGGER.info(String.format("Job was submitted in FME for script %s with id %d", script.getScriptSource(), jobId));
+
+        }  catch (Exception e) {
+            LOGGER.error("Generic Exception handling. FME request error: " + e.getMessage());
+        } finally {
+            if (request != null) {
+                request.releaseConnection();
+            }
+        }
+        return jobId;
+    }
+
+    private JSONObject createJSONObjectForJobSubmission(String xmlSourceFile){
+        //TODO the following values will be changed
+        JSONObject joReplyParams = new JSONObject();
+        joReplyParams.put("name", "DestDataset_JSON");
+        joReplyParams.put("value", "myreply2014.json");
+
+        JSONObject joXMLParams = new JSONObject();
+        joXMLParams.put("name", "SourceDataset_XML");
+        JSONArray jaXMLParams = new JSONArray();
+        jaXMLParams.add(xmlSourceFile);
+        joXMLParams.put("value", jaXMLParams);
+        JSONArray ja = new JSONArray();
+        ja.add(joReplyParams);
+        ja.add(joXMLParams);
+
+        JSONObject joPublishedParams = new JSONObject();
+        joPublishedParams.put("publishedParameters", ja);
+        return joPublishedParams;
     }
 
     private void getJobStatus(Integer jobId, OutputStream result){
