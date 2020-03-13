@@ -22,6 +22,7 @@
 package eionet.gdem.qa.engines;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import eionet.gdem.XMLConvException;
@@ -49,7 +50,7 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
      * @param result Result
      * @throws XMLConvException If an error occurs.
      */
-    protected abstract void runQuery(XQScript script, OutputStream result) throws XMLConvException;
+    protected abstract void runQuery(XQScript script, OutputStream result) throws Exception;
 
     @Override
     public void getResult(XQScript script, OutputStream out) throws XMLConvException {

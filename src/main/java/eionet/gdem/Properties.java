@@ -129,7 +129,9 @@ public class Properties {
     public static String fmeTokenTimeunit = null;
     /** FME timeout. */
     public static int fmeTimeout = 0;
-    public static int fmeRetryHours = 4;
+    public static int fmeRetryHours = 0;
+    /** FME url for polling job status by job id. */
+    public static String fmePollingUrl = null;
 
     /** Hostname. */
     public static String hostname = null;
@@ -247,6 +249,7 @@ public class Properties {
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
+        fmePollingUrl = getStringProperty("fme.polling.url");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
     }

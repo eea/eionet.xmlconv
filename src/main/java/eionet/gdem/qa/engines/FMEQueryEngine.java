@@ -5,22 +5,25 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
 
-import com.sun.net.httpserver.Headers;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
+import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
+
+import org.jooq.tools.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,18 +126,18 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     }*/
 
     @Override
-    protected void runQuery(XQScript script, OutputStream result) throws XMLConvException {
+    protected void runQuery(XQScript script, OutputStream result) throws Exception {
 
-        Integer jobId = submitJobToFME(script);
-        getJobStatus(jobId, result);
+        String jobId = submitJobToFME(script);
+        getJobStatus(jobId, result, script);
 
     }
 
-    private Integer submitJobToFME (XQScript script){
+    private String submitJobToFME (XQScript script){
         LOGGER.info("Began asynchronous job submission in FME for script " + script.getScriptSource());
         HttpPost request = null;
         CloseableHttpResponse response = null;
-        Integer jobId = null;
+        String jobId = null;
         try {
             java.net.URI uri = new URIBuilder(script.getScriptSource())
                     .build(); // Output format
@@ -151,8 +154,11 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             request.setEntity(params);
 
             response = client_.execute(request);
-            jobId = 0;
-            LOGGER.info(String.format("Job was submitted in FME for script %s with id %d", script.getScriptSource(), jobId));
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(new BasicResponseHandler().handleResponse(response));
+            jobId = (String) jsonResponse.get("id");
+
+            LOGGER.info(String.format("Job was submitted in FME for script %s with id %s", script.getScriptSource(), jobId));
 
         }  catch (Exception e) {
             LOGGER.error("Generic Exception handling. FME request error: " + e.getMessage());
@@ -168,7 +174,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         //TODO the following values will be changed
         JSONObject joReplyParams = new JSONObject();
         joReplyParams.put("name", "DestDataset_JSON");
-        joReplyParams.put("value", "myreply2014.json");
+        joReplyParams.put("value", "response.json");
 
         JSONObject joXMLParams = new JSONObject();
         joXMLParams.put("name", "SourceDataset_XML");
@@ -184,11 +190,60 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         return joPublishedParams;
     }
 
-    private void getJobStatus(Integer jobId, OutputStream result){
+    private void getJobStatus(String jobId, OutputStream result, XQScript script) throws Exception {
         /*
             TODO create a loop where we send request to find out job status as many times as the property in default.properties
                 if status is valid then we handle the response the same way it is handled above and we copy it to the result else we have a timeout.
          */
+
+        LOGGER.info("Began polling for status of job #" + jobId);
+        String url = Properties.fmePollingUrl + jobId;
+        String encoding = Base64.getEncoder().encodeToString((Properties.fmeUser + ":" + Properties.fmePassword).getBytes());
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+
+        int count = 0;
+        int retryMilisecs = Properties.fmeRetryHours * 60 * 60 * 1000;
+        int timeoutMilisecs = Properties.fmeTimeout;
+        int retries = retryMilisecs / timeoutMilisecs;
+        retries = (retries <= 0) ? 1 : retries;
+        LOGGER.debug(String.format("The number of retries of polling for status of job #%s is %d", jobId, retries));
+
+        ArrayList<Integer> acceptedStatuses = new ArrayList<Integer>();
+        acceptedStatuses.add(HttpStatus.SC_OK);
+        acceptedStatuses.add(HttpStatus.SC_ACCEPTED);
+
+        while (count < retries) {
+            LOGGER.info(String.format("Retry %d for polling for status of job #%s", count, jobId));
+            try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                 CloseableHttpResponse response = httpClient.execute(httpPost)) {
+
+                Integer statusCode = response.getStatusLine().getStatusCode();
+                if (acceptedStatuses.contains(statusCode)) { // Valid Result
+                    HttpEntity entity = response.getEntity();
+                    // We get an InputStream and copy it to the 'result' OutputStream
+                    LOGGER.info(String.format("Retrieved status %d for polling of job #%d", statusCode, jobId));
+                    IOUtils.copy(entity.getContent(), result);
+                } else { // NOT Valid Result
+                    // If the last retry fails a BLOCKER predefined error is returned
+                    if (count + 1 == retries){
+                        LOGGER.error("Failed for last Retry  number :"+ count );
+                        IOUtils.copy(IOUtils.toInputStream("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>", "UTF-8"), result);
+                    } else {
+                        LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString() + "-- #Retry: " + count);
+                        Thread.sleep(timeoutMilisecs); // The thread is forced to wait 'timeoutMilisecs' before trying to retry the FME call
+                        throw new Exception("The application has encountered an error. The FME QC process request failed.");
+                    }
+                }
+                count = retries;
+
+            } catch (Exception e) {
+                throw (e);
+            }
+            finally {
+                count++;
+            }
+        }
     }
 
     /**
