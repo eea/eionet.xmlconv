@@ -22,6 +22,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 
+import org.apache.http.util.EntityUtils;
 import org.jooq.tools.json.JSONObject;
 import org.jooq.tools.json.JSONParser;
 import org.slf4j.Logger;
@@ -192,10 +193,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 String message = "Received status code " + statusCode + " for job submission request";
                 throw new Exception(message);
             }
-            JSONParser parser = new JSONParser();
-            JSONObject jsonResponse = (JSONObject) parser.parse(new BasicResponseHandler().handleResponse(response));
+            String jsonStr = EntityUtils.toString(response.getEntity());
+            org.json.JSONObject jsonResponse = new org.json.JSONObject(jsonStr);
             jobId = jsonResponse.get("id").toString();
-            if(jobId == null){
+            if(jobId == null || jobId.isEmpty()|| jobId.equals("null")){
                 throw new Exception("Valid status code but no job ID was retrieved");
             }
 
@@ -324,8 +325,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 token_ = new String(IOUtils.toByteArray(stream), StandardCharsets.UTF_8);
                 IOUtils.closeQuietly(stream);
             } else {
-                LOGGER.error("FME authentication failed. Could not retrieve a Token");
-                throw new XMLConvException("FME authentication failed");
+                throw new XMLConvException("FME authentication failed. Could not retrieve a Token");
             }
         } catch (Exception e) {
             throw new XMLConvException(e.toString(), e);
