@@ -2,6 +2,7 @@ package eionet.gdem.qa.engines;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.XQScript;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.config.RequestConfig;
@@ -23,7 +24,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import java.io.ByteArrayInputStream;
-import java.io.OutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -56,6 +61,7 @@ public class FMEQueryEngineTest {
     private String fmeTokenTimeunitProperty = "hour";
     private String fmePollingUrlProperty = "https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/jobs/id/";
     private Integer fmeRetryHoursProperty = 1;
+    private String failedOutputString = "<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>";
 
 
     @Before
@@ -295,7 +301,7 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusNotSC_OK() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(400);
         try
@@ -304,6 +310,9 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Error when polling for job status. Received status code: 400";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -316,7 +325,7 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusABORTED() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"ABORTED\"},\"id\":\"testId\",\"status\":\"ABORTED\"}";
@@ -327,6 +336,9 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received response status ABORTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -339,7 +351,7 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusFME_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"FME_FAILURE\"},\"id\":\"testId\",\"status\":\"FME_FAILURE\"}";
@@ -350,6 +362,9 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received response status FME_FAILURE";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -362,7 +377,7 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusJOB_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"JOB_FAILURE\"},\"id\":\"testId\",\"status\":\"JOB_FAILURE\"}";
@@ -373,6 +388,9 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received response status JOB_FAILURE";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -385,12 +403,16 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusSUCCESS_Result_SUCCESS() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
         Whitebox.invokeMethod(fmeQueryEngine, "getJobStatus", jobId, result, script);
+
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: status SUCCESS Result status FME_FAILURE*/
@@ -398,12 +420,16 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusSUCCESS_Result_FME_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"FME_FAILURE\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
         Whitebox.invokeMethod(fmeQueryEngine, "getJobStatus", jobId, result, script);
+
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: status SUBMITTED never succeeded */
@@ -411,7 +437,7 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusSUBMITTEDNeverSUCCESS() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"SUBMITTED\"},\"id\":\"testId\",\"status\":\"SUBMITTED\"}";
@@ -424,6 +450,9 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Failed for last Retry  number: 2. Received status SUBMITTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -437,7 +466,7 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusQUEUED_SUCCESS_2ndTime() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"QUEUED\"},\"id\":\"testId\",\"status\":\"QUEUED\"}";
@@ -445,6 +474,10 @@ public class FMEQueryEngineTest {
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponseSuccess.getBytes() ));
         Whitebox.invokeMethod(fmeQueryEngine, "getJobStatus", jobId, result, script);
+
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: status PULLED */
@@ -452,7 +485,7 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusPULLED_ABORTED_3rdTime() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"PULLED\"},\"id\":\"testId\",\"status\":\"PULLED\"}";
@@ -466,6 +499,9 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received response status ABORTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -478,7 +514,7 @@ public class FMEQueryEngineTest {
     public void testGetJobStatusOtherStatusCode() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"OTHER\"},\"id\":\"testId\",\"status\":\"OTHER\"}";
@@ -489,6 +525,9 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received wrong response status OTHER";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -651,19 +690,21 @@ public class FMEQueryEngineTest {
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ));
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         try
         {
             fmeQueryEngine.runQuery(script, result);
         }
         catch(XMLConvException e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Generic Exception handling. FME request error: Error when polling for job status. Received status code: 400";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
         }
         fail("Not valid response code - exception did not throw!");
-        fmeQueryEngine.runQuery(script, null);
     }
 
     /* Test case: run query status ABORTED */
@@ -671,7 +712,7 @@ public class FMEQueryEngineTest {
     public void testRunQueryStatusABORTED() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"ABORTED\"},\"id\":\"testId\",\"status\":\"ABORTED\"}";
@@ -683,6 +724,9 @@ public class FMEQueryEngineTest {
         }
         catch(XMLConvException e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Generic Exception handling. FME request error: Received response status ABORTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -695,7 +739,7 @@ public class FMEQueryEngineTest {
     public void testRunQueryStatusFME_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"FME_FAILURE\"},\"id\":\"testId\",\"status\":\"FME_FAILURE\"}";
@@ -707,6 +751,9 @@ public class FMEQueryEngineTest {
         }
         catch(XMLConvException e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Generic Exception handling. FME request error: Received response status FME_FAILURE";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -719,7 +766,7 @@ public class FMEQueryEngineTest {
     public void testRunQueryStatusJOB_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"JOB_FAILURE\"},\"id\":\"testId\",\"status\":\"JOB_FAILURE\"}";
@@ -731,6 +778,9 @@ public class FMEQueryEngineTest {
         }
         catch(XMLConvException e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Generic Exception handling. FME request error: Received response status JOB_FAILURE";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -743,13 +793,17 @@ public class FMEQueryEngineTest {
     public void testRunQueryStatusSUCCESS_Result_SUCCESS() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
         fmeQueryEngine.runQuery(script, result);
+
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query status SUCCESS Result status FME_FAILURE*/
@@ -757,13 +811,17 @@ public class FMEQueryEngineTest {
     public void testRunQueryStatusSUCCESS_Result_FME_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"FME_FAILURE\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
         fmeQueryEngine.runQuery(script, result);
+
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query status SUBMITTED never succeeded */
@@ -771,7 +829,7 @@ public class FMEQueryEngineTest {
     public void testRunQueryStatusSUBMITTEDNeverSUCCESS() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"SUBMITTED\"},\"id\":\"testId\",\"status\":\"SUBMITTED\"}";
@@ -785,6 +843,9 @@ public class FMEQueryEngineTest {
         }
         catch(XMLConvException e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Generic Exception handling. FME request error: Failed for last Retry  number: 2. Received status SUBMITTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -798,7 +859,7 @@ public class FMEQueryEngineTest {
     public void testRunQueryStatusQUEUED_SUCCESS_2ndTime() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"QUEUED\"},\"id\":\"testId\",\"status\":\"QUEUED\"}";
@@ -807,6 +868,10 @@ public class FMEQueryEngineTest {
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponseSuccess.getBytes() ));
         fmeQueryEngine.runQuery(script, result);
+
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query status PULLED */
@@ -814,7 +879,7 @@ public class FMEQueryEngineTest {
     public void testRunQueryStatusPULLED_ABORTED_3rdTime() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"PULLED\"},\"id\":\"testId\",\"status\":\"PULLED\"}";
@@ -829,6 +894,9 @@ public class FMEQueryEngineTest {
         }
         catch(XMLConvException e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Generic Exception handling. FME request error: Received response status ABORTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -841,7 +909,7 @@ public class FMEQueryEngineTest {
     public void testRunQueryOtherStatusCode() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        OutputStream result = null;
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
         String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"OTHER\"},\"id\":\"testId\",\"status\":\"OTHER\"}";
@@ -853,6 +921,9 @@ public class FMEQueryEngineTest {
         }
         catch(XMLConvException e)
         {
+            FileInputStream fis = new FileInputStream ("testFile");
+            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Generic Exception handling. FME request error: Received wrong response status OTHER";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
