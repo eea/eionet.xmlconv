@@ -310,9 +310,6 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Error when polling for job status. Received status code: 400";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -336,9 +333,6 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received response status ABORTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -362,9 +356,6 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received response status FME_FAILURE";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -388,9 +379,6 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received response status JOB_FAILURE";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -409,14 +397,10 @@ public class FMEQueryEngineTest {
         String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
         Whitebox.invokeMethod(fmeQueryEngine, "getJobStatus", jobId, result, script);
-
-        FileInputStream fis = new FileInputStream ("testFile");
-        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: status SUCCESS Result status FME_FAILURE*/
-    @Test
+    @Test(expected = Exception.class)
     public void testGetJobStatusSUCCESS_Result_FME_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
@@ -425,11 +409,17 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"FME_FAILURE\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
-        Whitebox.invokeMethod(fmeQueryEngine, "getJobStatus", jobId, result, script);
-
-        FileInputStream fis = new FileInputStream ("testFile");
-        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-        Assert.assertThat(text, is(failedOutputString));
+        try
+        {
+            Whitebox.invokeMethod(fmeQueryEngine, "getJobStatus", jobId, result, script);
+        }
+        catch(Exception e)
+        {
+            String expectedMessage = "Received result status FME_FAILURE for job Id #testId";
+            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            throw e;
+        }
+        fail("Result Status FME_FAILURE - exception did not throw!");
     }
 
     /* Test case: status SUBMITTED never succeeded */
@@ -450,9 +440,6 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Failed for last Retry  number: 2. Received status SUBMITTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -474,10 +461,6 @@ public class FMEQueryEngineTest {
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponseSuccess.getBytes() ));
         Whitebox.invokeMethod(fmeQueryEngine, "getJobStatus", jobId, result, script);
-
-        FileInputStream fis = new FileInputStream ("testFile");
-        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: status PULLED */
@@ -499,9 +482,6 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received response status ABORTED";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -525,9 +505,6 @@ public class FMEQueryEngineTest {
         }
         catch(Exception e)
         {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
             String expectedMessage = "Received wrong response status OTHER";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
@@ -536,179 +513,132 @@ public class FMEQueryEngineTest {
     }
 
     /* Test case: run query with null xqscript */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryNullXQScript() throws Exception {
-        try
-        {
-            fmeQueryEngine.runQuery(null, null);
-        }
-        catch(XMLConvException e)
-        {
-            String expectedMessage = "Generic Exception handling. FME request error: XQScript is empty";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XQScript provided - exception did not throw!");
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
+
+        fmeQueryEngine.runQuery(null, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query with null script source file */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryNullScriptSourceFile() throws Exception {
         XQScript script = new XQScript(null, null, null);
-        try
-        {
-            fmeQueryEngine.runQuery(script, null);
-        }
-        catch(XMLConvException e)
-        {
-            String expectedMessage = "Generic Exception handling. FME request error: XQScript source file is empty";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XQScript source file - exception did not throw!");
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query with null xml source file */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryNullXMLFile() throws Exception {
         XQScript script = new XQScript("testFmw", null, null);
-        try
-        {
-            fmeQueryEngine.runQuery(script, null);
-        }
-        catch(XMLConvException e)
-        {
-            String expectedMessage = "Generic Exception handling. FME request error: XML file was not provided";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XML source file - exception did not throw!");
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: job submission with unauthorized token */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryUnauthorized() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         when(statusLine.getStatusCode()).thenReturn(401);
-        try
-        {
-            fmeQueryEngine.runQuery(script, null);
-        }
-        catch(XMLConvException e)
-        {
-            String expectedMessage = "Generic Exception handling. FME request error: Unauthorized token";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XML source file - exception did not throw!");
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query with unauthorized token */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryWrongStatus() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         when(statusLine.getStatusCode()).thenReturn(404);
-        try
-        {
-            fmeQueryEngine.runQuery(script, null);
-        }
-        catch(XMLConvException e)
-        {
-            String expectedMessage = "Generic Exception handling. FME request error: Received status code 404 for job submission request";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XML source file - exception did not throw!");
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query no job Id retrieved */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryNoId() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"something\":\"somethingElse\"}".getBytes() ));
         when(statusLine.getStatusCode()).thenReturn(200);
-        try
-        {
-            fmeQueryEngine.runQuery(script, null);
-        }
-        catch(XMLConvException e)
-        {
-            String expectedMessage = "Generic Exception handling. FME request error: JSONObject[\"id\"] not found.";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XML source file - exception did not throw!");
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query null job Id */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryNullId() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":null}".getBytes() ));
         when(statusLine.getStatusCode()).thenReturn(200);
-        try
-        {
-            fmeQueryEngine.runQuery(script, null);
-        }
-        catch(XMLConvException e)
-        {
-            String expectedMessage = "Generic Exception handling. FME request error: Valid status code but no job ID was retrieved";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XML source file - exception did not throw!");
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query empty job id */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryEmptyId() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"\"}".getBytes() ));
         when(statusLine.getStatusCode()).thenReturn(200);
-        try
-        {
-            fmeQueryEngine.runQuery(script, null);
-        }
-        catch(XMLConvException e)
-        {
-            String expectedMessage = "Generic Exception handling. FME request error: Valid status code but no job ID was retrieved";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XML source file - exception did not throw!");
+        FileOutputStream result = new FileOutputStream(new File("testFile"));
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
+
     }
 
     /* Test case: run query successful job submission */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryJobStatusNotSC_OK() throws Exception {
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(400);
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ));
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         FileOutputStream result = new FileOutputStream(new File("testFile"));
-        try
-        {
-            fmeQueryEngine.runQuery(script, result);
-        }
-        catch(XMLConvException e)
-        {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
-            String expectedMessage = "Generic Exception handling. FME request error: Error when polling for job status. Received status code: 400";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Not valid response code - exception did not throw!");
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
+
     }
 
     /* Test case: run query status ABORTED */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryStatusABORTED() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
@@ -718,24 +648,15 @@ public class FMEQueryEngineTest {
         String JSONResponse = "{\"result\":{\"status\":\"ABORTED\"},\"id\":\"testId\",\"status\":\"ABORTED\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
-        try
-        {
-            fmeQueryEngine.runQuery(script, result);
-        }
-        catch(XMLConvException e)
-        {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
-            String expectedMessage = "Generic Exception handling. FME request error: Received response status ABORTED";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Status ABORTED - exception did not throw!");
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query status FME_FAILURE */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryStatusFME_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
@@ -745,24 +666,15 @@ public class FMEQueryEngineTest {
         String JSONResponse = "{\"result\":{\"status\":\"FME_FAILURE\"},\"id\":\"testId\",\"status\":\"FME_FAILURE\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
-        try
-        {
-            fmeQueryEngine.runQuery(script, result);
-        }
-        catch(XMLConvException e)
-        {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
-            String expectedMessage = "Generic Exception handling. FME request error: Received response status FME_FAILURE";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Status FME_FAILURE - exception did not throw!");
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query status JOB_FAILURE */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryStatusJOB_FAILURE() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
@@ -772,20 +684,11 @@ public class FMEQueryEngineTest {
         String JSONResponse = "{\"result\":{\"status\":\"JOB_FAILURE\"},\"id\":\"testId\",\"status\":\"JOB_FAILURE\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
-        try
-        {
-            fmeQueryEngine.runQuery(script, result);
-        }
-        catch(XMLConvException e)
-        {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
-            String expectedMessage = "Generic Exception handling. FME request error: Received response status JOB_FAILURE";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Status JOB_FAILURE - exception did not throw!");
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query status SUCCESS Result status SUCCESS */
@@ -803,7 +706,7 @@ public class FMEQueryEngineTest {
 
         FileInputStream fis = new FileInputStream ("testFile");
         String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-        Assert.assertThat(text, is(failedOutputString));
+        Assert.assertThat(text, is("{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}"));
     }
 
     /* Test case: run query status SUCCESS Result status FME_FAILURE*/
@@ -825,7 +728,7 @@ public class FMEQueryEngineTest {
     }
 
     /* Test case: run query status SUBMITTED never succeeded */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryStatusSUBMITTEDNeverSUCCESS() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
@@ -837,20 +740,11 @@ public class FMEQueryEngineTest {
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
-        try
-        {
-            fmeQueryEngine.runQuery(script, result);
-        }
-        catch(XMLConvException e)
-        {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
-            String expectedMessage = "Generic Exception handling. FME request error: Failed for last Retry  number: 2. Received status SUBMITTED";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Status SUBMITTED - exception did not throw!");
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
 
@@ -871,11 +765,11 @@ public class FMEQueryEngineTest {
 
         FileInputStream fis = new FileInputStream ("testFile");
         String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-        Assert.assertThat(text, is(failedOutputString));
+        Assert.assertThat(text, is("{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}"));
     }
 
     /* Test case: run query status PULLED */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryStatusPULLED_ABORTED_3rdTime() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
@@ -888,24 +782,15 @@ public class FMEQueryEngineTest {
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponseABORTED.getBytes() ));
-        try
-        {
-            fmeQueryEngine.runQuery(script, result);
-        }
-        catch(XMLConvException e)
-        {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
-            String expectedMessage = "Generic Exception handling. FME request error: Received response status ABORTED";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Status ABORTED - exception did not throw!");
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
     /* Test case: run query other status */
-    @Test(expected = XMLConvException.class)
+    @Test
     public void testRunQueryOtherStatusCode() throws Exception {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
@@ -915,20 +800,11 @@ public class FMEQueryEngineTest {
         String JSONResponse = "{\"result\":{\"status\":\"OTHER\"},\"id\":\"testId\",\"status\":\"OTHER\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
                 .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
-        try
-        {
-            fmeQueryEngine.runQuery(script, result);
-        }
-        catch(XMLConvException e)
-        {
-            FileInputStream fis = new FileInputStream ("testFile");
-            String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-            Assert.assertThat(text, is(failedOutputString));
-            String expectedMessage = "Generic Exception handling. FME request error: Received wrong response status OTHER";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Status OTHER - exception did not throw!");
+
+        fmeQueryEngine.runQuery(script, result);
+        FileInputStream fis = new FileInputStream ("testFile");
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
     }
 
 }
