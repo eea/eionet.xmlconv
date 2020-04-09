@@ -49,6 +49,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
@@ -91,21 +92,28 @@ public class XQueryJob implements Job, InterruptableJob {
     public void execute(JobExecutionContext paramJobExecutionContext) throws JobExecutionException {
         thisThread = Thread.currentThread();
         try {
-            //LOGGER.info("Job ID=  " + jobId + " started.");
+            LOGGER.info("### Job with id=" + jobId + " started executing.");
             schemaManager = new SchemaManager();
+            long startTimeSta = System.nanoTime();
             initVariables();
             String srcFile = url;
             //
             int jobRetries = getJobRetries();
+            LOGGER.info("### Job with id=" + jobId + " retries=" +  jobRetries + ".");
             if ( jobRetries >= 4) // break execution
+            {
+                LOGGER.info("### This job cannot be executed. Retry count reached.");
                 throw new XMLConvException("Retry count reached");
-
+            }
             // update the Job status on db
             processJob();
 
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 try {
+                    long startTime = System.nanoTime();
+                    long stopTime = System.nanoTime();
+
                     // validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
@@ -127,10 +135,12 @@ public class XQueryJob implements Job, InterruptableJob {
                     LOGGER.debug("Validation proceeded, now store to the result file");
                     Utils.saveStrToFile(resultFile, result, null);
                     changeStatus(Constants.XQ_READY);
+                    LOGGER.info("### job with id: " + jobId + " has been Validated. Validation time in nanoseconds = " + (stopTime - startTime));
                 } catch (Exception e) {
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true);
                 }
             } else {
+
                 // read query info from DB.
                 Map query = getQueryInfo(queryID);
                 String contentType = null;
@@ -188,7 +198,8 @@ public class XQueryJob implements Job, InterruptableJob {
                     out = new FileOutputStream(new File(resultFile));
                     xq.getResult(out);
                     changeStatus(Constants.XQ_READY);
-                    LOGGER.info("Job ID=" + jobId + " finished.");
+                    long stopTimeEnd = System.nanoTime();
+                    LOGGER.info("### Job with id=" + jobId + " status is READY. Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta)+ ".");
                 } catch (XMLConvException e) {
                     changeStatus(Constants.XQ_FATAL_ERR);
                     StringBuilder errBuilder = new StringBuilder();
@@ -196,6 +207,8 @@ public class XQueryJob implements Job, InterruptableJob {
                     errBuilder.append(Utils.escapeXML(e.toString()));
                     errBuilder.append("</div>");
                     IOUtils.write(errBuilder.toString(), out, "UTF-8");
+                    long stopTimeEnd = System.nanoTime();
+                    LOGGER.info("### Job with id=" + jobId + " status is FATAL_ERROR. Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta) + ".");
                     LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
                 } finally {
                         IOUtils.closeQuietly(out);
@@ -264,6 +277,10 @@ public class XQueryJob implements Job, InterruptableJob {
     private void changeStatus(int status) throws Exception {
         try {
             xqJobDao.changeJobStatus(jobId, status);
+            if (status == 3)
+                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.JOB_READY + ".");
+            else
+                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_FATAL_ERR + ".");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());
             throw e;

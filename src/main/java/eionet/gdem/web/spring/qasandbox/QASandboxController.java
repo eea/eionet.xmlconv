@@ -169,11 +169,11 @@ public class QASandboxController {
             WorkqueueManager workqueueManager = new WorkqueueManager();
             if (cForm.isShowScripts()) {
                 List<String> jobIds = workqueueManager.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
-                LOGGER.info("QA Sandbox: " + messageService.getMessage("message.qasandbox.jobsAdded", jobIds.toString()));
+                LOGGER.info("QA Sandbox: " + messageService.getMessage("message.qasandbox.jobsAdded", jobIds.toString())+ ".");
                 messages.add(messageService.getMessage("message.qasandbox.jobsAdded", jobIds.toString()));
             } else {
                 String jobId = workqueueManager.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
-                LOGGER.info("QA Sandbox: " + messageService.getMessage("message.qasandbox.jobAdded", jobId));
+                LOGGER.info("QA Sandbox: " + messageService.getMessage("message.qasandbox.jobAdded", jobId)+ ".");
                 messages.add(messageService.getMessage("message.qasandbox.jobAdded", jobId));
             }
         } catch (DCMException e) {
