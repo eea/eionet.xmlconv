@@ -5,11 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Table(name = "JOB_HISTORY_LOGS")
-public class JobHistoryLogs implements Serializable {
+@Table(name = "JOB_HISTORY")
+public class JobHistoryEntry implements Serializable {
 
     @Id
     @Column(name = "ID")
@@ -21,8 +22,8 @@ public class JobHistoryLogs implements Serializable {
     @Column(name = "STATUS")
     private Integer status;
 
-    @Column(name = "TIME_STAMP")
-    private Date timeStamp;
+    @Column(name = "DATE_ADDED")
+    private Timestamp dateAdded;
 
     @Column(name = "JOB_GROUP")
     private String jobGroup;
@@ -45,15 +46,15 @@ public class JobHistoryLogs implements Serializable {
     @Column(name = "XQ_TYPE")
     private String xqType;
 
-    public JobHistoryLogs() {
+    public JobHistoryEntry() {
     }
 
-    public JobHistoryLogs(Integer id, String jobName, Integer status, Date timeStamp, String jobGroup,
+    public JobHistoryEntry(Integer id, String jobName, Integer status, Timestamp dateAdded, String jobGroup,
                           String description, String jobClassName, String url, String xqFile, String resultFile, String xqType) {
         this.id = id;
         this.jobName = jobName;
         this.status = status;
-        this.timeStamp = timeStamp;
+        this.dateAdded = dateAdded;
         this.jobGroup = jobGroup;
         this.description = description;
         this.jobClassName = jobClassName;
@@ -87,12 +88,12 @@ public class JobHistoryLogs implements Serializable {
         this.status = status;
     }
 
-    public Date getTimeStamp() {
-        return timeStamp;
+    public Timestamp getDateAdded() {
+        return dateAdded;
     }
 
-    public void setTimeStamp(Date timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setDateAdded(Timestamp dateAdded) {
+        this.dateAdded = dateAdded;
     }
 
     public String getJobGroup() {
