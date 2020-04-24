@@ -26,12 +26,12 @@ import static org.hamcrest.core.Is.is;
 @EnableJpaRepositories(basePackages = {
         "eionet.gdem.jpa.repositories"
 })
-public class JobHistoryEntryRepositoryTestIT {
+public class JobHistoryRepositoryTestIT {
     @Autowired
     private DataSource db;
 
     @Autowired
-    private JobHistoryEntryRepository repository;
+    private JobHistoryRepository repository;
 
     @Before
     public void setUp() throws Exception {
