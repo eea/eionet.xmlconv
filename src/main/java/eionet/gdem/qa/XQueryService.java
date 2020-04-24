@@ -26,6 +26,8 @@ package eionet.gdem.qa;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
@@ -36,22 +38,22 @@ import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
 import eionet.gdem.validation.InputAnalyser;
+import org.basex.query.value.item.Dat;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static eionet.gdem.Constants.JOB_VALIDATION;
@@ -81,6 +83,9 @@ public class XQueryService extends RemoteService {
     private static final Logger LOGGER = LoggerFactory.getLogger(XQueryService.class);
 
     private static final long heavyJobThreshhold = Properties.heavyJobThreshhold;
+
+    @Autowired
+    private JobHistoryRepository jobHistoryRepository;
 
     /**
      * Default constructor.
@@ -273,8 +278,9 @@ public class XQueryService extends RemoteService {
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
 
             newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
-            //
             scheduleJob(newId, sourceSize, scriptType);
+            jobHistoryRepository.save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+            LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
 
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
@@ -514,11 +520,12 @@ public class XQueryService extends RemoteService {
             long stopTime = System.nanoTime();
             LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
             LOGGER.info("### Job with id=" + jobId + " has been created.  Job creation time in nanoseconds = " + (stopTime - startTime) + ".");
-
             long startTime1 = System.nanoTime();
-            long stopTime1 = System.nanoTime();
             scheduleJob(jobId, sourceSize, scriptType);
+            long stopTime1 = System.nanoTime();
             LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
+            jobHistoryRepository.save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
+            LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());

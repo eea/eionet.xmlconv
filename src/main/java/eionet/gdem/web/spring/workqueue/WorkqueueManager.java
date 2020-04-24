@@ -27,6 +27,8 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.SecurityUtil;
@@ -35,13 +37,12 @@ import org.quartz.JobKey;
 import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
 import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
@@ -58,6 +59,9 @@ public class WorkqueueManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkqueueManager.class);
     /** Dao for getting job data. */
     private static IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
+
+    @Autowired
+    private static JobHistoryRepository jobHistoryRepository;
 
     /**
      * Get work-queue job data.
@@ -259,7 +263,17 @@ public class WorkqueueManager {
     public static void resetActiveJobs() {
         try {
             jobDao.changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
+            List<JobHistoryEntry> entriesDownloading = jobHistoryRepository.findAllByStatus(Constants.XQ_DOWNLOADING_SRC);
+            for(JobHistoryEntry entry: entriesDownloading){
+                jobHistoryRepository.save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
+            }
             jobDao.changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
+            List<JobHistoryEntry> entriesProcessing = jobHistoryRepository.findAllByStatus(Constants.XQ_PROCESSING);
+            for(JobHistoryEntry entry: entriesProcessing){
+                jobHistoryRepository.save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
+            }
         } catch (Exception e) {
             LOGGER.error("Error reseting active jobs: " + e.toString());
         }
@@ -310,6 +324,8 @@ public class WorkqueueManager {
                 for (String jobId : jobIds) {
                     // and reschedule each job
                     xQueryService.rescheduleJob(jobId);
+                    jobHistoryRepository.save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), null, null, null, null));
+                    LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
                 }
             }
         }
