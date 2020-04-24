@@ -4,6 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -12,18 +13,22 @@
        http://www.springframework.org/schema/util
        http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd">
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+                		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd ">
+
+    <jpa:repositories base-package="eionet.gdem.jpa.repositories" entity-manager-factory-ref="entityManagerFactory"
+                      transaction-manager-ref="transactionManager"/>
 
 
     <bean id="hikariDataSource" primary="false" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-        <constructor-arg ref="hikariConfig" />
+        <constructor-arg ref="hikariConfig"/>
     </bean>
 
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-        <property name="poolName" value="springHikariCP" />
+        <property name="poolName" value="springHikariCP"/>
         <property name="minimumIdle" value="5"/>
         <property name="maximumPoolSize" value="30"/>
-        <property name="dataSourceClassName" value="org.mariadb.jdbc.MariaDbDataSource" />
+        <property name="dataSourceClassName" value="org.mariadb.jdbc.MariaDbDataSource"/>
         <property name="dataSourceProperties">
             <props>
                 <prop key="url">${db.url}</prop>
@@ -38,13 +43,13 @@
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="transactionAwareDataSource"/>
-        <property name="packagesToScan" value="eionet.gdem" />
-        <property name="persistenceUnitName" value="CRM" />
+        <property name="packagesToScan" value="eionet.gdem"/>
+        <property name="persistenceUnitName" value="CRM"/>
         <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="showSql" value="true"/>
-                <property name="generateDdl" value="false" />
-                <property name="databasePlatform" value="org.hibernate.dialect.MySQL55Dialect" />
+                <property name="generateDdl" value="false"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQL55Dialect"/>
             </bean>
         </property>
         <property name="jpaProperties">
@@ -58,7 +63,7 @@
         </property>-->
     </bean>
 
-    <bean id="transactionManager" primary="true" class="org.springframework.orm.jpa.JpaTransactionManager" >
+    <bean id="transactionManager" primary="true" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
@@ -70,25 +75,28 @@
         <constructor-arg ref="transactionAwareDataSource"/>
     </bean>
 
-    <bean id="transactionAwareDataSource" primary="true" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
-        <constructor-arg ref="hikariDataSource" />
+    <bean id="transactionAwareDataSource" primary="true"
+          class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <constructor-arg ref="hikariDataSource"/>
     </bean>
 
     <bean class="org.jooq.impl.DataSourceConnectionProvider" name="connectionProvider">
-        <constructor-arg ref="transactionAwareDataSource" />
+        <constructor-arg ref="transactionAwareDataSource"/>
     </bean>
 
     <!-- JOOQ Configuration - experimental -->
     <!-- Configure the DSL object, optionally overriding jOOQ Exceptions with Spring Exceptions -->
     <bean id="dsl" class="org.jooq.impl.DefaultDSLContext">
-        <constructor-arg ref="config" />
+        <constructor-arg ref="config"/>
     </bean>
 
     <!-- Invoking an internal, package-private constructor for the example
          Implement your own Configuration for more reliable behaviour -->
     <bean class="org.jooq.impl.DefaultConfiguration" name="config">
-        <property name="SQLDialect"><value type="org.jooq.SQLDialect">MYSQL</value></property>
-        <property name="connectionProvider" ref="connectionProvider" />
+        <property name="SQLDialect">
+            <value type="org.jooq.SQLDialect">MYSQL</value>
+        </property>
+        <property name="connectionProvider" ref="connectionProvider"/>
         <!--<property name="executeListenerProvider">
             <array>
                 <bean class="org.jooq.impl.DefaultExecuteListenerProvider">
@@ -98,6 +106,6 @@
         </property>-->
     </bean>
 
-    <tx:annotation-driven />
+    <tx:annotation-driven/>
 
 </beans>

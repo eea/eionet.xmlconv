@@ -23,9 +23,9 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
-@EnableJpaRepositories(basePackages = {
-        "eionet.gdem.jpa.repositories"
-})
+//@EnableJpaRepositories(basePackages = {
+//        "eionet.gdem.jpa.repositories"
+///})
 public class JobHistoryRepositoryTestIT {
     @Autowired
     private DataSource db;
