@@ -23,6 +23,7 @@ package eionet.gdem.web.spring.workqueue;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
@@ -59,9 +60,6 @@ public class WorkqueueManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkqueueManager.class);
     /** Dao for getting job data. */
     private static IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
-
-    @Autowired
-    private static JobHistoryRepository jobHistoryRepository;
 
     /**
      * Get work-queue job data.
@@ -263,15 +261,15 @@ public class WorkqueueManager {
     public static void resetActiveJobs() {
         try {
             jobDao.changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
-            List<JobHistoryEntry> entriesDownloading = jobHistoryRepository.findAllByStatus(Constants.XQ_DOWNLOADING_SRC);
+            List<JobHistoryEntry> entriesDownloading = getJobHistoryRepository().findAllByStatus(Constants.XQ_DOWNLOADING_SRC);
             for(JobHistoryEntry entry: entriesDownloading){
-                jobHistoryRepository.save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }
             jobDao.changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
-            List<JobHistoryEntry> entriesProcessing = jobHistoryRepository.findAllByStatus(Constants.XQ_PROCESSING);
+            List<JobHistoryEntry> entriesProcessing = getJobHistoryRepository().findAllByStatus(Constants.XQ_PROCESSING);
             for(JobHistoryEntry entry: entriesProcessing){
-                jobHistoryRepository.save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }
         } catch (Exception e) {
@@ -324,7 +322,7 @@ public class WorkqueueManager {
                 for (String jobId : jobIds) {
                     // and reschedule each job
                     xQueryService.rescheduleJob(jobId);
-                    jobHistoryRepository.save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), null, null, null, null));
+                    getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), null, null, null, null));
                     LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
                 }
             }
@@ -401,5 +399,9 @@ public class WorkqueueManager {
         } catch (Exception e) {
             throw new XMLConvException(e.getMessage());
         }
+    }
+
+    private static JobHistoryRepository getJobHistoryRepository() {
+        return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
     }
 }

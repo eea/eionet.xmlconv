@@ -24,6 +24,7 @@ package eionet.gdem.qa;
  */
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
@@ -83,9 +84,6 @@ public class XQueryJob implements Job, InterruptableJob {
     private SchemaManager schemaManager;
 
     private volatile Thread thisThread;
-
-    @Autowired
-    private JobHistoryRepository jobHistoryRepository;
 
     /**
      * Public constructor.
@@ -285,7 +283,7 @@ public class XQueryJob implements Job, InterruptableJob {
     private void changeStatus(int status) throws Exception {
         try {
             xqJobDao.changeJobStatus(jobId, status);
-            jobHistoryRepository.save(new JobHistoryEntry(jobId, status, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType));
+            getJobHistoryRepository().save(new JobHistoryEntry(jobId, status, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType));
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
             if (status == 3)
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.JOB_READY + ".");
@@ -300,7 +298,7 @@ public class XQueryJob implements Job, InterruptableJob {
     private void processJob() throws SQLException {
         try {
             xqJobDao.processXQJob(jobId);
-            jobHistoryRepository.save(new JobHistoryEntry(jobId, Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType));
+            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType));
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());
@@ -375,5 +373,9 @@ public class XQueryJob implements Job, InterruptableJob {
         } else {
             throw new UnableToInterruptJobException("Unable to interrupt XQ job.");
         }
+    }
+
+    private JobHistoryRepository getJobHistoryRepository() {
+        return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
     }
 }

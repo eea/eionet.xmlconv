@@ -25,9 +25,11 @@ package eionet.gdem.qa;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.web.spring.conversions.IStyleSheetDao;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
@@ -83,9 +85,6 @@ public class XQueryService extends RemoteService {
     private static final Logger LOGGER = LoggerFactory.getLogger(XQueryService.class);
 
     private static final long heavyJobThreshhold = Properties.heavyJobThreshhold;
-
-    @Autowired
-    private JobHistoryRepository jobHistoryRepository;
 
     /**
      * Default constructor.
@@ -279,7 +278,7 @@ public class XQueryService extends RemoteService {
 
             newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
             scheduleJob(newId, sourceSize, scriptType);
-            jobHistoryRepository.save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+            getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
             LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
 
         } catch (SQLException sqe) {
@@ -524,7 +523,7 @@ public class XQueryService extends RemoteService {
             scheduleJob(jobId, sourceSize, scriptType);
             long stopTime1 = System.nanoTime();
             LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
-            jobHistoryRepository.save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
+            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
             LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
@@ -630,5 +629,9 @@ public class XQueryService extends RemoteService {
         setGlobalParameters(runQaMethod);
         return runQaMethod.runQAScript(sourceUrl, scriptId);
 
+    }
+
+    private JobHistoryRepository getJobHistoryRepository() {
+        return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
     }
 }

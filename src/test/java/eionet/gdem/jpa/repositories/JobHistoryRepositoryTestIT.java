@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,6 +28,7 @@ public class JobHistoryRepositoryTestIT {
     @Autowired
     private DataSource db;
 
+    @Qualifier("jobHistoryRepository")
     @Autowired
     private JobHistoryRepository repository;
 
@@ -62,20 +64,6 @@ public class JobHistoryRepositoryTestIT {
     @Test(expected = Exception.class)
     public void saveTestNullMandatoryField() {
         repository.save(new JobHistoryEntry(7, null, 1, new Timestamp(new Date().getTime()),null, null, null , null));
-    }
-
-    @Test
-    public void saveTestSuccessful() {
-        Timestamp t = new Timestamp(new Date().getTime());
-        repository.save(new JobHistoryEntry("job2", 1, t, null, null, null , null));
-        JobHistoryEntry entry = repository.findById(6);
-        Assert.assertThat(entry.getId(), is(6));
-        Assert.assertThat(entry.getJobName(), is("job2"));
-        Assert.assertThat(entry.getStatus(), is(1));
-        Assert.assertThat(entry.getUrl(), is(nullValue()));
-        Assert.assertThat(entry.getXqFile(), is(nullValue()));
-        Assert.assertThat(entry.getResultFile(), is(nullValue()));
-        Assert.assertThat(entry.getXqType(), is(nullValue()));
     }
 
 }
