@@ -10,12 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
-import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -23,13 +24,11 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
-//@EnableJpaRepositories(basePackages = {
-//        "eionet.gdem.jpa.repositories"
-///})
 public class JobHistoryRepositoryTestIT {
     @Autowired
     private DataSource db;
 
+    @Qualifier("jobHistoryRepository")
     @Autowired
     private JobHistoryRepository repository;
 
@@ -40,25 +39,31 @@ public class JobHistoryRepositoryTestIT {
     }
 
     @Test
-    public void findByIdTestIdDoesntExist() throws IOException {
+    public void findByIdTestIdDoesntExist() {
         Assert.assertThat(repository.findById(0), is(nullValue()));
     }
 
     @Test
-    public void findByIdTestIdExists() throws IOException {
+    public void findByIdTestIdExists(){
         JobHistoryEntry entry = repository.findById(2);
         Assert.assertThat(entry.getId(), is(2));
         Assert.assertThat(entry.getJobName(), is("job2"));
         Assert.assertThat(entry.getStatus(), is(1));
-        Assert.assertThat(entry.getDateAdded().toString(), is("2017-07-23 13:10:11"));
-        Assert.assertThat(entry.getJobGroup(), is("jobGroup1"));
-        Assert.assertThat(entry.getDescription(), is(nullValue()));
-        Assert.assertThat(entry.getJobClassName(), is(nullValue()));
+        Assert.assertThat(entry.getDateAdded().toString(), is("2017-07-23 13:10:11.0"));
         Assert.assertThat(entry.getUrl(), is(nullValue()));
         Assert.assertThat(entry.getXqFile(), is(nullValue()));
         Assert.assertThat(entry.getResultFile(), is(nullValue()));
         Assert.assertThat(entry.getXqType(), is(nullValue()));
     }
 
+    @Test(expected = Exception.class)
+    public void saveTestNull()  {
+        repository.save((JobHistoryEntry) null);
+    }
+
+    @Test(expected = Exception.class)
+    public void saveTestNullMandatoryField() {
+        repository.save(new JobHistoryEntry(7, null, 1, new Timestamp(new Date().getTime()),null, null, null , null));
+    }
 
 }

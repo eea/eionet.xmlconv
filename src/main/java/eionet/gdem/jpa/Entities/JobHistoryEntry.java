@@ -1,18 +1,15 @@
 package eionet.gdem.jpa.Entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Entity
 @Table(name = "JOB_HISTORY")
 public class JobHistoryEntry implements Serializable {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
 
@@ -24,15 +21,6 @@ public class JobHistoryEntry implements Serializable {
 
     @Column(name = "DATE_ADDED")
     private Timestamp dateAdded;
-
-    @Column(name = "JOB_GROUP")
-    private String jobGroup;
-
-    @Column(name = "DESCRIPTION")
-    private String description;
-
-    @Column(name = "JOB_CLASS_NAME")
-    private String jobClassName;
 
     @Column(name = "URL")
     private String url;
@@ -49,15 +37,21 @@ public class JobHistoryEntry implements Serializable {
     public JobHistoryEntry() {
     }
 
-    public JobHistoryEntry(Integer id, String jobName, Integer status, Timestamp dateAdded, String jobGroup,
-                          String description, String jobClassName, String url, String xqFile, String resultFile, String xqType) {
+    public JobHistoryEntry(Integer id, String jobName, Integer status, Timestamp dateAdded, String url, String xqFile, String resultFile, String xqType) {
         this.id = id;
         this.jobName = jobName;
         this.status = status;
         this.dateAdded = dateAdded;
-        this.jobGroup = jobGroup;
-        this.description = description;
-        this.jobClassName = jobClassName;
+        this.url = url;
+        this.xqFile = xqFile;
+        this.resultFile = resultFile;
+        this.xqType = xqType;
+    }
+
+    public JobHistoryEntry(String jobName, Integer status, Timestamp dateAdded, String url, String xqFile, String resultFile, String xqType) {
+        this.jobName = jobName;
+        this.status = status;
+        this.dateAdded = dateAdded;
         this.url = url;
         this.xqFile = xqFile;
         this.resultFile = resultFile;
@@ -94,30 +88,6 @@ public class JobHistoryEntry implements Serializable {
 
     public void setDateAdded(Timestamp dateAdded) {
         this.dateAdded = dateAdded;
-    }
-
-    public String getJobGroup() {
-        return jobGroup;
-    }
-
-    public void setJobGroup(String jobGroup) {
-        this.jobGroup = jobGroup;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getJobClassName() {
-        return jobClassName;
-    }
-
-    public void setJobClassName(String jobClassName) {
-        this.jobClassName = jobClassName;
     }
 
     public String getUrl() {

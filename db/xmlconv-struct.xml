@@ -417,9 +417,6 @@
             <column name="DATE_ADDED" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="JOB_GROUP" type="VARCHAR(200)"/>
-            <column name="DESCRIPTION" type="VARCHAR(250)"/>
-            <column name="JOB_CLASS_NAME" type="VARCHAR(250)"/>
             <column name="URL" type="VARCHAR(2048)"/>
             <column name="XQ_FILE" type="VARCHAR(255)"/>
             <column name="RESULT_FILE" type="VARCHAR(255)"/>
