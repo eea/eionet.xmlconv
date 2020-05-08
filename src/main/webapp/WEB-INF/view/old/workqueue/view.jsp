@@ -86,7 +86,7 @@
       <col style="width:100px"/>
       <thead>
       <tr>
-        <th scope="col" class="scope-col" colspan="2">Job ID</th>
+        <th scope="col" class="scope-col details-control" colspan="2">Job ID</th>
         <th scope="col" class="scope-col">Document URL</th>
         <th scope="col" class="scope-col">XQuery script</th>
         <th scope="col" class="scope-col">Job Result</th>
@@ -129,16 +129,16 @@
         <tr class="${i.index % 2 == 1 ? 'zebraodd' : 'zebraeven'}">
           <c:choose>
             <c:when test="${permissions.wqdPrm || permissions.wquPrm}">
-              <td>
+              <td class="details-control">
                 <form:checkbox path="jobs" id="job_${job.jobId}" value="${job.jobId}"/>
               </td>
-              <td>
+              <td class="details-control">
                 <label for="job_${job.jobId}">${job.jobId}</label>
               </td>
             </c:when>
             <c:otherwise>
               <td/>
-              <td>${job.jobId}</td>
+              <td class="details-control">${job.jobId}</td>
             </c:otherwise>
           </c:choose>
           <td>
@@ -221,4 +221,6 @@
   $("#selectAll").click(function () {
     $('input[type="checkbox"]').prop("checked", true);
   });
+
+
 </script>
