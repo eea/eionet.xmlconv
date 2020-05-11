@@ -251,7 +251,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         try {
             // We must first generate a security token for authentication purposes
 
-            fmeUrl = "http://" + this.getFmeHostProperty() + ":" + this.getFmePortProperty()
+            fmeUrl = "https://" + this.getFmeHostProperty() + ":" + this.getFmePortProperty()
                     + "/fmetoken/generate";
 
             java.net.URI uri = new URIBuilder(fmeUrl)
