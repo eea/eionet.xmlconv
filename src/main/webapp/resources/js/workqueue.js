@@ -4,21 +4,31 @@
 
 function format ( d ) {
     // `d` is the original data object for the row
-    console.log(d);
-    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-        '<tr>'+
-        '<td>Full name:</td>'+
-        '<td>'+d.name+'</td>'+
-        '</tr>'+
-        '<tr>'+
-        '<td>Extension number:</td>'+
-        '<td>'+d.extn+'</td>'+
-        '</tr>'+
-        '<tr>'+
-        '<td>Extra info:</td>'+
-        '<td>And any further details here (images etc)...</td>'+
-        '</tr>'+
-        '</table>';
+    console.log(d.id);
+    var rows = ["apple", "orange", "cherry"];
+    var additionalInfo = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    rows.forEach(function(entry) {
+        console.log(entry);
+        additionalInfo = additionalInfo.concat('<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+            '<tr>'+
+            '<td>Job status</td>'+
+            '<td>'+d.name+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td>Date added for status:</td>'+
+            '<td>'+d.extn+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td>Time in status:</td>'+
+            '<td>' + entry + '</td>'+
+            '</tr>' +
+            '</table>'
+        );
+        return additionalInfo;
+    });
+
+    additionalInfo = additionalInfo.concat('</table>');
+    return additionalInfo;
 }
 
 
