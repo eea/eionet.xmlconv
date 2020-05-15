@@ -1,13 +1,19 @@
 package eionet.gdem.web.spring.workqueue;
 
+import com.google.gson.JsonObject;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.web.spring.SpringMessages;
+import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +40,9 @@ public class WorkqueueController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkqueueController.class);
     private MessageService messageService;
+
+    @Autowired
+    public JobHistoryService jobHistoryService;
 
     @Autowired
     public WorkqueueController(MessageService messageService) {
@@ -234,4 +243,8 @@ public class WorkqueueController {
         return "redirect:/workqueue";
     }
 
+    @PostMapping("/getJobDetails")
+    public JSONObject getJobDetails(String jobId) {
+        return jobHistoryService.getAdditionalInfoOfJob(jobId);
+    }
 }

@@ -15,4 +15,7 @@ public interface JobHistoryRepository extends JpaRepository<JobHistoryEntry, Lon
     /* Retrieves the job history entry by its status */
     List<JobHistoryEntry> findAllByStatus(Integer status);
 
+    /* Retrieves job history entries by the job's name */
+    List<JobHistoryEntry> findByJobName(String jobName);
+
 }

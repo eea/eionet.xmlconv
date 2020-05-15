@@ -423,6 +423,11 @@
             <column name="XQ_TYPE" type="VARCHAR(50)"/>
         </createTable>
     </changeSet>
+    <changeSet author="anthaant" id="rev-38">
+        <createIndex indexName="JOB_NAME_IDX" tableName="JOB_HISTORY" unique="true">
+            <column name="JOB_NAME"/>
+        </createIndex>
+    </changeSet>
 
 
 </databaseChangeLog>

@@ -4,7 +4,9 @@
 
 function format ( d ) {
     // `d` is the original data object for the row
-    console.log(d.id);
+    var jobId = getSelectedJobId(d[1]);
+    //ajax call to get data by jobid
+    getJobDetails(jobId);
     var rows = ["apple", "orange", "cherry"];
     var additionalInfo = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
     rows.forEach(function(entry) {
@@ -12,16 +14,12 @@ function format ( d ) {
         additionalInfo = additionalInfo.concat('<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
             '<tr>'+
             '<td>Job status</td>'+
-            '<td>'+d.name+'</td>'+
+            '<td>'+jobId+'</td>'+
             '</tr>'+
             '<tr>'+
-            '<td>Date added for status:</td>'+
+            '<td>Date that status was modified:</td>'+
             '<td>'+d.extn+'</td>'+
             '</tr>'+
-            '<tr>'+
-            '<td>Time in status:</td>'+
-            '<td>' + entry + '</td>'+
-            '</tr>' +
             '</table>'
         );
         return additionalInfo;
@@ -31,6 +29,31 @@ function format ( d ) {
     return additionalInfo;
 }
 
+function getSelectedJobId(label){
+    //label will be sth like <label for=\"job_1\">1</label>
+    var regex =  /<label for(.*)\">/;
+    var jobId = label.replace(regex,"").replace("</label>","");
+    return jobId;
+}
+
+function getJobDetails(jobId){
+    $.ajax({
+        async: false,
+        type: "POST",
+        url: 'workqueue/getJobDetails',
+        data: { 'jobId' : jobId },
+        dataType: 'application/json',
+        success: function (result) {
+            alert('Value successfully updated.');
+            alert(result);
+            //window.location.reload(true);
+        },
+        error: function () {
+            alert('An error occurred. Please try again later.');
+        }
+    });
+    //response(customer);
+}
 
 $(document).ready(function() {
 
