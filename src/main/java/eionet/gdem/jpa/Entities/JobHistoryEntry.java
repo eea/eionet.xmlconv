@@ -1,7 +1,5 @@
 package eionet.gdem.jpa.Entities;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -109,5 +107,9 @@ public class JobHistoryEntry implements Serializable {
 
     public void setFullStatusName(String fullStatusName) {
         this.fullStatusName = fullStatusName;
+    }
+
+    public String getFullStatusName() {
+        return fullStatusName;
     }
 }
