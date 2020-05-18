@@ -20,7 +20,7 @@ function format ( row, tr ) {
                 additionalInfo = additionalInfo.concat('<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
                     '<tr>'+
                     '<td>Job status</td>'+
-                    '<td>'+entry.status+'</td>'+
+                    '<td>'+entry.status+ ' ( ' + entry.fullStatusName + ' ) ' + '</td>'+
                     '</tr>'+
                     '<tr>'+
                     '<td>Date that status was modified:</td>'+

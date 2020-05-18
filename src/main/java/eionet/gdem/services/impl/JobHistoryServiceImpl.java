@@ -20,6 +20,34 @@ public class JobHistoryServiceImpl implements JobHistoryService {
 
     @Override
     public List<JobHistoryEntry> getAdditionalInfoOfJob(String jobId){
-       return repository.findByJobName(jobId);
+        List<JobHistoryEntry> entries = repository.findByJobName(jobId);
+        for(JobHistoryEntry entry: entries){
+            switch (entry.getStatus()) {
+                case 0:
+                    entry.setFullStatusName("RECEIVED JOB");
+                    break;
+                case 1:
+                    entry.setFullStatusName("DOWNLOADING SOURCE FILE");
+                    break;
+                case 2:
+                    entry.setFullStatusName("PROCESSING JOB");
+                    break;
+                case 3:
+                    entry.setFullStatusName("READY");
+                    break;
+                case 4:
+                    entry.setFullStatusName("FATAL ERROR");
+                    break;
+                case 5:
+                    entry.setFullStatusName("LIGHT ERROR");
+                    break;
+                case 6:
+                    entry.setFullStatusName("JOB NOT FOUND ERROR");
+                    break;
+                default:
+                    entry.setFullStatusName("UNKNOWN STATUS");
+            }
+        }
+        return entries;
     }
 }

@@ -1,5 +1,7 @@
 package eionet.gdem.jpa.Entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -33,6 +35,9 @@ public class JobHistoryEntry implements Serializable {
 
     @Column(name = "XQ_TYPE")
     private String xqType;
+
+    @Transient
+    private String fullStatusName;
 
     public JobHistoryEntry() {
     }
@@ -70,10 +75,6 @@ public class JobHistoryEntry implements Serializable {
         return jobName;
     }
 
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -84,10 +85,6 @@ public class JobHistoryEntry implements Serializable {
 
     public Timestamp getDateAdded() {
         return dateAdded;
-    }
-
-    public void setDateAdded(Timestamp dateAdded) {
-        this.dateAdded = dateAdded;
     }
 
     public String getUrl() {
@@ -102,23 +99,15 @@ public class JobHistoryEntry implements Serializable {
         return xqFile;
     }
 
-    public void setXqFile(String xqFile) {
-        this.xqFile = xqFile;
-    }
-
     public String getResultFile() {
         return resultFile;
-    }
-
-    public void setResultFile(String resultFile) {
-        this.resultFile = resultFile;
     }
 
     public String getXqType() {
         return xqType;
     }
 
-    public void setXqType(String xqType) {
-        this.xqType = xqType;
+    public void setFullStatusName(String fullStatusName) {
+        this.fullStatusName = fullStatusName;
     }
 }
