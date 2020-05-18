@@ -40,9 +40,8 @@ function getJobDetails(jobId){
     $.ajax({
         async: false,
         type: "POST",
-        url: 'workqueue/getJobDetails',
-        data: { 'jobId' : jobId },
-        dataType: 'application/json',
+        url: 'workqueue/getJobDetails/'+jobId,
+        contentType : 'application/json; charset=utf-8',
         success: function (result) {
             alert('Value successfully updated.');
             alert(result);
