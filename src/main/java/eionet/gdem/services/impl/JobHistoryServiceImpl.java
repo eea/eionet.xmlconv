@@ -21,7 +21,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
     @Override
     public JSONObject getAdditionalInfoOfJob(String jobId){
         List<JobHistoryEntry> entries = repository.findByJobName(jobId);
-        /*create and return json object  like {1:{status:a, dateadded:b, time in status:c},2:{status:d, dateadded:e, time in status:f}} */
+        /*create and return json object  which contains the status and when the status was modified for each job history entry that was retrieved above */
 
         JSONObject fullJsonObject = new JSONObject();
         JSONArray jsonArrayForAllEntries = new JSONArray();
