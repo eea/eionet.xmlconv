@@ -244,6 +244,7 @@ public class WorkqueueController {
     }
 
     @PostMapping("/getJobDetails")
+    @ResponseBody
     public JSONObject getJobDetails(String jobId) {
         return jobHistoryService.getAdditionalInfoOfJob(jobId);
     }
