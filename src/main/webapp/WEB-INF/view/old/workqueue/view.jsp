@@ -129,16 +129,16 @@
         <tr class="${i.index % 2 == 1 ? 'zebraodd' : 'zebraeven'}">
           <c:choose>
             <c:when test="${permissions.wqdPrm || permissions.wquPrm}">
-              <td class="details-control">
+              <td>
                 <form:checkbox path="jobs" id="job_${job.jobId}" value="${job.jobId}"/>
               </td>
-              <td class="details-control">
+              <td class="details-control" id="selectableJobId">
                 <label for="job_${job.jobId}">${job.jobId}</label>
               </td>
             </c:when>
             <c:otherwise>
               <td/>
-              <td class="details-control">${job.jobId}</td>
+              <td class="details-control" id="selectableJobId">${job.jobId}</td>
             </c:otherwise>
           </c:choose>
           <td>
