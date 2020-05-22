@@ -1,6 +1,8 @@
 package eionet.gdem.web.spring.workqueue;
 
 import java.sql.SQLException;
+import java.sql.Date;
+import java.util.Map;
 
 /**
  * XQ Job Dao Interface.
@@ -183,5 +185,20 @@ public interface IXQJobDao {
     * @throws SQLException
     */
     String[][] getJobsSumInstanceAndStatus() throws SQLException;
+
+    /**
+     *Get a map with job id as key and timestamp as value by status
+     * @param status
+     * @return the hashmap
+     * @throws SQLException
+     */
+    Map<String, Date> getJobsWithTimestamps(int status) throws SQLException;
+
+    /**
+     *Update duration of jobs
+     *  @param jobHashmap a map with job id as key and timestamp as value
+     * @throws SQLException
+     */
+    void updateXQJobsDuration(Map<String, Long> jobHashmap) throws SQLException;
     
 }

@@ -428,6 +428,18 @@
             <column name="JOB_NAME"/>
         </createIndex>
     </changeSet>
-
-
+    <changeSet author="anthaant" id="rev-39">
+        <addColumn tableName="JOB_HISTORY">
+            <column name="DURATION" type="BIGINT"/>
+        </addColumn>
+        <createIndex indexName="DURATION_IDX" tableName="JOB_HISTORY" unique="false">
+            <column name="DURATION"/>
+        </createIndex>
+        <addColumn tableName="T_XQJOBS">
+            <column name="DURATION" type="BIGINT"/>
+        </addColumn>
+        <createIndex indexName="DURATION_IDX" tableName="T_XQJOBS" unique="false">
+            <column name="DURATION"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

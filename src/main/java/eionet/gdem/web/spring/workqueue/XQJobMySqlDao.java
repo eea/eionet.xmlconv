@@ -4,6 +4,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.database.MySqlBaseDao;
 import eionet.gdem.utils.Utils;
+import org.basex.query.value.item.Dat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static eionet.gdem.qa.QueryMySqlDao.JOB_RETRY_COUNTER;
 
@@ -39,6 +43,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     public static final String SRC_FILE_FLD = "SRC_FILE";
     public static final String XQ_TYPE_FLD = "XQ_TYPE";
     public static final String INSTANCE = "INSTANCE";
+    public static final String DURATION_FLD = "DURATION";
     /**
      * Table for XQuery Workqueue.
      */
@@ -98,6 +103,10 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qLastActiveJobTime = qXQJobDataBase + " WHERE "+ STATUS_FLD + "=" + Constants.XQ_PROCESSING + " ORDER BY TIME_STAMP desc limit 1";
     
     private static final String qJobsByInstanceAndStatus = "SELECT INSTANCE, N_STATUS, COUNT(*) as JOBS_SUM FROM T_XQJOBS GROUP BY INSTANCE, N_STATUS";
+
+    private static final String qJobsObject = "SELECT *" + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "= ?";
+
+    private static final String qJobsUpdateDuration = "UPDATE " + WQ_TABLE + " SET " + DURATION_FLD + "= ?" + " WHERE " + JOB_ID_FLD + " = ?  ";
 
     @Override
     public String[] getXQJobData(String jobId) throws SQLException {
@@ -518,5 +527,50 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         }
         return s;
     }
-    
+
+    @Override
+    public Map<String, Date> getJobsWithTimestamps(int status) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Map<String, Date> jobIdTimeStampMap = new HashMap();
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qJobsObject);
+        }
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qJobsObject);
+            pstmt.setInt(1, status);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                jobIdTimeStampMap.put(rs.getString("JOB_ID"), rs.getDate("TIME_STAMP"));
+            }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+        return jobIdTimeStampMap;
+    }
+
+    @Override
+    public void updateXQJobsDuration(Map<String, Long> jobHashmap) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        conn = getConnection();
+        StringBuffer queryBuf = new StringBuffer(qJobsUpdateDuration);
+        pstmt = conn.prepareStatement(queryBuf.toString());
+
+        try {
+            for (Map.Entry<String,Long> entry : jobHashmap.entrySet()) {
+                pstmt.setLong(1, entry.getValue());
+                pstmt.setString(2, entry.getKey());
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
+    }
+
 }
