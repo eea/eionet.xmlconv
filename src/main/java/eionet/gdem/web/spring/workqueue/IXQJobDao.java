@@ -2,6 +2,7 @@ package eionet.gdem.web.spring.workqueue;
 
 import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Map;
 
 /**
@@ -192,7 +193,7 @@ public interface IXQJobDao {
      * @return the hashmap
      * @throws SQLException
      */
-    Map<String, Date> getJobsWithTimestamps(int status) throws SQLException;
+    Map<String, Timestamp> getJobsWithTimestamps(int status) throws SQLException;
 
     /**
      *Update duration of jobs

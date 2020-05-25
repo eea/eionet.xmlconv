@@ -9,11 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,7 +84,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qEndXQJobs = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + " IN ";
 
     private static final String qJobData = "SELECT " + JOB_ID_FLD + ", " + URL_FLD + "," + XQ_FILE_FLD + ", " + RESULT_FILE_FLD
-            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD +  ", " + INSTANCE + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
+            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD +  ", " + INSTANCE +  ", " + DURATION_FLD + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qChangeJobsStatuses = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD
             + "= NOW() " + " WHERE " + JOB_ID_FLD + " IN  ";
@@ -529,11 +525,11 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     }
 
     @Override
-    public Map<String, Date> getJobsWithTimestamps(int status) throws SQLException {
+    public Map<String, Timestamp> getJobsWithTimestamps(int status) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        Map<String, Date> jobIdTimeStampMap = new HashMap();
+        Map<String, Timestamp> jobIdTimeStampMap = new HashMap();
 
         if (isDebugMode) {
             LOGGER.debug("Query is " + qJobsObject);
@@ -545,7 +541,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt.setInt(1, status);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                jobIdTimeStampMap.put(rs.getString("JOB_ID"), rs.getDate("TIME_STAMP"));
+                jobIdTimeStampMap.put(rs.getString("JOB_ID"), rs.getTimestamp("TIME_STAMP"));
             }
         } finally {
             closeAllResources(rs, pstmt, conn);

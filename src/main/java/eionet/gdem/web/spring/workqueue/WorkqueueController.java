@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -98,6 +99,7 @@ public class WorkqueueController {
             String timeStamp = list[i][5];
             String xqStringID = list[i][6];
             String instance = list[i][7];
+            String durationMs = list[i][8];
 
             job.setJobId(jobId);
             /*job.setUrl(url);*/
@@ -162,6 +164,16 @@ public class WorkqueueController {
             }
             String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
             job.setUrl(urlName);
+
+            //Set duration of job id status is in PROCESSING
+            if (status == Constants.XQ_PROCESSING && durationMs != null) {
+                Long duration = Long.parseLong(durationMs);
+                job.setDurationInProgress(String.format("%d hours, %02d minutes",
+                        TimeUnit.MILLISECONDS.toHours(duration),
+                        TimeUnit.MILLISECONDS.toMinutes(duration) -
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration))
+                ));
+            }
 
             jobsList.add(job);
         }

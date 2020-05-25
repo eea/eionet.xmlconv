@@ -121,6 +121,7 @@
         </th>
         <th scope="col" class="scope-col">Started at</th>
         <th scope="col" class="scope-col">Instance</th>
+        <th scope="col" class="scope-col">Duration</th>
       </tr>
       </thead>
       <tbody>
@@ -185,6 +186,13 @@
               <c:otherwise>
                 <div title="Log in to see system info">-</div>
               </c:otherwise>
+            </c:choose>
+          </td>
+          <td>
+            <c:choose>
+              <c:when test="${not empty job.durationInProgress}">
+                ${job.durationInProgress}
+              </c:when>
             </c:choose>
           </td>
         </tr>

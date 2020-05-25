@@ -34,6 +34,9 @@ public class JobHistoryEntry implements Serializable {
     @Column(name = "XQ_TYPE")
     private String xqType;
 
+    @Column(name = "DURATION")
+    private Long duration;
+
     @Transient
     private String fullStatusName;
 
@@ -111,5 +114,9 @@ public class JobHistoryEntry implements Serializable {
 
     public String getFullStatusName() {
         return fullStatusName;
+    }
+
+    public Long getDuration() {
+        return duration;
     }
 }

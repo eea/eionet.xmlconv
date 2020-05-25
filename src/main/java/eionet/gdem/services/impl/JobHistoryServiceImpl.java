@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.jooq.tools.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class JobHistoryServiceImpl implements JobHistoryService {
@@ -30,7 +31,16 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                     entry.setFullStatusName("DOWNLOADING SOURCE FILE");
                     break;
                 case 2:
-                    entry.setFullStatusName("PROCESSING JOB");
+                    //if status is in processing and duration field was filled show the duration in hours and minutes
+                    String row = "PROCESSING JOB";
+                    if(entry.getDuration() != null){
+                        row += String.format(" for %d hours, %02d minutes",
+                                TimeUnit.MILLISECONDS.toHours(entry.getDuration()),
+                                TimeUnit.MILLISECONDS.toMinutes(entry.getDuration()) -
+                                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(entry.getDuration()))
+                        );
+                    }
+                    entry.setFullStatusName(row);
                     break;
                 case 3:
                     entry.setFullStatusName("READY");
