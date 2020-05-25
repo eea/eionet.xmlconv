@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class FixedTimeScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FixedTimeScheduledTasks.class);
