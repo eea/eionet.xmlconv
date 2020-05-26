@@ -38,16 +38,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.Vector;
+import java.util.*;
 
 import eionet.gdem.utils.xml.sax.SaxContext;
 import org.apache.commons.codec.binary.Base64;
@@ -81,6 +75,8 @@ public final class Utils {
     private static Map<Character, String> xmlEscapes = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
+
+    private static SimpleDateFormat gmtDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Saving an URL stream to the specified text file.
@@ -1291,6 +1287,20 @@ public final class Utils {
             throw new DCMException(BusinessConstants.EXCEPTION_SCHEMAOPEN_ERROR);
         }
         return remoteFile;
+    }
+
+    /**
+     * Create a Timestamp object with the current date in GMT timezone.
+     *
+     * @return the timestamp
+     * @throws ParseException
+     *             in case of parsing error.
+     */
+    public static Timestamp getGMTCurrentTimestamp() throws ParseException {
+        gmtDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String dateStr = gmtDateFormat.format(new Date());
+        Date date= gmtDateFormat.parse(dateStr);
+        return new Timestamp(date.getTime());
     }
 
 }

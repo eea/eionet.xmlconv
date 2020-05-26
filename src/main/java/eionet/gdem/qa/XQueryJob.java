@@ -51,11 +51,9 @@ import java.io.FileOutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * XQuery job in the workqueue. A task executing the XQuery task and storing the results of processing.
@@ -283,7 +281,8 @@ public class XQueryJob implements Job, InterruptableJob {
     private void changeStatus(int status) throws Exception {
         try {
             xqJobDao.changeJobStatus(jobId, status);
-            getJobHistoryRepository().save(new JobHistoryEntry(jobId, status, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType));
+
+            getJobHistoryRepository().save(new JobHistoryEntry(jobId, status, Utils.getGMTCurrentTimestamp(), url, scriptFile, resultFile, scriptType));
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
             if (status == 3)
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.JOB_READY + ".");
@@ -295,10 +294,10 @@ public class XQueryJob implements Job, InterruptableJob {
         }
     }
 
-    private void processJob() throws SQLException {
+    private void processJob() throws SQLException, ParseException {
         try {
             xqJobDao.processXQJob(jobId);
-            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType));
+            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_PROCESSING, Utils.getGMTCurrentTimestamp(), url, scriptFile, resultFile, scriptType));
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());

@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.*;
 
@@ -263,13 +262,13 @@ public class WorkqueueManager {
             jobDao.changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
             List<JobHistoryEntry> entriesDownloading = getJobHistoryRepository().findAllByStatus(Constants.XQ_DOWNLOADING_SRC);
             for(JobHistoryEntry entry: entriesDownloading){
-                getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, Utils.getGMTCurrentTimestamp(), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }
             jobDao.changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
             List<JobHistoryEntry> entriesProcessing = getJobHistoryRepository().findAllByStatus(Constants.XQ_PROCESSING);
             for(JobHistoryEntry entry: entriesProcessing){
-                getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, Utils.getGMTCurrentTimestamp(), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }
         } catch (Exception e) {
@@ -322,7 +321,7 @@ public class WorkqueueManager {
                 for (String jobId : jobIds) {
                     // and reschedule each job
                     xQueryService.rescheduleJob(jobId);
-                    getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), null, null, null, null));
+                    getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, Utils.getGMTCurrentTimestamp(), null, null, null, null));
                     LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
                 }
             }

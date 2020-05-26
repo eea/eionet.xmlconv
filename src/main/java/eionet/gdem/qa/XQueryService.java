@@ -54,9 +54,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import static eionet.gdem.Constants.JOB_VALIDATION;
 import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
@@ -278,7 +277,7 @@ public class XQueryService extends RemoteService {
 
             newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
             scheduleJob(newId, sourceSize, scriptType);
-            getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+            getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, Utils.getGMTCurrentTimestamp(), sourceURL, xqFile, resultFile, scriptType));
             LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
 
         } catch (SQLException sqe) {
@@ -289,6 +288,9 @@ public class XQueryService extends RemoteService {
         } catch (SchedulerException e) {
             LOGGER.error("Scheduler exception: " + e.toString());
             throw new XMLConvException("Scheduler exception: " + e.toString());
+        } catch (ParseException pe) {
+            LOGGER.error("Creating timestamp failed: " + pe.toString());
+            throw new XMLConvException("Creating timestamp failed: " + pe.toString());
         }
         return newId;
     }
@@ -523,7 +525,7 @@ public class XQueryService extends RemoteService {
             scheduleJob(jobId, sourceSize, scriptType);
             long stopTime1 = System.nanoTime();
             LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
-            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
+            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, Utils.getGMTCurrentTimestamp(), sourceURL, queryFile, resultFile, scriptType));
             LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
@@ -534,6 +536,10 @@ public class XQueryService extends RemoteService {
         } catch (URISyntaxException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
+        }
+        catch (ParseException pe) {
+            LOGGER.error("Creating timestamp failed: " + pe.toString());
+            throw new XMLConvException("Creating timestamp failed: " + pe.toString());
         }
 
         return jobId;

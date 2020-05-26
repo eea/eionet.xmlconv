@@ -12,15 +12,20 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 @Service
 public class FixedTimeScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FixedTimeScheduledTasks.class);
+
+    private static SimpleDateFormat gmtDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     private IXQJobDao xqJobDao;
@@ -35,13 +40,16 @@ public class FixedTimeScheduledTasks {
 
     @Transactional
     @Scheduled(cron = "0 */5 * * * *") //Every 5 minutes
-    public void schedulePeriodicUpdateOfDurationOfJobsInProcessingStatus() throws SQLException {
+    public void schedulePeriodicUpdateOfDurationOfJobsInProcessingStatus() throws SQLException, ParseException {
         //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2)
         Map<String, Timestamp> jobsInfo = xqJobDao.getJobsWithTimestamps(Constants.XQ_PROCESSING);
         //Create new map with the duration for each job
         Map<String, Long> jobDurations = new HashMap<>();
+        gmtDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         for (Map.Entry<String,Timestamp> entry : jobsInfo.entrySet()) {
-            long diffInMs = Math.abs(new java.util.Date().getTime() - entry.getValue().getTime());
+            String dateStr = gmtDateFormat.format(new java.util.Date());
+            Date now = gmtDateFormat.parse(dateStr);
+            long diffInMs = Math.abs(now.getTime() - entry.getValue().getTime());
             jobDurations.put(entry.getKey(), diffInMs);
 
             //Update time spent in status in table JOB_HISTORY

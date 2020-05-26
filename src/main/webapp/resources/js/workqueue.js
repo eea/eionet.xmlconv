@@ -16,7 +16,7 @@ function format ( row, tr ) {
             var additionalInfo = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
             result.forEach(function(entry) {
                 //Convert dateAdded from milliseconds to date
-                var dateModified = new Date(entry.dateAdded);
+                var dateModified = new Date(entry.dateAdded).toUTCString();
                 additionalInfo = additionalInfo.concat('<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
                     '<tr>'+
                     '<td>Job status</td>'+
@@ -48,10 +48,6 @@ function getSelectedJobId(label){
     var regex =  /<label for(.*)\">/;
     var jobId = label.replace(regex,"").replace("</label>","");
     return jobId;
-}
-
-function getJobDetails(jobId){
-
 }
 
 $(document).ready(function() {
