@@ -442,4 +442,10 @@
             <column name="DURATION"/>
         </createIndex>
     </changeSet>
+    <changeSet author="anthaant" id="rev-40">
+        <dropColumn tableName="JOB_HISTORY" columnName="DATE_ADDED" />
+        <addColumn tableName="JOB_HISTORY">
+            <column name="DATE_ADDED" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
