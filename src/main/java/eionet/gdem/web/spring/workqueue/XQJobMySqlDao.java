@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qInsertXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
-            + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()},?)";
+            + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,?,?)";
 
     // use LAST_INSERT_ID to avoid duplicates in extreme cases http://stackoverflow.com/a/17112962/3771458
     private static final String qGetJobID = "SELECT LAST_INSERT_ID()";
@@ -160,7 +161,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt.setString(3, resultFile);
             pstmt.setInt(4, XQ_RECEIVED);
             pstmt.setInt(5, xqID);
-            pstmt.setString(6, xqType);
+            pstmt.setString(6, new Timestamp(new Date().getTime()).toString());
+            pstmt.setString(7, xqType);
             pstmt.executeUpdate();
             pstmt.close();
 
