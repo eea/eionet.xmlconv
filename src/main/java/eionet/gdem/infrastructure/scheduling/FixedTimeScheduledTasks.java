@@ -50,7 +50,8 @@ public class FixedTimeScheduledTasks {
             String dateStr = gmtDateFormat.format(new java.util.Date());
             Date now = gmtDateFormat.parse(dateStr);
             long entryMs =  new Timestamp( entry.getValue().getTime()).getTime();
-            long diffInMs = Math.abs(now.getTime() - entryMs);
+            Date dt = new Date(entryMs);
+            long diffInMs = Math.abs(now.getTime() - dt.getTime());
             jobDurations.put(entry.getKey(), diffInMs);
 
             //Update time spent in status in table JOB_HISTORY
