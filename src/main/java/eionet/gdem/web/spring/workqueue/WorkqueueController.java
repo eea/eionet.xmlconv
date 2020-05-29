@@ -168,10 +168,12 @@ public class WorkqueueController {
             //Set duration of job id status is in PROCESSING
             if (status == Constants.XQ_PROCESSING && durationMs != null) {
                 Long duration = Long.parseLong(durationMs);
-                job.setDurationInProgress(String.format("%d hours, %02d minutes",
+                job.setDurationInProgress(String.format("%d hours, %02d minutes, %02d seconds",
                         TimeUnit.MILLISECONDS.toHours(duration),
                         TimeUnit.MILLISECONDS.toMinutes(duration) -
-                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration))
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)),
+                        TimeUnit.MILLISECONDS.toSeconds(duration) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
                 ));
             }
 
