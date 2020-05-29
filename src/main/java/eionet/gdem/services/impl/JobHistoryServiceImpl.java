@@ -34,7 +34,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                     //if status is in processing and duration field was filled show the duration in hours and minutes
                     String row = "PROCESSING JOB";
                     if(entry.getDuration() != null){
-                        row += String.format("%d hours, %02d minutes, %02d seconds",
+                        row += String.format(" for %d hours, %02d minutes, %02d seconds",
                                 TimeUnit.MILLISECONDS.toHours(entry.getDuration()),
                                 TimeUnit.MILLISECONDS.toMinutes(entry.getDuration()) -
                                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(entry.getDuration())),
