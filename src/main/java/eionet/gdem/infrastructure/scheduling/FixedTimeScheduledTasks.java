@@ -25,8 +25,6 @@ public class FixedTimeScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FixedTimeScheduledTasks.class);
 
-    private static SimpleDateFormat gmtDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     @Autowired
     private IXQJobDao xqJobDao;
 
@@ -45,13 +43,9 @@ public class FixedTimeScheduledTasks {
         Map<String, Timestamp> jobsInfo = xqJobDao.getJobsWithTimestamps(Constants.XQ_PROCESSING);
         //Create new map with the duration for each job
         Map<String, Long> jobDurations = new HashMap<>();
-        gmtDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         for (Map.Entry<String,Timestamp> entry : jobsInfo.entrySet()) {
-            String dateStr = gmtDateFormat.format(new java.util.Date());
-            Date now = gmtDateFormat.parse(dateStr);
-            long entryMs =  new Timestamp( entry.getValue().getTime()).getTime();
-            Date dt = new Date(entryMs);
-            long diffInMs = Math.abs(now.getTime() - dt.getTime());
+            Long currentMs = new Timestamp(new Date().getTime()).getTime();
+            long diffInMs = Math.abs(currentMs - entry.getValue().getTime());
             jobDurations.put(entry.getKey(), diffInMs);
 
             //Update time spent in status in table JOB_HISTORY
