@@ -76,8 +76,6 @@ public final class Utils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 
-    private static SimpleDateFormat gmtDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     /**
      * Saving an URL stream to the specified text file.
      * @param srcUrl Source URL
@@ -1288,19 +1286,4 @@ public final class Utils {
         }
         return remoteFile;
     }
-
-    /**
-     * Create a Timestamp object with the current date in GMT timezone.
-     *
-     * @return the timestamp
-     * @throws ParseException
-     *             in case of parsing error.
-     */
-    public static Timestamp getGMTCurrentTimestamp() throws ParseException {
-        gmtDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String dateStr = gmtDateFormat.format(new Date());
-        Date date= gmtDateFormat.parse(dateStr);
-        return new Timestamp(date.getTime());
-    }
-
 }
