@@ -166,6 +166,8 @@ public class Properties {
 
     public static int heavyJobThreshhold;
 
+    public static Long longRunningJobThreshold;
+
     public static final String SSO_LOGIN_URL;
 
     static {
@@ -247,6 +249,7 @@ public class Properties {
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
+        longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
     }
