@@ -50,4 +50,16 @@
         <property name="changeLog" value="classpath:db/xmlconv-struct.xml" />
     </bean>
 
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${smtp.host}"/>
+        <property name="port" value="${smtp.port}"/>
+        <property name="username" value="${smtp.username}"/>
+        <property name="password" value="${smtp.password}"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.starttls.enable">${smtp.tls}</prop>
+            </props>
+        </property>
+    </bean>
+
 </beans>

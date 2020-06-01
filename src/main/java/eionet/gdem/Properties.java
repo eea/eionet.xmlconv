@@ -129,7 +129,9 @@ public class Properties {
     public static String fmeTokenTimeunit = null;
     /** FME timeout. */
     public static int fmeTimeout = 0;
-    public static int fmeRetryHours = 4;
+    public static int fmeRetryHours = 0;
+    /** FME url for polling job status by job id. */
+    public static String fmePollingUrl = null;
 
     /** Hostname. */
     public static String hostname = null;
@@ -167,6 +169,8 @@ public class Properties {
     public static int heavyJobThreshhold;
 
     public static Long longRunningJobThreshold;
+    public static String longRunningJobEmailNotificationFrom;
+    public static String longRunningJobEmailNotificationTo;
 
     public static final String SSO_LOGIN_URL;
 
@@ -249,7 +253,10 @@ public class Properties {
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
+        fmePollingUrl = getStringProperty("fme.polling.url");
         longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
+        longRunningJobEmailNotificationFrom = getStringProperty("env.long.running.job.notification.email.from");
+        longRunningJobEmailNotificationTo = getStringProperty("env.long.running.job.notification.email.to");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
     }
