@@ -12,6 +12,7 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
@@ -168,13 +169,7 @@ public class WorkqueueController {
             //Set duration of job id status is in PROCESSING
             if (status == Constants.XQ_PROCESSING && durationMs != null) {
                 Long duration = Long.parseLong(durationMs);
-                job.setDurationInProgress(String.format("%d hours, %02d minutes, %02d seconds",
-                        TimeUnit.MILLISECONDS.toHours(duration),
-                        TimeUnit.MILLISECONDS.toMinutes(duration) -
-                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)),
-                        TimeUnit.MILLISECONDS.toSeconds(duration) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
-                ));
+                job.setDurationInProgress(Utils.createFormatForMs(duration));
             }
 
             jobsList.add(job);
@@ -258,7 +253,7 @@ public class WorkqueueController {
         return "redirect:/workqueue";
     }
 
-    @PostMapping(value ="/getJobDetails/{jobId}", consumes= MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value ="/getJobDetails/{jobId}", consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<JobHistoryEntry> getJobDetails(@PathVariable String jobId) {
         return jobHistoryService.getAdditionalInfoOfJob(jobId);
