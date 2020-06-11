@@ -38,11 +38,6 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     private static Builder requestConfigBuilder = null;
 
-    /**
-     * Security token for authentication.
-     */
-    private String token_ = null;
-
     private String fmeUrl = null;
 
     private Integer retries = 0;
@@ -68,11 +63,6 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
         requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setSocketTimeout(this.getFmeTimeoutProperty());
-        try {
-            getConnectionInfo();
-        } catch (IOException e) {
-            throw new XMLConvException(e.toString(), e);
-        }
     }
 
     @Override
@@ -109,11 +99,11 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             java.net.URI uri = new URIBuilder(script.getScriptSource())
                     .build();
             request = new HttpPost(uri);
-            String headerAuthorizationValue = "fmetoken token="+this.getToken_();
+            String encoding = Base64.getEncoder().encodeToString((this.getFmeUserProperty() + ":" + this.getFmePasswordProperty()).getBytes());
             Header[] headers = {
                     new BasicHeader("Content-type", "application/json"),
                     new BasicHeader("Accept", "application/json"),
-                    new BasicHeader("Authorization", headerAuthorizationValue)
+                    new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding)
             };
             request.setHeaders(headers);
             JSONObject jsonParams = createJSONObjectForJobSubmission(script.getOrigFileUrl());
@@ -123,19 +113,27 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             response = this.getClient_().execute(request);
             Integer statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_UNAUTHORIZED){
-                throw new Exception("Unauthorized token");
+                throw new Exception("Unauthorized user");
             }
-            else if (statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_ACCEPTED){
-                String message = "Received status code " + statusCode + " for job submission request";
-                throw new Exception(message);
+            else if (statusCode == HttpStatus.SC_NOT_FOUND){
+                throw new Exception("The workspace or repository does not exist");
             }
+            else if (statusCode == HttpStatus.SC_UNPROCESSABLE_ENTITY){
+                throw new Exception("Some or all of the input parameters are invalid");
+            }
+            else {
+                if (statusCode != HttpStatus.SC_ACCEPTED){
+                    String message = "Received status code " + statusCode + " for job submission request";
+                    throw new Exception(message);
+                }
+            }
+            //status code is HttpStatus.SC_ACCEPTED (202)
             String jsonStr = EntityUtils.toString(response.getEntity());
             org.json.JSONObject jsonResponse = new org.json.JSONObject(jsonStr);
             jobId = jsonResponse.get("id").toString();
             if(jobId == null || jobId.isEmpty()|| jobId.equals("null")){
                 throw new Exception("Valid status code but no job ID was retrieved");
             }
-
             LOGGER.info(String.format("Job was submitted in FME for script %s with id %s", script.getScriptSource(), jobId));
 
         }  catch (Exception e) {
@@ -149,18 +147,22 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     }
 
     private JSONObject createJSONObjectForJobSubmission(String xmlSourceFile){
-        JSONObject joReplyParams = new JSONObject();
-        joReplyParams.put("name", "DestDataset_JSON");
-        joReplyParams.put("value", "response.json");
+        JSONObject folderParams = new JSONObject();
+        folderParams.put("name", "folder");
+        folderParams.put("value", "testdir3");  //this will be changed
 
-        JSONObject joXMLParams = new JSONObject();
-        joXMLParams.put("name", "SourceDataset_XML");
-        JSONArray jaXMLParams = new JSONArray();
-        jaXMLParams.add(xmlSourceFile);
-        joXMLParams.put("value", jaXMLParams);
+        JSONObject xmlParams = new JSONObject();
+        xmlParams.put("name", "envelopepath");
+        xmlParams.put("value", xmlSourceFile);
+
+        JSONObject outputParams = new JSONObject();
+        outputParams.put("name", "outputfile");
+        outputParams.put("value", "outputfile_" +xmlSourceFile);
+
         JSONArray ja = new JSONArray();
-        ja.add(joReplyParams);
-        ja.add(joXMLParams);
+        ja.add(folderParams);
+        ja.add(xmlParams);
+        ja.add(outputParams);
 
         JSONObject joPublishedParams = new JSONObject();
         joPublishedParams.put("publishedParameters", ja);
@@ -172,7 +174,11 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         String url = this.getFmePollingUrlProperty() + jobId;
         String encoding = Base64.getEncoder().encodeToString((this.getFmeUserProperty() + ":" + this.getFmePasswordProperty()).getBytes());
         HttpGet httpGet = new HttpGet(url);
-        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+        Header[] headers = {
+                new BasicHeader("Accept", "application/json"),
+                new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding)
+        };
+        httpGet.setHeaders(headers);
 
         int count = 0;
         int retryMilisecs = this.getFmeRetryHoursProperty() * 60 * 60 * 1000;
@@ -222,7 +228,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                         String message = "Received wrong response status "+ jsonResponse.get("status");
                         throw new Exception(message);
                     }
-                } else { // NOT Valid Result
+                } else if(statusCode == HttpStatus.SC_NOT_FOUND){
+                    throw new Exception("The job does not exist");
+                }
+                else { // NOT Valid status code
                     String message = "Error when polling for job status. Received status code: " + statusCode;
                     throw new Exception(message);
                 }
@@ -238,58 +247,12 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
-    /**
-     * Gets a user token from the FME server.
-     *
-     * @throws Exception If an error occurs.
-     */
-    private void getConnectionInfo() throws Exception {
-
-        HttpPost method = null;
-        CloseableHttpResponse response = null;
-
-        try {
-            // We must first generate a security token for authentication purposes
-
-            fmeUrl = "https://" + this.getFmeHostProperty() + ":" + this.getFmePortProperty()
-                    + "/fmetoken/generate";
-
-            java.net.URI uri = new URIBuilder(fmeUrl)
-                    .addParameter("user", this.getFmeUserProperty())
-                    .addParameter("password", this.getFmePasswordProperty())
-                    .addParameter("expiration", this.getFmeTokenExpirationProperty())
-                    .addParameter("timeunit", this.getFmeTokenTimeunitProperty()).build();
-            method = new HttpPost(uri);
-            response = this.getClient_().execute(method);
-            if (response.getStatusLine().getStatusCode() == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream stream = entity.getContent();
-                token_ = new String(IOUtils.toByteArray(stream), StandardCharsets.UTF_8);
-                IOUtils.closeQuietly(stream);
-            } else {
-                throw new XMLConvException("FME authentication failed. Could not retrieve a Token");
-            }
-        } catch (Exception e) {
-            throw new XMLConvException(e.toString(), e);
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
-        }
-
-    }
-
-
     protected CloseableHttpClient getClient_() {
         return client_;
     }
 
     protected static Builder getRequestConfigBuilder() {
         return requestConfigBuilder;
-    }
-
-    protected String getToken_() {
-        return token_;
     }
 
     protected Integer getFmeTimeoutProperty() {
