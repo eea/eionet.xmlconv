@@ -253,7 +253,7 @@ public class WorkqueueController {
         return "redirect:/workqueue";
     }
 
-    @PostMapping(value ="/getJobDetails/{jobId}", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value ="/getJobDetails/{jobId}")
     @ResponseBody
     public List<JobHistoryEntry> getJobDetails(@PathVariable String jobId) {
         return jobHistoryService.getAdditionalInfoOfJob(jobId);
