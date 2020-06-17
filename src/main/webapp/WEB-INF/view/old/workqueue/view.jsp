@@ -86,7 +86,7 @@
       <col style="width:100px"/>
       <thead>
       <tr>
-        <th scope="col" class="scope-col" colspan="2">Job ID</th>
+        <th scope="col" class="scope-col details-control" colspan="2">Job ID</th>
         <th scope="col" class="scope-col">Document URL</th>
         <th scope="col" class="scope-col">XQuery script</th>
         <th scope="col" class="scope-col">Job Result</th>
@@ -121,6 +121,7 @@
         </th>
         <th scope="col" class="scope-col">Started at</th>
         <th scope="col" class="scope-col">Instance</th>
+        <th scope="col" class="scope-col">Duration</th>
       </tr>
       </thead>
       <tbody>
@@ -132,13 +133,13 @@
               <td>
                 <form:checkbox path="jobs" id="job_${job.jobId}" value="${job.jobId}"/>
               </td>
-              <td>
+              <td class="details-control" id="selectableJobId">
                 <label for="job_${job.jobId}">${job.jobId}</label>
               </td>
             </c:when>
             <c:otherwise>
               <td/>
-              <td>${job.jobId}</td>
+              <td class="details-control" id="selectableJobId">${job.jobId}</td>
             </c:otherwise>
           </c:choose>
           <td>
@@ -187,6 +188,13 @@
               </c:otherwise>
             </c:choose>
           </td>
+          <td>
+            <c:choose>
+              <c:when test="${not empty job.durationInProgress}">
+                ${job.durationInProgress}
+              </c:when>
+            </c:choose>
+          </td>
         </tr>
       </c:forEach>
       </tbody>
@@ -221,4 +229,6 @@
   $("#selectAll").click(function () {
     $('input[type="checkbox"]').prop("checked", true);
   });
+
+
 </script>

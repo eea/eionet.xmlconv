@@ -48,3 +48,7 @@
     width: 1250px;
     table-layout: fixed;
 }
+
+#selectableJobId{
+    cursor:pointer;
+}

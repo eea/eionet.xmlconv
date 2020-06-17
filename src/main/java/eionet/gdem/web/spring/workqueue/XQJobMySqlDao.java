@@ -4,14 +4,15 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.database.MySqlBaseDao;
 import eionet.gdem.utils.Utils;
+import org.basex.query.value.item.Dat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static eionet.gdem.qa.QueryMySqlDao.JOB_RETRY_COUNTER;
 
@@ -39,6 +40,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     public static final String SRC_FILE_FLD = "SRC_FILE";
     public static final String XQ_TYPE_FLD = "XQ_TYPE";
     public static final String INSTANCE = "INSTANCE";
+    public static final String DURATION_FLD = "DURATION";
     /**
      * Table for XQuery Workqueue.
      */
@@ -54,23 +56,23 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qInsertXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
-            + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,{fn now()},?)";
+            + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,?,?)";
 
     // use LAST_INSERT_ID to avoid duplicates in extreme cases http://stackoverflow.com/a/17112962/3771458
     private static final String qGetJobID = "SELECT LAST_INSERT_ID()";
 
     private static final String qChangeJobStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + INSTANCE + "= ?, " + TIMESTAMP_FLD
-            + "= NOW() " + " WHERE " + JOB_ID_FLD + "= ?";
+            + "= ? " + " WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qProcessXQJob = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + INSTANCE + "= ?, " + TIMESTAMP_FLD
-            + "= NOW() , " + JOB_RETRY_COUNTER + " = " + JOB_RETRY_COUNTER + " + 1  WHERE " + JOB_ID_FLD + "= ?";
+            + "= ? , " + JOB_RETRY_COUNTER + " = " + JOB_RETRY_COUNTER + " + 1  WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qMarkDeletedJob = "UPDATE " + WQ_TABLE + " SET " + JOB_RETRY_COUNTER + "= ?" + " WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qXQJobRetries = "SELECT " + JOB_RETRY_COUNTER + " FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + "= ?";
 
     private static final String qChangeFileJobsStatus = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + SRC_FILE_FLD
-            + "= ? " + ", " + TIMESTAMP_FLD + "= NOW() " + " WHERE " + URL_FLD + "= ? " + " AND " + STATUS_FLD + "< ? ";
+            + "= ? " + ", " + TIMESTAMP_FLD + "= ? " + " WHERE " + URL_FLD + "= ? " + " AND " + STATUS_FLD + "< ? ";
 
     private static final String qJobs = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "= ? ORDER BY "
             + JOB_ID_FLD;
@@ -83,13 +85,13 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qEndXQJobs = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + " IN ";
 
     private static final String qJobData = "SELECT " + JOB_ID_FLD + ", " + URL_FLD + "," + XQ_FILE_FLD + ", " + RESULT_FILE_FLD
-            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD +  ", " + INSTANCE + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
+            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD +  ", " + INSTANCE +  ", " + DURATION_FLD + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qChangeJobsStatuses = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD
-            + "= NOW() " + " WHERE " + JOB_ID_FLD + " IN  ";
+            + "= ? " + " WHERE " + JOB_ID_FLD + " IN  ";
 
     private static final String qRestartActiveXQJobs = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD
-            + "= NOW() " + " WHERE " + STATUS_FLD + "= ?";
+            + "= ? " + " WHERE " + STATUS_FLD + "= ?";
 
     private static final String qCountActiveJobs = "SELECT COUNT(*) " + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "="
             + Constants.XQ_DOWNLOADING_SRC + " OR " + STATUS_FLD + "=" + Constants.XQ_PROCESSING;
@@ -98,6 +100,10 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qLastActiveJobTime = qXQJobDataBase + " WHERE "+ STATUS_FLD + "=" + Constants.XQ_PROCESSING + " ORDER BY TIME_STAMP desc limit 1";
     
     private static final String qJobsByInstanceAndStatus = "SELECT INSTANCE, N_STATUS, COUNT(*) as JOBS_SUM FROM T_XQJOBS GROUP BY INSTANCE, N_STATUS";
+
+    private static final String qJobsObject = "SELECT *" + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "= ?";
+
+    private static final String qJobsUpdateDuration = "UPDATE " + WQ_TABLE + " SET " + DURATION_FLD + "= ?" + " WHERE " + JOB_ID_FLD + " = ?  ";
 
     @Override
     public String[] getXQJobData(String jobId) throws SQLException {
@@ -155,7 +161,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt.setString(3, resultFile);
             pstmt.setInt(4, XQ_RECEIVED);
             pstmt.setInt(5, xqID);
-            pstmt.setString(6, xqType);
+            pstmt.setString(6, new Timestamp(new Date().getTime()).toString());
+            pstmt.setString(7, xqType);
             pstmt.executeUpdate();
             pstmt.close();
 
@@ -183,7 +190,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt = conn.prepareStatement(qChangeJobStatus);
             pstmt.setInt(1, status);
             pstmt.setString(2, Properties.getHostname() );
-            pstmt.setInt(3, Integer.parseInt(jobId));
+            pstmt.setString(3, new Timestamp(new Date().getTime()).toString());
+            pstmt.setInt(4, Integer.parseInt(jobId));
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -203,7 +211,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt = conn.prepareStatement(qProcessXQJob);
             pstmt.setInt(1, Constants.XQ_PROCESSING);
             pstmt.setString(2, Properties.getHostname() );
-            pstmt.setInt(3, Integer.parseInt(jobId));
+            pstmt.setString(3, new Timestamp(new Date().getTime()).toString());
+            pstmt.setInt(4, Integer.parseInt(jobId));
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -265,8 +274,10 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt = conn.prepareStatement(qChangeFileJobsStatus);
             pstmt.setInt(1, status);
             pstmt.setString(2, savedFile);
-            pstmt.setString(3, url);
-            pstmt.setInt(4, status);
+            pstmt.setString(3, new Timestamp(new Date().getTime()).toString());
+            pstmt.setString(4, url);
+            pstmt.setInt(5, status);
+
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -403,6 +414,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             conn = getConnection();
             pstmt = conn.prepareStatement(queryBuf.toString());
             pstmt.setInt(1, status);
+            pstmt.setString(2, new Timestamp(new Date().getTime()).toString());
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -422,6 +434,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt = conn.prepareStatement(qRestartActiveXQJobs);
             pstmt.setInt(1, newStatus);
             pstmt.setInt(2, currentStatus);
+            pstmt.setString(3, new Timestamp(new Date().getTime()).toString());
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -518,5 +531,50 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         }
         return s;
     }
-    
+
+    @Override
+    public Map<String, Timestamp> getJobsWithTimestamps(int status) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Map<String, Timestamp> jobIdTimeStampMap = new HashMap();
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qJobsObject);
+        }
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qJobsObject);
+            pstmt.setInt(1, status);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                jobIdTimeStampMap.put(rs.getString("JOB_ID"), rs.getTimestamp("TIME_STAMP"));
+            }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+        return jobIdTimeStampMap;
+    }
+
+    @Override
+    public void updateXQJobsDuration(Map<String, Long> jobHashmap) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        conn = getConnection();
+        StringBuffer queryBuf = new StringBuffer(qJobsUpdateDuration);
+        pstmt = conn.prepareStatement(queryBuf.toString());
+
+        try {
+            for (Map.Entry<String,Long> entry : jobHashmap.entrySet()) {
+                pstmt.setLong(1, entry.getValue());
+                pstmt.setString(2, entry.getKey());
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
+    }
+
 }

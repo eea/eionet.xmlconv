@@ -35,6 +35,7 @@ public class WriteXMLFile {
             Transformer tr = trf.newTransformer();
             tr.setOutputProperty("method", "xml");
             tr.setOutputProperty("indent", "yes");
+
             tr.setOutputProperty("encoding", "UTF-8");
             tr.setOutputProperty("omit-xml-declaration","no");
             tr.transform(new DOMSource(), streamResult);

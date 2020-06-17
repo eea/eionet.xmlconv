@@ -38,16 +38,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import eionet.gdem.utils.xml.sax.SaxContext;
 import org.apache.commons.codec.binary.Base64;
@@ -1293,4 +1288,22 @@ public final class Utils {
         return remoteFile;
     }
 
+    /**
+     * Download remote schema from specified URL and return it as byte array.
+     *
+     * @param url
+     *            URL of remote XML Schema.
+     * @return byte array of remote schema.
+     * @throws DCMException
+     *             in case of connection error.
+     */
+    public static String createFormatForMs(Long ms) {
+        return String.format("%d hours, %02d minutes, %02d seconds",
+                TimeUnit.MILLISECONDS.toHours(ms),
+                TimeUnit.MILLISECONDS.toMinutes(ms) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(ms)),
+                TimeUnit.MILLISECONDS.toSeconds(ms) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms))
+        );
+    }
 }

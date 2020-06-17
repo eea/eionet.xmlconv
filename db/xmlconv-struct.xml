@@ -402,6 +402,50 @@
             <column name="AUTHORITIES" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-
-
+    <changeSet author="anthaant" id="rev-37">
+        <comment> Table for logging job history</comment>
+        <createTable tableName="JOB_HISTORY">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="JOB_NAME" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_ADDED" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="URL" type="VARCHAR(2048)"/>
+            <column name="XQ_FILE" type="VARCHAR(255)"/>
+            <column name="RESULT_FILE" type="VARCHAR(255)"/>
+            <column name="XQ_TYPE" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-38">
+        <createIndex indexName="JOB_NAME_IDX" tableName="JOB_HISTORY" unique="false">
+            <column name="JOB_NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-39">
+        <addColumn tableName="JOB_HISTORY">
+            <column name="DURATION" type="BIGINT"/>
+        </addColumn>
+        <createIndex indexName="DURATION_IDX" tableName="JOB_HISTORY" unique="false">
+            <column name="DURATION"/>
+        </createIndex>
+        <addColumn tableName="T_XQJOBS">
+            <column name="DURATION" type="BIGINT"/>
+        </addColumn>
+        <createIndex indexName="DURATION_IDX" tableName="T_XQJOBS" unique="false">
+            <column name="DURATION"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-40">
+        <dropColumn tableName="JOB_HISTORY" columnName="DATE_ADDED" />
+        <addColumn tableName="JOB_HISTORY">
+            <column name="DATE_ADDED" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -1,6 +1,55 @@
 /**
  * Created by dev_aka on 4/4/2017.
  */
+
+function format ( row, tr ) {
+    var d = row.data();
+    // `d` is the original data object for the row
+    var jobId = getSelectedJobId(d[1]);
+    //ajax call to get data by jobid
+    $.ajax({
+        async: false,
+        type: "POST",
+        url: 'workqueue/getJobDetails/'+jobId,
+        contentType : 'application/json; charset=utf-8',
+        success: function (result) {
+            var additionalInfo = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+            result.forEach(function(entry) {
+                //Convert dateAdded from milliseconds to date
+                var dateModified = new Date(entry.dateAdded).toUTCString();
+                additionalInfo = additionalInfo.concat('<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                    '<tr>'+
+                    '<td>Job status</td>'+
+                    '<td>'+entry.status+ ' ( ' + entry.fullStatusName + ' ) ' + '</td>'+
+                    '</tr>'+
+                    '<tr>'+
+                    '<td>Date that status was modified:</td>'+
+                    '<td>'+dateModified+'</td>'+
+                    '</tr>'+
+                    '</table>'
+                );
+                return additionalInfo;
+            });
+
+            additionalInfo = additionalInfo.concat('</table>');
+            //show the row
+            row.child(additionalInfo).show();
+            tr.addClass('shown');
+        },
+        error: function () {
+            alert('An error occurred.');
+        }
+    });
+
+}
+
+function getSelectedJobId(label){
+    //label will be sth like <label for=\"job_1\">1</label>
+    var regex =  /<label for(.*)\">/;
+    var jobId = label.replace(regex,"").replace("</label>","");
+    return jobId;
+}
+
 $(document).ready(function() {
 
     const LOCAL_STORAGE_KEY = 'workqueueFilter';
@@ -86,4 +135,19 @@ $(document).ready(function() {
 
     initFilters(); // after having registered the listeners
 
+
+    $('#workqueue_table tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Call function to fill the table and show it
+            format(row, tr);
+        }
+    } );
 } );

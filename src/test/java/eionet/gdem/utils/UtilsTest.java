@@ -9,12 +9,18 @@ import java.util.Date;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.exceptions.AclPropertiesInitializationException;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -77,5 +83,18 @@ public class UtilsTest {
         assertEquals("?", Utils.escapeXML("\u001A"));
         assertEquals("&#57344;", Utils.escapeXML("\uE000"));
         assertEquals("\u00F6", Utils.escapeXML("\u00F6"));
+    }
+
+    @Test(expected = Exception.class)
+    public void createFormatForMsNull() {
+        Utils.createFormatForMs(null);
+    }
+
+    @Test
+    public void createFormatForMsSuccessful() {
+        Assert.assertThat("0 hours, 00 minutes, 00 seconds", is(Utils.createFormatForMs(Long.valueOf(124))));
+        Assert.assertThat("0 hours, 00 minutes, 07 seconds", is(Utils.createFormatForMs(Long.valueOf(7443))));
+        Assert.assertThat("0 hours, 01 minutes, 14 seconds", is(Utils.createFormatForMs(Long.valueOf(74543))));
+        Assert.assertThat("3 hours, 26 minutes, 47 seconds", is(Utils.createFormatForMs(Long.valueOf(12407443))));
     }
 }
