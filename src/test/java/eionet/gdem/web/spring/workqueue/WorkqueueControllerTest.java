@@ -103,7 +103,6 @@ public class WorkqueueControllerTest {
 
     @Test
     public void getJobDetailsEmptyId() throws Exception {
-        Json expected = new Json();
         MvcResult actual = mockMvc.perform(post("/workqueue/getJobDetails/job3").accept(String.valueOf(MediaType.APPLICATION_JSON))).andReturn();
         String content = actual.getResponse().getContentAsString();
         Assert.assertThat(actual.getResponse().getStatus(), is(HttpStatus.SC_OK));
@@ -112,7 +111,6 @@ public class WorkqueueControllerTest {
 
     @Test
     public void getJobDetailsIdWithNoEntries() throws Exception {
-        Json expected = new Json();
         MvcResult actual = mockMvc.perform(post("/workqueue/getJobDetails/job3").accept(String.valueOf(MediaType.APPLICATION_JSON))).andReturn();
         String content = actual.getResponse().getContentAsString();
         Assert.assertThat(actual.getResponse().getStatus(), is(HttpStatus.SC_OK));
@@ -120,11 +118,10 @@ public class WorkqueueControllerTest {
     }
 
 
-        //TODO fix broken test with json body comparison 
+    //TODO fix broken test with json body comparison
     @Test
     @Ignore
     public void getJobDetailsIdWithEntries() throws Exception {
-        Json expected = new Json();
         mockMvc.perform(post("/workqueue/getJobDetails/job2").accept(MediaType.APPLICATION_JSON)).andDo(print());
 
          mockMvc.perform(post("/getJobDetails/job2").accept(MediaType.APPLICATION_JSON))
