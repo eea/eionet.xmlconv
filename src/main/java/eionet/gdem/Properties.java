@@ -123,6 +123,8 @@ public class Properties {
     public static String fmeUser = null;
     /** FME user password. */
     public static String fmePassword = null;
+    /** FME token. */
+    public static String fmeToken = null;
     /** FME token expiration. */
     public static String fmeTokenExpiration = null;
     /** FME token timeunit. */
@@ -132,6 +134,9 @@ public class Properties {
     public static int fmeRetryHours = 0;
     /** FME url for polling job status by job id. */
     public static String fmePollingUrl = null;
+    public static String fmeResultFolderUrl = null;
+    public static String fmeResultFolder = null;
+    public static String fmeDeleteFolderUrl = null;
 
     /** Hostname. */
     public static String hostname = null;
@@ -244,12 +249,16 @@ public class Properties {
         fmePort = getStringProperty("fme.port");
         fmeUser = getStringProperty("fme.user");
         fmePassword = getStringProperty("fme.password");
+        fmeToken = getStringProperty("fme.token");
         fmeTokenExpiration = getStringProperty("fme.token.expiration");
         fmeTokenTimeunit = getStringProperty("fme.token.timeunit");
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
         fmePollingUrl = getStringProperty("fme.polling.url");
+        fmeResultFolderUrl = getStringProperty("fme.result.folder.url");
+        fmeResultFolder = getStringProperty("fme.result.folder");
+        fmeDeleteFolderUrl = getStringProperty("fme.delete.folder.url");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
     }

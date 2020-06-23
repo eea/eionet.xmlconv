@@ -3,13 +3,18 @@ package eionet.gdem.qa.engines;
 import java.io.*;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+
 import net.sf.json.JSONArray;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -17,6 +22,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,12 +53,14 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     private Integer fmeTimeoutProperty = Properties.fmeTimeout;
     private String fmeHostProperty = Properties.fmeHost;
     private String fmePortProperty = Properties.fmePort;
-    private String fmeUserProperty = Properties.fmeUser;
-    private String fmePasswordProperty = Properties.fmePassword;
     private String fmeTokenExpirationProperty = Properties.fmeTokenExpiration;
     private String fmeTokenTimeunitProperty = Properties.fmeTokenTimeunit;
     private String fmePollingUrlProperty = Properties.fmePollingUrl;
     private Integer fmeRetryHoursProperty = Properties.fmeRetryHours;
+    private String fmeTokenProperty = Properties.fmeToken;
+    private String fmeResultFolderUrlProperty = Properties.fmeResultFolderUrl;
+    private String fmeResultFolderProperty = Properties.fmeResultFolder;
+    public String fmeDeleteFolderUrlProperty = Properties.fmeDeleteFolderUrl;
 
     /**
      * Default constructor.
@@ -69,8 +77,14 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     protected void runQuery(XQScript script, OutputStream result) throws IOException {
 
         try {
-            String jobId = submitJobToFME(script);
+            String[] urlSegments = script.getOrigFileUrl().split("/");
+            String fileNameWthXml = urlSegments[urlSegments.length-1];
+            String[] fileNameSegments = fileNameWthXml.split("\\.");
+            String fileName = fileNameSegments[0];
+            String jobId = submitJobToFME(script, fileName);
             getJobStatus(jobId, result, script);
+            getResultFiles(fileName);
+            deleteFolder(fileName);
         } catch (Exception e) {
             String message = "Generic Exception handling. FME request error: " + e.getMessage();
             LOGGER.error(message);
@@ -78,7 +92,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
-    private String submitJobToFME (XQScript script) throws Exception {
+    private String submitJobToFME (XQScript script, String fileName) throws Exception {
         if (script == null){
             throw new Exception("XQScript is empty");
         }
@@ -99,21 +113,21 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             java.net.URI uri = new URIBuilder(script.getScriptSource())
                     .build();
             request = new HttpPost(uri);
-            String encoding = Base64.getEncoder().encodeToString((this.getFmeUserProperty() + ":" + this.getFmePasswordProperty()).getBytes());
+            String headerAuthorizationValue = "fmetoken token="+this.getFmeTokenProperty();
             Header[] headers = {
                     new BasicHeader("Content-type", "application/json"),
                     new BasicHeader("Accept", "application/json"),
-                    new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding)
+                    new BasicHeader(HttpHeaders.AUTHORIZATION, headerAuthorizationValue)
             };
             request.setHeaders(headers);
-            JSONObject jsonParams = createJSONObjectForJobSubmission(script.getOrigFileUrl());
+            JSONObject jsonParams = createJSONObjectForJobSubmission(script.getOrigFileUrl(), fileName);
             StringEntity params = new StringEntity(jsonParams.toString());
             request.setEntity(params);
 
             response = this.getClient_().execute(request);
             Integer statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_UNAUTHORIZED){
-                throw new Exception("Unauthorized user");
+                throw new Exception("Unauthorized token");
             }
             else if (statusCode == HttpStatus.SC_NOT_FOUND){
                 throw new Exception("The workspace or repository does not exist");
@@ -146,10 +160,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         return jobId;
     }
 
-    private JSONObject createJSONObjectForJobSubmission(String xmlSourceFile){
+    private JSONObject createJSONObjectForJobSubmission(String xmlSourceFile, String fileName){
         JSONObject folderParams = new JSONObject();
         folderParams.put("name", "folder");
-        folderParams.put("value", "testdir3");  //this will be changed
+        folderParams.put("value", this.getFmeResultFolderProperty() + "/" +fileName);
 
         JSONObject xmlParams = new JSONObject();
         xmlParams.put("name", "envelopepath");
@@ -157,7 +171,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
         JSONObject outputParams = new JSONObject();
         outputParams.put("name", "outputfile");
-        outputParams.put("value", "outputfile_" +xmlSourceFile);
+        outputParams.put("value", "outputfile_" +fileName);
 
         JSONArray ja = new JSONArray();
         ja.add(folderParams);
@@ -172,11 +186,11 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     private void getJobStatus(String jobId, OutputStream result, XQScript script) throws Exception {
         LOGGER.info("Began polling for status of job #" + jobId);
         String url = this.getFmePollingUrlProperty() + jobId;
-        String encoding = Base64.getEncoder().encodeToString((this.getFmeUserProperty() + ":" + this.getFmePasswordProperty()).getBytes());
+        String headerAuthorizationValue = "fmetoken token="+this.getFmeTokenProperty();
         HttpGet httpGet = new HttpGet(url);
         Header[] headers = {
                 new BasicHeader("Accept", "application/json"),
-                new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding)
+                new BasicHeader(HttpHeaders.AUTHORIZATION, headerAuthorizationValue)
         };
         httpGet.setHeaders(headers);
 
@@ -191,7 +205,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             try (CloseableHttpResponse response = this.getClient_().execute(httpGet)) {
 
                 Integer statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == HttpStatus.SC_OK) { // Valid Result
+                if (statusCode == HttpStatus.SC_UNAUTHORIZED){
+                    throw new Exception("Unauthorized token");
+                }
+                else if (statusCode == HttpStatus.SC_OK) { // Valid Result
                     HttpEntity entity = response.getEntity();
                     LOGGER.info(String.format("Retrieved status %d for polling of job #%s", statusCode, jobId));
 
@@ -247,6 +264,96 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
+    private void getResultFiles (String folderName) throws Exception {
+        LOGGER.info("Began downloading folder " + folderName);
+        HttpPost request = null;
+        CloseableHttpResponse response = null;
+        try {
+            java.net.URI uri = new URIBuilder(this.getFmeResultFolderUrlProperty() + this.getFmeResultFolderProperty() + "/" + folderName)
+                    .build();
+            request = new HttpPost(uri);
+            String headerAuthorizationValue = "fmetoken token="+this.getFmeTokenProperty();
+            Header[] headers = {
+                    new BasicHeader("Content-type", "application/x-www-form-urlencoded"),
+                    new BasicHeader("Accept", "application/zip"),
+                    new BasicHeader(HttpHeaders.AUTHORIZATION, headerAuthorizationValue)
+            };
+            request.setHeaders(headers);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("folderNames","."));
+            nameValuePairs.add(new BasicNameValuePair("zipFileName","htmlfiles.zip"));
+            request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            response = this.getClient_().execute(request);
+            Integer statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_UNAUTHORIZED){
+                throw new Exception("Unauthorized token");
+            }
+            else if (statusCode == HttpStatus.SC_NOT_FOUND){
+                throw new Exception("The resource connection or directory does not exist");
+            }
+            else if (statusCode == HttpStatus.SC_CONFLICT){
+                throw new Exception("The resource connection is not a type of resource that can be downloaded");
+            }
+            else {
+                if (statusCode != HttpStatus.SC_OK){
+                    String message = "Received status code " + statusCode + " for folder downloading";
+                    throw new Exception(message);
+                }
+            }
+            //status code is HttpStatus.SC_OK (200)
+
+            LOGGER.info("Downloaded folder " + folderName);
+
+        }  catch (Exception e) {
+            throw new Exception(e.getMessage());
+        } finally {
+            if (request != null) {
+                request.releaseConnection();
+            }
+        }
+    }
+
+    private void deleteFolder (String folderName) throws Exception {
+        LOGGER.info("Began deleting folder " + folderName);
+        HttpDelete request = null;
+        CloseableHttpResponse response = null;
+        try {
+            java.net.URI uri = new URIBuilder(this.getFmeDeleteFolderUrlProperty() + this.getFmeResultFolderProperty() + "/" + folderName)
+                    .build();
+            request = new HttpDelete(uri);
+            String headerAuthorizationValue = "fmetoken token="+this.getFmeTokenProperty();
+            Header[] headers = {
+                    new BasicHeader("Accept", "application/json"),
+                    new BasicHeader(HttpHeaders.AUTHORIZATION, headerAuthorizationValue)
+            };
+            request.setHeaders(headers);
+
+            response = this.getClient_().execute(request);
+            Integer statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_UNAUTHORIZED){
+                throw new Exception("Unauthorized token");
+            }
+            else if (statusCode == HttpStatus.SC_NOT_FOUND){
+                throw new Exception("The resource connection or path does not exist");
+            }
+            else {
+                if (statusCode != HttpStatus.SC_NO_CONTENT){
+                    String message = "Received status code " + statusCode + " for folder deletion";
+                    throw new Exception(message);
+                }
+            }
+            //status code is HttpStatus.SC_NO_CONTENT (204)
+            LOGGER.info("Deleted folder " + folderName);
+        }  catch (Exception e) {
+            throw new Exception(e.getMessage());
+        } finally {
+            if (request != null) {
+                request.releaseConnection();
+            }
+        }
+    }
+
     protected CloseableHttpClient getClient_() {
         return client_;
     }
@@ -267,12 +374,8 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         return fmePortProperty;
     }
 
-    protected String getFmeUserProperty() {
-        return fmeUserProperty;
-    }
-
-    protected String getFmePasswordProperty() {
-        return fmePasswordProperty;
+    protected String getFmeTokenProperty() {
+        return fmeTokenProperty;
     }
 
     protected String getFmeTokenExpirationProperty() {
@@ -289,6 +392,18 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     protected Integer getFmeRetryHoursProperty() {
         return fmeRetryHoursProperty;
+    }
+
+    public String getFmeResultFolderUrlProperty() {
+        return fmeResultFolderUrlProperty;
+    }
+
+    public String getFmeResultFolderProperty() {
+        return fmeResultFolderProperty;
+    }
+
+    public String getFmeDeleteFolderUrlProperty() {
+        return fmeDeleteFolderUrlProperty;
     }
 
     protected Integer getRetries() {

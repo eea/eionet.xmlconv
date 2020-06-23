@@ -12,6 +12,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.jooq.tools.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -55,8 +56,7 @@ public class FMEQueryEngineTest {
     private Integer fmeTimeoutProperty = 1;
     private String fmeHostProperty = "fme.discomap.eea.europa.eu";
     private String fmePortProperty = "80";
-    private String fmeUserProperty = "notValidUsername";
-    private String fmePasswordProperty = "notValidPassword";
+    private String fmeTokenProperty = "invalidToken";
     private String fmeTokenExpirationProperty = "1";
     private String fmeTokenTimeunitProperty = "hour";
     private String fmePollingUrlProperty = "https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/jobs/id/";
@@ -70,8 +70,7 @@ public class FMEQueryEngineTest {
         when(fmeQueryEngine.getFmeTimeoutProperty()).thenReturn(fmeTimeoutProperty);
         when(fmeQueryEngine.getFmeHostProperty()).thenReturn(fmeHostProperty);
         when(fmeQueryEngine.getFmePortProperty()).thenReturn(fmePortProperty);
-        when(fmeQueryEngine.getFmeUserProperty()).thenReturn(fmeUserProperty);
-        when(fmeQueryEngine.getFmePasswordProperty()).thenReturn(fmePasswordProperty);
+        when(fmeQueryEngine.getFmeTokenProperty()).thenReturn(fmeTokenProperty);
         when(fmeQueryEngine.getFmeTokenExpirationProperty()).thenReturn(fmeTokenExpirationProperty);
         when(fmeQueryEngine.getFmeTokenTimeunitProperty()).thenReturn(fmeTokenTimeunitProperty);
         when(fmeQueryEngine.getFmePollingUrlProperty()).thenReturn(fmePollingUrlProperty);
@@ -88,47 +87,13 @@ public class FMEQueryEngineTest {
 
     }
 
-    /* Test case: creation of json object with not null xmlSourceFile */
-    @Test
-    public void testCreateJSONObjectForJobSubmissionNotNullFile() throws Exception {
-        JSONObject actual = Whitebox.invokeMethod(fmeQueryEngine, "createJSONObjectForJobSubmission", "test");
-        String expected = "{\"publishedParameters\":[{\"name\":\"folder\",\"value\":\"testdir3\"},{\"name\":\"envelopepath\",\"value\":\"test\"},{\"name\":\"outputfile\",\"value\":\"outputfile_test\"}]}";
-        Assert.assertThat(actual, is(notNullValue()));
-        Assert.assertThat(actual.toString(), is(expected));
-    }
-
-    /* Test case: creation of json object with null xmlSourceFile */
-    @Test
-    public void testCreateJSONObjectForJobSubmissionNullFile() throws Exception {
-        JSONObject actual = Whitebox.invokeMethod(fmeQueryEngine, "createJSONObjectForJobSubmission", null);
-        String expected = "{\"publishedParameters\":[{\"name\":\"folder\",\"value\":\"testdir3\"},{\"name\":\"envelopepath\",\"value\":\"null\"},{\"name\":\"outputfile\",\"value\":\"outputfile_null\"}]}";
-        Assert.assertThat(actual, is(notNullValue()));
-        Assert.assertThat(actual.toString(), is(expected));
-    }
-
-    /* Test case: job submission with null xqscript */
-    @Test(expected = Exception.class)
-    public void testSubmitJobToFMENullXQScript() throws Exception {
-        try
-        {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", null);
-        }
-        catch(Exception e)
-        {
-            String expectedMessage = "XQScript is empty";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
-            throw e;
-        }
-        fail("Null XQScript provided - exception did not throw!");
-    }
-
     /* Test case: job submission with null script source file */
     @Test(expected = Exception.class)
     public void testSubmitJobToFMENullScriptSourceFile() throws Exception {
         XQScript script = new XQScript(null, null, null);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script);
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
         }
         catch(Exception e)
         {
@@ -145,7 +110,7 @@ public class FMEQueryEngineTest {
         XQScript script = new XQScript("testFmw", null, null);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script);
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
         }
         catch(Exception e)
         {
@@ -164,11 +129,11 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(401);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script);
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
         }
         catch(Exception e)
         {
-            String expectedMessage = "Unauthorized user";
+            String expectedMessage = "Unauthorized token";
             Assert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
         }
@@ -183,7 +148,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(404);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script);
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
         }
         catch(Exception e)
         {
@@ -203,7 +168,7 @@ public class FMEQueryEngineTest {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
 
-        String jobId = Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script);
+        String jobId = Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
         Assert.assertThat(jobId, is(notNullValue()));
         Assert.assertThat(jobId, is("123"));
     }
@@ -217,7 +182,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(202);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script);
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
         }
         catch(Exception e)
         {
@@ -237,7 +202,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(202);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script);
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
         }
         catch(Exception e)
         {
@@ -257,7 +222,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(202);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script);
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
         }
         catch(Exception e)
         {
@@ -689,7 +654,6 @@ public class FMEQueryEngineTest {
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         File f = new File("testFile");
         FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"ABORTED\"},\"id\":\"testId\",\"status\":\"ABORTED\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
@@ -710,7 +674,6 @@ public class FMEQueryEngineTest {
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         File f = new File("testFile");
         FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"FME_FAILURE\"},\"id\":\"testId\",\"status\":\"FME_FAILURE\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
@@ -731,7 +694,6 @@ public class FMEQueryEngineTest {
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         File f = new File("testFile");
         FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"JOB_FAILURE\"},\"id\":\"testId\",\"status\":\"JOB_FAILURE\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
@@ -746,27 +708,7 @@ public class FMEQueryEngineTest {
         f.delete();
     }
 
-    /* Test case: run query status SUCCESS Result status SUCCESS */
-    @Test
-    public void testRunQueryStatusSUCCESS_Result_SUCCESS() throws Exception {
-        XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
-        script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        File f = new File("testFile");
-        FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
-        when(statusLine.getStatusCode()).thenReturn(202).thenReturn(200);
-        String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
-                .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
-        fmeQueryEngine.runQuery(script, result);
 
-        FileInputStream fis = new FileInputStream (f);
-        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-        Assert.assertThat(text, is("{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}"));
-        fis.close();
-        result.close();
-        f.delete();
-    }
 
     /* Test case: run query status SUCCESS Result status FME_FAILURE*/
     @Test
@@ -775,7 +717,6 @@ public class FMEQueryEngineTest {
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         File f = new File("testFile");
         FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"FME_FAILURE\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
@@ -797,7 +738,6 @@ public class FMEQueryEngineTest {
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         File f = new File("testFile");
         FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"SUBMITTED\"},\"id\":\"testId\",\"status\":\"SUBMITTED\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
@@ -814,31 +754,6 @@ public class FMEQueryEngineTest {
         f.delete();
     }
 
-
-    /* Test case: run query status QUEUED */
-    @Test
-    public void testRunQueryStatusQUEUED_SUCCESS_2ndTime() throws Exception {
-        XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
-        script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        File f = new File("testFile");
-        FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
-        when(statusLine.getStatusCode()).thenReturn(202).thenReturn(200);
-        String JSONResponse = "{\"result\":{\"status\":\"QUEUED\"},\"id\":\"testId\",\"status\":\"QUEUED\"}";
-        String JSONResponseSuccess = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
-                .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ))
-                .thenReturn(new ByteArrayInputStream( JSONResponseSuccess.getBytes() ));
-        fmeQueryEngine.runQuery(script, result);
-
-        FileInputStream fis = new FileInputStream (f);
-        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-        Assert.assertThat(text, is("{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}"));
-        fis.close();
-        result.close();
-        f.delete();
-    }
-
     /* Test case: run query status PULLED */
     @Test
     public void testRunQueryStatusPULLED_ABORTED_3rdTime() throws Exception {
@@ -846,7 +761,6 @@ public class FMEQueryEngineTest {
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         File f = new File("testFile");
         FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"PULLED\"},\"id\":\"testId\",\"status\":\"PULLED\"}";
         String JSONResponseABORTED = "{\"result\":{\"status\":\"ABORTED\"},\"id\":\"testId\",\"status\":\"ABORTED\"}";
@@ -871,7 +785,6 @@ public class FMEQueryEngineTest {
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
         File f = new File("testFile");
         FileOutputStream result = new FileOutputStream(f);
-        String jobId = "testId";
         when(statusLine.getStatusCode()).thenReturn(200);
         String JSONResponse = "{\"result\":{\"status\":\"OTHER\"},\"id\":\"testId\",\"status\":\"OTHER\"}";
         when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
@@ -884,6 +797,224 @@ public class FMEQueryEngineTest {
         fis.close();
         result.close();
         f.delete();
+    }
+
+    /* Test case: run query exception thrown in getJobStatus */
+    @Test
+    public void testRunQueryGetJobStatusError() throws Exception {
+        XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
+        script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
+        File f = new File("testFile");
+        FileOutputStream result = new FileOutputStream(f);
+        when(statusLine.getStatusCode()).thenReturn(202).thenReturn(401);
+        String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
+        when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
+                .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
+        fmeQueryEngine.runQuery(script, result);
+
+        FileInputStream fis = new FileInputStream (f);
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
+        fis.close();
+        result.close();
+        f.delete();
+    }
+
+    /* Test case: run query exception thrown in getResultFiles */
+    @Test
+    public void testRunQueryGetResultFilesError() throws Exception {
+        XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
+        script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
+        File f = new File("testFile");
+        FileOutputStream result = new FileOutputStream(f);
+        when(statusLine.getStatusCode()).thenReturn(202).thenReturn(400).thenReturn(401);
+        String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
+        when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
+                .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
+        fmeQueryEngine.runQuery(script, result);
+
+        FileInputStream fis = new FileInputStream (f);
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
+        fis.close();
+        result.close();
+        f.delete();
+    }
+
+    /* Test case: run query exception thrown in deleteFolder */
+    @Test
+    public void testRunQueryDeleteFolderError() throws Exception {
+        XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
+        script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
+        File f = new File("testFile");
+        FileOutputStream result = new FileOutputStream(f);
+        when(statusLine.getStatusCode()).thenReturn(202).thenReturn(400).thenReturn(200).thenReturn(401);
+        String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
+        when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
+                .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
+        fmeQueryEngine.runQuery(script, result);
+
+        FileInputStream fis = new FileInputStream (f);
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
+        fis.close();
+        result.close();
+        f.delete();
+    }
+
+    /* Test case: run query successful */
+    @Test
+    @Ignore
+    public void testRunQuerySuccessful() throws Exception {
+        XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
+        script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
+        File f = new File("testFile");
+        FileOutputStream result = new FileOutputStream(f);
+        when(statusLine.getStatusCode()).thenReturn(202).thenReturn(400).thenReturn(200).thenReturn(401);
+        String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
+        when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
+                .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
+        fmeQueryEngine.runQuery(script, result);
+
+        FileInputStream fis = new FileInputStream (f);
+        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
+        Assert.assertThat(text, is(failedOutputString));
+        fis.close();
+        result.close();
+        f.delete();
+    }
+
+    /* Test case: delete folder 401 status code */
+    @Test(expected = Exception.class)
+    public void testDeleteFolderUnauthorized() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(401);
+        try
+        {
+            Whitebox.invokeMethod(fmeQueryEngine, "deleteFolder", "testFolder");
+        }
+        catch(Exception e)
+        {
+            String expectedMessage = "Unauthorized token";
+            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            throw e;
+        }
+        fail("Unauthorized token - exception did not throw!");
+    }
+
+    /* Test case: delete folder 404 status code */
+    @Test(expected = Exception.class)
+    public void testDeleteFolderNotFound() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(404);
+        try
+        {
+            Whitebox.invokeMethod(fmeQueryEngine, "deleteFolder", "testFolder");
+        }
+        catch(Exception e)
+        {
+            String expectedMessage = "The resource connection or path does not exist";
+            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            throw e;
+        }
+        fail("Folder not found - exception did not throw!");
+    }
+
+    /* Test case: delete folder 402 status code */
+    @Test(expected = Exception.class)
+    public void testDeleteFolderOtherStatus() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(402);
+        try
+        {
+            Whitebox.invokeMethod(fmeQueryEngine, "deleteFolder", "testFolder");
+        }
+        catch(Exception e)
+        {
+            String expectedMessage = "Received status code 402 for folder deletion";
+            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            throw e;
+        }
+        fail("Other status - exception did not throw!");
+    }
+
+    /* Test case: delete folder successful */
+    @Test
+    public void testDeleteFolderSuccessful() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(204);
+        Whitebox.invokeMethod(fmeQueryEngine, "deleteFolder", "testFolder");
+    }
+
+    /* Test case: download folder 401 status code */
+    @Test(expected = Exception.class)
+    public void testGetResultFilesUnauthorized() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(401);
+        try
+        {
+            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
+        }
+        catch(Exception e)
+        {
+            String expectedMessage = "Unauthorized token";
+            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            throw e;
+        }
+        fail("Unauthorized token - exception did not throw!");
+    }
+
+    /* Test case: download folder 404 status code */
+    @Test(expected = Exception.class)
+    public void testGetResultFilesFolderNotFound() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(404);
+        try
+        {
+            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
+        }
+        catch(Exception e)
+        {
+            String expectedMessage = "The resource connection or directory does not exist";
+            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            throw e;
+        }
+        fail("Folder not found - exception did not throw!");
+    }
+
+    /* Test case: download folder 409 status code */
+    @Test(expected = Exception.class)
+    public void testGetResultFilesCanNotDownloadFolder() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(409);
+        try
+        {
+            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
+        }
+        catch(Exception e)
+        {
+            String expectedMessage = "The resource connection is not a type of resource that can be downloaded";
+            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            throw e;
+        }
+        fail("Folder can not be downloaded - exception did not throw!");
+    }
+
+    /* Test case: download folder 402 status code */
+    @Test(expected = Exception.class)
+    public void testGetResultFilesOtherCode() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(402);
+        try
+        {
+            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
+        }
+        catch(Exception e)
+        {
+            String expectedMessage = "Received status code 402 for folder downloading";
+            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            throw e;
+        }
+        fail("Other status - exception did not throw!");
+    }
+
+    /* Test case: download folder successful */
+    @Test
+    public void testGetResultFilesSuccessful() throws Exception {
+        when(statusLine.getStatusCode()).thenReturn(200);
+        Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
     }
 
 }
