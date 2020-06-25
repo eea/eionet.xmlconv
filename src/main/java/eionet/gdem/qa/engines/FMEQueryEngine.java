@@ -83,7 +83,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             String fileName = fileNameSegments[0];
             String jobId = submitJobToFME(script, fileName);
             getJobStatus(jobId, result, script);
-            getResultFiles(fileName);
+            getResultFiles(fileName, result);
             deleteFolder(fileName);
         } catch (Exception e) {
             String message = "Generic Exception handling. FME request error: " + e.getMessage();
@@ -238,7 +238,6 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                             throw new Exception(errorMsg);
                         }
                         InputStream is = new ByteArrayInputStream(jsonStr.getBytes());
-                        IOUtils.copy(is, result);
                         count = this.getRetries();
                     }
                     else {
@@ -264,7 +263,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
-    private void getResultFiles (String folderName) throws Exception {
+    private void getResultFiles (String folderName, OutputStream result) throws Exception {
         LOGGER.info("Began downloading folder " + folderName);
         HttpPost request = null;
         CloseableHttpResponse response = null;
@@ -302,6 +301,9 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 }
             }
             //status code is HttpStatus.SC_OK (200)
+            HttpEntity entity = response.getEntity();
+            // We get an InputStream and copy it to the 'result' OutputStream
+            IOUtils.copy(entity.getContent(), result);
 
             LOGGER.info("Downloaded folder " + folderName);
 
