@@ -251,6 +251,8 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                     String message = "Error when polling for job status. Received status code: " + statusCode;
                     throw new Exception(message);
                 }
+            } catch (SocketTimeoutException ste) { // Timeout Exceeded
+                LOGGER.error("Retries = "+count+" The FME request has exceeded the allotted timeout of :"+getFmeTimeoutProperty()+" -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource());
             } catch (Exception e) {
                 throw e;
             }
