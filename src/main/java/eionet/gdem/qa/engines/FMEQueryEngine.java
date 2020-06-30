@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import eionet.gdem.utils.ZipUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -48,6 +50,8 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     private Integer retries = 0;
 
+    private String randomStr = RandomStringUtils.randomAlphanumeric(5);
+
 
     /* Variables for eionet.gdem.Properties*/
     private Integer fmeTimeoutProperty = Properties.fmeTimeout;
@@ -60,7 +64,8 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     private String fmeTokenProperty = Properties.fmeToken;
     private String fmeResultFolderUrlProperty = Properties.fmeResultFolderUrl;
     private String fmeResultFolderProperty = Properties.fmeResultFolder;
-    public String fmeDeleteFolderUrlProperty = Properties.fmeDeleteFolderUrl;
+    private String fmeDeleteFolderUrlProperty = Properties.fmeDeleteFolderUrl;
+    private String tmpFolderProperty = Properties.getTmpFolder() + File.separatorChar;
 
     /**
      * Default constructor.
@@ -81,10 +86,12 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             String fileNameWthXml = urlSegments[urlSegments.length-1];
             String[] fileNameSegments = fileNameWthXml.split("\\.");
             String fileName = fileNameSegments[0];
-            String jobId = submitJobToFME(script, fileName);
+            String folderName = fileName + "_" +  getRandomStr();
+            String resultFileName = "outputfile_" + fileName + ".html";
+            String jobId = submitJobToFME(script, resultFileName, folderName);
             getJobStatus(jobId, result, script);
-            getResultFiles(fileName, result);
-            deleteFolder(fileName);
+            getResultFiles(folderName, resultFileName, result);
+            deleteFolder(folderName);
         } catch (Exception e) {
             String message = "Generic Exception handling. FME request error: " + e.getMessage();
             LOGGER.error(message);
@@ -92,7 +99,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
-    private String submitJobToFME (XQScript script, String fileName) throws Exception {
+    private String submitJobToFME (XQScript script, String fileName, String folderName) throws Exception {
         if (script == null){
             throw new Exception("XQScript is empty");
         }
@@ -120,7 +127,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                     new BasicHeader(HttpHeaders.AUTHORIZATION, headerAuthorizationValue)
             };
             request.setHeaders(headers);
-            JSONObject jsonParams = createJSONObjectForJobSubmission(script.getOrigFileUrl(), fileName);
+            JSONObject jsonParams = createJSONObjectForJobSubmission(script.getOrigFileUrl(), fileName, folderName);
             StringEntity params = new StringEntity(jsonParams.toString());
             request.setEntity(params);
 
@@ -160,10 +167,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         return jobId;
     }
 
-    private JSONObject createJSONObjectForJobSubmission(String xmlSourceFile, String fileName){
+    private JSONObject createJSONObjectForJobSubmission(String xmlSourceFile, String fileName, String folderName){
         JSONObject folderParams = new JSONObject();
         folderParams.put("name", "folder");
-        folderParams.put("value", this.getFmeResultFolderProperty() + "/" +fileName);
+        folderParams.put("value", this.getFmeResultFolderProperty() + "/" +folderName);
 
         JSONObject xmlParams = new JSONObject();
         xmlParams.put("name", "envelopepath");
@@ -171,7 +178,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
         JSONObject outputParams = new JSONObject();
         outputParams.put("name", "outputfile");
-        outputParams.put("value", "outputfile_" +fileName);
+        outputParams.put("value", fileName);
 
         JSONArray ja = new JSONArray();
         ja.add(folderParams);
@@ -265,7 +272,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
-    private void getResultFiles (String folderName, OutputStream result) throws Exception {
+    private void getResultFiles (String folderName, String fileName, OutputStream result) throws Exception {
         LOGGER.info("Began downloading folder " + folderName);
         HttpPost request = null;
         CloseableHttpResponse response = null;
@@ -304,8 +311,23 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             }
             //status code is HttpStatus.SC_OK (200)
             HttpEntity entity = response.getEntity();
-            // We get an InputStream and copy it to the 'result' OutputStream
-            IOUtils.copy(entity.getContent(), result);
+            InputStream is = entity.getContent();
+            //Store zip file in tmp folder
+            String zipFilePath = getTmpFolderProperty() + folderName+".zip";
+            FileOutputStream fos = new FileOutputStream(new File(zipFilePath));
+            int inByte;
+            while((inByte = is.read()) != -1)
+                fos.write(inByte);
+            fos.close();
+
+            //Extract folder in tmp folder and delete zip file
+            ZipUtil.unzip(zipFilePath, getTmpFolderProperty() + folderName);
+            File zipFile = new File(zipFilePath);
+            zipFile.delete();
+
+            //Copy content of html file to OutputStream
+            InputStream fileContent = new FileInputStream(getTmpFolderProperty() + folderName + "/" + fileName);
+            IOUtils.copy(fileContent, result);
 
             LOGGER.info("Downloaded folder " + folderName);
 
@@ -416,5 +438,13 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     private void setRetries(Integer retries) {
         this.retries = (retries <= 0) ? 1 : retries;
+    }
+
+    public String getTmpFolderProperty() {
+        return tmpFolderProperty;
+    }
+
+    public String getRandomStr() {
+        return randomStr;
     }
 }

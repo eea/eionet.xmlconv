@@ -2,7 +2,9 @@ package eionet.gdem.qa.engines;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.test.mocks.MockServletOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.config.RequestConfig;
@@ -24,10 +26,8 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -62,7 +62,8 @@ public class FMEQueryEngineTest {
     private String fmePollingUrlProperty = "https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/jobs/id/";
     private Integer fmeRetryHoursProperty = 1;
     private String failedOutputString = "<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>";
-
+    private String randomStr = "AB35F";
+    private MockServletOutputStream outputStream;
 
     @Before
     public void setUp() throws Exception {
@@ -75,6 +76,7 @@ public class FMEQueryEngineTest {
         when(fmeQueryEngine.getFmeTokenTimeunitProperty()).thenReturn(fmeTokenTimeunitProperty);
         when(fmeQueryEngine.getFmePollingUrlProperty()).thenReturn(fmePollingUrlProperty);
         when(fmeQueryEngine.getFmeRetryHoursProperty()).thenReturn(fmeRetryHoursProperty);
+        when(fmeQueryEngine.getRandomStr()).thenReturn(randomStr);
         when(fmeQueryEngine.getRetries()).thenReturn(3);
         when(fmeQueryEngine.getClient_()).thenReturn(client_);
         requestConfigBuilder.setSocketTimeout(fmeTimeoutProperty);
@@ -93,7 +95,7 @@ public class FMEQueryEngineTest {
         XQScript script = new XQScript(null, null, null);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile", "testFolder");
         }
         catch(Exception e)
         {
@@ -110,7 +112,7 @@ public class FMEQueryEngineTest {
         XQScript script = new XQScript("testFmw", null, null);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile", "testFolder");
         }
         catch(Exception e)
         {
@@ -129,7 +131,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(401);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile", "testFolder");
         }
         catch(Exception e)
         {
@@ -148,7 +150,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(404);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile", "testFolder");
         }
         catch(Exception e)
         {
@@ -168,7 +170,7 @@ public class FMEQueryEngineTest {
         XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
         script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
 
-        String jobId = Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
+        String jobId = Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile", "testFolder");
         Assert.assertThat(jobId, is(notNullValue()));
         Assert.assertThat(jobId, is("123"));
     }
@@ -182,7 +184,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(202);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile", "testFolder");
         }
         catch(Exception e)
         {
@@ -202,7 +204,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(202);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile", "testFolder");
         }
         catch(Exception e)
         {
@@ -222,7 +224,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(202);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile");
+            Whitebox.invokeMethod(fmeQueryEngine, "submitJobToFME", script, "testFile", "testFolder");
         }
         catch(Exception e)
         {
@@ -862,28 +864,6 @@ public class FMEQueryEngineTest {
         f.delete();
     }
 
-    /* Test case: run query successful */
-    @Test
-    @Ignore
-    public void testRunQuerySuccessful() throws Exception {
-        XQScript script = new XQScript("https://fme.discomap.eea.europa.eu/fmerest/v3/transformations/submit/ReportNetTesting/sample_call2.fmw", null, null);
-        script.setSrcFileUrl("https://cdr.eionet.europa.eu/se/eu/dwd/envw9mv4a/WISE_DWD_SE_2014_DWD_MS.xml");
-        File f = new File("testFile");
-        FileOutputStream result = new FileOutputStream(f);
-        when(statusLine.getStatusCode()).thenReturn(202).thenReturn(400).thenReturn(200).thenReturn(401);
-        String JSONResponse = "{\"result\":{\"status\":\"SUCCESS\"},\"id\":\"testId\",\"status\":\"SUCCESS\"}";
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream( "{\"id\":\"123\"}".getBytes() ))
-                .thenReturn(new ByteArrayInputStream( JSONResponse.getBytes() ));
-        fmeQueryEngine.runQuery(script, result);
-
-        FileInputStream fis = new FileInputStream (f);
-        String text = IOUtils.toString(fis, StandardCharsets.UTF_8.name());
-        Assert.assertThat(text, is(failedOutputString));
-        fis.close();
-        result.close();
-        f.delete();
-    }
-
     /* Test case: delete folder 401 status code */
     @Test(expected = Exception.class)
     public void testDeleteFolderUnauthorized() throws Exception {
@@ -948,7 +928,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(401);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
+            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder", "testFile", outputStream);
         }
         catch(Exception e)
         {
@@ -965,7 +945,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(404);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
+            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder", "testFile", outputStream);
         }
         catch(Exception e)
         {
@@ -982,7 +962,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(409);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
+            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder", "testFile", outputStream);
         }
         catch(Exception e)
         {
@@ -999,7 +979,7 @@ public class FMEQueryEngineTest {
         when(statusLine.getStatusCode()).thenReturn(402);
         try
         {
-            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
+            Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder", "testFile", outputStream);
         }
         catch(Exception e)
         {
@@ -1008,13 +988,6 @@ public class FMEQueryEngineTest {
             throw e;
         }
         fail("Other status - exception did not throw!");
-    }
-
-    /* Test case: download folder successful */
-    @Test
-    public void testGetResultFilesSuccessful() throws Exception {
-        when(statusLine.getStatusCode()).thenReturn(200);
-        Whitebox.invokeMethod(fmeQueryEngine, "getResultFiles", "testFolder");
     }
 
 }
