@@ -3,10 +3,11 @@ package eionet.gdem.qa.engines;
 import java.io.*;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
+import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.ZipUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.io.IOUtils;
@@ -87,10 +88,9 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             String[] fileNameSegments = fileNameWthXml.split("\\.");
             String fileName = fileNameSegments[0];
             String folderName = fileName + "_" +  getRandomStr();
-            String resultFileName = "outputfile_" + fileName + ".html";
-            String jobId = submitJobToFME(script, resultFileName, folderName);
-            getJobStatus(jobId, result, script);
-            getResultFiles(folderName, resultFileName, result);
+            String jobId = submitJobToFME(script, folderName);
+            getJobStatus(jobId, script);
+            getResultFiles(folderName, result);
             deleteFolder(folderName);
         } catch (Exception e) {
             String message = "Generic Exception handling. FME request error: " + e.getMessage();
@@ -99,7 +99,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
-    private String submitJobToFME (XQScript script, String fileName, String folderName) throws Exception {
+    private String submitJobToFME (XQScript script, String folderName) throws Exception {
         if (script == null){
             throw new Exception("XQScript is empty");
         }
@@ -127,7 +127,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                     new BasicHeader(HttpHeaders.AUTHORIZATION, headerAuthorizationValue)
             };
             request.setHeaders(headers);
-            JSONObject jsonParams = createJSONObjectForJobSubmission(script.getOrigFileUrl(), fileName, folderName);
+            JSONObject jsonParams = createJSONObjectForJobSubmission(script.getOrigFileUrl(), folderName);
             StringEntity params = new StringEntity(jsonParams.toString());
             request.setEntity(params);
 
@@ -167,7 +167,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         return jobId;
     }
 
-    private JSONObject createJSONObjectForJobSubmission(String xmlSourceFile, String fileName, String folderName){
+    private JSONObject createJSONObjectForJobSubmission(String xmlSourceFile, String folderName){
         JSONObject folderParams = new JSONObject();
         folderParams.put("name", "folder");
         folderParams.put("value", this.getFmeResultFolderProperty() + "/" +folderName);
@@ -176,21 +176,16 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         xmlParams.put("name", "envelopepath");
         xmlParams.put("value", xmlSourceFile);
 
-        JSONObject outputParams = new JSONObject();
-        outputParams.put("name", "outputfile");
-        outputParams.put("value", fileName);
-
         JSONArray ja = new JSONArray();
         ja.add(folderParams);
         ja.add(xmlParams);
-        ja.add(outputParams);
 
         JSONObject joPublishedParams = new JSONObject();
         joPublishedParams.put("publishedParameters", ja);
         return joPublishedParams;
     }
 
-    private void getJobStatus(String jobId, OutputStream result, XQScript script) throws Exception {
+    private void getJobStatus(String jobId, XQScript script) throws Exception {
         LOGGER.info("Began polling for status of job #" + jobId);
         String url = this.getFmePollingUrlProperty() + jobId;
         String headerAuthorizationValue = "fmetoken token="+this.getFmeTokenProperty();
@@ -244,7 +239,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                             String errorMsg = "Received result status FME_FAILURE for job Id #" + jobId;
                             throw new Exception(errorMsg);
                         }
-                        InputStream is = new ByteArrayInputStream(jsonStr.getBytes());
+
                         count = this.getRetries();
                     }
                     else {
@@ -272,7 +267,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         }
     }
 
-    private void getResultFiles (String folderName, String fileName, OutputStream result) throws Exception {
+    private void getResultFiles (String folderName, OutputStream result) throws Exception {
         LOGGER.info("Began downloading folder " + folderName);
         HttpPost request = null;
         CloseableHttpResponse response = null;
@@ -310,26 +305,43 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 }
             }
             //status code is HttpStatus.SC_OK (200)
+            LOGGER.info("Received status code 200 when downloading folder " + folderName);
+
             HttpEntity entity = response.getEntity();
             InputStream is = entity.getContent();
             //Store zip file in tmp folder
-            String zipFilePath = getTmpFolderProperty() + folderName+".zip";
-            FileOutputStream fos = new FileOutputStream(new File(zipFilePath));
+            String folderPath = getTmpFolderProperty() + folderName;
+            FileOutputStream fos = new FileOutputStream(new File(folderPath+".zip"));
             int inByte;
             while((inByte = is.read()) != -1)
                 fos.write(inByte);
             fos.close();
 
             //Extract folder in tmp folder and delete zip file
-            ZipUtil.unzip(zipFilePath, getTmpFolderProperty() + folderName);
-            File zipFile = new File(zipFilePath);
+            ZipUtil.unzip(folderPath+".zip", folderPath);
+            File zipFile = new File(folderPath+".zip");
             zipFile.delete();
+            LOGGER.info("Extracted and deleted " + folderPath + ".zip");
+
+            // Get all the names of the files present in the given directory
+            File folder = new File(folderPath);
+            if(!folder.isDirectory()){
+                String errorMsg = getTmpFolderProperty() + folderPath + " is not a directory";
+                throw new Exception(errorMsg);
+            }
+            List<String> listFile = Arrays.asList(folder.list());
+            Collections.sort(listFile);
+            LOGGER.info("Files found in directory " + folderPath + " are: " + listFile);
 
             //Copy content of html file to OutputStream
-            InputStream fileContent = new FileInputStream(getTmpFolderProperty() + folderName + "/" + fileName);
+            InputStream fileContent = new FileInputStream(getTmpFolderProperty() + folderName + "/" + listFile.get(0));
             IOUtils.copy(fileContent, result);
+            LOGGER.info("Copied file " + listFile.get(0) + " to stream");
 
-            LOGGER.info("Downloaded folder " + folderName);
+            //Delete created folder
+            Utils.deleteFolder(folderPath);
+            LOGGER.info("Deleted folder " + folderPath);
+            LOGGER.info("Finished downloading folder " + folderName + " from FME");
 
         }  catch (Exception e) {
             throw new Exception(e.getMessage());
