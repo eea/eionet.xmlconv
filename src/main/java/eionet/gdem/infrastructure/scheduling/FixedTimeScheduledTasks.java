@@ -3,6 +3,7 @@ package eionet.gdem.infrastructure.scheduling;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -35,7 +38,7 @@ public class FixedTimeScheduledTasks {
 
     @Transactional
     @Scheduled(cron = "0 */5 * * * *") //Every 5 minutes
-    public void schedulePeriodicUpdateOfDurationOfJobsInProcessingStatus() throws SQLException, ParseException {
+    public void schedulePeriodicUpdateOfDurationOfJobsInProcessingStatus() throws SQLException, GeneralSecurityException {
         //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2)
         Map<String, Timestamp> jobsInfo = xqJobDao.getJobsWithTimestamps(Constants.XQ_PROCESSING);
         //Create new map with the duration for each job
@@ -56,6 +59,8 @@ public class FixedTimeScheduledTasks {
         xqJobDao.updateXQJobsDuration(jobDurations);
         if(longRunningJobIds.size() > 0){
             LOGGER.info("Found long running jobs with ids " + longRunningJobIds);
+            //send notifications to users via UNS
+            new UNSEventSender().longRunningJobsNotifications(longRunningJobIds, Properties.LONG_RUNNING_JOBS_EVENT);
         }
         LOGGER.info("Updated duration of jobs in PROCESSING status.");
     }

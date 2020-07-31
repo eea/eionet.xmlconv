@@ -36,6 +36,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
@@ -1305,5 +1306,38 @@ public final class Utils {
                 TimeUnit.MILLISECONDS.toSeconds(ms) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms))
         );
+    }
+
+    /**
+     * A method for creating a unique Hexa-Decimal digest of a String message.
+     *
+     * @param src
+     *            String to be digested.
+     * @param algorithm
+     *            Digesting algorithm (please see Java documentation for allowable values).
+     * @return A unique String-typed Hexa-Decimal digest of the input message.
+     */
+    public static String digestHexDec(String src, String algorithm) throws GeneralSecurityException {
+
+        byte[] srcBytes = src.getBytes();
+        byte[] dstBytes = new byte[16];
+
+        MessageDigest md = MessageDigest.getInstance(algorithm);
+        md.update(srcBytes);
+        dstBytes = md.digest();
+        md.reset();
+
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < dstBytes.length; i++) {
+            Byte byteWrapper = new Byte(dstBytes[i]);
+            int k = byteWrapper.intValue();
+            String s = Integer.toHexString(byteWrapper.intValue());
+            if (s.length() == 1) {
+                s = "0" + s;
+            }
+            buf.append(s.substring(s.length() - 2));
+        }
+
+        return buf.toString();
     }
 }

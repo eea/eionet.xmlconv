@@ -164,6 +164,21 @@ public class Properties {
     /** Context path to be used in classes */
     public static String contextPath;
 
+    /* UNS properties */
+    public static String PROP_UNS_XMLRPC_SERVER_URL = null;
+    public static String PROP_UNS_CHANNEL_NAME = null;
+    public static String PROP_UNS_SUBSCRIPTIONS_URL = null;
+    public static String PROP_UNS_USERNAME = null;
+    public static String PROP_UNS_PASSWORD = null;
+    public static String PROP_UNS_DISABLED = null;
+    public static String PROP_UNS_SUBSCRIBE_FUNC = null;
+    public static String PROP_UNS_SEND_NOTIFICATION_FUNC = null;
+    public static String PROP_UNS_LONG_RUNNING_JOBS_PREDICATE = null;
+    public static String PROP_UNS_EVENTTYPE_PREDICATE = null;
+    public static String PROP_UNS_EVENTS_NAMESPACE = null;
+    public static final String LONG_RUNNING_JOBS_EVENT = "Found long running jobs";
+
+
     public static int heavyJobThreshhold;
 
     public static Long longRunningJobThreshold;
@@ -250,6 +265,18 @@ public class Properties {
         fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
         longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
+
+        PROP_UNS_XMLRPC_SERVER_URL = getStringProperty("env.uns.xml.rpc.server.url");
+        PROP_UNS_CHANNEL_NAME = getStringProperty("env.uns.channel.name");
+        PROP_UNS_SUBSCRIPTIONS_URL = getStringProperty("env.uns.subscriptions.url");
+        PROP_UNS_USERNAME = getStringProperty("env.uns.username");
+        PROP_UNS_PASSWORD = getStringProperty("env.uns.password");
+        PROP_UNS_DISABLED = getStringProperty("env.uns.isDisabled");
+        PROP_UNS_SUBSCRIBE_FUNC = getStringProperty("env.uns.make.subsription.function");
+        PROP_UNS_SEND_NOTIFICATION_FUNC = getStringProperty("env.uns.send.notification.function");
+        PROP_UNS_LONG_RUNNING_JOBS_PREDICATE = getStringProperty("env.uns.long.running.jobs.predicate");
+        PROP_UNS_EVENTTYPE_PREDICATE = getStringProperty("env.uns.eventtype.predicate");
+        PROP_UNS_EVENTS_NAMESPACE = getStringProperty("env.uns.events-namespace");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
     }
