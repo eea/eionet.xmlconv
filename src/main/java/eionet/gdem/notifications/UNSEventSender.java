@@ -35,12 +35,7 @@ public class UNSEventSender {
         }
 
         Hashtable predicateObjects = new Hashtable();
-        //the first element of the triple will not be used
         Vector objects = new Vector();
-        objects.add("");
-        predicateObjects.put("", objects);
-
-        objects = new Vector();
         objects.add(eventType);
         predicateObjects.put(Properties.PROP_UNS_EVENTTYPE_PREDICATE, objects);
 
