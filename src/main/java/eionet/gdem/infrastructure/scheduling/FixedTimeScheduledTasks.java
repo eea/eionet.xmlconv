@@ -60,6 +60,9 @@ public class FixedTimeScheduledTasks {
     public void schedulePeriodicNotificationsForLongRunningJobs() throws SQLException, GeneralSecurityException {
         //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2) and duration more than Properties.LONG_RUNNING_JOBS_EVENT
         String[] jobsIds = xqJobDao.getLongRunningJobs(Properties.longRunningJobThreshold, Constants.XQ_PROCESSING);
+        if (jobsIds.length>0){
+            return;
+        }
         List<String> longRunningJobIds = Arrays.asList(jobsIds);
         if(longRunningJobIds.size() > 0){
             LOGGER.info("Found long running jobs with ids " + longRunningJobIds);
