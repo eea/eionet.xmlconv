@@ -21,7 +21,19 @@ public class UNSEventSender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UNSEventSender.class);
 
-    public UNSEventSender() { }
+    /* Variables for eionet.gdem.Properties*/
+    private String eventTypePredicateProperty = null;
+    private String longRunningJobsPredicateProperty = null;
+    private String unsDisabledProperty = null;
+    private String xmlrpcServerUrlProperty = null;
+    private String channelNameProperty = null;
+    private String notificationFunctionNameProperty = null;
+    private String userNameProperty = null;
+    private String passwordProperty = null;
+    private String eventsNamespaceProperty = null;
+
+    public UNSEventSender() {
+    }
 
     /**
      *
@@ -34,14 +46,16 @@ public class UNSEventSender {
             return;
         }
 
+        setupProperties();
+
         Hashtable predicateObjects = new Hashtable();
         Vector objects = new Vector();
         objects.add(eventType);
-        predicateObjects.put(Properties.PROP_UNS_EVENTTYPE_PREDICATE, objects);
+        predicateObjects.put(getEventTypePredicateProperty(), objects);
 
         objects = new Vector();
         objects.add(jobIds);
-        predicateObjects.put(Properties.PROP_UNS_LONG_RUNNING_JOBS_PREDICATE, objects);
+        predicateObjects.put(getLongRunningJobsPredicateProperty(), objects);
 
         sendEvent(predicateObjects);
     }
@@ -52,7 +66,7 @@ public class UNSEventSender {
      */
     protected boolean isSendingDisabled() {
 
-        String isDisabledStr = Properties.PROP_UNS_DISABLED;
+        String isDisabledStr = getUnsDisabledProperty();
         boolean isWindows = File.separatorChar == '\\';
         if (isWindows) {
             boolean isEnabled = StringUtils.isNotBlank(isDisabledStr) && isDisabledStr.trim().equals("false");
@@ -99,11 +113,11 @@ public class UNSEventSender {
         }
 
         // get server URL, channel name and function-name from configuration
-        String serverURL = Properties.PROP_UNS_XMLRPC_SERVER_URL;
-        String channelName = Properties.PROP_UNS_CHANNEL_NAME;
-        String functionName = Properties.PROP_UNS_SEND_NOTIFICATION_FUNC;
-        String userName = Properties.PROP_UNS_USERNAME;
-        String password = Properties.PROP_UNS_PASSWORD;
+        String serverURL = getXmlrpcServerUrlProperty();
+        String channelName = getChannelNameProperty();
+        String functionName = getNotificationFunctionNameProperty();
+        String userName = getUserNameProperty();
+        String password = getPasswordProperty();
 
         try {
             // instantiate XML-RPC client object, set username/password from configuration
@@ -142,10 +156,10 @@ public class UNSEventSender {
             throw new GeneralSecurityException("Error generating an MD5 hash", e);
         }
 
-        eventID = Properties.PROP_UNS_EVENTS_NAMESPACE + eventID;
+        eventID = getEventsNamespaceProperty() + eventID;
 
         triple.setSubject(eventID);
-        triple.setProperty(Properties.PROP_UNS_LONG_RUNNING_JOBS_PREDICATE);
+        triple.setProperty(getLongRunningJobsPredicateProperty());
         triple.setValue("Converters event");
         notificationTriples.add(triple.toVector());
 
@@ -198,4 +212,51 @@ public class UNSEventSender {
         }
     }
 
+    protected String getEventTypePredicateProperty() {
+        return eventTypePredicateProperty;
+    }
+
+    protected String getLongRunningJobsPredicateProperty() {
+        return longRunningJobsPredicateProperty;
+    }
+
+    protected String getUnsDisabledProperty() {
+        return unsDisabledProperty;
+    }
+
+    protected String getXmlrpcServerUrlProperty() {
+        return xmlrpcServerUrlProperty;
+    }
+
+    protected String getChannelNameProperty() {
+        return channelNameProperty;
+    }
+
+    protected String getNotificationFunctionNameProperty() {
+        return notificationFunctionNameProperty;
+    }
+
+    protected String getUserNameProperty() {
+        return userNameProperty;
+    }
+
+    protected String getPasswordProperty() {
+        return passwordProperty;
+    }
+
+    protected String getEventsNamespaceProperty() {
+        return eventsNamespaceProperty;
+    }
+
+    protected void setupProperties (){
+        eventTypePredicateProperty = Properties.PROP_UNS_EVENTTYPE_PREDICATE;
+        longRunningJobsPredicateProperty = Properties.PROP_UNS_LONG_RUNNING_JOBS_PREDICATE;
+        unsDisabledProperty = Properties.PROP_UNS_DISABLED;
+        xmlrpcServerUrlProperty = Properties.PROP_UNS_XMLRPC_SERVER_URL;
+        channelNameProperty = Properties.PROP_UNS_CHANNEL_NAME;
+        notificationFunctionNameProperty = Properties.PROP_UNS_SEND_NOTIFICATION_FUNC;
+        userNameProperty = Properties.PROP_UNS_USERNAME;
+        passwordProperty = Properties.PROP_UNS_PASSWORD;
+        eventsNamespaceProperty = Properties.PROP_UNS_EVENTS_NAMESPACE;
+    }
 }

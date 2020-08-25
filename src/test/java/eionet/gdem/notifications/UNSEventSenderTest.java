@@ -1,24 +1,52 @@
 package eionet.gdem.notifications;
 
 import eionet.gdem.Properties;
+import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.TestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Vector;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
+import static org.powermock.api.mockito.PowerMockito.when;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationTestContext.class })
 public class UNSEventSenderTest{
+
+    UNSEventSenderMock unsEventSender;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        TestUtils.setUpProperties(this);
+        unsEventSender = new UNSEventSenderMock();
+    }
 
     @Test
     public void testLongRunningJobsNotificationsNullIds() throws Exception {
+        List<String> jobIds = new ArrayList<>();
+        jobIds.add("1");
+        jobIds.add("2");
+        jobIds.add("3");
+        unsEventSender.longRunningJobsNotifications(jobIds, Properties.LONG_RUNNING_JOBS_EVENT);
 
-        UNSEventSenderMock unsEventSender = new UNSEventSenderMock();
-        unsEventSender.longRunningJobsNotifications(null, null);
-   //     postCallAssertions(expectedPredicates, null, unsEventSender);
+        HashSet<String> expectedPredicates = new HashSet<String>();
+        expectedPredicates.add("http://localhost:/jobs#event_type");
+        expectedPredicates.add("http://localhost:/jobs#long_running_jobs");
+
+        HashSet<String> unexpectedPredicates = new HashSet<String>();
+        unexpectedPredicates.add("unexpected");
+
+        postCallAssertions(expectedPredicates, unexpectedPredicates, unsEventSender);
     }
 
     /**
