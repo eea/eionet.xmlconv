@@ -13,7 +13,7 @@
         <tomcat.version>9.0.24</tomcat.version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
         <spring.version>4.3.25.RELEASE</spring.version>
-        <spring-security-version>4.2.15.RELEASE</spring-security-version>
+        <spring-security-version>4.2.17.RELEASE</spring-security-version>
         <liquibase.changeLogFile>db/xmlconv-struct.xml</liquibase.changeLogFile>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
@@ -573,7 +573,7 @@
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
-                <version>2.11.0</version>
+                <version>2.12.0</version>
             </dependency>
 
             <!-- StAX parsers -->
@@ -738,7 +738,7 @@
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
-                <version>2.2.3</version>
+                <version>2.3.2</version>
             </dependency>
             <!-- Caching -->
             <dependency>
@@ -793,7 +793,7 @@
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-jpa</artifactId>
-                <version>1.10.3.RELEASE</version>
+                <version>1.11.23.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -855,12 +855,12 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-hikaricp</artifactId>
-                <version>5.2.14.Final</version>
+                <version>5.3.6.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.3.4.Final</version>
+                <version>5.3.6.Final</version>
             </dependency>
 
             <dependency>
@@ -883,12 +883,12 @@
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
-                <version>2.10.0</version>
+                <version>2.13.3</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
-                <version>2.10.0</version>
+                <version>2.13.3</version>
             </dependency>
             <!-- Graylog dependency -->
             <dependency>
