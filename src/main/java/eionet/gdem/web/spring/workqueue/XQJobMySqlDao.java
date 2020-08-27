@@ -105,6 +105,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
 
     private static final String qJobsUpdateDuration = "UPDATE " + WQ_TABLE + " SET " + DURATION_FLD + "= ?" + " WHERE " + JOB_ID_FLD + " = ?  ";
 
+    private static final String qJobsLongRunning = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + " = ?" + " AND " + DURATION_FLD + " >= ?  ";
+
     @Override
     public String[] getXQJobData(String jobId) throws SQLException {
         Connection conn = null;
@@ -575,6 +577,35 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         } finally {
             closeAllResources(null, pstmt, conn);
         }
+    }
+
+    @Override
+    public String[] getLongRunningJobs(Long duration, Integer status) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String[][] r = null;
+        String[] jobIds;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qJobsLongRunning);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qJobsLongRunning);
+            pstmt.setInt(1, status);
+            pstmt.setLong(2, duration);
+            rs = pstmt.executeQuery();
+            r = getResults(rs);
+            if (r.length == 0) {
+                jobIds = null;
+            } else {
+                jobIds = r[0];
+            }
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
+        return jobIds;
     }
 
 }

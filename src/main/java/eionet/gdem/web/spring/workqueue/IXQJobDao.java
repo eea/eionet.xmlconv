@@ -201,5 +201,13 @@ public interface IXQJobDao {
      * @throws SQLException
      */
     void updateXQJobsDuration(Map<String, Long> jobHashmap) throws SQLException;
+
+    /**
+     * Get long running jobs
+     *  @param duration the duration threshold
+     *  @param status
+     * @throws SQLException
+     */
+    String[] getLongRunningJobs(Long duration, Integer status) throws SQLException;
     
 }
