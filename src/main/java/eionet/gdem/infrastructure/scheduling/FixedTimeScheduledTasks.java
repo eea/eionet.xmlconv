@@ -56,7 +56,7 @@ public class FixedTimeScheduledTasks {
     }
 
     @Transactional
-    @Scheduled(cron = "0 * */4 * * *") //Every 4 hours
+    @Scheduled(cron = "0 0 */4 * * *") //Every 4 hours
     public void schedulePeriodicNotificationsForLongRunningJobs() throws SQLException, GeneralSecurityException {
         //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2) and duration more than Properties.LONG_RUNNING_JOBS_EVENT
         String[] jobsIds = xqJobDao.getLongRunningJobs(Properties.longRunningJobThreshold, Constants.XQ_PROCESSING);
