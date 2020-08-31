@@ -81,4 +81,11 @@ public class XQJobDaoTest {
         assertNull(xqJobDao.getJobs(Constants.XQ_PROCESSING));
         assertEquals(2, xqJobDao.getXQFinishedJobs().length);
     }
+    @Test
+    public void testLongRunningJobsMethod() throws Exception {
+        String[] jobIds = xqJobDao.getLongRunningJobs(Long.valueOf(14400000), Constants.XQ_PROCESSING);
+        assertEquals(2, jobIds.length);
+        assertEquals("1291", jobIds[0]);
+        assertEquals("1292", jobIds[1]);
+    }
 }

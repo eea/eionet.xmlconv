@@ -41,4 +41,9 @@
     <T_CONVTYPE CONV_TYPE="ODS" CONTENT_TYPE="application/vnd.oasis.opendocument.spreadsheet" FILE_EXT="ods" DESCRIPTION="OpenDocument Spreadsheet"/>
     <T_CONVTYPE CONV_TYPE="TEXT" CONTENT_TYPE="text/plain" FILE_EXT="txt" DESCRIPTION="Simple text files - tab, comma, ... separated values"/>
     <T_CONVTYPE CONV_TYPE="RDF" CONTENT_TYPE="application/rdf+xml" FILE_EXT="rdf" DESCRIPTION="Semantic Web resources"/>
+
+
+    <T_XQJOBS JOB_ID="1291" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="2" QUERY_ID="0" SRC_FILE="" DURATION="14400000" />
+    <T_XQJOBS JOB_ID="1292" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="2" QUERY_ID="0" SRC_FILE="" DURATION="15400000" />
+    <T_XQJOBS JOB_ID="1293" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="2" QUERY_ID="0" SRC_FILE="" DURATION="300000" />
 </dataset>
