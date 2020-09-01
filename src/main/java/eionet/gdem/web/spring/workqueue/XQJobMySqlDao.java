@@ -105,7 +105,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
 
     private static final String qJobsUpdateDuration = "UPDATE " + WQ_TABLE + " SET " + DURATION_FLD + "= ?" + " WHERE " + JOB_ID_FLD + " = ?  ";
 
-    private static final String qJobsLongRunning = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + " = ?" + " AND " + DURATION_FLD + " >= ?  ";
+    private static final String qJobsLongRunning = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + " = ?" + " AND " + DURATION_FLD + ">=?  ";
 
     @Override
     public String[] getXQJobData(String jobId) throws SQLException {
@@ -584,7 +584,6 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String[][] r = null;
         String[] jobIds;
 
         if (isDebugMode) {
@@ -596,16 +595,19 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             pstmt.setInt(1, status);
             pstmt.setLong(2, duration);
             rs = pstmt.executeQuery();
-            r = getResults(rs);
+            String[][] r = getResults(rs);
             if (r.length == 0) {
                 jobIds = null;
             } else {
-                jobIds = r[0];
+                jobIds = new String[r.length];
+
+                for (int i = 0; i < r.length; i++) {
+                    jobIds[i] = r[i][0];
+                }
             }
         } finally {
-            closeAllResources(null, pstmt, conn);
+            closeAllResources(rs, pstmt, conn);
         }
         return jobIds;
     }
-
 }
