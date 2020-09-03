@@ -54,3 +54,6 @@ There is a script docker.hub.sh that builds the WAR and pushes to the Docker Hub
 
 An example docker-compose for usage on Rancher deployments can be found on docker/xmlconv along with an example environment file.
 
+**Important Note:**
+When deploying to rancher platform, any environment variables provide to tomcat container through the *CATALINA_OPTS* variable, should not include new lines for
+tomcat versions 9.0.24 and above. 
