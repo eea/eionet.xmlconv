@@ -2,12 +2,17 @@ package org.basex.io.in;
 
 import org.basex.io.IO;
 import org.basex.util.list.ByteList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class BufferInput extends InputStream {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BufferInput.class);
+
     /** Byte buffer. */
     final byte[] array;
     /** Current buffer position. */
@@ -25,6 +30,10 @@ public class BufferInput extends InputStream {
     private int bmark;
     /** Number of read bytes. */
     private int read;
+    /**
+     * begin timestamp
+     */
+    private long begin;
 
     /**
      * Returns a buffered input stream.
@@ -54,6 +63,10 @@ public class BufferInput extends InputStream {
         this(input.inputStream());
         this.input = input;
         length = input.length();
+        begin = System.currentTimeMillis();
+        if (input!=null && input.toString().contains("cr.eionet.europa.eu/sparql?query")) {
+            LOGGER.debug("starting cr call");
+        }
     }
 
     /**
@@ -157,6 +170,11 @@ public class BufferInput extends InputStream {
     public final void close() throws IOException {
         if(in != null && !(in instanceof FilterInputStream)) {
             in.close();
+        }
+        long end = System.currentTimeMillis();
+        long duration = end - begin;
+        if (input!=null && input.toString().contains("cr.eionet.europa.eu/sparql?query")) {
+            LOGGER.debug("Duration of cr call: " + duration / 1000.0 + " seconds");
         }
     }
 

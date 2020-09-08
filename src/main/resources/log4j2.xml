@@ -10,6 +10,7 @@
     <logger name="eionet" level="info"/>
     <logger name="org.springframework.web" level="info"/>
     <logger name="org.hibernate" level="info" />
+    <logger name="org.basex" level="debug"/>
     <Root level="INFO">
       <AppenderRef ref="console" />
     </Root>
