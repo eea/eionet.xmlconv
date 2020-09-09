@@ -1,5 +1,6 @@
 package org.basex.io.in;
 
+import eionet.gdem.Properties;
 import org.basex.io.IO;
 import org.basex.util.list.ByteList;
 import org.slf4j.Logger;
@@ -64,8 +65,12 @@ public class BufferInput extends InputStream {
         this.input = input;
         length = input.length();
         begin = System.currentTimeMillis();
-        if (input!=null && input.toString().contains("cr.eionet.europa.eu/sparql?query")) {
-            LOGGER.debug("starting cr call");
+        if (input!=null) {
+            for (String endpoint : Properties.XQUERY_HTTP_ENDPOINTS.split(",")) {
+                if (input.toString().contains(endpoint)) {
+                    LOGGER.debug("starting " + endpoint + " call");
+                }
+            }
         }
     }
 
@@ -173,8 +178,12 @@ public class BufferInput extends InputStream {
         }
         long end = System.currentTimeMillis();
         long duration = end - begin;
-        if (input!=null && input.toString().contains("cr.eionet.europa.eu/sparql?query")) {
-            LOGGER.debug("Duration of cr call: " + duration / 1000.0 + " seconds");
+        if (input!=null) {
+            for (String endpoint : Properties.XQUERY_HTTP_ENDPOINTS.split(",")) {
+                if (input.toString().contains(endpoint)) {
+                    LOGGER.debug("Duration of " + endpoint + " call: " + duration / 1000.0 + " seconds");
+                }
+            }
         }
     }
 

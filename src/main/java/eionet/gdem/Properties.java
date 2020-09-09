@@ -170,6 +170,8 @@ public class Properties {
 
     public static final String SSO_LOGIN_URL;
 
+    public static final String XQUERY_HTTP_ENDPOINTS;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -252,6 +254,8 @@ public class Properties {
         longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
+
+        XQUERY_HTTP_ENDPOINTS = getStringProperty("xquery-http-endpoints");
     }
 
     /**
