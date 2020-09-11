@@ -172,6 +172,10 @@ public class Properties {
 
     public static final String XQUERY_HTTP_ENDPOINTS;
 
+    public static final Long BASEX_XQUERY_TIME_LIMIT;
+
+    public static Long maxSchemaExecutionTime;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -255,7 +259,11 @@ public class Properties {
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
 
-        XQUERY_HTTP_ENDPOINTS = getStringProperty("xquery-http-endpoints");
+        XQUERY_HTTP_ENDPOINTS = getStringProperty("env.xquery.http.endpoints");
+
+        BASEX_XQUERY_TIME_LIMIT = getLongProperty("env.basex.xquery.timeLimit");
+
+        maxSchemaExecutionTime = getLongProperty("env.schema.maxExecutionTime");
     }
 
     /**

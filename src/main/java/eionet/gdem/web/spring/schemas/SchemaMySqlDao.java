@@ -65,6 +65,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     public static final String SCHEMA_LANG_FLD = "SCHEMA_LANG";
     public static final String EXPIRE_DATE_FLD = "EXPIRE_DATE";
     public static final String SCHEMA_BLOCKER_FLD = "BLOCKER";
+    public static final String SCHEMA_MAX_TIME_FLD = "MAX_EXECUTION_TIME";
 
     /**
      * Table for schema stylesheets many-to-many in the DB.
@@ -80,8 +81,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "= ?" + ", "
             + SCHEMA_DESCR_FLD + "= ?" + ", " + SCHEMA_LANG_FLD + "= ?" + ", " + SCHEMA_VALIDATE_FLD + "= ?" + ", "
-            + DTD_PUBLIC_ID_FLD + "= ? " + ", " + EXPIRE_DATE_FLD + "= ? ," + SCHEMA_BLOCKER_FLD + "= ? " + " WHERE "
-            + SCHEMA_ID_FLD + "= ?";
+            + DTD_PUBLIC_ID_FLD + "= ? " + ", " + EXPIRE_DATE_FLD + "= ? ," + SCHEMA_BLOCKER_FLD + "= ?" + ", " + SCHEMA_MAX_TIME_FLD + "= ? "
+            + " WHERE " + SCHEMA_ID_FLD + "= ?";
 
     private static final String qDeleteQueries = "DELETE FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?";
     private static final String qDeleteRootElement = "DELETE FROM " + ROOTELEM_TABLE + " WHERE " + ELEM_SCHEMA_ID_FLD + "= ?";
@@ -154,7 +155,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     @Override
     public void updateSchema(String schema_id, String xmlSchema, String description, String schemaLang, boolean doValidate,
-            String public_id, Date expireDate, boolean blocker) throws SQLException {
+            String public_id, Date expireDate, boolean blocker, Long maxExecutionTime) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         description = (description == null ? "" : description);
@@ -181,6 +182,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             }
             pstmt.setString(7, strBlocker);
             pstmt.setInt(8, Integer.parseInt(schema_id));
+            pstmt.setLong(9, maxExecutionTime);
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);

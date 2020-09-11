@@ -126,7 +126,7 @@ public class SchemasController {
                 if (!Utils.isNullStr(tmpSchemaUrl)) {
                     schemaUrl = Properties.gdemURL + "/schema/" + fileName;
                 }
-                sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null, blocker);
+                sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null, blocker, Properties.maxSchemaExecutionTime);
             }
             messages.add(messageService.getMessage("label.uplSchema.inserted"));
             QAScriptListLoader.reloadList(httpServletRequest);
@@ -165,6 +165,7 @@ public class SchemasController {
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();
             form.setExpireDate(seHolder.getSchema().getExpireDate());
+            form.setMaxExecutionTime(seHolder.getSchema().getMaxExecutionTime());
             if (seHolder.getSchema().getUplSchema() != null && !Utils.isNullStr(fileName)) {
                 form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
                 form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
@@ -217,6 +218,7 @@ public class SchemasController {
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();
             form.setExpireDate(seHolder.getSchema().getExpireDate());
+            form.setMaxExecutionTime(seHolder.getSchema().getMaxExecutionTime());
             if (seHolder.getSchema().getUplSchema() != null && !Utils.isNullStr(fileName)) {
                 form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
                 form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
@@ -249,6 +251,7 @@ public class SchemasController {
         boolean doValidation = form.isDoValidation();
         Date expireDate = form.getExpireDate();
         boolean blocker = form.isBlocker();
+        Long maxExecutionTime = form.getMaxExecutionTime();
 
         new SchemaFormValidator().validate(form, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -266,7 +269,7 @@ public class SchemasController {
                 return "/schemas/edit";
             }
 
-            sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker);
+            sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker, maxExecutionTime);
             messages.add(messageService.getMessage("label.schema.updated"));
 
             QAScriptListLoader.reloadList(httpServletRequest);

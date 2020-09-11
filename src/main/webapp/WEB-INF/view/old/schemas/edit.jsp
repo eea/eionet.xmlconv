@@ -72,6 +72,14 @@
       <div class="columns small-8">
         <form:input path="expireDate" type="date" id="txtExpireDate"/>
       </div>
+      <div class="columns small-4">
+        <label class="question" for="txtMaxExecutionTime">
+          <spring:message code="label.schema.maxExecutionTime"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:input path="maxExecutionTime" id="txtMaxExecutionTime"/>
+      </div>
     </div>
     <c:if test="${form.dtd}">
       <div class="row">

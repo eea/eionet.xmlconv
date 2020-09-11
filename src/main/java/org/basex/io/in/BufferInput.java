@@ -65,13 +65,6 @@ public class BufferInput extends InputStream {
         this.input = input;
         length = input.length();
         begin = System.currentTimeMillis();
-        if (input!=null) {
-            for (String endpoint : Properties.XQUERY_HTTP_ENDPOINTS.split(",")) {
-                if (input.toString().contains(endpoint)) {
-                    LOGGER.debug("starting " + endpoint + " call");
-                }
-            }
-        }
     }
 
     /**
@@ -180,8 +173,8 @@ public class BufferInput extends InputStream {
         long duration = end - begin;
         if (input!=null) {
             for (String endpoint : Properties.XQUERY_HTTP_ENDPOINTS.split(",")) {
-                if (input.toString().contains(endpoint)) {
-                    LOGGER.debug("Duration of " + endpoint + " call: " + duration / 1000.0 + " seconds");
+                if (input.toString().contains(endpoint) && duration > Properties.BASEX_XQUERY_TIME_LIMIT) {
+                    LOGGER.info("Duration of " + endpoint + " call: " + duration + " ms");
                 }
             }
         }

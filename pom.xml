@@ -363,8 +363,7 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                     <excludes>
-                                        **/IOUrl.class, **/CreateDB.class, **/ACreate.class, **/DiskBuilder.class, **/Builder.class, **/MetaData.class, **/BufferInput.class,
-                                        **/QueryResources.class, **/MainOptions.class, **/XMLScanner.class, **/SAXWrapper.class, **/CatalogWrapper.class
+                                        **/BufferInput.class
                                     </excludes>
                                 </artifactItem>
                             </artifactItems>

@@ -158,8 +158,8 @@ public class SchemaManagerDBTest{
         boolean blockValidation = true;
         String dtdPublicId = "";
         Date expireDate = null;
-
-        sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, blockValidation);
+        long maxExecutionTime = 5000;
+        sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, blockValidation, maxExecutionTime);
         Schema sch = sm.getSchema(schemaId);
 
         assertEquals(description, sch.getDescription());
@@ -172,7 +172,7 @@ public class SchemaManagerDBTest{
         cal.set(Calendar.MILLISECOND, 0);
         expireDate = new Date(cal.getTimeInMillis());
 
-        sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, false);
+        sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, false, maxExecutionTime);
         sch = sm.getSchema(schemaId);
         assertEquals(expireDate, sch.getExpireDate());
 

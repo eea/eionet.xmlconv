@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -421,7 +422,7 @@ public class SchemaManager {
      * @throws DCMException in case of database error.
      */
     public void update(String user, String schemaId, String schema, String description, String schemaLang, boolean doValidation,
-            String dtdPublicId, Date expireDate, boolean blocker) throws DCMException {
+            String dtdPublicId, Date expireDate, boolean blocker, Long maxExecutionTime) throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "u")) {
@@ -436,7 +437,7 @@ public class SchemaManager {
         }
 
         try {
-            schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, blocker);
+            schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, blocker, maxExecutionTime);
 
         } catch (Exception e) {
             LOGGER.error("Error updating schema", e);
@@ -495,6 +496,7 @@ public class SchemaManager {
                 boolean blocker =
                         (!Utils.isNullStr((String) schemaHash.get("blocker")) && ((String) schemaHash.get("blocker")).equals("1"));
                 schema.setBlocker(blocker);
+                schema.setMaxExecutionTime((Long) schemaHash.get("max_execution_time"));
 
                 // get uploaded schema information
                 HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);

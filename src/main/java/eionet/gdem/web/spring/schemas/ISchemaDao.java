@@ -53,7 +53,7 @@ public interface ISchemaDao {
      * @throws SQLException in case of database error.
      */
     void updateSchema(String schema_id, String xmlSchema, String description, String schemaLang, boolean doValidation,
-            String publicId, Date expireDate, boolean blocker) throws SQLException;
+            String publicId, Date expireDate, boolean blocker, Long maxExecutionTime) throws SQLException;
 
     /**
      * Updates a Schema validate properties in the database.
