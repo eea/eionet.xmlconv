@@ -3,6 +3,7 @@ package eionet.gdem.web.spring.schemas;
 import eionet.acl.SignOnException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
@@ -58,6 +59,12 @@ public class SchemasController {
         try {
             SchemaManager sm = new SchemaManager();
             UplSchemaHolder holder = sm.getAllSchemas(user);
+            for (Schema schema : holder.getSchemas()) {
+                if (schema.getMaxExecutionTime()==null || schema.getMaxExecutionTime()==0) {
+                    sm.updateSchemaMaxExecTime(schema.getId(), Properties.maxSchemaExecutionTime);
+                    schema.setMaxExecutionTime(Properties.maxSchemaExecutionTime);
+                }
+            }
             model.addAttribute("schemas", holder);
         } catch (DCMException e) {
             throw new RuntimeException("Could not retrieve schema list: " + messageService.getMessage(e.getErrorCode()));
@@ -72,6 +79,7 @@ public class SchemasController {
 
     @GetMapping("/add")
     public String add(@ModelAttribute("form") UploadSchemaForm form) {
+        form.setMaxExecutionTime(Properties.maxSchemaExecutionTime);
         return "/schemas/add";
     }
 
@@ -97,6 +105,7 @@ public class SchemasController {
         boolean doValidation = form.isDoValidation();
         String schemaLang = form.getSchemaLang();
         boolean blocker = form.isBlockerValidation();
+        Long maxExecutionTime = form.getMaxExecutionTime();
 
         new UploadSchemaFormValidator().validate(form, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -116,7 +125,7 @@ public class SchemasController {
                 }
             }
             // Add row to T_SCHEMA table
-            String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation, blocker);
+            String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation, blocker, maxExecutionTime);
             if (schemaFile != null && schemaFile.getSize() > 0) {
                 // Change the filename to schema-UniqueIDxsd
                 fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID, Utils.extractExtension(schemaFile.getOriginalFilename()));
@@ -126,7 +135,7 @@ public class SchemasController {
                 if (!Utils.isNullStr(tmpSchemaUrl)) {
                     schemaUrl = Properties.gdemURL + "/schema/" + fileName;
                 }
-                sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null, blocker, Properties.maxSchemaExecutionTime);
+                sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null, blocker, maxExecutionTime);
             }
             messages.add(messageService.getMessage("label.uplSchema.inserted"));
             QAScriptListLoader.reloadList(httpServletRequest);

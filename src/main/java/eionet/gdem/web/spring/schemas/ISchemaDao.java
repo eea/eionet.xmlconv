@@ -33,7 +33,7 @@ public interface ISchemaDao {
      * @throws SQLException in case of database operation.
      */
             String
-            addSchema(String xmlSchema, String description, String schemaLang, boolean doValidate, String publicId, boolean blocker)
+            addSchema(String xmlSchema, String description, String schemaLang, boolean doValidate, String publicId, boolean blocker, Long maxExecutionTime)
                     throws SQLException;
 
     /**
@@ -165,4 +165,10 @@ public interface ISchemaDao {
      */
     List<Schema> getSchemasWithRelations();
 
+    /**
+     * Updates schema's maxExecutionTime property in the database
+     * @param schemaId
+     * @param maxSchemaExecutionTime
+     */
+    void updateSchemaMaxExecTime(String schemaId, Long maxSchemaExecutionTime) throws SQLException;
 }

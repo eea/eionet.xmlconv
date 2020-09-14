@@ -496,7 +496,7 @@ public class SchemaManager {
                 boolean blocker =
                         (!Utils.isNullStr((String) schemaHash.get("blocker")) && ((String) schemaHash.get("blocker")).equals("1"));
                 schema.setBlocker(blocker);
-                schema.setMaxExecutionTime((Long) schemaHash.get("max_execution_time"));
+                schema.setMaxExecutionTime(Long.parseLong((String) schemaHash.get("max_execution_time")));
 
                 // get uploaded schema information
                 HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);
@@ -720,7 +720,7 @@ public class SchemaManager {
      * @return the database ID of added XML Schema
      * @throws DCMException in case of database error.
      */
-    public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation, boolean blocker)
+    public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation, boolean blocker, Long maxExecutionTime)
             throws DCMException {
         String schemaID = null;
         try {
@@ -741,7 +741,7 @@ public class SchemaManager {
                 throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
             }
             if (schemaID == null) {
-                schemaID = schemaDao.addSchema(schemaUrl, descr, schemaLang, doValidation, null, blocker);
+                schemaID = schemaDao.addSchema(schemaUrl, descr, schemaLang, doValidation, null, blocker, maxExecutionTime);
             }
 
         } catch (DCMException e) {
@@ -1329,4 +1329,12 @@ public class SchemaManager {
 
     }
 
+    public void updateSchemaMaxExecTime(String schemaId, Long maxSchemaExecutionTime) throws DCMException {
+        try {
+            schemaDao.updateSchemaMaxExecTime(schemaId, maxSchemaExecutionTime);
+        } catch (Exception e) {
+            LOGGER.error("Error updating schema", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+    }
 }

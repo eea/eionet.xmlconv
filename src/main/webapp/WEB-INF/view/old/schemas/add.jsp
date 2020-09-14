@@ -69,6 +69,16 @@
         <form:checkbox path="blockerValidation" id="txtBlockerValidation"/>
       </div>
     </div>
+    <div class="row">
+      <div class="columns small-4">
+        <label class="question required" for="txtMaxExecutionTime">
+          <spring:message code="label.schema.maxExecutionTime"/>
+        </label>
+      </div>
+      <div class="columns small-8">
+        <form:input path="maxExecutionTime" id="txtMaxExecutionTime"/>
+      </div>
+    </div>
   </fieldset>
   <button type="submit" class="button" name="add">
     <spring:message code="label.schema.save"/>

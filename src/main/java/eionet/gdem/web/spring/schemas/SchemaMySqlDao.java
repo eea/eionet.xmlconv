@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Vector;
 
 
+import eionet.gdem.Properties;
 import eionet.gdem.database.MySqlBaseDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,12 +77,15 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             + "= ?";
 
     private static final String qInsertSchema = "INSERT INTO " + SCHEMA_TABLE + " ( " + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD
-            + ", " + SCHEMA_LANG_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_BLOCKER_FLD + ")"
-            + " VALUES (?,?,?,?,?,?)";
+            + ", " + SCHEMA_LANG_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_BLOCKER_FLD + ", " + SCHEMA_MAX_TIME_FLD + ")"
+            + " VALUES (?,?,?,?,?,?,?)";
 
     private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "= ?" + ", "
             + SCHEMA_DESCR_FLD + "= ?" + ", " + SCHEMA_LANG_FLD + "= ?" + ", " + SCHEMA_VALIDATE_FLD + "= ?" + ", "
             + DTD_PUBLIC_ID_FLD + "= ? " + ", " + EXPIRE_DATE_FLD + "= ? ," + SCHEMA_BLOCKER_FLD + "= ?" + ", " + SCHEMA_MAX_TIME_FLD + "= ? "
+            + " WHERE " + SCHEMA_ID_FLD + "= ?";
+
+    private static final String qUpdateSchemaTime = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_MAX_TIME_FLD + "= ? "
             + " WHERE " + SCHEMA_ID_FLD + "= ?";
 
     private static final String qDeleteQueries = "DELETE FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?";
@@ -91,7 +95,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     private static final String qSchemaBase = "SELECT " + SCHEMA_ID_FLD + "," + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD + ", "
             + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + SCHEMA_LANG_FLD + ", " + EXPIRE_DATE_FLD + ", "
-            + SCHEMA_BLOCKER_FLD + " FROM " + SCHEMA_TABLE;
+            + SCHEMA_BLOCKER_FLD + ", " + SCHEMA_MAX_TIME_FLD + " FROM " + SCHEMA_TABLE;
 
     private static final String qAllSchemas = qSchemaBase + " ORDER BY " + XML_SCHEMA_FLD;
     private static final String qSchemaById = qSchemaBase + " WHERE " + SCHEMA_ID_FLD + " =  ?" + " ORDER BY " + XML_SCHEMA_FLD;
@@ -114,19 +118,19 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
     /** Get all XML schemas with uploaded schema file, count stylesheets and count QA scripts info.*/
     private static final String GET_LIST_OF_SCHEMAS_SQL =
-            "select S.SCHEMA_ID, S.XML_SCHEMA, S.DESCRIPTION, U.SCHEMA_ID, U.SCHEMA_NAME, "
+            "select S.SCHEMA_ID, S.XML_SCHEMA, S.DESCRIPTION, S.MAX_EXECUTION_TIME, U.SCHEMA_ID, U.SCHEMA_NAME, "
                     + "(select count(*) from T_QUERY Q WHERE Q.SCHEMA_ID=S.SCHEMA_ID) as COUNT_QASCRIPTS, "
                     + "(select count(*) from T_STYLESHEET_SCHEMA XSL WHERE XSL.SCHEMA_ID=S.SCHEMA_ID) as COUNT_STYLESHEETS "
                     + "from T_SCHEMA S left join T_UPL_SCHEMA U on S.SCHEMA_ID = U.FK_SCHEMA_ID order by S.XML_SCHEMA";
 
     @Override
     public String addSchema(String xmlSchema, String description) throws SQLException {
-        return addSchema(xmlSchema, description, null, false, null, false);
+        return addSchema(xmlSchema, description, null, false, null, false, Properties.maxSchemaExecutionTime);
     }
 
     @Override
     public String addSchema(String xmlSchema, String description, String schemaLang, boolean doValidate, String publicId,
-            boolean blocker) throws SQLException {
+            boolean blocker, Long maxExecutionTime) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         description = (description == null ? "" : description);
@@ -146,6 +150,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             pstmt.setString(4, strValidate);
             pstmt.setString(5, publicId);
             pstmt.setString(6, strBlocker);
+            pstmt.setLong(7, maxExecutionTime);
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -181,8 +186,8 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 pstmt.setDate(6, new java.sql.Date(expireDate.getTime()));
             }
             pstmt.setString(7, strBlocker);
-            pstmt.setInt(8, Integer.parseInt(schema_id));
-            pstmt.setLong(9, maxExecutionTime);
+            pstmt.setLong(8, maxExecutionTime);
+            pstmt.setInt(9, Integer.parseInt(schema_id));
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);
@@ -334,6 +339,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 h.put("schema_lang", r[i][5]);
                 h.put("expire_date", r[i][6]);
                 h.put("blocker", r[i][7]);
+                h.put("max_execution_time", r[i][8]);
                 if (stylesheets) {
                     Vector v_xls = getSchemaStylesheets(r[i][0], conn);
                     h.put("stylesheets", v_xls);
@@ -573,6 +579,7 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
                 schema.setId(rs.getString("S.SCHEMA_ID"));
                 schema.setSchema(rs.getString("S.XML_SCHEMA"));
                 schema.setDescription(rs.getString("S.DESCRIPTION"));
+                schema.setMaxExecutionTime(rs.getLong("S.MAX_EXECUTION_TIME"));
                 schema.setUplSchemaFileName(rs.getString("U.SCHEMA_NAME"));
                 schema.setCountQaScripts(rs.getInt("COUNT_QASCRIPTS"));
                 schema.setCountStylesheets(rs.getInt("COUNT_STYLESHEETS"));
@@ -581,6 +588,25 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         });
         return schemas;
 
+    }
+
+    @Override
+    public void updateSchemaMaxExecTime(String schemaId, Long maxSchemaExecutionTime) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qUpdateSchemaTime);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qUpdateSchemaTime);
+            pstmt.setLong(1, maxSchemaExecutionTime);
+            pstmt.setInt(2, Integer.parseInt(schemaId));
+            pstmt.executeUpdate();
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
     }
 
 }
