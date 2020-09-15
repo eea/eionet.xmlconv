@@ -38,7 +38,7 @@
           <th scope="col" title="Uploaded schemas">XSD</th>
           <th scope="col" title="Stylesheets">XSL</th>
           <th scope="col" title="QA scripts">QA</th>
-          <th scope="col" title="Max execution time">MAX EXECUTION TIME</th>
+          <th scope="col" title="Max execution time">MAX EXECUTION TIME (ms)</th>
         </tr>
         </thead>
         <tbody>
