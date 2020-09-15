@@ -21,43 +21,15 @@ package eionet.gdem.web.spring.schemas;
  *    Original code: Istvan Alfeldi (ED)
  */
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-
 import eionet.gdem.Constants;
-import eionet.gdem.contreg.CrServiceSparqlClient;
-import eionet.gdem.datadict.DDServiceClient;
-import eionet.gdem.web.spring.FileUploadWrapper;
-import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.collections.comparators.ComparatorChain;
-import org.apache.commons.collections.comparators.NullComparator;
-import org.apache.commons.io.IOUtils;
-
 import eionet.gdem.Properties;
+import eionet.gdem.contreg.CrServiceSparqlClient;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
+import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
-import eionet.gdem.dto.ConversionDto;
-import eionet.gdem.dto.CrFileDto;
-import eionet.gdem.dto.DDDatasetTable;
-import eionet.gdem.dto.QAScript;
-import eionet.gdem.dto.RootElem;
-import eionet.gdem.dto.Schema;
-import eionet.gdem.dto.Stylesheet;
-import eionet.gdem.dto.UplSchema;
+import eionet.gdem.dto.*;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.GDEMServices;
@@ -65,11 +37,20 @@ import eionet.gdem.utils.HttpUtils;
 import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.FileUploadWrapper;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections.comparators.ComparatorChain;
+import org.apache.commons.collections.comparators.NullComparator;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Business logic for managing XML schemas in XMLCONV.
@@ -1329,12 +1310,4 @@ public class SchemaManager {
 
     }
 
-    public void updateSchemaMaxExecTime(String schemaId, Long maxSchemaExecutionTime) throws DCMException {
-        try {
-            schemaDao.updateSchemaMaxExecTime(schemaId, maxSchemaExecutionTime);
-        } catch (Exception e) {
-            LOGGER.error("Error updating schema", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-        }
-    }
 }

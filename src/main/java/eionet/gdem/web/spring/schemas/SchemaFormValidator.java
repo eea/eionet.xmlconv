@@ -31,8 +31,12 @@ public class SchemaFormValidator implements Validator {
             errors.rejectValue("schema", "label.uplSchema.validation.urlFormat");
         }
 
-        if (maxExecutionTime == null || maxExecutionTime == 0) {
-            errors.rejectValue("maxExecutionTime", "label.schema.validation.maxExecutionTime");
+        if (maxExecutionTime == null) {
+            errors.rejectValue("maxExecutionTime", "label.schema.validation.null.maxExecutionTime");
+        }
+
+        if (maxExecutionTime!=null && maxExecutionTime == 0) {
+            errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.zero.maxExecutionTime");
         }
     }
 

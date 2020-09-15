@@ -34,8 +34,12 @@ public class UploadSchemaFormValidator implements Validator {
             errors.rejectValue("schemaUrl", "label.uplSchema.validation.urlFormat");
         }
 
-        if (maxExecutionTime == null || maxExecutionTime == 0) {
-            errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.maxExecutionTime");
+        if (maxExecutionTime == null) {
+            errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.null.maxExecutionTime");
+        }
+
+        if (maxExecutionTime!=null && maxExecutionTime == 0) {
+            errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.zero.maxExecutionTime");
         }
     }
 }

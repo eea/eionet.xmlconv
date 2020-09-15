@@ -3,13 +3,11 @@ package eionet.gdem.web.spring.schemas;
 import eionet.acl.SignOnException;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.spring.generic.SingleForm;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
@@ -59,12 +57,6 @@ public class SchemasController {
         try {
             SchemaManager sm = new SchemaManager();
             UplSchemaHolder holder = sm.getAllSchemas(user);
-            for (Schema schema : holder.getSchemas()) {
-                if (schema.getMaxExecutionTime()==null || schema.getMaxExecutionTime()==0) {
-                    sm.updateSchemaMaxExecTime(schema.getId(), Properties.maxSchemaExecutionTime);
-                    schema.setMaxExecutionTime(Properties.maxSchemaExecutionTime);
-                }
-            }
             model.addAttribute("schemas", holder);
         } catch (DCMException e) {
             throw new RuntimeException("Could not retrieve schema list: " + messageService.getMessage(e.getErrorCode()));

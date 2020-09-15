@@ -1,12 +1,12 @@
 package eionet.gdem.web.spring.schemas;
 
+import eionet.gdem.dto.Schema;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-
-import eionet.gdem.dto.Schema;
 
 /**
  *
@@ -165,10 +165,4 @@ public interface ISchemaDao {
      */
     List<Schema> getSchemasWithRelations();
 
-    /**
-     * Updates schema's maxExecutionTime property in the database
-     * @param schemaId
-     * @param maxSchemaExecutionTime
-     */
-    void updateSchemaMaxExecTime(String schemaId, Long maxSchemaExecutionTime) throws SQLException;
 }

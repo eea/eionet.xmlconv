@@ -1,19 +1,10 @@
 package eionet.gdem.web.spring.schemas;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-
-
 import eionet.gdem.Properties;
 import eionet.gdem.database.MySqlBaseDao;
+import eionet.gdem.dto.Schema;
+import eionet.gdem.qa.QaScriptView;
+import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +12,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Repository;
 
-import eionet.gdem.dto.Schema;
-import eionet.gdem.qa.QaScriptView;
-import eionet.gdem.utils.Utils;
+import java.sql.*;
+import java.util.Date;
+import java.util.*;
 
+import static eionet.gdem.qa.QueryMySqlDao.*;
 import static eionet.gdem.web.spring.conversions.ConvTypeMySqlDao.STYLESHEET_ID_FLD;
 import static eionet.gdem.web.spring.conversions.StyleSheetMySqlDao.*;
-import static eionet.gdem.qa.QueryMySqlDao.*;
 import static eionet.gdem.web.spring.schemas.RootElemMySqlDao.ELEM_SCHEMA_ID_FLD;
 import static eionet.gdem.web.spring.schemas.RootElemMySqlDao.ROOTELEM_TABLE;
 import static eionet.gdem.web.spring.schemas.UPLSchemaMySqlDao.UPL_FK_SCHEMA_ID;
@@ -83,9 +74,6 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     private static final String qUpdateSchema = "UPDATE  " + SCHEMA_TABLE + " SET " + XML_SCHEMA_FLD + "= ?" + ", "
             + SCHEMA_DESCR_FLD + "= ?" + ", " + SCHEMA_LANG_FLD + "= ?" + ", " + SCHEMA_VALIDATE_FLD + "= ?" + ", "
             + DTD_PUBLIC_ID_FLD + "= ? " + ", " + EXPIRE_DATE_FLD + "= ? ," + SCHEMA_BLOCKER_FLD + "= ?" + ", " + SCHEMA_MAX_TIME_FLD + "= ? "
-            + " WHERE " + SCHEMA_ID_FLD + "= ?";
-
-    private static final String qUpdateSchemaTime = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_MAX_TIME_FLD + "= ? "
             + " WHERE " + SCHEMA_ID_FLD + "= ?";
 
     private static final String qDeleteQueries = "DELETE FROM " + QUERY_TABLE + " WHERE " + XSL_SCHEMA_ID_FLD + "= ?";
@@ -588,25 +576,6 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
         });
         return schemas;
 
-    }
-
-    @Override
-    public void updateSchemaMaxExecTime(String schemaId, Long maxSchemaExecutionTime) throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-
-        if (isDebugMode) {
-            LOGGER.debug("Query is " + qUpdateSchemaTime);
-        }
-        try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(qUpdateSchemaTime);
-            pstmt.setLong(1, maxSchemaExecutionTime);
-            pstmt.setInt(2, Integer.parseInt(schemaId));
-            pstmt.executeUpdate();
-        } finally {
-            closeAllResources(null, pstmt, conn);
-        }
     }
 
 }
