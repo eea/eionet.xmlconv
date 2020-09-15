@@ -16,22 +16,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.mail.internet.ContentType;
 import javax.sql.DataSource;
-
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
+import static eionet.gdem.test.TestConstants.ADMIN_USER;
+import static eionet.gdem.test.TestConstants.SESSION_USER;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static eionet.gdem.test.TestConstants.ADMIN_USER;
-import static eionet.gdem.test.TestConstants.SESSION_USER;
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -80,7 +75,8 @@ public class SchemasControllerTest {
     public void addSubmit() throws Exception {
         mockMvc.perform(post("/schemas/add")
                 .sessionAttr(SESSION_USER, ADMIN_USER)
-                .param("schemaUrl", "http://test.gr/test.xsd"))
+                .param("schemaUrl", "http://test.gr/test.xsd")
+                .param("maxExecutionTime", "50000"))
                 .andExpect(view().name("redirect:/schemas"));
     }
 
@@ -91,7 +87,8 @@ public class SchemasControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/schemas/add")
                 .file(file)
                 .sessionAttr(SESSION_USER, ADMIN_USER)
-                .param("schemaUrl", "http://test.gr/test.xsd"))
+                .param("schemaUrl", "http://test.gr/test.xsd")
+                .param("maxExecutionTime", "50000"))
                 .andExpect(model().hasNoErrors())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/schemas"));
@@ -179,7 +176,8 @@ public class SchemasControllerTest {
                 .param("update", "")
                 .param("schema", "http://dd.eionet.europa.eu/GetSchema?id=TBL4564")
                 .param("schemaLang", "XSD")
-                .param("schemaId", "1"))
+                .param("schemaId", "1")
+                .param("maxExecutionTime", "50000"))
                 .andExpect((model().hasNoErrors()))
                 .andExpect(view().name("redirect:/schemas/1/edit"));
     }
