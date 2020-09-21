@@ -401,6 +401,36 @@ public class WorkqueueManager {
         }
     }
 
+    public List<WorkqueueJob> getRunningJobs() throws DCMException {
+        List<WorkqueueJob> jobs = new ArrayList<>();
+        try {
+            String[][] jobsData = jobDao.getRunningJobs();
+            if (jobsData != null && jobsData.length > 0) {
+                for (String[] jobData : jobsData) {
+                    if (jobData != null) {
+                        jobs.add(parseData(jobData));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("Error getting running workqueue jobs", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        return jobs;
+    }
+
+    private WorkqueueJob parseData(String[] jobData) {
+        WorkqueueJob job = null;
+        if (jobData != null) {
+            job = new WorkqueueJob();
+            job.setJobId((jobData[0] == null) ? "" : jobData[0]);
+            job.setUrl((jobData[1] == null) ? "" : jobData[1]);
+            job.setDuration((jobData[2] == null) ? 10 : new Long(jobData[2]));
+        }
+        return job;
+    }
+
     private static JobHistoryRepository getJobHistoryRepository() {
         return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
     }

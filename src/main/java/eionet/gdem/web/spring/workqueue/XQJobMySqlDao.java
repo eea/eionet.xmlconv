@@ -55,6 +55,9 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qXQFinishedJobs = qXQJobDataBase + " WHERE " + STATUS_FLD + ">=" + Constants.XQ_READY
             + " ORDER BY " + JOB_ID_FLD;
 
+    private static final String qXQRunningJobs = "SELECT " + JOB_ID_FLD + "," + URL_FLD + "," + DURATION_FLD + " FROM " + WQ_TABLE +
+            " WHERE " + STATUS_FLD + "=" + Constants.XQ_PROCESSING  + " ORDER BY " + JOB_ID_FLD;
+
     private static final String qInsertXQJob = "INSERT INTO " + WQ_TABLE + " (" + URL_FLD + "," + XQ_FILE_FLD + ", "
             + RESULT_FILE_FLD + "," + STATUS_FLD + "," + XQ_ID_FLD + "," + TIMESTAMP_FLD + "," + XQ_TYPE_FLD + ") " + "VALUES (?,?,?,?,?,?,?)";
 
@@ -575,6 +578,11 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         } finally {
             closeAllResources(null, pstmt, conn);
         }
+    }
+
+    @Override
+    public String[][] getRunningJobs() throws SQLException {
+        return executeSimpleQuery(qXQRunningJobs);
     }
 
 }

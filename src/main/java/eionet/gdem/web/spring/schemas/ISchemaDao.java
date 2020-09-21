@@ -165,4 +165,11 @@ public interface ISchemaDao {
      */
     List<Schema> getSchemasWithRelations();
 
+    /**
+     * Returns schema's max execution time based on schema url
+     * @param schemaUrl XML Schema database URL
+     * @return Schema's max execution time in ms
+     * @throws SQLException
+     */
+    Long getSchemaMaxExecutionTime(String schemaUrl) throws SQLException;
 }

@@ -67,6 +67,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     private static final String qSchemaID = "SELECT " + SCHEMA_ID_FLD + " FROM " + SCHEMA_TABLE + " WHERE " + XML_SCHEMA_FLD
             + "= ?";
 
+    private static final String qSchemaMaxExecutionTime = "SELECT " + SCHEMA_MAX_TIME_FLD + " FROM " + SCHEMA_TABLE + " WHERE " + XML_SCHEMA_FLD
+            + "= ?";
+
     private static final String qInsertSchema = "INSERT INTO " + SCHEMA_TABLE + " ( " + XML_SCHEMA_FLD + ", " + SCHEMA_DESCR_FLD
             + ", " + SCHEMA_LANG_FLD + ", " + SCHEMA_VALIDATE_FLD + ", " + DTD_PUBLIC_ID_FLD + ", " + SCHEMA_BLOCKER_FLD + ", " + SCHEMA_MAX_TIME_FLD + ")"
             + " VALUES (?,?,?,?,?,?,?)";
@@ -575,6 +578,35 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             }
         });
         return schemas;
+
+    }
+
+    @Override
+    public Long getSchemaMaxExecutionTime(String schema) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String[][] r = null;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qSchemaMaxExecutionTime);
+        }
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qSchemaMaxExecutionTime);
+            pstmt.setString(1, schema);
+            rs = pstmt.executeQuery();
+
+            r = getResults(rs);
+            if (r.length == 0) {
+                return null;
+            }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+
+        return Long.parseLong(r[0][0]);
 
     }
 

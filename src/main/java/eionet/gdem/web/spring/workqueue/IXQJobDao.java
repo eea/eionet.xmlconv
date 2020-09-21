@@ -201,5 +201,11 @@ public interface IXQJobDao {
      * @throws SQLException
      */
     void updateXQJobsDuration(Map<String, Long> jobHashmap) throws SQLException;
-    
+
+    /**
+     * Get all running jobs from DB
+     * @return Job data
+     * @throws SQLException
+     */
+    String[][] getRunningJobs() throws  SQLException;
 }

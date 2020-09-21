@@ -209,7 +209,7 @@ public class SchemaManager {
 
     /**
      * Get XML Schema and related stylesheets information.
-     * @param schema XML Schema URL or database ID.
+     * @param schemaId XML Schema URL or database ID.
      * @return StylesheetListHolder object holding schema stylesheet and user permission information
      * @throws DCMException in case of database error occurs.
      */
@@ -1308,6 +1308,15 @@ public class SchemaManager {
             updateUplSchema(user, uplSchemaId, schemaId, schemaFileName, in);
         }
 
+    }
+
+    public Long getSchemaMaxExecutionTime(String schemaUrl) throws DCMException {
+        try {
+            return schemaDao.getSchemaMaxExecutionTime(schemaUrl);
+        } catch (SQLException e) {
+            LOGGER.error("Error getting max execution time", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
     }
 
 }
