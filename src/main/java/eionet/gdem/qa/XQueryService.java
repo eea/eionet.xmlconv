@@ -481,7 +481,7 @@ public class XQueryService extends RemoteService {
             String fileExtension = getExtension(outputTypes, contentType);
             String resultFile =
                     Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
-                            + fileExtension;
+                            + "zip";
 
             int queryId;
             try {
