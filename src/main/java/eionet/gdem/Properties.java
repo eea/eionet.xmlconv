@@ -175,6 +175,8 @@ public class Properties {
     public static final Long BASEX_XQUERY_TIME_LIMIT;
 
     public static Long maxSchemaExecutionTime;
+    /** interval of checking whether running jobs duration has exceeded schema's maxExecutionTime */
+    public static int interruptingJobsInterval;
 
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
@@ -229,6 +231,7 @@ public class Properties {
         wqJobMaxAge = getIntProperty("wq.job.max.age");
         // maximum number of jobs executed at the same time
         wqMaxJobs = getIntProperty("wq.max.jobs");
+        interruptingJobsInterval = getIntProperty("wq.job.interrupt.interval");
         // default value of the maximum size of XML file sent to ad-hoc QA
         qaValidationXmlUpperLimit = getIntProperty("qa.validation.xml.upper_limit");
         // external QA program timeout
