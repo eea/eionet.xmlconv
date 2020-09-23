@@ -7,6 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import eionet.gdem.SpringApplicationContext;
+import eionet.gdem.services.fme.FmeServerCommunicator;
+import eionet.gdem.services.fme.FmeServerCommunicatorImpl;
+import eionet.gdem.services.fme.request.SynchronousSubmitJobRequest;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.ZipUtil;
 import net.sf.json.JSONArray;
@@ -88,7 +92,11 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             String[] fileNameSegments = fileNameWthXml.split("\\.");
             String fileName = fileNameSegments[0];
             String folderName = fileName + "_" +  getRandomStr();
-            String jobId = submitJobToFME(script, folderName);
+
+            FmeServerCommunicator fmeServerCommunicator = this.getFmeServerCommunicator();
+            String jobId =     fmeServerCommunicator.submitJob(script,new SynchronousSubmitJobRequest(script.getScriptSource(),folderName));
+            String jobId2 = submitJobToFME(script, folderName);
+
             getJobStatus(jobId, script);
             getResultFiles(folderName, result);
             deleteFolder(folderName);
@@ -459,5 +467,10 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     public String getRandomStr() {
         return randomStr;
+    }
+
+
+    public FmeServerCommunicator getFmeServerCommunicator(){
+       return (FmeServerCommunicator) SpringApplicationContext.getBean(FmeServerCommunicator.class);
     }
 }

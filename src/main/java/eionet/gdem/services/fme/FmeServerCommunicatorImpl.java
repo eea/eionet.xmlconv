@@ -61,10 +61,12 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
         try {
 
             postMethod = new HttpPost(new URI(script.getScriptSource()));
-            Header[] headers =     new HttpRequestHeader.Builder<BasicHeader>(BasicHeader.class).createHeader("Content-type","application/json").
+            Header[] headers =     new HttpRequestHeader.Builder().createHeader("Content-type","application/json").
                    createHeader("Accept", "application/json").createHeader(HttpHeaders.AUTHORIZATION, "fmetoken token="+fmeTokenProperty).build().getHeaders();
             postMethod.setHeaders(headers);
-            postMethod.setEntity(synchronousSubmitJobRequest.build());
+
+            StringEntity params6 = new StringEntity(synchronousSubmitJobRequest.buildJsonString());
+            postMethod.setEntity(params6);
 
             response = this.clientWrapper.getClient().execute(postMethod);
 
@@ -81,15 +83,14 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             else {
                 if (statusCode != HttpStatus.SC_ACCEPTED){
                     String message = "Received status code " + statusCode + " for job submission request";
-                    throw new Exception(message);
+                    return null;
+                 //   throw new Exception(message);
                 }
             }
             //status code is HttpStatus.SC_ACCEPTED (202)
 
-            Map<String,String> jsonResultMap = ApacheHttpClientUtils.convertHttpEntityToMap(response.getEntity());
-            String jsonStr = EntityUtils.toString(response.getEntity());
-            org.json.JSONObject jsonResponse = new org.json.JSONObject(jsonStr);
-            jobId = jsonResultMap.get("id");
+        Map<String,String> jsonResultMap  =  ApacheHttpClientUtils.convertHttpEntityToMap(response.getEntity());
+           jobId =  jsonResultMap.get("id");
             if(jobId == null || jobId.isEmpty()|| jobId.equals("null")){
                 throw new Exception("Valid status code but no job ID was retrieved");
             }

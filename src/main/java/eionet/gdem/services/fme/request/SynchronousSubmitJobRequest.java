@@ -1,5 +1,7 @@
 package eionet.gdem.services.fme.request;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import eionet.gdem.Properties;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -26,11 +28,25 @@ public class SynchronousSubmitJobRequest {
     }
 
     public UrlEncodedFormEntity build() throws UnsupportedEncodingException {
-        postParameters = new ArrayList<NameValuePair>();
+        postParameters = new ArrayList<>();
         postParameters.add(new BasicNameValuePair(NAME_KEY, FOLDER_VALUE));
         postParameters.add(new BasicNameValuePair(VALUE_KEY, this.fmeResultFolderProperty + "/" +folderName));
         postParameters.add(new BasicNameValuePair(NAME_KEY, ENVELOPE_VALUE_PARAM));
         postParameters.add(new BasicNameValuePair(VALUE_KEY, xmlSourceFile));
+        ArrayList<NameValuePair> postParametersfINALL = new ArrayList<>();
+   //     postParametersfINALL.add(new BasicNameValuePair("publishedParameters",postParameters));
     return new UrlEncodedFormEntity(postParameters, ENCODING_ENTITY_TYPE);
+    }
+
+    public String buildJsonString() throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode internalNode = mapper.createObjectNode();
+        internalNode.put(NAME_KEY, FOLDER_VALUE);
+        internalNode.put(VALUE_KEY, this.fmeResultFolderProperty + "/" +folderName);
+        internalNode.put(NAME_KEY, ENVELOPE_VALUE_PARAM);
+        internalNode.put(VALUE_KEY, xmlSourceFile);
+        ObjectNode publishedParametersNode = mapper.createObjectNode();
+        publishedParametersNode.set("publishedParameters",internalNode);
+        return mapper.writeValueAsString(publishedParametersNode);
     }
 }
