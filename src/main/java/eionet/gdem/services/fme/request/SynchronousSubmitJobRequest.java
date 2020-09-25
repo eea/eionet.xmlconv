@@ -6,11 +6,15 @@ import eionet.gdem.Properties;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class SynchronousSubmitJobRequest {
+public class SynchronousSubmitJobRequest extends SubmitJobRequest {
 
    private String xmlSourceFile;
     private String folderName;
@@ -23,6 +27,7 @@ public class SynchronousSubmitJobRequest {
     private String fmeResultFolderProperty = Properties.fmeResultFolder;
 
     public SynchronousSubmitJobRequest(String xmlSourceFile, String folderName) {
+        super(xmlSourceFile);
         this.xmlSourceFile = xmlSourceFile;
         this.folderName = folderName;
     }
@@ -38,15 +43,24 @@ public class SynchronousSubmitJobRequest {
     return new UrlEncodedFormEntity(postParameters, ENCODING_ENTITY_TYPE);
     }
 
-    public String buildJsonString() throws Exception{
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode internalNode = mapper.createObjectNode();
-        internalNode.put(NAME_KEY, FOLDER_VALUE);
-        internalNode.put(VALUE_KEY, this.fmeResultFolderProperty + "/" +folderName);
-        internalNode.put(NAME_KEY, ENVELOPE_VALUE_PARAM);
-        internalNode.put(VALUE_KEY, xmlSourceFile);
-        ObjectNode publishedParametersNode = mapper.createObjectNode();
-        publishedParametersNode.set("publishedParameters",internalNode);
-        return mapper.writeValueAsString(publishedParametersNode);
+    @Override
+    public String buildJsonBody() {
+        JSONObject folderObj=new JSONObject();
+        folderObj.put(NAME_KEY, FOLDER_VALUE);
+        folderObj.put(VALUE_KEY, this.fmeResultFolderProperty + "/" +folderName);
+
+        JSONObject envelObj=new JSONObject();
+        envelObj.put(NAME_KEY, ENVELOPE_VALUE_PARAM);
+        envelObj.put(VALUE_KEY, xmlSourceFile);
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(folderObj);
+        jsonArray.put(envelObj);
+
+        JSONObject result = new JSONObject();
+        result.put("publishedParameters",jsonArray);
+       return  result.toString();
     }
+
+
 }

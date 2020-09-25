@@ -5,6 +5,7 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.engines.FMEQueryEngine;
 import eionet.gdem.services.fme.request.HttpRequestHeader;
+import eionet.gdem.services.fme.request.SubmitJobRequest;
 import eionet.gdem.services.fme.request.SynchronousSubmitJobRequest;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -42,7 +43,7 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
     }
 
     @Override
-    public String submitJob(XQScript script, SynchronousSubmitJobRequest synchronousSubmitJobRequest) throws Exception {
+    public String submitJob(XQScript script, SubmitJobRequest submitJobRequest) throws Exception {
         if (script == null){
             throw new Exception("XQScript is empty");
         }
@@ -65,7 +66,7 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
                    createHeader("Accept", "application/json").createHeader(HttpHeaders.AUTHORIZATION, "fmetoken token="+fmeTokenProperty).build().getHeaders();
             postMethod.setHeaders(headers);
 
-            StringEntity params6 = new StringEntity(synchronousSubmitJobRequest.buildJsonString());
+            StringEntity params6 = new StringEntity(submitJobRequest.buildJsonBody());
             postMethod.setEntity(params6);
 
             response = this.clientWrapper.getClient().execute(postMethod);
@@ -89,8 +90,9 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             }
             //status code is HttpStatus.SC_ACCEPTED (202)
 
-        Map<String,String> jsonResultMap  =  ApacheHttpClientUtils.convertHttpEntityToMap(response.getEntity());
-           jobId =  jsonResultMap.get("id");
+            String jsonStr = EntityUtils.toString(response.getEntity());
+            org.json.JSONObject jsonResponse = new org.json.JSONObject(jsonStr);
+            jobId = jsonResponse.get("id").toString();
             if(jobId == null || jobId.isEmpty()|| jobId.equals("null")){
                 throw new Exception("Valid status code but no job ID was retrieved");
             }

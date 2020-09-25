@@ -95,7 +95,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
             FmeServerCommunicator fmeServerCommunicator = this.getFmeServerCommunicator();
             String jobId =     fmeServerCommunicator.submitJob(script,new SynchronousSubmitJobRequest(script.getScriptSource(),folderName));
-            String jobId2 = submitJobToFME(script, folderName);
+            //String jobId2 = submitJobToFME(script, folderName);
 
             getJobStatus(jobId, script);
             getResultFiles(folderName, result);
