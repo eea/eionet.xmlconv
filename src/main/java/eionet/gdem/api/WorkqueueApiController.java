@@ -1,8 +1,6 @@
 package eionet.gdem.api;
 
-import eionet.gdem.Properties;
-import eionet.gdem.api.errors.BadRequestException;
-import eionet.gdem.utils.Utils;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
@@ -23,7 +21,7 @@ public class WorkqueueApiController {
     /** Job ID parameter name */
     protected static final String JOB_ID_PARAM = "job_id";
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete")
     public void delete(HttpServletRequest request, HttpServletResponse response) {
         StopWatch timer = new StopWatch();
         timer.start();
@@ -34,6 +32,7 @@ public class WorkqueueApiController {
                 LOGGER.error("The request method was not POST.");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("\"{\"message\":\"Method was not POST\"}\"");
+                return;
             }
             Map params = request.getParameterMap();
             // parse request parameters
@@ -44,16 +43,14 @@ public class WorkqueueApiController {
                 LOGGER.error("No job id was provided for job deletion via API.");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("\"{\"message\":\"Missing job id from request\"}\"");
+                return;
             }
             LOGGER.info("Deleting job via API with id " + jobId);
 
             /* Convert String to String array */
             String[] jobIds = new String[1];
             jobIds[0] = jobId;
-            WorkqueueManager workqueueManager = new WorkqueueManager();
-
-
-            workqueueManager.deleteJobs(jobIds);
+            callWQManagerDeleteMethod(jobIds);
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("\"{\"message\":\"Job deleted successfully\"}\"");
             timer.stop();
@@ -63,4 +60,11 @@ public class WorkqueueApiController {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public void callWQManagerDeleteMethod(String[] jobIds) throws XMLConvException {
+        WorkqueueManager workqueueManager = new WorkqueueManager();
+        workqueueManager.deleteJobs(jobIds);
+    }
+
+
 }
