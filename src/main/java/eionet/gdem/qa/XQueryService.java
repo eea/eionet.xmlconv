@@ -211,7 +211,8 @@ public class XQueryService extends RemoteService {
      * @return Extension
      */
     private String getExtension(Vector outputTypes, String content_type) {
-        String ret = "html";
+     ////   String ret = "html";
+        String ret = "zip";
         if (outputTypes == null) {
             return ret;
         }
@@ -325,6 +326,12 @@ public class XQueryService extends RemoteService {
                 result = result.substring(0, 100).concat("....");
             }
             LOGGER.info("result: " + result);
+        }
+        if(jobData[8]!=null ){
+            if(jobData[8].equals("fme")){
+                ret.put("IS_FME","true");
+                ret.put("FME_ZIP_URL",jobData[2]);
+            }
         }
         return ret;
     }
@@ -481,7 +488,7 @@ public class XQueryService extends RemoteService {
             String fileExtension = getExtension(outputTypes, contentType);
             String resultFile =
                     Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
-                            + "zip";
+                            + fileExtension;
 
             int queryId;
             try {

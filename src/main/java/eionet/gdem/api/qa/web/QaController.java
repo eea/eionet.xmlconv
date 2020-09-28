@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -175,7 +176,7 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
-    public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
+    public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId,HttpServletResponse response) throws XMLConvException, JsonProcessingException {
 
         Hashtable<String, String> results = qaService.getJobResults(jobId);
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
@@ -188,6 +189,23 @@ public class QaController {
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
         jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
+        if(results.get("IS_FME").equals("true")){
+            String zipURL = results.get("FME_ZIP_URL");
+            Path file = Paths.get(zipURL);
+            if (Files.exists(file))
+            {
+                response.setContentType("application/zip");
+                response.addHeader("Content-Disposition", "attachment; filename="+file.getFileName());
+                try
+                {
+                    Files.copy(file, response.getOutputStream());
+                    response.getOutputStream().flush();
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
         return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.OK);
     }
 

@@ -160,7 +160,11 @@ public class QaServiceImpl implements QaService {
     @Override
     public XQueryService getXqueryService() {
         if (xQueryService == null) {
-            xQueryService = new XQueryService();
+            synchronized (QaServiceImpl.class){
+                if(xQueryService ==null){
+                    xQueryService = new XQueryService();
+                }
+            }
         }
         return xQueryService;
     }
