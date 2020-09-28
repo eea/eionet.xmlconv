@@ -32,8 +32,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.servlet.http.HttpServletResponse;
@@ -174,7 +177,7 @@ public class QaControllerTest {
     public void testDeleteNoJobId() throws Exception {
         ResponseEntity<HashMap<String,String>> result = qaController.delete("");
         Assert.assertThat(result.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        Assert.assertThat(result.getBody(), is("\"{\"message\":\"Missing job id from request\"}\""));
+        Assert.assertThat(result.getBody().toString(), is("{message=Missing job id from request}"));
     }
 
     /* Test case: delete successful */
@@ -182,6 +185,6 @@ public class QaControllerTest {
     public void testDeleteSuccessful() throws Exception {
         ResponseEntity<HashMap<String,String>> result = qaController.delete("12345");
         Assert.assertThat(result.getStatusCode(), is(HttpStatus.OK));
-        Assert.assertThat(result.getBody(), is("\"{\"message\":\"Job deleted successfully\"}\""));
+        Assert.assertThat(result.getBody().toString(), is("{message=Job deleted successfully}"));
     }
 }
