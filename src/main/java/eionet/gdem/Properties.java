@@ -185,8 +185,6 @@ public class Properties {
 
     public static final String SSO_LOGIN_URL;
 
-    public static String JOB_DELETION_AUTHENTICATION_TOKEN = null;
-
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -281,7 +279,6 @@ public class Properties {
         PROP_UNS_EVENTS_NAMESPACE = getStringProperty("env.uns.events-namespace");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
-        JOB_DELETION_AUTHENTICATION_TOKEN = getStringProperty("env.job.deletion.token");
     }
 
     /**
