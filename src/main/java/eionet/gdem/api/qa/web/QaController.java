@@ -12,8 +12,10 @@ import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConvertDDXMLMethod;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.qa.XQueryService;
+import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -244,6 +246,41 @@ public class QaController {
             throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
         }
     }
+
+    @RequestMapping(value = "/asynctasks/qajobs/delete/{jobId}", method = RequestMethod.POST)
+    public ResponseEntity<HashMap<String,String>> delete(@PathVariable String jobId) {
+        StopWatch timer = new StopWatch();
+        timer.start();
+        try {
+            if (jobId == null || jobId.length()==0) {
+                LOGGER.error("No job id was provided for job deletion via API.");
+                LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+                results.put("message","Missing job id from request");
+                return new ResponseEntity<>(results, HttpStatus.BAD_REQUEST);
+            }
+            LOGGER.info("Deleting job via API with id " + jobId);
+            /* Convert String to String array */
+            String[] jobIds = new String[1];
+            jobIds[0] = jobId;
+            callWQManagerDeleteMethod(jobIds);
+            timer.stop();
+            LOGGER.info(String.format("Deleting of job #%s via API was completed, total time of execution: %s", jobId, timer.toString()));
+            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+            results.put("message","Job deleted successfully");
+            return new ResponseEntity<>(results, HttpStatus.OK);
+
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+            return new ResponseEntity<>(results, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void callWQManagerDeleteMethod(String[] jobIds) throws XMLConvException {
+        WorkqueueManager workqueueManager = new WorkqueueManager();
+        workqueueManager.deleteJobs(jobIds);
+    }
+
 
 
     @ExceptionHandler(EmptyParameterException.class)
