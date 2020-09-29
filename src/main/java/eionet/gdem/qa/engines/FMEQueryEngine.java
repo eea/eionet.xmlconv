@@ -95,17 +95,17 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
             FmeServerCommunicator fmeServerCommunicator = this.getFmeServerCommunicator();
             String jobId =     fmeServerCommunicator.submitJob(script,new SynchronousSubmitJobRequest(script.getScriptSource(),folderName));
-            //String jobId2 = submitJobToFME(script, folderName);
 
-            getJobStatus(jobId, script);
-            getResultFiles(folderName, result);
-            deleteFolder(folderName);
+            fmeServerCommunicator.getJobStatus(jobId,script);
+            fmeServerCommunicator.getResultFiles(folderName, result);
+            fmeServerCommunicator.deleteFolder(folderName);
         } catch (Exception e) {
             String message = "Generic Exception handling. FME request error: " + e.getMessage();
             LOGGER.error(message);
             IOUtils.copy(IOUtils.toInputStream("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>", "UTF-8"), result);
         }
     }
+
 
     private String submitJobToFME (XQScript script, String folderName) throws Exception {
         if (script == null){

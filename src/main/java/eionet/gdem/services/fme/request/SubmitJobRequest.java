@@ -1,6 +1,6 @@
 package eionet.gdem.services.fme.request;
 
-public abstract class SubmitJobRequest {
+public abstract class SubmitJobRequest extends FMEJsonRequest{
     private String xmlSourceFile;
 
 
@@ -8,7 +8,6 @@ public abstract class SubmitJobRequest {
         this.xmlSourceFile = xmlSourceFile;
     }
 
-    public abstract String buildJsonBody();
 
     public String getXmlSourceFile() {
         return xmlSourceFile;

@@ -3,6 +3,8 @@ package eionet.gdem.services.fme;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Map;
@@ -10,10 +12,9 @@ import java.util.Map;
 public class ApacheHttpClientUtils {
 
 
-    public static Map<String, String> convertHttpEntityToMap(HttpEntity entity) throws IOException {
+    public static JSONObject getJsonFromResponseEntity(HttpEntity entity) throws IOException ,JSONException {
         String jsonStr = EntityUtils.toString(entity);
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, String> map = mapper.readValue(jsonStr, Map.class);
-        return map;
+        JSONObject jsonResponse = new org.json.JSONObject(jsonStr);
+        return jsonResponse;
     }
 }
