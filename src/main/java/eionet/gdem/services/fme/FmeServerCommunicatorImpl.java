@@ -2,9 +2,7 @@ package eionet.gdem.services.fme;
 
 import eionet.gdem.Properties;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.fme.exceptions.FmeAuthorizationException;
-import eionet.gdem.services.fme.exceptions.FmeCommunicationException;
-import eionet.gdem.services.fme.exceptions.HttpRequestHeaderInitializationException;
+import eionet.gdem.services.fme.exceptions.*;
 import eionet.gdem.services.fme.request.HttpRequestHeader;
 import eionet.gdem.services.fme.request.SubmitJobRequest;
 import eionet.gdem.utils.Utils;
@@ -121,7 +119,7 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
     }
 
     @Override
-    public FmeJobStatus getJobStatus(String jobId, XQScript script) throws FmeAuthorizationException, FmeCommunicationException {
+    public FmeJobStatus getJobStatus(String jobId, XQScript script) throws FmeAuthorizationException, FmeCommunicationException ,GenericFMEexception ,FMEBadRequestException{
         HttpGet getMethod = null;
         CloseableHttpResponse response = null;
 
@@ -135,18 +133,25 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             Integer statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
                 throw new FmeAuthorizationException("Unauthorized token");
-            }
-            JSONObject jsonResponse = ApacheHttpClientUtils.getJsonFromResponseEntity(response.getEntity());
-            if (jsonResponse.get(JSON_STATUS_PARAM) != null) {
-                return FmeJobStatus.valueOf(jsonResponse.get(JSON_STATUS_PARAM).toString());
-            } else {
-                String message = "Received wrong response status " + jsonResponse.get("status");
-                throw new FmeCommunicationException(message);
-            }
+            }else if(statusCode == HttpStatus.SC_NOT_FOUND){
+                throw new FMEBadRequestException("The job does not exist");
 
+            } else if (statusCode == HttpStatus.SC_OK) {
+                JSONObject jsonResponse = ApacheHttpClientUtils.getJsonFromResponseEntity(response.getEntity());
+                if (jsonResponse.get(JSON_STATUS_PARAM) != null) {
+                    return FmeJobStatus.valueOf(jsonResponse.get(JSON_STATUS_PARAM).toString());
+                } else {
+                    String message = "Received wrong response status " + jsonResponse.get("status");
+                    throw new FmeCommunicationException(message);
+                }
+            }else {
+                // NOT Valid status code
+                String message = "Error when polling for job status. Received status code: " + statusCode;
+                throw new GenericFMEexception(message);
+            }
         } catch (URISyntaxException | HttpRequestHeaderInitializationException | IOException e) {
             LOGGER.error(e.getMessage());
-            throw new FmeCommunicationException(e);
+            throw new GenericFMEexception(e);
         } finally {
             if (getMethod != null) {
                 getMethod.releaseConnection();
@@ -155,7 +160,7 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
     }
 
     @Override
-    public void getResultFiles(String folderName, OutputStream result) throws Exception {
+    public void getResultFiles(String folderName, OutputStream result) throws FmeAuthorizationException  , FMEBadRequestException , GenericFMEexception {
         LOGGER.info("Began downloading folder " + folderName);
         HttpPost postMethod = null;
         CloseableHttpResponse response = null;
@@ -176,23 +181,24 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             response = this.clientWrapper.getClient().execute(postMethod);
             Integer statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_UNAUTHORIZED){
-                throw new Exception("Unauthorized token");
+                throw new FmeAuthorizationException("Unauthorized token");
             }
             else if (statusCode == HttpStatus.SC_NOT_FOUND){
-                throw new Exception("The resource connection or directory does not exist");
+                throw new FMEBadRequestException("The resource connection or directory does not exist");
             }
             else if (statusCode == HttpStatus.SC_CONFLICT){
-                throw new Exception("The resource connection is not a type of resource that can be downloaded");
+                throw new FMEBadRequestException("The resource connection is not a type of resource that can be downloaded");
             }
             else {
                 if (statusCode != HttpStatus.SC_OK){
                     String message = "Received status code " + statusCode + " for folder downloading";
-                    throw new Exception(message);
+                    throw new FMEBadRequestException(message);
                 }
             }
             //status code is HttpStatus.SC_OK (200)
             LOGGER.info("Received status code 200 when downloading folder " + folderName);
 
+            //TODO Refactor everything below !
             HttpEntity entity = response.getEntity();
             InputStream is = entity.getContent();
             //Store zip file in tmp folder
@@ -213,7 +219,7 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             File folder = new File(folderPath);
             if(!folder.isDirectory()){
                 String errorMsg = tmpFolderProperty + folderPath + " is not a directory";
-                throw new Exception(errorMsg);
+                throw new GenericFMEexception(errorMsg);
             }
             List<String> listFile = Arrays.asList(folder.list());
             Collections.sort(listFile);
@@ -230,8 +236,8 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             LOGGER.info("Deleted folder " + folderPath);
             LOGGER.info("Finished downloading folder " + folderName + " from FME");
 
-        }  catch (Exception e) {
-            throw new Exception(e.getMessage());
+        }  catch (URISyntaxException | HttpRequestHeaderInitializationException | IOException e) {
+            throw new GenericFMEexception(e.getMessage());
         } finally {
             if (postMethod != null) {
                 postMethod.releaseConnection();
@@ -240,7 +246,7 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
     }
 
     @Override
-    public void deleteFolder (String folderName) throws Exception {
+    public void deleteFolder (String folderName) throws FmeAuthorizationException , GenericFMEexception  ,FMEBadRequestException{
         LOGGER.info("Began deleting folder " + folderName);
         HttpDelete request = null;
         CloseableHttpResponse response = null;
@@ -255,21 +261,21 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             response = this.clientWrapper.getClient().execute(request);
             Integer statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_UNAUTHORIZED){
-                throw new Exception("Unauthorized token");
+                throw new FmeAuthorizationException("Unauthorized token");
             }
             else if (statusCode == HttpStatus.SC_NOT_FOUND){
-                throw new Exception("The resource connection or path does not exist");
+                throw new FMEBadRequestException("The resource connection or path does not exist");
             }
             else {
                 if (statusCode != HttpStatus.SC_NO_CONTENT){
                     String message = "Received status code " + statusCode + " for folder deletion";
-                    throw new Exception(message);
+                    throw new GenericFMEexception(message);
                 }
             }
             //status code is HttpStatus.SC_NO_CONTENT (204)
             LOGGER.info("Deleted folder " + folderName);
-        }  catch (Exception e) {
-            throw new Exception(e.getMessage());
+        }  catch (GenericFMEexception | URISyntaxException | HttpRequestHeaderInitializationException |IOException e) {
+            throw new GenericFMEexception(e.getMessage());
         } finally {
             if (request != null) {
                 request.releaseConnection();

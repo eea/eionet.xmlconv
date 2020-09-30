@@ -7,5 +7,6 @@ public enum FmeJobStatus {
     ABORTED,
     FME_FAILURE,
     JOB_FAILURE,
-    SUCCESS
+    SUCCESS,
+
 }
