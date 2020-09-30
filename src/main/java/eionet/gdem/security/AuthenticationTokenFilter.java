@@ -65,7 +65,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             }
             String parsedAuthenticationToken = removeAuthenticationSchemaFromHeader(rawAuthenticationToken);
 
-            if (parsedAuthenticationToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (parsedAuthenticationToken != null) {
                 String username = verifier.verify(parsedAuthenticationToken);
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
                 if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
