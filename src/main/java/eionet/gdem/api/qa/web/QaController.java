@@ -176,6 +176,7 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
+    @ResponseBody
     public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId,HttpServletResponse response) throws XMLConvException, JsonProcessingException {
 
         Hashtable<String, String> results = qaService.getJobResults(jobId);
