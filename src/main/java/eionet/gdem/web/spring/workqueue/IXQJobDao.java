@@ -170,21 +170,21 @@ public interface IXQJobDao {
      *             DB error occurred.
      */
     String[][] getXQFinishedJobs() throws SQLException;
-    
-    
-    
+
+
+
     /**
-    *Get Latest Processing Job Start Time
-    * @return Job data
-    * @throws SQLException
-    */
+     *Get Latest Processing Job Start Time
+     * @return Job data
+     * @throws SQLException
+     */
     String[] getLatestProcessingJobStartTime() throws SQLException;
 
     /**
-    *Get Jobs Status By XMLCONV Instance
-    * @return Job data
-    * @throws SQLException
-    */
+     *Get Jobs Status By XMLCONV Instance
+     * @return Job data
+     * @throws SQLException
+     */
     String[][] getJobsSumInstanceAndStatus() throws SQLException;
 
     /**
@@ -209,5 +209,11 @@ public interface IXQJobDao {
      * @throws SQLException
      */
     String[] getLongRunningJobs(Long duration, Integer status) throws SQLException;
-    
+
+    /**
+     * Get usernname from T_API_USER
+     * @throws SQLException
+     */
+    String getAPIUsername() throws SQLException;
+
 }

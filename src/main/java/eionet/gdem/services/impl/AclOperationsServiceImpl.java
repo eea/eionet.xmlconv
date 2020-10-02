@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Hashtable;
+import java.util.Vector;
 
 @Service
 public class AclOperationsServiceImpl implements AclOperationsService {
@@ -76,6 +78,27 @@ public class AclOperationsServiceImpl implements AclOperationsService {
             return accessController;
         } catch (Exception e) {
             throw new AclAccessControllerInitializationException("Could not initialize eionet.acl AccessController:", e.getCause());
+        }
+    }
+
+    public Hashtable<String, Vector<String>> getRefreshedGroupsAndUsersHashTable(boolean init) throws AclLibraryAccessControllerModifiedException, AclPropertiesInitializationException {
+        try {
+            AccessController accessController = this.getAclLibraryAccessControllerInstance(this.getAclProperties());
+            if (init) {
+                Method initAcls = null;
+                initAcls = AccessController.class.getDeclaredMethod("initAcls");
+                initAcls.setAccessible(true);
+                initAcls.invoke(accessController);
+                initAcls.setAccessible(false);
+            }
+            Method getGroupsMethod = null;
+            getGroupsMethod = AccessController.class.getDeclaredMethod("getGroups");
+            getGroupsMethod.setAccessible(true);
+            Hashtable<String, Vector<String>> usersAndGroups = (Hashtable<String, Vector<String>>) getGroupsMethod.invoke(accessController);
+            getGroupsMethod.setAccessible(false);
+            return usersAndGroups;
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | AclAccessControllerInitializationException e) {
+            throw new AclLibraryAccessControllerModifiedException("Can not retrieve hashtable with users and their groups",e.getCause());
         }
     }
 }
