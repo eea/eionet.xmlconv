@@ -1,46 +1,22 @@
 package eionet.gdem.qa.engines;
 
 import java.io.*;
-import java.net.SocketTimeoutException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
+
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.services.fme.FmeJobStatus;
 import eionet.gdem.services.fme.FmeServerCommunicator;
-import eionet.gdem.services.fme.FmeServerCommunicatorImpl;
 import eionet.gdem.services.fme.exceptions.*;
 import eionet.gdem.services.fme.request.SynchronousSubmitJobRequest;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.ZipUtil;
-import net.sf.json.JSONArray;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
 import eionet.gdem.qa.XQScript;
 
@@ -96,7 +72,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
 
             FmeServerCommunicator fmeServerCommunicator = this.getFmeServerCommunicator();
-            String jobId =     fmeServerCommunicator.submitJob(script,new SynchronousSubmitJobRequest(script.getScriptSource(),folderName));
+            String jobId =     fmeServerCommunicator.submitJob(script,new SynchronousSubmitJobRequest(script.getOrigFileUrl(),folderName));
 
 
             this.pollFmeServerWithRetries(jobId,script,fmeServerCommunicator);
@@ -129,19 +105,21 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             switch (jobStatus){
                 case SUBMITTED:
                 case PULLED:
-                case QUEUED:
-                    if (count + 1 == this.getRetries()){
+                case QUEUED: {
+                    if (count + 1 == this.getRetries()) {
                         String message = "Failed for last Retry  number: " + count + ". Received status " + jobStatus.toString();
                         throw new RetryCountForGettingJobResultReachedException(message);
                     } else {
-                        LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + jobStatus.toString() + "-- #Retry: " + count);
+                        LOGGER.error("Fme Request Process is still in progress for  -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + jobStatus.toString() + "-- #Retry: " + count);
                         Thread.sleep(timeoutMilisecs); // The thread is forced to wait 'timeoutMilisecs' before trying to retry the FME call
                     }
                     count++;
                     LOGGER.info("Retry checking");
+                }
                 case ABORTED:
-                case FME_FAILURE:
-                    throw new GenericFMEexception("Received result status FME_FAILURE for job Id #" + jobId);
+                case FME_FAILURE:{
+                    throw new GenericFMEexception("Received result status FME_FAILURE for job Id #" + jobId);}
+
                 case SUCCESS:
                     count = this.getRetries(); //
             }

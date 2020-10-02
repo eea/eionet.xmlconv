@@ -18,6 +18,7 @@ public class SynchronousSubmitJobRequest extends SubmitJobRequest {
 
    private String xmlSourceFile;
     private String folderName;
+
     ArrayList<NameValuePair> postParameters;
 
     private String fmeResultFolderProperty = Properties.fmeResultFolder;
