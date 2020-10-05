@@ -1,6 +1,7 @@
 package org.basex.io.in;
 
 import eionet.gdem.Properties;
+import eionet.gdem.qa.XQueryJob;
 import org.basex.io.IO;
 import org.basex.util.list.ByteList;
 import org.slf4j.Logger;
@@ -35,6 +36,10 @@ public class BufferInput extends InputStream {
      * begin timestamp
      */
     private long begin;
+    /**
+     * current thread's jobId
+     */
+    private String jobId;
 
     /**
      * Returns a buffered input stream.
@@ -65,6 +70,14 @@ public class BufferInput extends InputStream {
         this.input = input;
         length = input.length();
         begin = System.currentTimeMillis();
+        if (input!=null) {
+            for (String endpoint : Properties.XQUERY_HTTP_ENDPOINTS.split(",")) {
+                if (input.toString().contains(endpoint)) {
+                    jobId = XQueryJob.getThreadAndJobIdsMap().get(Thread.currentThread().getId());
+                    LOGGER.debug("job " + jobId + ": " + "starting call to " + input.toString());
+                }
+            }
+        }
     }
 
     /**
@@ -174,7 +187,7 @@ public class BufferInput extends InputStream {
         if (input!=null) {
             for (String endpoint : Properties.XQUERY_HTTP_ENDPOINTS.split(",")) {
                 if (input.toString().contains(endpoint) && duration > Properties.BASEX_XQUERY_TIME_LIMIT) {
-                    LOGGER.info("Duration of " + endpoint + " call: " + duration + " ms");
+                    LOGGER.info("job " + jobId + ": " + "Duration of " + input.toString() + " call: " + duration + " ms");
                 }
             }
         }

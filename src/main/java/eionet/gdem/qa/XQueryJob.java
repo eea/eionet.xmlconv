@@ -22,20 +22,21 @@ package eionet.gdem.qa;
  *
  * Original Code: Kaido Laine (TietoEnator)
  */
+
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.web.spring.schemas.SchemaManager;
-import eionet.gdem.dto.Schema;
 import eionet.gdem.logging.Markers;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
+import eionet.gdem.web.spring.schemas.SchemaManager;
+import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -44,7 +45,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,6 +54,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +86,8 @@ public class XQueryJob implements Job, InterruptableJob {
 
     private volatile Thread thisThread;
 
+    private static volatile Map<Long,String> threadIdsAndJobIdsMap = new LinkedHashMap<>();
+
     /**
      * Public constructor.
      */
@@ -97,6 +100,8 @@ public class XQueryJob implements Job, InterruptableJob {
     @Override
     public void execute(JobExecutionContext paramJobExecutionContext) throws JobExecutionException {
         thisThread = Thread.currentThread();
+
+        insertIntoThreadAndJobIdsMap(thisThread.getId(),jobId);
         try {
             LOGGER.info("### Job with id=" + jobId + " started executing.");
             schemaManager = new SchemaManager();
@@ -223,6 +228,14 @@ public class XQueryJob implements Job, InterruptableJob {
         } catch (Exception ee) {
             handleError("Error in thread run():" + ee.toString(), true);
         }
+    }
+
+    private void insertIntoThreadAndJobIdsMap(long id, String jobId) {
+        threadIdsAndJobIdsMap.put(id, jobId);
+    }
+
+    public static Map<Long,String> getThreadAndJobIdsMap() {
+        return threadIdsAndJobIdsMap;
     }
 
     /**
