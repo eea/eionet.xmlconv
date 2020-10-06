@@ -112,16 +112,18 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                     } else {
                         LOGGER.error("Fme Request Process is still in progress for  -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + jobStatus.toString() + "-- #Retry: " + count);
                         Thread.sleep(timeoutMilisecs); // The thread is forced to wait 'timeoutMilisecs' before trying to retry the FME call
+
                     }
                     count++;
                     LOGGER.info("Retry checking");
+                    break;
                 }
                 case ABORTED:
                 case FME_FAILURE:{
                     throw new GenericFMEexception("Received result status FME_FAILURE for job Id #" + jobId);}
 
                 case SUCCESS:
-                    count = this.getRetries(); //
+                    return;
             }
         }
         throw new RetryCountForGettingJobResultReachedException("Retry count reached with no result");
