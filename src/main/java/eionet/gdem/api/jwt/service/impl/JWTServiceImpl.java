@@ -23,17 +23,22 @@ public class JWTServiceImpl implements JWTService {
     /**
      * JWT Audience.
      */
-    private String JWT_AUDIENCE = Properties.getStringProperty(Properties.jwtAudienceProperty);
+    private String JWT_AUDIENCE = Properties.jwtAudienceProperty;
 
     /**
      * JWT issuer.
      */
-    private String JWT_ISSUER = Properties.getStringProperty(Properties.jwtIssuerProperty);
+    private String JWT_ISSUER = Properties.jwtIssuerProperty;
 
     /**
      * JWT api key.
      */
-    private String JWT_API_KEY= Properties.getStringProperty(Properties.jwtSecretKey);
+    private String JWT_API_KEY= Properties.jwtSecretKey;
+
+    /**
+     * JWT api key.
+     */
+    private String JWT_SCHEMA_HEADER= Properties.jwtHeaderSchemaProperty;
 
     /** Dao for getting job data. */
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
@@ -65,7 +70,8 @@ public class JWTServiceImpl implements JWTService {
                 .signWith(SignatureAlgorithm.HS256, apiKeySecretBytes);
 
         //Builds the JWT and serializes it to a compact, URL-safe string
-        return builder.compact();
+        String token = builder.compact();
+        return this.getJwtSchemaHeader() + token;
     }
 
     @Override
@@ -92,5 +98,9 @@ public class JWTServiceImpl implements JWTService {
     @Override
     public String getJwtApiKey() {
         return JWT_API_KEY;
+    }
+
+    public String getJwtSchemaHeader() {
+        return JWT_SCHEMA_HEADER;
     }
 }

@@ -275,7 +275,6 @@ public class Properties {
         fmePort = getStringProperty("fme.port");
         fmeUser = getStringProperty("fme.user");
         fmePassword = getStringProperty("fme.password");
-        fmeToken = getStringProperty("fme.token");
         fmeTokenExpiration = getStringProperty("fme.token.expiration");
         fmeTokenTimeunit = getStringProperty("fme.token.timeunit");
         fmeTimeout = getIntProperty("fme.timeout");

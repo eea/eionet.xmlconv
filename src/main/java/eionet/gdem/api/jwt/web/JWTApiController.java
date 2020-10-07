@@ -41,7 +41,7 @@ public class JWTApiController {
 
     @Autowired
     AclOperationsService aclOperationsService;
-    private String SSO_LOGIN_PAGE_URI = eionet.gdem.Properties.getStringProperty(Properties.SSO_LOGIN_URL);
+    private String SSO_LOGIN_PAGE_URI = Properties.SSO_LOGIN_URL;
 
     @RequestMapping(value = "/jwt/generateJwtToken/", method = RequestMethod.POST)
     public ResponseEntity<HashMap<String,String>> generateJWTToken(HttpServletRequest request) throws JWTException {
@@ -96,7 +96,7 @@ public class JWTApiController {
         }
     }
 
-    public Boolean authenticateUser(String username, String password) throws Exception {
+    protected Boolean authenticateUser(String username, String password) throws Exception {
 
         String executionParam = getExecutionValueFromSSOPage();
 
@@ -125,7 +125,7 @@ public class JWTApiController {
         }
     }
 
-    public Boolean checkIfUserHasAdminRights(String username) throws Exception {
+    protected Boolean checkIfUserHasAdminRights(String username) throws Exception {
         LOGGER.info(String.format("Checking if user %s has admin rights", username));
         Hashtable<String, Vector<String>> groupsAndUsersHash = getAclOperationsService().getRefreshedGroupsAndUsersHashTable(false);
         if(groupsAndUsersHash.get("gdem_admin") == null){
@@ -138,11 +138,11 @@ public class JWTApiController {
         return false;
     }
 
-    public AclOperationsService getAclOperationsService() {
+    protected AclOperationsService getAclOperationsService() {
         return aclOperationsService;
     }
 
-    public String getExecutionValueFromSSOPage() throws Exception {
+    protected String getExecutionValueFromSSOPage() throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         String pageHtml = restTemplate.getForObject(this.getSSO_LOGIN_PAGE_URI(), String.class);
         Document doc = Jsoup.parse(pageHtml);
@@ -158,11 +158,11 @@ public class JWTApiController {
         return execution.val();
     }
 
-    public String getSSO_LOGIN_PAGE_URI() {
+    protected String getSSO_LOGIN_PAGE_URI() {
         return SSO_LOGIN_PAGE_URI;
     }
 
-    public JWTService getJwtService() {
+    protected JWTService getJwtService() {
         return jwtService;
     }
 
