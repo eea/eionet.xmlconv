@@ -212,15 +212,20 @@ public class XQueryJob implements Job, InterruptableJob {
                     long stopTimeEnd = System.nanoTime();
                     LOGGER.info("### Job with id=" + jobId + " status is READY. Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta)+ ".");
                 } catch (XMLConvException e) {
-                    changeStatus(Constants.XQ_FATAL_ERR);
-                    StringBuilder errBuilder = new StringBuilder();
-                    errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
-                    errBuilder.append(Utils.escapeXML(e.toString()));
-                    errBuilder.append("</div>");
-                    IOUtils.write(errBuilder.toString(), out, "UTF-8");
-                    long stopTimeEnd = System.nanoTime();
-                    LOGGER.info("### Job with id=" + jobId + " status is FATAL_ERROR. Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta) + ".");
-                    LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
+                    if (thisThread.isInterrupted()) {
+                        changeStatus(Constants.XQ_INTERRUPTED);
+                        LOGGER.info("### Job with id=" + jobId + " status is INTERRUPTED");
+                    } else {
+                        changeStatus(Constants.XQ_FATAL_ERR);
+                        StringBuilder errBuilder = new StringBuilder();
+                        errBuilder.append("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">Unexpected error occured!</span><h2>Unexpected error occured!</h2>");
+                        errBuilder.append(Utils.escapeXML(e.toString()));
+                        errBuilder.append("</div>");
+                        IOUtils.write(errBuilder.toString(), out, "UTF-8");
+                        long stopTimeEnd = System.nanoTime();
+                        LOGGER.info("### Job with id=" + jobId + " status is FATAL_ERROR. Executing time in nanoseconds = " + (stopTimeEnd - startTimeSta) + ".");
+                        LOGGER.error("XQueryJob ID=" + this.jobId + " exception: ", e);
+                    }
                 } finally {
                         IOUtils.closeQuietly(out);
                 }
@@ -301,6 +306,8 @@ public class XQueryJob implements Job, InterruptableJob {
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
             if (status == 3)
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.JOB_READY + ".");
+            else if (status == 7)
+                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_INTERRUPTED + ".");
             else
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_FATAL_ERR + ".");
         } catch (Exception e) {
@@ -381,7 +388,7 @@ public class XQueryJob implements Job, InterruptableJob {
     @Override
     public void interrupt() throws UnableToInterruptJobException {
         LOGGER.info("Job " + this.jobId + "  -- INTERRUPTING --");
-        if (thisThread != null && XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+        if (thisThread != null) {
             // this call causes the ClosedByInterruptException to happen
             thisThread.interrupt();
         } else {

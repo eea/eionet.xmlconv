@@ -21,23 +21,21 @@
 
 package eionet.gdem.qa;
 
-import eionet.gdem.Constants;
 import eionet.gdem.SpringApplicationContext;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.services.GDEMServices;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
-import org.quartz.*;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobKey;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
@@ -74,29 +72,21 @@ public class InterruptLongRunningJobsTask implements Job {
                             if (getQuartzScheduler().checkExists(qJob)) {
                                 // try to interrupt running job
                                 getQuartzScheduler().interrupt(qJob);
-                                GDEMServices.getDaoService().getXQJobDao().changeJobStatus(job.getJobId(), Constants.XQ_INTERRUPTED);
-                                getJobHistoryRepository().save(new JobHistoryEntry(job.getJobId(), Constants.XQ_INTERRUPTED, new Timestamp(new Date().getTime()), null, null, null, null));
                             }
                             else if (getQuartzHeavyScheduler().checkExists(qJob)) {
                                 // try to interrupt running job
                                 getQuartzHeavyScheduler().interrupt(qJob);
-                                GDEMServices.getDaoService().getXQJobDao().changeJobStatus(job.getJobId(), Constants.XQ_INTERRUPTED);
-                                getJobHistoryRepository().save(new JobHistoryEntry(job.getJobId(), Constants.XQ_INTERRUPTED, new Timestamp(new Date().getTime()), null, null, null, null));
                             }
-                        } catch (SchedulerException | SQLException e) {
+                        } catch (SchedulerException e) {
                             LOGGER.info("error trying to interrupt job with id: " + job.getJobId());
                             continue;
                         }
                     }
                 }
             }
-        } catch (DCMException e) {
+        } catch (DCMException | XMLConvException e) {
             LOGGER.error("Error when running InterruptLongRunningJobsTask: ", e);
         }
-    }
-
-    private static JobHistoryRepository getJobHistoryRepository() {
-        return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
     }
 
     /**
@@ -105,16 +95,14 @@ public class InterruptLongRunningJobsTask implements Job {
      * @param xml XML
      * @return Result
      */
-    private String findSchemaFromXml(String xml) {
+    String findSchemaFromXml(String xml) throws XMLConvException {
         InputAnalyser analyser = new InputAnalyser();
         try {
             analyser.parseXML(xml);
             String schemaOrDTD = analyser.getSchemaOrDTD();
             return schemaOrDTD;
         } catch (Exception e) {
-            // do nothing - did not find XML Schema
-            // handleError(request, response, e);
+            throw new XMLConvException("Could not extract schema");
         }
-        return null;
     }
 }

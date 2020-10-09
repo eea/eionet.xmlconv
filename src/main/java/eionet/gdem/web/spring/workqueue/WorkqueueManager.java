@@ -426,7 +426,7 @@ public class WorkqueueManager {
             job = new WorkqueueJob();
             job.setJobId((jobData[0] == null) ? "" : jobData[0]);
             job.setUrl((jobData[1] == null) ? "" : jobData[1]);
-            job.setDuration((jobData[2] == null) ? 10 : new Long(jobData[2]));
+            job.setDuration((jobData[2] == null) ? 0 : new Long(jobData[2]));
         }
         return job;
     }

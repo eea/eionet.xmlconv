@@ -183,18 +183,14 @@ public class JobScheduler implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-//        intervalJobs
-//                = new Pair[]{
-//                      Pair.of(new Integer(Properties.wqCleanInterval),
-//                            newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
-//                            WQCleanerJob.class.getName()).build()), Pair.of(new Integer(Properties.interruptingJobsInterval),
-//                newJob(InterruptLongRunningJobsTask.class).withIdentity(InterruptLongRunningJobsTask.class.getSimpleName(),
-//                        InterruptLongRunningJobsTask.class.getName()).build())};
         intervalJobs
                 = new Pair[]{
-                Pair.of(new Integer(Properties.wqCleanInterval),
-                        newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
-                                WQCleanerJob.class.getName()).build())};
+                      Pair.of(new Integer(Properties.wqCleanInterval),
+                            newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
+                            WQCleanerJob.class.getName()).build()), Pair.of(new Integer(Properties.interruptingJobsInterval),
+                newJob(InterruptLongRunningJobsTask.class).withIdentity(InterruptLongRunningJobsTask.class.getSimpleName(),
+                        InterruptLongRunningJobsTask.class.getName()).build())};
+
         // schedule interval jobs
         for (Pair<Integer, JobDetail> job : intervalJobs) {
 

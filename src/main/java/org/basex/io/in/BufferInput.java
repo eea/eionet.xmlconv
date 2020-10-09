@@ -1,6 +1,7 @@
 package org.basex.io.in;
 
 import eionet.gdem.Properties;
+import eionet.gdem.api.errors.BaseXJobInterruptedException;
 import eionet.gdem.qa.XQueryJob;
 import org.basex.io.IO;
 import org.basex.util.list.ByteList;
@@ -68,6 +69,9 @@ public class BufferInput extends InputStream {
     public BufferInput(final IO input) throws IOException {
         this(input.inputStream());
         this.input = input;
+        if (Thread.currentThread().isInterrupted()) {
+            throw new BaseXJobInterruptedException("job_interrupted");
+        }
         length = input.length();
         begin = System.currentTimeMillis();
         if (input!=null) {

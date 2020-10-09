@@ -175,7 +175,7 @@ public class Properties {
     public static final Long BASEX_XQUERY_TIME_LIMIT;
 
     public static Long maxSchemaExecutionTime;
-    /** interval of checking whether running jobs duration has exceeded schema's maxExecutionTime */
+    /** interval of checking whether running jobs duration has exceeded schema's maxExecutionTime (in seconds) */
     public static int interruptingJobsInterval;
 
     static {
