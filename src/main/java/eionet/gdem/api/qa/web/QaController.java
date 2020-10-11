@@ -190,7 +190,7 @@ public class QaController {
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
         jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
-        if(results.get("IS_FME").equals("true")){
+        if(results.get("IS_FME")!=null && results.get("IS_FME").equals("true")){
             String zipURL = results.get("FME_ZIP_URL");
             Path file = Paths.get(zipURL);
             if (Files.exists(file))
