@@ -2,6 +2,7 @@ package eionet.gdem.api.qa.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import eionet.gdem.Constants;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.errors.BadRequestException;
 import eionet.gdem.api.errors.EmptyParameterException;
@@ -11,6 +12,8 @@ import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConvertDDXMLMethod;
 import eionet.gdem.dto.ConversionResultDto;
+import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
@@ -29,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
@@ -278,7 +282,7 @@ public class QaController {
 
     public void callWQManagerDeleteMethod(String[] jobIds) throws XMLConvException {
         WorkqueueManager workqueueManager = new WorkqueueManager();
-        workqueueManager.deleteJobs(jobIds);
+        workqueueManager.deleteJobs(jobIds, true);
     }
 
 

@@ -211,7 +211,7 @@ public class WorkqueueController {
 
         try {
             WorkqueueManager workqueueManager = new WorkqueueManager();
-            workqueueManager.deleteJobs(jobs.toArray(new String[0]));
+            workqueueManager.deleteJobs(jobs.toArray(new String[0]), false);
             messages.add(messageService.getMessage("label.workqueue.jobdeleted"));
         } catch (XMLConvException e) {
             throw new RuntimeException("Could not delete jobs! " + e.getMessage());

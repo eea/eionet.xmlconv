@@ -72,7 +72,7 @@ public class SaveHandler {
             String[] jobs = req.getParameterValues("jobID");
 
             try {
-                workqueueManager.deleteJobs(jobs);
+                workqueueManager.deleteJobs(jobs, false);
             } catch (Exception e) {
                 LOGGER.error("Could not delete jobs!" + e.getMessage());
                 err_buf.append("Cannot delete job: " + e.toString());
