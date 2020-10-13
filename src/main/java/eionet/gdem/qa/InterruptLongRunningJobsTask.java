@@ -1,38 +1,12 @@
-/*
- * The contents of this file are subject to the Mozilla Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
- *
- * The Original Code is XMLCONV - Conversion and QA Service
- *
- * The Initial Owner of the Original Code is European Environment
- * Agency. Portions created by TripleDev or Zero Technologies are Copyright
- * (C) European Environment Agency.  All Rights Reserved.
- *
- * Contributor(s):
- *        Enriko Käsper
- */
-
 package eionet.gdem.qa;
 
-import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobKey;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,13 +43,13 @@ public class InterruptLongRunningJobsTask implements Job {
                     if (job.getDuration() > schemaManager.getSchemaMaxExecutionTime(schemaUrl)) {
                         JobKey qJob = new JobKey(job.getJobId(), "XQueryJob");
                         try {
-                            if (getQuartzScheduler().checkExists(qJob)) {
+                            if (getScheduler().checkExists(qJob)) {
                                 // try to interrupt running job
-                                getQuartzScheduler().interrupt(qJob);
+                                getScheduler().interrupt(qJob);
                             }
-                            else if (getQuartzHeavyScheduler().checkExists(qJob)) {
+                            else if (getHeavyScheduler().checkExists(qJob)) {
                                 // try to interrupt running job
-                                getQuartzHeavyScheduler().interrupt(qJob);
+                                getHeavyScheduler().interrupt(qJob);
                             }
                         } catch (SchedulerException e) {
                             LOGGER.info("error trying to interrupt job with id: " + job.getJobId());
@@ -87,6 +61,14 @@ public class InterruptLongRunningJobsTask implements Job {
         } catch (DCMException | XMLConvException e) {
             LOGGER.error("Error when running InterruptLongRunningJobsTask: ", e);
         }
+    }
+
+    Scheduler getScheduler() throws SchedulerException {
+        return getQuartzScheduler();
+    }
+
+    Scheduler getHeavyScheduler() throws SchedulerException {
+        return getQuartzHeavyScheduler();
     }
 
     /**
