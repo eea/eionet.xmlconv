@@ -113,6 +113,10 @@
         <put-attribute name="title" value="label.admin.purge" />
         <put-attribute name="body" value="/WEB-INF/view/old/admin/purge.jsp" />
     </definition>
+    <definition name="/admin/generateJWTToken" extends="base">
+        <put-attribute name="title" value="label.admin.generateJWTToken" />
+        <put-attribute name="body" value="/WEB-INF/view/old/admin/generateJWTToken.jsp" />
+    </definition>
     <definition name="/hosts/list" extends="base">
         <put-attribute name="title" value="label.hosts.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/hosts/list.jsp" />
