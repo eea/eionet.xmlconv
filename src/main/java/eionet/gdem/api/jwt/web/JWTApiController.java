@@ -44,7 +44,7 @@ public class JWTApiController {
     private String SSO_LOGIN_PAGE_URI = Properties.SSO_LOGIN_URL;
 
     @RequestMapping(value = "/jwt/generateJwtToken/", method = RequestMethod.POST)
-    public ResponseEntity<HashMap<String,String>> generateJWTToken(HttpServletRequest request) throws JWTException {
+    public ResponseEntity<HashMap<String,String>> generateJWTToken(HttpServletRequest request) {
         StopWatch timer = new StopWatch();
         timer.start();
         try {
@@ -55,31 +55,51 @@ public class JWTApiController {
             /* Retrieve credentials from Basic Authentication */
             String authentication = request.getHeader("Authorization");
             if (authentication == null || !authentication.startsWith("Basic ")) {
-                throw new JWTException("No Basic authentication received.");
+                String message = "No Basic authentication received";
+                LOGGER.error(message);
+                LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+                results.put("message", message);
+                return new ResponseEntity<>(results, HttpStatus.UNAUTHORIZED);
             }
 
             String[] authenticationArray = authentication.split(" ");
             if (authenticationArray.length != 2) {
-                throw new JWTException("Basic Authentication error.");
+                String message = "Basic Authentication error";
+                LOGGER.error(message);
+                LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+                results.put("message", message);
+                return new ResponseEntity<>(results, HttpStatus.UNAUTHORIZED);
             }
             String encodedUsernamePassword = authenticationArray[1].trim();
             byte[] decodedBytes = Base64.getDecoder().decode(encodedUsernamePassword);
             String decodedString = new String(decodedBytes);
             String[] decodedUsernamePassword = decodedString.split(":");
             if (decodedUsernamePassword.length != 2) {
-                throw new JWTException("Credentials were provided incorrectly.");
+                String message = "Credentials were provided incorrectly";
+                LOGGER.error(message);
+                LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+                results.put("message", message);
+                return new ResponseEntity<>(results, HttpStatus.UNAUTHORIZED);
             }
             String username = decodedUsernamePassword[0];
             String password = decodedUsernamePassword[1];
 
-            LOGGER.info(String.format("User %s has requested generation of a JWT token.", username));
+            LOGGER.info(String.format("User %s has requested generation of a JWT token", username));
 
             if (authenticateUser(username, password) == false) {
-                throw new JWTException("Wrong credentials were retrieved.");
+                String message = "User does not exist";
+                LOGGER.error(message);
+                LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+                results.put("message", message);
+                return new ResponseEntity<>(results, HttpStatus.UNAUTHORIZED);
             }
 
             if (!this.checkIfUserHasAdminRights(username)) {
-                throw new JWTException(String.format("User %s does not have admin rights.", username));
+                String message = "User " + username + " does not have admin rights";
+                LOGGER.error(message);
+                LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+                results.put("message", message);
+                return new ResponseEntity<>(results, HttpStatus.UNAUTHORIZED);
             }
 
             LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
@@ -92,6 +112,7 @@ public class JWTApiController {
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+            results.put("message", e.getMessage());
             return new ResponseEntity<>(results, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
