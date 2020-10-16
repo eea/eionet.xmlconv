@@ -14,6 +14,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
@@ -33,12 +34,16 @@ public class JWTController {
     }
 
     @GetMapping
-    public String view(Model model){
+    public String view(Model model, HttpSession httpSession) throws SignOnException {
+        String user = (String) httpSession.getAttribute("user");
+        if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_ADMIN_PATH, "u")) {
+            throw new AccessDeniedException(messageService.getMessage("label.authorization.generate.token"));
+        }
         model.addAttribute("token", getToken());
         return "/admin/generateJWTToken";
     }
 
-    @GetMapping("/generateToken")
+    @PostMapping("/generateToken")
     public String generateToken(Model model, HttpSession httpSession) throws SignOnException, JWTException {
         String user = (String) httpSession.getAttribute("user");
         if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_ADMIN_PATH, "u")) {

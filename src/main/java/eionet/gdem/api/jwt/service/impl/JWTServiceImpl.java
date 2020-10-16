@@ -54,10 +54,7 @@ public class JWTServiceImpl implements JWTService {
         //The JWT will be signed with secret
         byte[] apiKeySecretBytes = this.getJwtApiKey().getBytes();
 
-        Date now = new Date();
-
         Map<String, Object> claims= new HashMap<>();
-        claims.put("iat", now.getTime());
         claims.put("iss", this.getJwtIssuer());
         claims.put("sub", this.getSubjectForJWTToken());
         claims.put("aud", this.getJwtAudience());

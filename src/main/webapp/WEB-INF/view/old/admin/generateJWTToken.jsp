@@ -12,7 +12,7 @@
             A valid JWT token will be generated in order for you to use the REST API endpoints.
         </p>
         <a class="button" href="/admin/generateJWTToken/generateToken"><spring:message code="label.admin.generateJWTToken"/></a>
-        <div style="display: flex; flex-wrap: wrap;">
+        <div>
             <c:if test="${not empty token}" >
                 <p>The generated JWT token is:</p>
                 <p style="word-wrap:break-word;"><b><c:out value="${token}" /></b></p>
