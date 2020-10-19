@@ -1,8 +1,8 @@
 <b>BLOCKER</b> : Critical error preventing data submission (envelope release will not be possible).<br>
 <b>ERROR</b> : Non-critical error, but still requiring corrective action by the data reporter.<br>
-<b>WARNING</b> : An issue has been detected that may be an error.<br>
+<b>WARNING</b> : An issue has been detected that may be an error. No corrective action may be necessary in this case.<br>
 <b>OK</b> : No WARNING, ERROR or BLOCKER messages have been generated.<br>
 <b>INFO</b> : Informative message, often presenting summary statistics about the delivery.<br>
 <b>SKIPPED</b> : There was "Nothing found to check", typically because of missing optional data elements.<br>
 <b>FAILED</b> : Script execution failed, e.g. due to memory problems or unresponsive third party web service.<br>
-<b>UNKNOWN</b> : Seems to be used in older QA scripts (instead of FAILED or SKIPPED)
+<b>UNKNOWN</b> : This was used in older QA scripts (instead of FAILED or SKIPPED) and should be phased out.

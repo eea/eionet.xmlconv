@@ -6,8 +6,8 @@
             $('#modalPopup').remove();
             // create <div> element with id="modalPopup"
             $('body').append('<div id="modalPopup">');
-            // load the content from file statuses into the modal div with ID="modalPopup"
-            $('#modalPopup').load("/resources/statuses", function(){
+            // load the content from file qaScriptsStatuses into the modal div with ID="modalPopup"
+            $('#modalPopup').load("/resources/qaScriptsStatuses", function(){
                 $('#modalPopup div').removeAttr('id');
             });
             // popup the dialog window with predifined dimensions and functionality concerning the close event
@@ -26,24 +26,3 @@
 })(document, jQuery);
 
 
-$('.statusHelp').click(function() {
-    $('#modalPopup').load("/resources/statuses");
-    $('#modalPopup').dialog('open');
-});
-
-$(document).ready(function() {
-    jQuery("#dialog").dialog({
-        autoOpen:false,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        closeOnEscape: true,
-        position: ['center',20],
-        title: "Trazoo",
-        open: function(){
-            jQuery('.ui-widget-overlay').bind('click',function(){
-                jQuery('#modalPopup').dialog('close');
-            })
-        }
-    });
-});
