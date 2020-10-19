@@ -6,12 +6,14 @@
 
     <ed:breadcrumbs-push label="Generate JWT Token" level="1"/>
 
-    <form:form action="/admin/generateJWTToken" method="post" modelAttribute="form">
+    <form:form action="/admin/generateJWTToken/generateToken" method="post" modelAttribute="form">
         <form:errors path="*" cssClass="error-msg" element="div"/>
         <p>
             A valid JWT token will be generated in order for you to use the REST API endpoints.
         </p>
-        <a class="button" href="/admin/generateJWTToken/generateToken"><spring:message code="label.admin.generateJWTToken"/></a>
+        <button type="submit" class="button">
+            <spring:message code="label.admin.generateJWTToken"/>
+        </button>
         <div>
             <c:if test="${not empty token}" >
                 <p>The generated JWT token is:</p>
