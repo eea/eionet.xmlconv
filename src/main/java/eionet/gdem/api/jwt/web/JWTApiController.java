@@ -6,6 +6,7 @@ import eionet.gdem.api.jwt.service.impl.JWTServiceImpl;
 import eionet.gdem.api.qa.web.QaController;
 import eionet.gdem.security.errors.JWTException;
 import eionet.gdem.services.AclOperationsService;
+import eionet.gdem.services.MessageService;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -37,7 +38,12 @@ public class JWTApiController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QaController.class);
 
-    private final JWTService jwtService = new JWTServiceImpl();
+    private final JWTService jwtService;
+
+    @Autowired
+    public JWTApiController(JWTService jwtService) {
+        this.jwtService = jwtService;
+    }
 
     @Autowired
     AclOperationsService aclOperationsService;
