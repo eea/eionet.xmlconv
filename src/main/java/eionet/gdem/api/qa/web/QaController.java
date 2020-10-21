@@ -193,7 +193,8 @@ public class QaController {
         if(results.get("REMOTE_FILES")!=null){
             String[] fileUrls = (String[]) results.get("REMOTE_FILES");
             if(fileUrls[0]!=null) {
-                jsonResults.put("feedbackContent", fileUrls[0]);
+                jsonResults.put("feedbackContent", "");
+                jsonResults.put("REMOTE_FILES",fileUrls);
                 /**
                 Path file = Paths.get(fileUrls[0]);
                 if (Files.exists(file)) {
