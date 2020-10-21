@@ -127,6 +127,9 @@
       <tbody>
 
       <c:forEach items="${jobList}" varStatus="i" var="job">
+        <c:url var="testLink" value="/testInterrupt">
+          <c:param name="jobId" value="${job.jobId}" />
+        </c:url>
         <tr class="${i.index % 2 == 1 ? 'zebraodd' : 'zebraeven'}">
           <c:choose>
             <c:when test="${permissions.wqdPrm || permissions.wquPrm}">
@@ -134,7 +137,7 @@
                 <form:checkbox path="jobs" id="job_${job.jobId}" value="${job.jobId}"/>
               </td>
               <td class="details-control" id="selectableJobId">
-                <label for="job_${job.jobId}">${job.jobId}</label>
+                <label for="job_${job.jobId}"><a href="${testLink}">${job.jobId}</a></label>
               </td>
             </c:when>
             <c:otherwise>
