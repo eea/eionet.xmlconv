@@ -11,7 +11,7 @@ server = xmlrpc.client.ServerProxy("http://localhost:8080/RpcRouter")
 
 try:
     # jobId
-    param1 = "20"
+    param1 = "625785"
     # sheet name
 
     method_result = server.XQueryService.getResult(param1) #, param2)

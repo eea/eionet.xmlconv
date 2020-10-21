@@ -179,33 +179,37 @@ public class QaController {
     @ResponseBody
     public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId,HttpServletResponse response) throws XMLConvException, JsonProcessingException {
 
-        Hashtable<String, String> results = qaService.getJobResults(jobId);
+        Hashtable<String, Object> results = qaService.getJobResults(jobId);
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
         LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
-        executionStatusView.put("statusId", results.get(Constants.RESULT_CODE_PRM));
-        executionStatusView.put("statusName",results.get("executionStatusName"));
+        executionStatusView.put("statusId", (String) results.get(Constants.RESULT_CODE_PRM));
+        executionStatusView.put("statusName",(String) results.get("executionStatusName"));
         jsonResults.put("scriptTitle",results.get(Constants.RESULT_SCRIPTTITLE_PRM));
         jsonResults.put("executionStatus",executionStatusView);
         jsonResults.put("feedbackStatus", results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
-        jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
-        if(results.get("IS_FME")!=null && results.get("IS_FME").equals("true")){
-            String zipURL = results.get("FME_ZIP_URL");
-            Path file = Paths.get(zipURL);
-            if (Files.exists(file))
-            {
-                response.setContentType("application/zip");
-                response.addHeader("Content-Disposition", "attachment; filename="+file.getFileName());
-                try
-                {
-                    Files.copy(file, response.getOutputStream());
-                    response.getOutputStream().flush();
+
+        if(results.get("REMOTE_FILES")!=null){
+            String[] fileUrls = (String[]) results.get("REMOTE_FILES");
+            if(fileUrls[0]!=null) {
+                jsonResults.put("feedbackContent", fileUrls[0]);
+                /**
+                Path file = Paths.get(fileUrls[0]);
+                if (Files.exists(file)) {
+                    response.setContentType("application/zip");
+                    response.addHeader("Content-Disposition", "attachment; filename=" + file.getFileName());
+                    try {
+                        Files.copy(file, response.getOutputStream());
+                        response.getOutputStream().flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-                catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                **/
             }
+        }else{
+            jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
         }
         return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.OK);
     }

@@ -47,11 +47,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
 
 import static eionet.gdem.Constants.JOB_VALIDATION;
 import static eionet.gdem.qa.ListQueriesMethod.DEFAULT_CONTENT_TYPE_ID;
@@ -334,8 +332,10 @@ public class XQueryService extends RemoteService {
         }
         if(jobData[8]!=null ){
             if(jobData[8].equals("fme")){
-                ret.put("IS_FME","true");
-                ret.put("FME_ZIP_URL",jobData[2]);
+                String[] fmeUrls ={Properties.gdemURL.concat("/tmp/"+Paths.get(jobData[2]).getFileName())};
+                ret.put("REMOTE_FILES",fmeUrls);
+             //   ret.put("IS_FME","true");
+               // ret.put("FME_ZIP_URL",jobData[2]);
             }
         }
         return ret;
@@ -392,7 +392,14 @@ public class XQueryService extends RemoteService {
                     script_title = (String) scriptData.get(QaScriptView.SHORT_NAME);
                 }
 
-                resultValue = Utils.readStrFromFile(jobData[2]);
+                if(jobData[8]!=null ){
+                    if(jobData[8].equals("fme")){
+                        resultValue = "";
+
+                    }
+                }else {
+                    resultValue = Utils.readStrFromFile(jobData[2]);
+                }
                 HashMap<String, String> feedbackResult = FeedbackAnalyzer.getFeedbackResultFromFile(jobData[2]);
 
                 feedbackStatus = feedbackResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
