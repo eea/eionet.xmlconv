@@ -12,25 +12,25 @@
     <div id="righttools">
       <c:choose>
         <c:when test="${empty username}">
-          <a id="loginlink" href="<c:url value="${loginUrl}"/>" title="Login">Login</a>
+          <a id="loginlink" href="<c:url value="${loginUrl}"/>" style="display:inline;" title="Login">Login</a>
         </c:when>
         <c:otherwise>
-          <a id="logoutlink" href="/login/logout" title="Logout">Logout
+          <a id="logoutlink" href="/login/logout" style="display:inline;" title="Logout">Logout
             <span>(${username})</span></a>
         </c:otherwise>
       </c:choose>
       <%--<a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>--%>
       <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
       <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
-      <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>
+      <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" style="display:inline;" title="Look up acronyms"><span>Acronyms</span></a>
       <form action="https://google.com/search" method="get">
         <div id="freesrchform">
-          <label class="simple" for="freesrchfld">Search</label>
+          <label class="simple" for="freesrchfld" style="display:inline;">Search</label>
           <%--onfocus="if (this.value == 'Search the site')--%>
           <%--this.value = '';"--%>
           <%--onblur="if (this.value == '')--%>
           <%--this.value = 'Search the site';"--%>
-          <input type="text" id="freesrchfld" name="q" placeholder="Search the site" />
+          <input type="text" id="freesrchfld" name="q" placeholder="Search the site" style="display:inline;" />
           <input type="hidden" name="sitesearch" value="${appHost}"/>
           <input id="freesrchbtn" type="image" src="<c:url value='/static/images/button_go.gif'/>" alt="Go"/>
         </div>
