@@ -7,6 +7,7 @@ import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.security.errors.JWTException;
 import eionet.gdem.security.service.AuthTokenService;
 import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 
@@ -36,32 +37,52 @@ public class FileDownloadServlet extends FileServlet {
         }
         String referer = request.getHeader("referer");
         if (referer!=null) {
-            URI uri = null;
-            try {
-                uri = new URI(referer);
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException();
-            }
-            String domain = uri.getHost();
-            if (Properties.appHost.contains(domain)) {
-                String userName = (String) request.getSession().getAttribute("user");
-                if (userName!=null && userHasPerm(userName)) {
-                    filePath = downloadFile(request, urlPath);
-                }
-            } else {
-                throw new SignOnException("incorrect domain " + domain);
-            }
+            filePath = checkIfUserIsLoggedIn(request, urlPath, referer);
         } else {
-            String rawAuthenticationToken = request.getHeader(Properties.jwtHeader);
-            AuthTokenService authTokenService = getAuthTokenService();
-            String parsedAuthenticationToken = authTokenService.getParsedAuthenticationToken(rawAuthenticationToken, Properties.jwtHeaderSchema);
-            if (authTokenService.check(parsedAuthenticationToken)) {
-                if (authTokenService.verifyUser(parsedAuthenticationToken)) {
-                    filePath = downloadFile(request, urlPath);
-                }
-            }
+            filePath = verifyToken(request, urlPath);
         }
         return new File(filePath);
+    }
+
+    protected String checkIfUserIsLoggedIn(HttpServletRequest request, String urlPath, String referer) throws SignOnException {
+        URI uri = null;
+        String filePath = null;
+        try {
+            uri = new URI(referer);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException();
+        }
+        String domain = uri.getHost();
+        if (Properties.appHost.contains(domain)) {
+            String userName = getUser(request);
+            if (userHasPerm(userName)) {
+                filePath = downloadFile(request, urlPath);
+            }
+        } else {
+            throw new SignOnException("Accepts requests only from " + Properties.appHost);
+        }
+        return filePath;
+    }
+
+    protected String getUser(HttpServletRequest request) throws SignOnException {
+        String userName = (String) request.getSession().getAttribute("user");
+        if (Utils.isNullStr(userName)) {
+            throw new SignOnException("Unauthorized. Must be logged in.");
+        }
+        return userName;
+    }
+
+    protected String verifyToken(HttpServletRequest request, String urlPath) throws JWTException, IOException {
+        String filePath = null;
+        String rawAuthenticationToken = request.getHeader(Properties.jwtHeader);
+        AuthTokenService authTokenService = getAuthTokenService();
+        String parsedAuthenticationToken = authTokenService.getParsedAuthenticationToken(rawAuthenticationToken, Properties.jwtHeaderSchema);
+        if (authTokenService.check(parsedAuthenticationToken)) {
+            if (authTokenService.verifyUser(parsedAuthenticationToken)) {
+                filePath = downloadFile(request, urlPath);
+            }
+        }
+        return filePath;
     }
 
     protected String downloadFile(HttpServletRequest request, String urlPath) {
