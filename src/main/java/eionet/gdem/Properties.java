@@ -175,6 +175,10 @@ public class Properties {
 
     public static final String SSO_LOGIN_URL;
 
+    public static String jwtHeader;
+
+    public static String jwtHeaderSchema;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -259,6 +263,9 @@ public class Properties {
         fmeResultFolderUrl = getStringProperty("fme.result.folder.url");
         fmeResultFolder = getStringProperty("fme.result.folder");
         fmeDeleteFolderUrl = getStringProperty("fme.delete.folder.url");
+
+        jwtHeader = getStringProperty("jwt.header");
+        jwtHeaderSchema = getStringProperty("jwt.header.schema");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
     }

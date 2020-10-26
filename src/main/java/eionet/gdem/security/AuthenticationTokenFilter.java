@@ -16,6 +16,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import eionet.gdem.security.service.AuthTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +49,9 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     @Qualifier("apiuserdetailsservice")
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private AuthTokenService authTokenService;
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -60,15 +65,11 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
                 return;
             }
             String rawAuthenticationToken = httpRequest.getHeader(this.tokenHeader);
-            if (rawAuthenticationToken == null || !rawAuthenticationToken.startsWith(authenticationTokenSchema)) {
-                throw new JWTException("Missing or invalid Authorization header.");
-            }
-            String parsedAuthenticationToken = removeAuthenticationSchemaFromHeader(rawAuthenticationToken);
+            String parsedAuthenticationToken = authTokenService.getParsedAuthenticationToken(rawAuthenticationToken, this.authenticationTokenSchema);
 
-            if (parsedAuthenticationToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                String username = verifier.verify(parsedAuthenticationToken);
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
+            if (authTokenService.check(parsedAuthenticationToken)) {
+                if (authTokenService.verifyUser(parsedAuthenticationToken)) {
+                    UserDetails userDetails = authTokenService.getUserDetails();
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -85,13 +86,6 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             results.put("errorMessage", "Access Denied");
             out.write(gson.toJson(results));
         }
-    }
-
-    private String removeAuthenticationSchemaFromHeader(String tokenHeader) throws JWTException {
-
-        String stripedTokenHeader;
-        stripedTokenHeader = tokenHeader.replace(authenticationTokenSchema, "");
-        return stripedTokenHeader.trim();
     }
 
     private boolean requiresAuthentication(String url) {
