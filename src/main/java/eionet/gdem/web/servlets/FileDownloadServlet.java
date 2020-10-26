@@ -34,7 +34,6 @@ public class FileDownloadServlet extends FileServlet {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException();
         }
-
         String referer = request.getHeader("referer");
         if (referer!=null) {
             URI uri = null;
@@ -68,21 +67,6 @@ public class FileDownloadServlet extends FileServlet {
     protected String downloadFile(HttpServletRequest request, String urlPath) {
         String filePath;
         filePath = Properties.appRootFolder + urlPath;
-
-                    /*String securityMessage = checkPermissions(request, urlPath);
-                    if (securityMessage != null) {
-                        handleNotAuthorised(securityMessage, request, response);
-                        return;
-                    }
-
-                    // Get the file object from the file store
-                    File file = new File(filePath);
-
-                    // If file was not found, send 404.
-                    if (file == null || !file.exists() || !file.isFile()) {
-                        handleFileNotFound("Could not find file by the following URI: " + request.getRequestURI(), request, response);
-                        return;
-                    }*/
         String pathInfo = request.getPathInfo();
         if (pathInfo == null || pathInfo.isEmpty() || "/".equals(pathInfo)) {
             throw new IllegalArgumentException();
