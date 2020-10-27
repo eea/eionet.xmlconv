@@ -46,10 +46,6 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     private TokenVerifier verifier;
 
     @Autowired
-    @Qualifier("apiuserdetailsservice")
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private AuthTokenService authTokenService;
 
     @Override
@@ -65,15 +61,13 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
                 return;
             }
             String rawAuthenticationToken = httpRequest.getHeader(this.tokenHeader);
-            String parsedAuthenticationToken = authTokenService.getParsedAuthenticationToken(rawAuthenticationToken, this.authenticationTokenSchema);
+            String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
 
-            if (authTokenService.check(parsedAuthenticationToken)) {
-                if (authTokenService.verifyUser(parsedAuthenticationToken)) {
-                    UserDetails userDetails = authTokenService.getUserDetails();
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+            if (authTokenService.verifyUser(parsedAuthenticationToken)) {
+                UserDetails userDetails = authTokenService.getUserDetails();
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             chain.doFilter(request, response);
         } catch (JWTException ex) {

@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -51,13 +52,12 @@ public class AuthTokenServiceTest {
 
     @Test
     public void testGetParsedAuthenticationToken() throws JWTException {
-        doReturn(TOKEN).when(authTokenService).getParsedAuthenticationToken(Mockito.anyString(), Mockito.anyString());
-        String result = authTokenService.getParsedAuthenticationToken(TOKEN_SCHEMA + " " + TOKEN, TOKEN_SCHEMA);
+        String result = authTokenService.getParsedAuthenticationTokenFromSchema(TOKEN_SCHEMA + " " + TOKEN, TOKEN_SCHEMA);
         assertEquals(TOKEN, result);
     }
 
     @Test
-    public void testVerifyUser() throws IOException {
+    public void testVerifyUser() throws JWTException, UnsupportedEncodingException {
         when(verifier.verify(Mockito.anyString())).thenReturn(USERNAME);
         when(userDetailsService.loadUserByUsername(Mockito.anyString())).thenReturn(userDetails);
         doNothing().when(authTokenService).setUserDetails(Mockito.any(UserDetails.class));

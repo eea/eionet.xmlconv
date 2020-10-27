@@ -7,11 +7,9 @@ import java.io.IOException;
 
 public interface AuthTokenService {
 
-    String getParsedAuthenticationToken(String rawAuthenticationToken, String authenticationTokenSchema) throws JWTException;
+    String getParsedAuthenticationTokenFromSchema(String rawAuthenticationToken, String authenticationTokenSchema) throws JWTException;
 
-    boolean check(String parsedAuthenticationToken);
-
-    boolean verifyUser(String parsedAuthenticationToken) throws IOException;
+    boolean verifyUser(String parsedAuthenticationToken) throws IOException, JWTException;
 
     UserDetails getUserDetails();
 }

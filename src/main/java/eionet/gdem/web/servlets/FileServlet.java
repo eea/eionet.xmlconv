@@ -81,7 +81,7 @@ public abstract class FileServlet extends HttpServlet {
             LOGGER.info("Got an IllegalArgumentException from user code; interpreting it as 400 Bad Request.", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
-        } catch (JWTException | SignOnException e) {
+        } catch (SignOnException e) {
             LOGGER.info(e.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access denied");
             return;
@@ -138,7 +138,7 @@ public abstract class FileServlet extends HttpServlet {
      * @throws IllegalArgumentException When the request is mangled in such way that it's not recognizable as a valid
      * file request. The servlet will then return a HTTP 400 error.
      */
-    protected abstract File getFile(HttpServletRequest request) throws IllegalArgumentException, IOException, SignOnException, JWTException;
+    protected abstract File getFile(HttpServletRequest request) throws IllegalArgumentException, SignOnException;
 
     /**
      * Handles the case when the file is not found.

@@ -1,5 +1,6 @@
 package eionet.gdem.security.service.impl;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import eionet.gdem.security.TokenVerifier;
 import eionet.gdem.security.errors.JWTException;
 import eionet.gdem.security.service.AuthTokenService;
@@ -10,36 +11,44 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 @Service
 public class AuthTokenServiceImpl implements AuthTokenService {
 
-    @Autowired
     private TokenVerifier verifier;
 
-    @Autowired
-    @Qualifier("apiuserdetailsservice")
     private UserDetailsService userDetailsService;
 
     private UserDetails userDetails;
 
+    @Autowired
+    public AuthTokenServiceImpl(TokenVerifier verifier, @Qualifier("apiuserdetailsservice") UserDetailsService userDetailsService) {
+        this.verifier = verifier;
+        this.userDetailsService = userDetailsService;
+    }
+
     @Override
-    public String getParsedAuthenticationToken(String rawAuthenticationToken, String authenticationTokenSchema) throws JWTException {
+    public String getParsedAuthenticationTokenFromSchema(String rawAuthenticationToken, String authenticationTokenSchema) throws JWTException {
         if (rawAuthenticationToken == null || !rawAuthenticationToken.startsWith(authenticationTokenSchema)) {
             throw new JWTException("Missing or invalid Authorization header.");
         }
-        return removeAuthenticationSchemaFromHeader(rawAuthenticationToken, authenticationTokenSchema);
+        String parsedAuthenticationToken = rawAuthenticationToken.replace(authenticationTokenSchema, "").trim();
+        if (parsedAuthenticationToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            return parsedAuthenticationToken;
+        } else {
+            throw new JWTException("Error during parsing authentication token");
+        }
     }
 
     @Override
-    public boolean check(String parsedAuthenticationToken) {
-       return parsedAuthenticationToken != null && SecurityContextHolder.getContext().getAuthentication() == null;
-    }
-
-    @Override
-    public boolean verifyUser(String parsedAuthenticationToken) throws IOException {
-        String username = verifier.verify(parsedAuthenticationToken);
+    public boolean verifyUser(String parsedAuthenticationToken) throws JWTException {
+        String username = null;
+        try {
+            username = verifier.verify(parsedAuthenticationToken);
+        } catch (UnsupportedEncodingException | JWTVerificationException e) {
+            throw new JWTException("Error during token verification");
+        }
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
         setUserDetails(userDetails);
         return userDetails.isEnabled() && userDetails.getUsername().equals(username);
@@ -53,8 +62,4 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         this.userDetails = userDetails;
     }
 
-    private String removeAuthenticationSchemaFromHeader(String tokenHeader, String authenticationTokenSchema) throws JWTException {
-        String stripedTokenHeader = tokenHeader.replace(authenticationTokenSchema, "");
-        return stripedTokenHeader.trim();
-    }
 }

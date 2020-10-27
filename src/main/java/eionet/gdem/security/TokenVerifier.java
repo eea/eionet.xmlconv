@@ -36,7 +36,7 @@ public class TokenVerifier {
      * @return
      * @throws UnsupportedEncodingException - Unsupported Encoding
      */
-    public String verify(String authToken) throws UnsupportedEncodingException {
+    public String verify(String authToken) throws UnsupportedEncodingException, JWTVerificationException {
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
         JWTVerifier verifier = JWT.require(algorithm)
@@ -46,13 +46,8 @@ public class TokenVerifier {
 
         String username = null;
 
-        try {
-            DecodedJWT jwt = verifier.verify(authToken);
-            username = jwt.getSubject();
-        } catch (JWTVerificationException ex) {
-            LOGGER.error("Authentication error: ", ex);
-        }
-
+        DecodedJWT jwt = verifier.verify(authToken);
+        username = jwt.getSubject();
         return username;
     }
 
