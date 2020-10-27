@@ -3,20 +3,13 @@ package eionet.gdem.web.servlets;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.SpringApplicationContext;
-import eionet.gdem.security.errors.JWTException;
-import eionet.gdem.security.service.AuthTokenService;
 import eionet.gdem.utils.SecurityUtil;
-import eionet.gdem.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
 /**
