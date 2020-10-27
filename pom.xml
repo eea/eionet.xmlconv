@@ -363,7 +363,7 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                     <excludes>
-                                        **/BufferInput.class
+                                        **/BufferInput.class , **/IOUrl.class
                                     </excludes>
                                 </artifactItem>
                             </artifactItems>
