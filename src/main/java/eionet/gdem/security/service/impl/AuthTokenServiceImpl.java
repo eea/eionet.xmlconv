@@ -34,11 +34,11 @@ public class AuthTokenServiceImpl implements AuthTokenService {
             throw new JWTException("Missing or invalid Authorization header.");
         }
         String parsedAuthenticationToken = rawAuthenticationToken.replace(authenticationTokenSchema, "").trim();
-        if (parsedAuthenticationToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            return parsedAuthenticationToken;
-        } else {
+
+        if (parsedAuthenticationToken == null) {
             throw new JWTException("Error during parsing authentication token");
         }
+        return parsedAuthenticationToken;
     }
 
     @Override

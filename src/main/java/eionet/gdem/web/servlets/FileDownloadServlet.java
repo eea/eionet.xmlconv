@@ -29,7 +29,7 @@ public class FileDownloadServlet extends FileServlet {
 
         String userName = getUser(request);
         if (userHasPerm(userName)) {
-            filePath = downloadFile(request, urlPath);
+            filePath = getFilePath(request, urlPath);
         }
         return new File(filePath);
     }
@@ -42,7 +42,7 @@ public class FileDownloadServlet extends FileServlet {
         return userName;
     }
 
-    protected String downloadFile(HttpServletRequest request, String urlPath) {
+    protected String getFilePath(HttpServletRequest request, String urlPath) {
         String filePath;
         filePath = Properties.appRootFolder + urlPath;
         String pathInfo = request.getPathInfo();
