@@ -44,11 +44,15 @@ public class FileDownloadController {
         if (Files.exists(file)) {
             response.setContentType("application/zip");
             response.addHeader("Content-Disposition", "attachment; filename=" + file.getFileName());
-            Files.copy(file, response.getOutputStream());
+            copyFIle(response, file);
             response.getOutputStream().flush();
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+    protected void copyFIle(HttpServletResponse response, Path file) throws IOException {
+        Files.copy(file, response.getOutputStream());
     }
 
     protected String getFilePath(String urlPath, String fileName) {
