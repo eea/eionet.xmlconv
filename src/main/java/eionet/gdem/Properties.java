@@ -130,6 +130,10 @@ public class Properties {
     /** FME timeout. */
     public static int fmeTimeout = 0;
     public static int fmeRetryHours = 4;
+    public static String fmePollingUrl = null;
+    public static String fmeResultFolderUrl = null;
+    public static String fmeResultFolder = null;
+    public static String fmeDeleteFolderUrl = null;
 
     /** Hostname. */
     public static String hostname = null;
@@ -184,6 +188,18 @@ public class Properties {
     public static Long longRunningJobThreshold;
 
     public static final String SSO_LOGIN_URL;
+
+    public static final String XQUERY_HTTP_ENDPOINTS;
+
+    public static final Long BASEX_XQUERY_TIME_LIMIT;
+
+    public static Long maxSchemaExecutionTime;
+
+    public static String jwtAudienceProperty;
+    public static String jwtIssuerProperty;
+    public static String jwtHeaderProperty;
+    public static String jwtHeaderSchemaProperty;
+    public static String jwtSecretKey;
 
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
@@ -264,6 +280,10 @@ public class Properties {
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
+        fmePollingUrl = getStringProperty("fme.polling.url");
+        fmeResultFolderUrl = getStringProperty("fme.result.folder.url");
+        fmeResultFolder = getStringProperty("fme.result.folder");
+        fmeDeleteFolderUrl = getStringProperty("fme.delete.folder.url");
         longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
 
         PROP_UNS_XMLRPC_SERVER_URL = getStringProperty("env.uns.xml.rpc.server.url");
@@ -279,6 +299,18 @@ public class Properties {
         PROP_UNS_EVENTS_NAMESPACE = getStringProperty("env.uns.events-namespace");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
+
+        XQUERY_HTTP_ENDPOINTS = getStringProperty("env.xquery.http.endpoints");
+
+        BASEX_XQUERY_TIME_LIMIT = getLongProperty("env.basex.xquery.timeLimit");
+
+        maxSchemaExecutionTime = getLongProperty("env.schema.maxExecutionTime");
+
+        jwtAudienceProperty = getStringProperty("jwt.audience");
+        jwtIssuerProperty = getStringProperty("jwt.issuer");
+        jwtHeaderProperty = getStringProperty("jwt.header");
+        jwtHeaderSchemaProperty = getStringProperty("jwt.header.schema");
+        jwtSecretKey = getStringProperty("jwt.secret");
     }
 
     /**

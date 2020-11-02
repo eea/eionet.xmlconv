@@ -41,6 +41,9 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     public static final String XQ_TYPE_FLD = "XQ_TYPE";
     public static final String INSTANCE = "INSTANCE";
     public static final String DURATION_FLD = "DURATION";
+    public static final String API_USERNAME = "USERNAME";
+    public static final String API_TABLE = "T_API_USER";
+
     /**
      * Table for XQuery Workqueue.
      */
@@ -106,6 +109,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qJobsUpdateDuration = "UPDATE " + WQ_TABLE + " SET " + DURATION_FLD + "= ?" + " WHERE " + JOB_ID_FLD + " = ?  ";
 
     private static final String qJobsLongRunning = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + " = ?" + " AND " + DURATION_FLD + ">=?  ";
+
+    private static final String qApiUsername = "SELECT " + API_USERNAME + " FROM " + API_TABLE + " LIMIT 1 ";
 
     @Override
     public String[] getXQJobData(String jobId) throws SQLException {
@@ -609,5 +614,30 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             closeAllResources(rs, pstmt, conn);
         }
         return jobIds;
+    }
+
+    @Override
+    public String getAPIUsername() throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String[][] r = null;
+        String username = null;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qApiUsername);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qApiUsername);
+            rs = pstmt.executeQuery();
+            r = getResults(rs);
+            if (r.length > 0) {
+                username = r[0][0];
+            }
+        } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+        return username;
     }
 }
