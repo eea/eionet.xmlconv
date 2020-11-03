@@ -178,6 +178,10 @@ public class Properties {
     /** interval of checking whether running jobs duration has exceeded schema's maxExecutionTime (in seconds) */
     public static int interruptingJobsInterval;
 
+    public static final String crHost;
+
+    public static final String mockCrUrl;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -267,6 +271,10 @@ public class Properties {
         BASEX_XQUERY_TIME_LIMIT = getLongProperty("env.basex.xquery.timeLimit");
 
         maxSchemaExecutionTime = getLongProperty("env.schema.maxExecutionTime");
+
+        crHost = getStringProperty("config.cr.host");
+
+        mockCrUrl = getStringProperty("config.cr.mockCrUrl");
     }
 
     /**

@@ -11,6 +11,7 @@ import java.security.cert.*;
 import javax.net.ssl.*;
 import javax.xml.transform.stream.*;
 
+import eionet.gdem.Properties;
 import org.basex.core.*;
 import org.basex.core.StaticOptions.*;
 import org.basex.io.in.*;
@@ -56,10 +57,10 @@ public final class IOUrl extends IO {
         URLConnection conn = null;
         try {
             conn = connection();
-            conn.setReadTimeout(1);
+            conn.setReadTimeout(300000);
             return conn.getInputStream();
         } catch (SocketTimeoutException ex){
-            System.out.println("SockTIm"+ex.getMessage());
+            System.out.println("Basex SocketTimeout for connection:"+conn.getURL()+"\n" +ex.getMessage());
             throw ex;
         }
         catch(final IOException ex) {
@@ -88,6 +89,10 @@ public final class IOUrl extends IO {
      * @throws IOException I/O exception
      */
     public URLConnection connection() throws IOException {
+        if(pth.contains(Properties.crHost)){
+            pth = pth.replace(Properties.crHost,Properties.mockCrUrl);
+        }
+
         final URL url = new URL(pth);
         final URLConnection conn = url.openConnection();
         conn.setConnectTimeout(TIMEOUT * 1000);

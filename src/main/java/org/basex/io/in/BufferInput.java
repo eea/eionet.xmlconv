@@ -141,6 +141,10 @@ public class BufferInput extends InputStream {
      * @see InputStream#read()
      */
     int readByte() throws IOException {
+        if(Thread.currentThread().isInterrupted()){
+            throw new IOException("Thread is interrupted");
+        }
+
         final int blen = array.length;
         final byte[] buf = array;
         if(bpos >= bsize) {
