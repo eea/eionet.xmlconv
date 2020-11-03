@@ -277,7 +277,7 @@ public class Properties {
         crHost = getStringProperty("config.cr.host");
 
         mockCrUrl = getStringProperty("config.cr.mockCrUrl");
-       enableXqueryCrCallsInterception =Boolean.getBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
+       enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
     }
 
     /**
