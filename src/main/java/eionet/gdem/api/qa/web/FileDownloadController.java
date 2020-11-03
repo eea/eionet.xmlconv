@@ -40,8 +40,8 @@ public class FileDownloadController {
            filePath = getFilePath(urlPath, fileName);
         }
 
-        Path file = Paths.get(filePath);
-        if (Files.exists(file)) {
+        Path file = getPath(filePath);
+        if (checkIfFileExists(file)) {
             response.setContentType("application/zip");
             response.addHeader("Content-Disposition", "attachment; filename=" + file.getFileName());
             copyFIle(response, file);
@@ -51,10 +51,6 @@ public class FileDownloadController {
         }
     }
 
-    protected void copyFIle(HttpServletResponse response, Path file) throws IOException {
-        Files.copy(file, response.getOutputStream());
-    }
-
     protected String getFilePath(String urlPath, String fileName) {
         String filePath;
         filePath = Properties.appRootFolder + urlPath;
@@ -62,6 +58,18 @@ public class FileDownloadController {
             throw new IllegalArgumentException();
         }
         return filePath;
+    }
+
+    protected Path getPath(String filePath) {
+        return Paths.get(filePath);
+    }
+
+    protected boolean checkIfFileExists(Path file) {
+        return Files.exists(file);
+    }
+
+    protected void copyFIle(HttpServletResponse response, Path file) throws IOException {
+        Files.copy(file, response.getOutputStream());
     }
 
     @ExceptionHandler(ServletRequestBindingException.class)
@@ -84,8 +92,10 @@ public class FileDownloadController {
 
     @ExceptionHandler(IOException.class)
     public void handleIOException(Exception exception, HttpServletResponse response) throws IOException {
-        LOGGER.info("Error",exception);
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, exception.getMessage());
+        LOGGER.info("Got an IOException.",exception);
+        response.setContentType("");
+        response.addHeader("Content-Disposition", "");
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, exception.toString());
     }
 }
 
