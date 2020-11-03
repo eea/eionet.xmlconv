@@ -182,6 +182,8 @@ public class Properties {
 
     public static final String mockCrUrl;
 
+    public static final boolean enableXqueryCrCallsInterception ;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -275,6 +277,7 @@ public class Properties {
         crHost = getStringProperty("config.cr.host");
 
         mockCrUrl = getStringProperty("config.cr.mockCrUrl");
+       enableXqueryCrCallsInterception =Boolean.getBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
     }
 
     /**
