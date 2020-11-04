@@ -26,16 +26,10 @@ public class JobInterruptController {
     public void test(@RequestParam("jobId") String jobId) throws SchedulerException, SQLException {
         JobKey qJob = new JobKey(jobId, "XQueryJob");
         if (getQuartzScheduler().checkExists(qJob)) {
-            getQuartzScheduler().deleteJob(qJob);
-//            getQuartzScheduler().interrupt(qJob);
-            GDEMServices.getDaoService().getXQJobDao().changeJobStatus(jobId, Constants.XQ_INTERRUPTED);
-            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_INTERRUPTED, new Timestamp(new Date().getTime()), "", "", "", ""));
+            getQuartzScheduler().interrupt(qJob);
         }
         else if (getQuartzHeavyScheduler().checkExists(qJob)) {
-            getQuartzHeavyScheduler().deleteJob(qJob);
-//            getQuartzScheduler().interrupt(qJob);
-            GDEMServices.getDaoService().getXQJobDao().changeJobStatus(jobId, Constants.XQ_INTERRUPTED);
-            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_INTERRUPTED, new Timestamp(new Date().getTime()), "", "", "", ""));
+            getQuartzScheduler().interrupt(qJob);
         }
     }
 
