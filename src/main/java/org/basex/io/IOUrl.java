@@ -89,7 +89,7 @@ public final class IOUrl extends IO {
      * @throws IOException I/O exception
      */
     public URLConnection connection() throws IOException {
-        if(pth.contains(Properties.crHost)){
+        if(Thread.currentThread().isInterrupted() && pth.contains(Properties.crHost)){
             pth = pth.replace(Properties.crHost,Properties.mockCrUrl);
         }
 
