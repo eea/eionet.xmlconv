@@ -332,10 +332,8 @@ public class XQueryService extends RemoteService {
         }
         if(jobData[8]!=null ){
             if(jobData[8].equals("fme")){
-                String[] fmeUrls ={Properties.gdemURL.concat("/tmp/"+Paths.get(jobData[2]).getFileName())};
+                String[] fmeUrls = {Properties.gdemURL.concat("/restapi/download/zip/"+Paths.get(jobData[2]).getFileName())};
                 ret.put("REMOTE_FILES",fmeUrls);
-             //   ret.put("IS_FME","true");
-               // ret.put("FME_ZIP_URL",jobData[2]);
             }
         }
         return ret;

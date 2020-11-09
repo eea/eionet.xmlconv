@@ -195,19 +195,7 @@ public class QaController {
             if(fileUrls[0]!=null) {
                 jsonResults.put("feedbackContent", "");
                 jsonResults.put("REMOTE_FILES",fileUrls);
-                /**
-                Path file = Paths.get(fileUrls[0]);
-                if (Files.exists(file)) {
-                    response.setContentType("application/zip");
-                    response.addHeader("Content-Disposition", "attachment; filename=" + file.getFileName());
-                    try {
-                        Files.copy(file, response.getOutputStream());
-                        response.getOutputStream().flush();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                **/
+
             }
         }else{
             jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
