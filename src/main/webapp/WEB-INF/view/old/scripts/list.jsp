@@ -19,11 +19,8 @@
 
 <c:if test="${permissions.ssiPrm}">
   <div id="operations">
+    <a href="#" class="statusHelp">See the list of valid QA statuses</a>
     <ul>
-      <li>
-        <button class="statusHelp" type="button" style="color:#00446A; background:#ecf4f5; cursor:pointer; border: 1px solid #cfe3e4; padding: 0.5em; border-radius:6px">QA scripts status info
-        </button>
-      </li>
       <li>
         <a href="/scripts/add"><spring:message code="label.qascript.add"/></a>
       </li>
