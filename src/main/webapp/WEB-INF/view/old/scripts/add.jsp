@@ -83,7 +83,7 @@
       <label class="question required"><spring:message code="label.qascript.tab.title"/></label>
       <div style="font-size:75%"><i>Enter file or URL</i></div>
     </legend>
-    <a href="#" class="statusHelp">See the list of valid QA statuses</a>
+    <a href="#" class="statusHelp helpButton" style="font-size:medium">See the list of valid QA statuses</a>
     <br><br>
     <div class="row">
       <div class="columns small-4">

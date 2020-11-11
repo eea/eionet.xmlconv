@@ -19,12 +19,12 @@
 
 <c:if test="${permissions.ssiPrm}">
   <div id="operations">
-    <a href="#" class="statusHelp">See the list of valid QA statuses</a>
     <ul>
       <li>
         <a href="/scripts/add"><spring:message code="label.qascript.add"/></a>
       </li>
     </ul>
+    <a href="#" class="statusHelp helpButton" style="font-size:small">See the list of valid QA statuses &nbsp;</a>
   </div>
 </c:if>
 
