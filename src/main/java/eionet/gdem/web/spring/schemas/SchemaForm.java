@@ -20,6 +20,7 @@ public class SchemaForm {
     private boolean dtd = false;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireDate;
+    private Long maxExecutionTime;
 
     public Date getExpireDate() {
         return this.expireDate;
@@ -189,5 +190,12 @@ public class SchemaForm {
         this.blocker = blocker;
     }
 
+    public Long getMaxExecutionTime() {
+        return maxExecutionTime;
+    }
+
+    public void setMaxExecutionTime(Long maxExecutionTime) {
+        this.maxExecutionTime = maxExecutionTime;
+    }
 }
 

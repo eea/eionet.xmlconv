@@ -216,4 +216,10 @@ public interface IXQJobDao {
      */
     String getAPIUsername() throws SQLException;
 
+    /**
+     * Get all running jobs from DB
+     * @return Job data
+     * @throws SQLException
+     */
+    String[][] getRunningJobs() throws  SQLException;
 }

@@ -23,6 +23,7 @@ package eionet.gdem.web.listeners;
 
 import eionet.gdem.Properties;
 import eionet.gdem.logging.Markers;
+import eionet.gdem.qa.InterruptLongRunningJobsTask;
 import eionet.gdem.qa.WQCleanerJob;
 import eionet.gdem.web.job.DDTablesCacheUpdater;
 import org.apache.commons.lang3.tuple.Pair;
@@ -186,7 +187,10 @@ public class JobScheduler implements ServletContextListener {
                 = new Pair[]{
                       Pair.of(new Integer(Properties.wqCleanInterval),
                             newJob(WQCleanerJob.class).withIdentity(WQCleanerJob.class.getSimpleName(),
-                            WQCleanerJob.class.getName()).build())};
+                            WQCleanerJob.class.getName()).build()), Pair.of(new Integer(Properties.interruptingJobsInterval),
+                newJob(InterruptLongRunningJobsTask.class).withIdentity(InterruptLongRunningJobsTask.class.getSimpleName(),
+                        InterruptLongRunningJobsTask.class.getName()).build())};
+
         // schedule interval jobs
         for (Pair<Integer, JobDetail> job : intervalJobs) {
 

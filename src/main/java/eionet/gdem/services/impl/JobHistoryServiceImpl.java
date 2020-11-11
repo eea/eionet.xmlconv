@@ -56,6 +56,9 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                 case 6:
                     entry.setFullStatusName("JOB NOT FOUND ERROR");
                     break;
+                case 7:
+                    entry.setFullStatusName("JOB INTERRUPTED");
+                    break;
                 default:
                     entry.setFullStatusName("UNKNOWN STATUS");
             }

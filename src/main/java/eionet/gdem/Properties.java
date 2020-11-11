@@ -201,6 +201,15 @@ public class Properties {
     public static String jwtHeaderSchemaProperty;
     public static String jwtSecretKey;
 
+    /** interval of checking whether running jobs duration has exceeded schema's maxExecutionTime (in seconds) */
+    public static int interruptingJobsInterval;
+
+    public static final String crHost;
+
+    public static final String mockCrUrl;
+
+    public static final boolean enableXqueryCrCallsInterception ;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -254,6 +263,7 @@ public class Properties {
         wqJobMaxAge = getIntProperty("wq.job.max.age");
         // maximum number of jobs executed at the same time
         wqMaxJobs = getIntProperty("wq.max.jobs");
+        interruptingJobsInterval = getIntProperty("wq.job.interrupt.interval");
         // default value of the maximum size of XML file sent to ad-hoc QA
         qaValidationXmlUpperLimit = getIntProperty("qa.validation.xml.upper_limit");
         // external QA program timeout
@@ -311,6 +321,12 @@ public class Properties {
         jwtHeaderProperty = getStringProperty("jwt.header");
         jwtHeaderSchemaProperty = getStringProperty("jwt.header.schema");
         jwtSecretKey = getStringProperty("jwt.secret");
+
+        crHost = getStringProperty("config.cr.host");
+
+        mockCrUrl = getStringProperty("config.cr.mockCrUrl");
+       enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
+
     }
 
     /**

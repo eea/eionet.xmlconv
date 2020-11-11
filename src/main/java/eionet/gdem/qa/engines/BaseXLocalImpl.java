@@ -2,6 +2,7 @@ package eionet.gdem.qa.engines;
 
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.api.errors.BaseXJobInterruptedException;
 import eionet.gdem.http.FollowRedirectException;
 import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.XQScript;
@@ -90,8 +91,12 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
             //logger.info("proc info: " + proc.info());
             //logger.info( new String(A.buffer() , "UTF-8" ));
         } catch (QueryException | IOException | FollowRedirectException e) {
-            LOGGER.error("Error executing BaseX xquery script : " + e.getMessage());
-            throw new XMLConvException(e.getMessage(),e.getCause());
+            if (Thread.currentThread().isInterrupted()) {
+                throw new XMLConvException(e.getMessage());
+            } else {
+                LOGGER.error("Error executing BaseX xquery script : " + e.getMessage());
+                throw new XMLConvException(e.getMessage(),e.getCause());
+            }
         } finally {
             if (!isNull(proc))  {
                 proc.close();

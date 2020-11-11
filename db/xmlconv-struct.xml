@@ -448,4 +448,9 @@
             <column name="DATE_ADDED" type="DATETIME"/>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-41">
+        <addColumn tableName="T_SCHEMA">
+            <column name="MAX_EXECUTION_TIME" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

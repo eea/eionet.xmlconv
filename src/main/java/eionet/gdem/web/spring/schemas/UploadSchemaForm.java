@@ -18,6 +18,7 @@ public class UploadSchemaForm {
     private String uplSchemaId;
     private MultipartFile schemaFile;
     private String schemaFileName;
+    private Long maxExecutionTime;
 
     public MultipartFile getSchemaFile() {
         return schemaFile;
@@ -105,4 +106,19 @@ public class UploadSchemaForm {
         this.blockerValidation = blockerValidation;
     }
 
+    /**
+     *
+     * @return the maxExecutionTime
+     */
+    public Long getMaxExecutionTime() {
+        return maxExecutionTime;
+    }
+
+    /**
+     *
+     * @param maxExecutionTime the maxExecutionTime to set
+     */
+    public void setMaxExecutionTime(Long maxExecutionTime) {
+        this.maxExecutionTime = maxExecutionTime;
+    }
 }

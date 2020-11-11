@@ -8,7 +8,6 @@ import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.spring.generic.SingleForm;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.slf4j.Logger;
@@ -72,6 +71,7 @@ public class SchemasController {
 
     @GetMapping("/add")
     public String add(@ModelAttribute("form") UploadSchemaForm form) {
+        form.setMaxExecutionTime(Properties.maxSchemaExecutionTime);
         return "/schemas/add";
     }
 
@@ -97,6 +97,7 @@ public class SchemasController {
         boolean doValidation = form.isDoValidation();
         String schemaLang = form.getSchemaLang();
         boolean blocker = form.isBlockerValidation();
+        Long maxExecutionTime = form.getMaxExecutionTime();
 
         new UploadSchemaFormValidator().validate(form, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -116,7 +117,7 @@ public class SchemasController {
                 }
             }
             // Add row to T_SCHEMA table
-            String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation, blocker);
+            String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation, blocker, maxExecutionTime);
             if (schemaFile != null && schemaFile.getSize() > 0) {
                 // Change the filename to schema-UniqueIDxsd
                 fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID, Utils.extractExtension(schemaFile.getOriginalFilename()));
@@ -126,7 +127,7 @@ public class SchemasController {
                 if (!Utils.isNullStr(tmpSchemaUrl)) {
                     schemaUrl = Properties.gdemURL + "/schema/" + fileName;
                 }
-                sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null, blocker);
+                sm.update(user, schemaID, schemaUrl, desc, schemaLang, doValidation, null, null, blocker, maxExecutionTime);
             }
             messages.add(messageService.getMessage("label.uplSchema.inserted"));
             QAScriptListLoader.reloadList(httpServletRequest);
@@ -165,6 +166,7 @@ public class SchemasController {
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();
             form.setExpireDate(seHolder.getSchema().getExpireDate());
+            form.setMaxExecutionTime(seHolder.getSchema().getMaxExecutionTime());
             if (seHolder.getSchema().getUplSchema() != null && !Utils.isNullStr(fileName)) {
                 form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
                 form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
@@ -217,6 +219,7 @@ public class SchemasController {
             form.setDtd(seHolder.getSchema().getIsDTD());
             String fileName = seHolder.getSchema().getUplSchemaFileName();
             form.setExpireDate(seHolder.getSchema().getExpireDate());
+            form.setMaxExecutionTime(seHolder.getSchema().getMaxExecutionTime());
             if (seHolder.getSchema().getUplSchema() != null && !Utils.isNullStr(fileName)) {
                 form.setUplSchemaId(seHolder.getSchema().getUplSchema().getUplSchemaId());
                 form.setUplSchemaFileUrl(seHolder.getSchema().getUplSchema().getUplSchemaFileUrl());
@@ -249,6 +252,7 @@ public class SchemasController {
         boolean doValidation = form.isDoValidation();
         Date expireDate = form.getExpireDate();
         boolean blocker = form.isBlocker();
+        Long maxExecutionTime = form.getMaxExecutionTime();
 
         new SchemaFormValidator().validate(form, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -266,7 +270,7 @@ public class SchemasController {
                 return "/schemas/edit";
             }
 
-            sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker);
+            sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker, maxExecutionTime);
             messages.add(messageService.getMessage("label.schema.updated"));
 
             QAScriptListLoader.reloadList(httpServletRequest);

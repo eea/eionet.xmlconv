@@ -38,6 +38,7 @@
           <th scope="col" title="Uploaded schemas">XSD</th>
           <th scope="col" title="Stylesheets">XSL</th>
           <th scope="col" title="QA scripts">QA</th>
+          <th scope="col" title="Max execution time">MAX EXECUTION TIME (ms)</th>
         </tr>
         </thead>
         <tbody>
@@ -76,6 +77,9 @@
               <c:if test="${schema.countQaScripts > 0}">
                 <a href="/schemas/${schema.id}/scripts" class="link-xquery"></a>
               </c:if>
+            </td>
+            <td>
+                ${schema.maxExecutionTime}
             </td>
           </tr>
         </c:forEach>
