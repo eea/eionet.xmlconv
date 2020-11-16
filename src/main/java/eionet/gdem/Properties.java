@@ -210,6 +210,12 @@ public class Properties {
 
     public static final boolean enableXqueryCrCallsInterception ;
 
+    public static String rabbitMQHost;
+    public static Integer rabbitMQPort;
+    public static String rabbitMQUsername;
+    public static String rabbitMQPassword;
+    public static String rabbitMQQueueName;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -327,6 +333,11 @@ public class Properties {
         mockCrUrl = getStringProperty("config.cr.mockCrUrl");
        enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
 
+        rabbitMQHost = getStringProperty("env.rabbitmq.host");
+        rabbitMQPort = getIntProperty("env.rabbitmq.port");
+        rabbitMQUsername = getStringProperty("env.rabbitmq.username");
+        rabbitMQPassword = getStringProperty("env.rabbitmq.password");
+        rabbitMQQueueName = getStringProperty("env.rabbitmq.queueName");
     }
 
     /**
