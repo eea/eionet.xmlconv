@@ -77,3 +77,5 @@ very bad Sparql query. In a production environment redirection to mock applicati
 
 
 
+#### Setup a dockerized rabbitmq instance locally:
+docker run -d --hostname my-rabbit -p 0.0.0.0:15672:15672 -p 5672:5672 --name some-rabbit -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password rabbitmq:3-management
