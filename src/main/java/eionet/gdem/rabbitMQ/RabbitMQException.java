@@ -1,4 +1,4 @@
-package eionet.gdem.rabbitMq;
+package eionet.gdem.rabbitMQ;
 
 public class RabbitMQException extends  Exception{
 

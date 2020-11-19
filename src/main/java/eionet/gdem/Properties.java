@@ -214,7 +214,8 @@ public class Properties {
     public static Integer rabbitMQPort;
     public static String rabbitMQUsername;
     public static String rabbitMQPassword;
-    public static String rabbitMQQueueName;
+    public static String rabbitMQProducerQueueName;
+    public static String rabbitMQConsumerQueueName;
 
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
@@ -337,7 +338,8 @@ public class Properties {
         rabbitMQPort = getIntProperty("env.rabbitmq.port");
         rabbitMQUsername = getStringProperty("env.rabbitmq.username");
         rabbitMQPassword = getStringProperty("env.rabbitmq.password");
-        rabbitMQQueueName = getStringProperty("env.rabbitmq.queueName");
+        rabbitMQProducerQueueName = getStringProperty("env.rabbitmq.producerQueueName");
+        rabbitMQConsumerQueueName = getStringProperty("env.rabbitmq.consumerQueueName");
     }
 
     /**

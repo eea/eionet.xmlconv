@@ -15,6 +15,11 @@ import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.XQueryService;
+import eionet.gdem.rabbitMQ.RabbitMQException;
+import eionet.gdem.services.impl.RabbitMQConsumerServiceImpl;
+import eionet.gdem.services.impl.RabbitMQProducerServiceImpl;
+import eionet.gdem.web.spring.SpringMessages;
+import eionet.gdem.web.spring.workqueue.WorkqueueForm;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -25,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +45,10 @@ import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
 import java.io.File;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -61,6 +70,12 @@ public class QaController {
     }
 
 
+    @Autowired
+    RabbitMQProducerServiceImpl producer;
+
+    @Autowired
+    RabbitMQConsumerServiceImpl consumer;
+    
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
      * @param report
@@ -327,6 +342,24 @@ public class QaController {
 
     public String ConvertByteArrayToString(byte[] bytes) throws UnsupportedEncodingException {
         return new String(bytes, "UTF-8");
+    }
+
+
+    @RequestMapping(value = "/rabbitMqCall/{message}", method = RequestMethod.POST)
+    public ResponseEntity<HashMap<String,String>> rabbitMqCall(@PathVariable String message) throws RabbitMQException {
+
+        try{
+            producer.sendMessageToQueue(message);
+            consumer.receiveMessageFromQueue();
+            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+            results.put("message","Executed rabbitMQ calls successfully");
+            return new ResponseEntity<>(results, HttpStatus.OK);
+        }
+        catch (RabbitMQException re){
+            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+            results.put("message","Executed rabbitMQ calls unsuccessfully");
+            return new ResponseEntity<>(results, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
