@@ -16,6 +16,7 @@ import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.rabbitMQ.RabbitMQException;
+import eionet.gdem.rabbitMQ.SpringRabbitMqConfig;
 import eionet.gdem.services.impl.RabbitMQConsumerServiceImpl;
 import eionet.gdem.services.impl.RabbitMQProducerServiceImpl;
 import eionet.gdem.web.spring.SpringMessages;
@@ -27,6 +28,7 @@ import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,10 +73,12 @@ public class QaController {
 
 
     @Autowired
-    RabbitMQProducerServiceImpl producer;
+    RabbitTemplate rabbitTemplate;
+  //  @Autowired
+   // RabbitMQProducerServiceImpl producer;
 
-    @Autowired
-    RabbitMQConsumerServiceImpl consumer;
+   // @Autowired
+   // RabbitMQConsumerServiceImpl consumer;
     
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
@@ -346,20 +350,12 @@ public class QaController {
 
 
     @RequestMapping(value = "/rabbitMqCall/{message}", method = RequestMethod.POST)
-    public ResponseEntity<HashMap<String,String>> rabbitMqCall(@PathVariable String message) throws RabbitMQException {
+    public ResponseEntity<String> rabbitMqCall(@PathVariable String message) throws RabbitMQException {
 
-        try{
-            producer.sendMessageToQueue(message);
-            consumer.receiveMessageFromQueue();
-            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
-            results.put("message","Executed rabbitMQ calls successfully");
-            return new ResponseEntity<>(results, HttpStatus.OK);
-        }
-        catch (RabbitMQException re){
-            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
-            results.put("message","Executed rabbitMQ calls unsuccessfully");
-            return new ResponseEntity<>(results, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        rabbitTemplate.convertAndSend(SpringRabbitMqConfig.WORKERS_JOBS_QUEUE, message);
+
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+
     }
 
 }

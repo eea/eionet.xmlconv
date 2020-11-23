@@ -824,6 +824,18 @@
                 <artifactId>spring-security-taglibs</artifactId>
                 <version>4.2.1.RELEASE</version>
             </dependency>
+            <!-- Spring RabbitMQ Integration Dependencies -->
+            <dependency>
+                <groupId>org.springframework.amqp</groupId>
+                <artifactId>spring-amqp</artifactId>
+                <version>1.7.14.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.amqp</groupId>
+                <artifactId>spring-rabbit</artifactId>
+                <version>1.7.14.RELEASE</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
@@ -1105,11 +1117,11 @@
                 <version>0.30</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
-            <dependency>
+            <!--dependency>
                 <groupId>com.rabbitmq</groupId>
                 <artifactId>amqp-client</artifactId>
                 <version>5.10.0</version>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>

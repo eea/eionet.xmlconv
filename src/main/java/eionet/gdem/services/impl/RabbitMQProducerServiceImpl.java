@@ -16,9 +16,9 @@ public class RabbitMQProducerServiceImpl implements RabbitMQProducerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQProducerService.class);
     private String QUEUE_NAME = null;
 
-    @Autowired
-    @Resource(name = "producerChannel")
-    private Channel producerChannel;
+   // @Autowired
+   // @Resource(name = "producerChannel")
+  //  private Channel producerChannel;
 
     @Autowired
     public RabbitMQProducerServiceImpl() {
@@ -26,16 +26,7 @@ public class RabbitMQProducerServiceImpl implements RabbitMQProducerService {
 
     @Override
     public void sendMessageToQueue(String message) throws RabbitMQException {
-        this.setQUEUE_NAME(Properties.rabbitMQProducerQueueName);
-        try
-        {
-            producerChannel.basicPublish("", this.getQUEUE_NAME(), null, message.getBytes());
-            LOGGER.info("Message was sent to queue "  + this.getQUEUE_NAME());
-        }
-        catch(Exception e){
-            LOGGER.error("Error when sending message to queue" + this.getQUEUE_NAME());
-            throw new RabbitMQException(e.getMessage());
-        }
+
     }
 
     protected String getQUEUE_NAME() {
