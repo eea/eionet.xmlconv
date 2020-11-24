@@ -2,25 +2,14 @@ package eionet.gdem.api.qa.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import eionet.gdem.Constants;
-import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.errors.BadRequestException;
 import eionet.gdem.api.errors.EmptyParameterException;
 import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
-import eionet.gdem.conversion.ConversionService;
-import eionet.gdem.conversion.ConvertDDXMLMethod;
-import eionet.gdem.dto.ConversionResultDto;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.XQueryService;
-import eionet.gdem.rabbitMQ.RabbitMQException;
 import eionet.gdem.rabbitMQ.SpringRabbitMqConfig;
-import eionet.gdem.services.impl.RabbitMQConsumerServiceImpl;
-import eionet.gdem.services.impl.RabbitMQProducerServiceImpl;
-import eionet.gdem.web.spring.SpringMessages;
-import eionet.gdem.web.spring.workqueue.WorkqueueForm;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -32,7 +21,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,17 +28,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Timestamp;
 import java.util.*;
 
 import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
 import java.io.File;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -350,7 +335,7 @@ public class QaController {
 
 
     @RequestMapping(value = "/rabbitMqCall/{message}", method = RequestMethod.POST)
-    public ResponseEntity<String> rabbitMqCall(@PathVariable String message) throws RabbitMQException {
+    public ResponseEntity<String> rabbitMqCall(@PathVariable String message){
 
         rabbitTemplate.convertAndSend(SpringRabbitMqConfig.WORKERS_JOBS_QUEUE, message);
 
