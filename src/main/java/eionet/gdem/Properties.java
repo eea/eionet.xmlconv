@@ -214,8 +214,12 @@ public class Properties {
     public static Integer rabbitMQPort;
     public static String rabbitMQUsername;
     public static String rabbitMQPassword;
-    public static String rabbitMQProducerQueueName;
-    public static String rabbitMQConsumerQueueName;
+    public static String WORKERS_JOBS_QUEUE;
+    public static String WORKERS_JOBS_RESULTS_QUEUE;
+    public static String MAIN_XMLCONV_JOBS_EXCHANGE;
+    public static String MAIN_WORKERS_EXCHANGE;
+    public static String JOBS_ROUTING_KEY;
+    public static String JOBS_RESULTS_ROUTING_KEY;
 
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
@@ -338,8 +342,12 @@ public class Properties {
         rabbitMQPort = getIntProperty("env.rabbitmq.port");
         rabbitMQUsername = getStringProperty("env.rabbitmq.username");
         rabbitMQPassword = getStringProperty("env.rabbitmq.password");
-        rabbitMQProducerQueueName = getStringProperty("env.rabbitmq.producerQueueName");
-        rabbitMQConsumerQueueName = getStringProperty("env.rabbitmq.consumerQueueName");
+        WORKERS_JOBS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.queue");
+        WORKERS_JOBS_RESULTS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.results.queue");
+        MAIN_XMLCONV_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.jobs.exchange");
+        MAIN_WORKERS_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.exchange");
+        JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.routingkey");
+        JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
     }
 
     /**

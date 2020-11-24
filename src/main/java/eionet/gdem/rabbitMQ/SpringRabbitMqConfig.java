@@ -16,38 +16,26 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringRabbitMqConfig {
 
-    public final static String WORKERS_JOBS_QUEUE = "workers-jobs-queue";
-
-    public final static String WORKERS_JOBS_RESULTS_QUEUE= "workers-jobs-results-queue";
-
-    public final static String MAIN_XMLCONV_JOBS_EXCHANGE = "main-xmlconv-jobs-exchange";
-
-    public final static String MAIN_WORKERS_EXCHANGE = "main-workers-exchange";
-
-    public final static String JOBS_ROUTING_KEY ="xmlconv-job";
-
-    public final static String JOBS_RESULTS_ROUTING_KEY ="xmlconv-job-result";
-
     @Bean
     Queue workersJobsQueue() {
-        return new Queue(WORKERS_JOBS_QUEUE, true);
+        return new Queue(Properties.WORKERS_JOBS_QUEUE, true);
     }
 
 
     @Bean
     Queue workersJobsResultsQueue() {
-        return new Queue(WORKERS_JOBS_RESULTS_QUEUE, true);
+        return new Queue(Properties.WORKERS_JOBS_RESULTS_QUEUE, true);
     }
 
     @Bean
     DirectExchange mainXmlconvJobsExchange() {
-        return new DirectExchange(MAIN_XMLCONV_JOBS_EXCHANGE,true,false);
+        return new DirectExchange(Properties.MAIN_XMLCONV_JOBS_EXCHANGE,true,false);
     }
 
 
     @Bean
     DirectExchange mainWorkersExchange() {
-        return new DirectExchange(MAIN_WORKERS_EXCHANGE,true,false);
+        return new DirectExchange(Properties.MAIN_WORKERS_EXCHANGE,true,false);
     }
 
     @Bean
@@ -66,7 +54,7 @@ public class SpringRabbitMqConfig {
     SimpleMessageListenerContainer workersJobsResultsContainer(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(WORKERS_JOBS_RESULTS_QUEUE);
+        container.setQueueNames(Properties.WORKERS_JOBS_RESULTS_QUEUE);
         container.setMessageListener(listenerAdapter);
         return container;
     }

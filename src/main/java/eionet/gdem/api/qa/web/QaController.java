@@ -2,6 +2,7 @@ package eionet.gdem.api.qa.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.errors.BadRequestException;
 import eionet.gdem.api.errors.EmptyParameterException;
@@ -337,7 +338,7 @@ public class QaController {
     @RequestMapping(value = "/rabbitMqCall/{message}", method = RequestMethod.POST)
     public ResponseEntity<String> rabbitMqCall(@PathVariable String message){
 
-        rabbitTemplate.convertAndSend(SpringRabbitMqConfig.WORKERS_JOBS_QUEUE, message);
+        rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, message);
 
         return new ResponseEntity<>("OK", HttpStatus.OK);
 
