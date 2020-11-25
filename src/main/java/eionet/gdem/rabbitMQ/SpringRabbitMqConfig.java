@@ -40,13 +40,13 @@ public class SpringRabbitMqConfig {
 
     @Bean
     Binding xmlconvExchangeToXmlConvJobsQUeueBinding() {
-         return BindingBuilder.bind(workersJobsQueue()).to(mainXmlconvJobsExchange()).with("*.*");
+         return BindingBuilder.bind(workersJobsQueue()).to(mainXmlconvJobsExchange()).with(Properties.JOBS_ROUTING_KEY);
 
     }
 
     @Bean
     Binding workersExchangeToWorkersJobResultsQueueBinding() {
-        return BindingBuilder.bind(workersJobsResultsQueue()).to(mainWorkersExchange()).with("*.*");
+        return BindingBuilder.bind(workersJobsResultsQueue()).to(mainWorkersExchange()).with(Properties.JOBS_RESULTS_ROUTING_KEY);
 
     }
 
