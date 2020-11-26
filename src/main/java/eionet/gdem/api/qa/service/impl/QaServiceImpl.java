@@ -4,8 +4,11 @@ import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.api.qa.web.QaController;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQueryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -28,6 +31,7 @@ import java.util.*;
 public class QaServiceImpl implements QaService {
 
     private XQueryService xQueryService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(QaService.class);
 
     public QaServiceImpl() {
     }
@@ -73,6 +77,9 @@ public class QaServiceImpl implements QaService {
                     files.add(key);
                     table.put(value, files);
                 }
+            }
+            if(table.size() == 0){
+                LOGGER.info("Could not find files and their schemas. There was an issue with the envelope "+ envelopeUrl);
             }
             Vector jobIdsAndFileUrls = xqService.analyzeXMLFiles(table);
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
