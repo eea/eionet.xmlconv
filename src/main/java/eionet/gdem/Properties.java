@@ -212,7 +212,7 @@ public class Properties {
 
     public static final String rancherApiAccessKey;
 
-    public static final String rancherApiPassword;
+    public static final String rancherApiSecretKey;
 
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
@@ -332,7 +332,7 @@ public class Properties {
        enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
 
        rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");
-       rancherApiPassword = getStringProperty("env.rancher.api.password");
+       rancherApiSecretKey = getStringProperty("env.rancher.api.secretKey");
     }
 
     /**
