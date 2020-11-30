@@ -210,6 +210,10 @@ public class Properties {
 
     public static final boolean enableXqueryCrCallsInterception ;
 
+    public static final String rancherApiAccessKey;
+
+    public static final String rancherApiPassword;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -327,6 +331,8 @@ public class Properties {
         mockCrUrl = getStringProperty("config.cr.mockCrUrl");
        enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
 
+       rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");
+       rancherApiPassword = getStringProperty("env.rancher.api.password");
     }
 
     /**
