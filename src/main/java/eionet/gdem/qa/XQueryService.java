@@ -29,7 +29,7 @@ import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.rabbitMQ.service.CreateJob;
+import eionet.gdem.rabbitMQ.service.CreateRabbitMQMessage;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
@@ -521,8 +521,8 @@ public class XQueryService extends RemoteService {
             if (Properties.enableQuartz) {
                 scheduleJob(jobId, sourceSize, scriptType);
             } else {
-                getCreateJob().setJobId(jobId);
-                getCreateJob().createScript();
+                getCreateMessage().setJobId(jobId);
+                getCreateMessage().createScriptAndSendMessageToRabbitMQ();
             }
 
             long stopTime1 = System.nanoTime();
@@ -638,7 +638,7 @@ public class XQueryService extends RemoteService {
         return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
     }
 
-    private CreateJob getCreateJob() {
-        return (CreateJob) SpringApplicationContext.getBean("createJob");
+    private CreateRabbitMQMessage getCreateMessage() {
+        return (CreateRabbitMQMessage) SpringApplicationContext.getBean("createJob");
     }
 }

@@ -35,10 +35,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service("createJob")
-public class CreateJobImpl implements CreateJob {
+public class CreateRabbitMQMessageImpl implements CreateRabbitMQMessage {
 
     /** */
-    private static final Logger LOGGER = LoggerFactory.getLogger(CreateJobImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateRabbitMQMessageImpl.class);
     /** Script file name. */
     private String scriptFile;
     /** Result file name. */
@@ -60,15 +60,15 @@ public class CreateJobImpl implements CreateJob {
     private WorkersJobMessageSender workersJobMessageSender;
 
     @Autowired
-    public CreateJobImpl(IXQJobDao xqJobDao, IQueryDao queryDao, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
-                         WorkersJobMessageSender workersJobMessageSender) {
+    public CreateRabbitMQMessageImpl(IXQJobDao xqJobDao, IQueryDao queryDao, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
+                                     WorkersJobMessageSender workersJobMessageSender) {
         this.xqJobDao = xqJobDao;
         this.queryDao = queryDao;
         this.jobHistoryRepository = jobHistoryRepository;
         this.workersJobMessageSender = workersJobMessageSender;
     }
 
-    public void createScript() {
+    public void createScriptAndSendMessageToRabbitMQ() {
         try {
             schemaManager = new SchemaManager();
             init();
@@ -165,7 +165,7 @@ public class CreateJobImpl implements CreateJob {
                 workersJobMessageSender.sendJobInfoToRabbitMQ(xq);
             }
         } catch (Exception ee) {
-            handleError("Error in thread run():" + ee.toString(), true);
+            handleError("Error during rabbitmq message creation:" + ee.toString(), true);
         }
     }
 
