@@ -101,6 +101,8 @@ public class SpringRabbitMqConfig {
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
-        return new RabbitTemplate(connectionFactory());
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        return rabbitTemplate;
     }
 }

@@ -225,6 +225,8 @@ public class Properties {
     public static String JOBS_ROUTING_KEY;
     public static String JOBS_RESULTS_ROUTING_KEY;
 
+    public static boolean enableQuartz;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -355,6 +357,8 @@ public class Properties {
         MAIN_WORKERS_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.exchange");
         JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.routingkey");
         JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
+
+        enableQuartz = Boolean.parseBoolean(getStringProperty("env.enable.quartz"));
     }
 
     /**

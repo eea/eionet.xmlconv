@@ -29,7 +29,7 @@ import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.web.spring.conversions.IStyleSheetDao;
+import eionet.gdem.rabbitMQ.service.CreateJob;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
@@ -40,14 +40,12 @@ import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
 import eionet.gdem.validation.InputAnalyser;
-import org.basex.query.value.item.Dat;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,7 +53,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.*;
 
 import static eionet.gdem.Constants.JOB_VALIDATION;
@@ -520,7 +517,14 @@ public class XQueryService extends RemoteService {
             LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
             LOGGER.info("### Job with id=" + jobId + " has been created.  Job creation time in nanoseconds = " + (stopTime - startTime) + ".");
             long startTime1 = System.nanoTime();
-            scheduleJob(jobId, sourceSize, scriptType);
+
+            if (Properties.enableQuartz) {
+                scheduleJob(jobId, sourceSize, scriptType);
+            } else {
+                getCreateJob().setJobId(jobId);
+                getCreateJob().createScript();
+            }
+
             long stopTime1 = System.nanoTime();
             LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
             getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
@@ -632,5 +636,9 @@ public class XQueryService extends RemoteService {
 
     private JobHistoryRepository getJobHistoryRepository() {
         return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
+    }
+
+    private CreateJob getCreateJob() {
+        return (CreateJob) SpringApplicationContext.getBean("createJob");
     }
 }
