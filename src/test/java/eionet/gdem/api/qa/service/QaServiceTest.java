@@ -65,7 +65,7 @@ public class QaServiceTest {
         when(spy.getXMLFromEnvelopeURL(envelopeUrl)).thenReturn(doc);
         HashMap<String, String> fileLinksAndSchemas = new HashMap<String, String>();
         fileLinksAndSchemas.put("http://cdrtest.eionet.europa.eu/gr/sample.xml", "http://dd.eionet.europa.eu/GetSchema?id=1234");
-        HashMap<String, String> realResults = spy.extractLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
+        HashMap<String, String> realResults = spy.extractFileLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
         Assert.assertEquals(fileLinksAndSchemas.get("http://cdrtest.eionet.europa.eu/gr/sample.xml"), realResults.get("http://cdrtest.eionet.europa.eu/gr/sample.xml"));
     }
 

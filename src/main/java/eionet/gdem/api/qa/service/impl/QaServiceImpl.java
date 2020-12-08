@@ -62,13 +62,19 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public String extractObligationUrlFromEnvelopeUrl(String envelopeUrl) throws XMLConvException {
+    public List<String> extractObligationUrlsFromEnvelopeUrl(String envelopeUrl) throws XMLConvException {
         try {
             Document doc = this.getXMLFromEnvelopeURL(envelopeUrl);
             XPath xPath = XPathFactory.newInstance().newXPath();
             XPathExpression expressionForObligation = xPath.compile("//envelope/obligation");
-            Node obligationNode = (Node) expressionForObligation.evaluate(doc, XPathConstants.NODE);
-            return obligationNode.getTextContent();
+            NodeList obligationNodeList = (NodeList) expressionForObligation.evaluate(doc, XPathConstants.NODE);
+            int length = obligationNodeList.getLength();
+            List<String> obligationUrls = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                Node obligationNode = obligationNodeList.item(i);
+                obligationUrls.add(obligationNode.getTextContent());
+            }
+            return obligationUrls;
         } catch (XPathExpressionException ex) {
             throw new XMLConvException("exception while parsing the envelope XML:" + envelopeUrl + " to extract obligation", ex);
         }
@@ -203,13 +209,15 @@ public class QaServiceImpl implements QaService {
     }
 
     protected void addObligationsFiles(Hashtable hashtable,String envelopeUrl) throws XMLConvException{
-        String obligationUrl = extractObligationUrlFromEnvelopeUrl(envelopeUrl);
-        if(obligationUrl!=null && !obligationUrl.isEmpty())    {
-            Vector obligation = new Vector();
-            obligation.add(envelopeUrl+"/xml");
-            hashtable.put(obligationUrl,obligation);
+        List<String> obligationUrls = extractObligationUrlsFromEnvelopeUrl(envelopeUrl);
+        for (String obligationUrl: obligationUrls
+             ) {
+            if(obligationUrl!=null && !obligationUrl.isEmpty())    {
+                Vector obligation = new Vector();
+                obligation.add(envelopeUrl+"/xml");
+                hashtable.put(obligationUrl,obligation);
+            }
         }
     }
-
 
 }
