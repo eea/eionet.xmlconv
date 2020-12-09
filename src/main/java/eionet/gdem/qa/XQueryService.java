@@ -29,6 +29,7 @@ import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.rabbitMQ.errors.CreateMQMessageException;
 import eionet.gdem.rabbitMQ.service.CreateRabbitMQMessage;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
@@ -532,7 +533,7 @@ public class XQueryService extends RemoteService {
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
-        } catch (SchedulerException e) {
+        } catch (SchedulerException | CreateMQMessageException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
         } catch (URISyntaxException e) {

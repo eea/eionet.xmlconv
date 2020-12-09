@@ -9,6 +9,7 @@ import eionet.gdem.logging.Markers;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.rabbitMQ.errors.CreateMQMessageException;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
@@ -29,7 +30,6 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +68,7 @@ public class CreateRabbitMQMessageImpl implements CreateRabbitMQMessage {
         this.workersJobMessageSender = workersJobMessageSender;
     }
 
-    public void createScriptAndSendMessageToRabbitMQ() {
+    public void createScriptAndSendMessageToRabbitMQ() throws CreateMQMessageException {
         try {
             schemaManager = new SchemaManager();
             init();
@@ -164,8 +164,8 @@ public class CreateRabbitMQMessageImpl implements CreateRabbitMQMessage {
                 }
                 workersJobMessageSender.sendJobInfoToRabbitMQ(xq);
             }
-        } catch (Exception ee) {
-            handleError("Error during rabbitmq message creation:" + ee.toString(), true);
+        } catch (Exception e) {
+            throw new CreateMQMessageException(e.getMessage());
         }
     }
 
@@ -186,7 +186,7 @@ public class CreateRabbitMQMessageImpl implements CreateRabbitMQMessage {
         }
     }
 
-    private void processJob() throws SQLException, ParseException {
+    private void processJob() throws SQLException {
         try {
             xqJobDao.processXQJob(jobId);
             jobHistoryRepository.save(new JobHistoryEntry(jobId, Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType));
