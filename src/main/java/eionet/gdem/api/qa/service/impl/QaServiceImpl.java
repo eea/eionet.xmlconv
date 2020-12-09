@@ -67,7 +67,7 @@ public class QaServiceImpl implements QaService {
             Document doc = this.getXMLFromEnvelopeURL(envelopeUrl);
             XPath xPath = XPathFactory.newInstance().newXPath();
             XPathExpression expressionForObligation = xPath.compile("//envelope/obligation");
-            NodeList obligationNodeList = (NodeList) expressionForObligation.evaluate(doc, XPathConstants.NODE);
+            NodeList obligationNodeList = (NodeList) expressionForObligation.evaluate(doc, XPathConstants.NODESET);
             int length = obligationNodeList.getLength();
             List<String> obligationUrls = new ArrayList<>();
             for (int i = 0; i < length; i++) {
