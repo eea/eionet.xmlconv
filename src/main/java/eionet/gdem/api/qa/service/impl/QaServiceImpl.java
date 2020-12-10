@@ -4,11 +4,15 @@ import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.api.qa.web.QaController;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQueryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -21,13 +25,13 @@ import java.net.URL;
 import java.util.*;
 
 /**
- *
  * @author Vasilis Skiadas<vs@eworx.gr>
  */
 @Service
 public class QaServiceImpl implements QaService {
 
     private XQueryService xQueryService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(QaService.class);
 
     public QaServiceImpl() {
     }
@@ -37,30 +41,49 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public HashMap<String, String> extractLinksAndSchemasFromEnvelopeUrl(String envelopeUrl) throws XMLConvException {
+    public HashMap<String, String> extractFileLinksAndSchemasFromEnvelopeUrl(String envelopeUrl) throws XMLConvException {
         HashMap<String, String> fileSchemaAndLinks = new HashMap<String, String>();
 
         try {
             Document doc = this.getXMLFromEnvelopeURL(envelopeUrl);
             XPath xPath = XPathFactory.newInstance().newXPath();
-            XPathExpression expr = xPath.compile("//envelope/file");
-            NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-            int length = nl.getLength();
+            XPathExpression expressionForEnvelopeFiles = xPath.compile("//envelope/file");
+            NodeList envelopeFilesNodeList = (NodeList) expressionForEnvelopeFiles.evaluate(doc, XPathConstants.NODESET);
+            int length = envelopeFilesNodeList.getLength();
             for (int i = 0; i < length; i++) {
-                NamedNodeMap fileNode = nl.item(i).getAttributes();
+                NamedNodeMap fileNode = envelopeFilesNodeList.item(i).getAttributes();
                 fileSchemaAndLinks.put(fileNode.getNamedItem("link").getTextContent(), fileNode.getNamedItem("schema").getTextContent());
             }
-
         } catch (XPathExpressionException ex) {
-            throw new XMLConvException("exception while parsing the envelope URL:" + envelopeUrl + " to extract files and schemas", ex);
+            throw new XMLConvException("exception while parsing the envelope XML:" + envelopeUrl + " to extract files and schemas", ex);
         }
+
         return fileSchemaAndLinks;
+    }
+
+    @Override
+    public List<String> extractObligationUrlsFromEnvelopeUrl(String envelopeUrl) throws XMLConvException {
+        try {
+            Document doc = this.getXMLFromEnvelopeURL(envelopeUrl);
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression expressionForObligation = xPath.compile("//envelope/obligation");
+            NodeList obligationNodeList = (NodeList) expressionForObligation.evaluate(doc, XPathConstants.NODESET);
+            int length = obligationNodeList.getLength();
+            List<String> obligationUrls = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                Node obligationNode = obligationNodeList.item(i);
+                obligationUrls.add(obligationNode.getTextContent());
+            }
+            return obligationUrls;
+        } catch (XPathExpressionException ex) {
+            throw new XMLConvException("exception while parsing the envelope XML:" + envelopeUrl + " to extract obligation", ex);
+        }
     }
 
     @Override
     public List<QaResultsWrapper> scheduleJobs(String envelopeUrl) throws XMLConvException {
 
-        HashMap<String, String> fileLinksAndSchemas = extractLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
+        HashMap<String, String> fileLinksAndSchemas = extractFileLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
 
         XQueryService xqService = getXqueryService();
         Hashtable table = new Hashtable();
@@ -73,6 +96,11 @@ public class QaServiceImpl implements QaService {
                     files.add(key);
                     table.put(value, files);
                 }
+            }
+
+            this.addObligationsFiles(table,envelopeUrl);
+            if (table.size() == 0) {
+                LOGGER.info("Could not find files and their schemas. There was an issue with the envelope " + envelopeUrl);
             }
             Vector jobIdsAndFileUrls = xqService.analyzeXMLFiles(table);
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
@@ -137,9 +165,9 @@ public class QaServiceImpl implements QaService {
         List<LinkedHashMap<String, String>> resultsList = new LinkedList<LinkedHashMap<String, String>>();
         for (Object xqueryServiceResult : xqueryServiceResults) {
             Hashtable hs = (Hashtable) xqueryServiceResult;
-            String scriptType = (String)hs.get(QaScriptView.SCRIPT_TYPE);
-            if (scriptType==null) {
-                scriptType ="xsd";
+            String scriptType = (String) hs.get(QaScriptView.SCRIPT_TYPE);
+            if (scriptType == null) {
+                scriptType = "xsd";
             }
             LinkedHashMap<String, String> rearrangedResults = new LinkedHashMap<String, String>();
             rearrangedResults.put(QaScriptView.QUERY_ID, (String) hs.get(QaScriptView.QUERY_ID));
@@ -178,6 +206,18 @@ public class QaServiceImpl implements QaService {
             throw new XMLConvException("exception while parsing the envelope URL:" + envelopeUrl + " to extract files and schemas", ex);
         }
         return doc;
+    }
+
+    protected void addObligationsFiles(Hashtable hashtable,String envelopeUrl) throws XMLConvException{
+        List<String> obligationUrls = extractObligationUrlsFromEnvelopeUrl(envelopeUrl);
+        for (String obligationUrl: obligationUrls
+             ) {
+            if(obligationUrl!=null && !obligationUrl.isEmpty())    {
+                Vector obligation = new Vector();
+                obligation.add(envelopeUrl+"/xml");
+                hashtable.put(obligationUrl,obligation);
+            }
+        }
     }
 
 }

@@ -174,6 +174,9 @@ public class QaController {
             throw new EmptyParameterException("envelopeUrl");
         }
         List<QaResultsWrapper> qaResults = qaService.scheduleJobs(envelopeWrapper.getEnvelopeUrl());
+        if(qaResults == null || qaResults.size() == 0){
+            LOGGER.info("No jobs were inserted");
+        }
         LinkedHashMap<String, List<QaResultsWrapper>> jobsQaResults = new LinkedHashMap<String, List<QaResultsWrapper>>();
         jobsQaResults.put("jobs", qaResults);
         return new ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>>(jobsQaResults, HttpStatus.OK);
