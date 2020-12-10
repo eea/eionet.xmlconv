@@ -2,7 +2,7 @@ package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.rabbitMQ.errors.CreateMQMessageException;
 
-public interface CreateRabbitMQMessage {
+public interface RabbitMQMessageFactory {
 
     void createScriptAndSendMessageToRabbitMQ() throws CreateMQMessageException;
 

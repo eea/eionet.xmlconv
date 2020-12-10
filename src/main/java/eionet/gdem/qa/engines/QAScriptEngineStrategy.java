@@ -55,7 +55,7 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
 
     @Override
     public void getResult(XQScript script, OutputStream out) throws XMLConvException {
-        if (!Properties.enableQuartz) {
+        if (!Properties.enableQuartz && script.getJobId()!=null) {
             return;
         }
         try {

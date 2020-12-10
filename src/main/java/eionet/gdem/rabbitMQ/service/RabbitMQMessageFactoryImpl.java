@@ -35,10 +35,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service("createJob")
-public class CreateRabbitMQMessageImpl implements CreateRabbitMQMessage {
+public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
     /** */
-    private static final Logger LOGGER = LoggerFactory.getLogger(CreateRabbitMQMessageImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQMessageFactoryImpl.class);
     /** Script file name. */
     private String scriptFile;
     /** Result file name. */
@@ -60,8 +60,8 @@ public class CreateRabbitMQMessageImpl implements CreateRabbitMQMessage {
     private WorkersJobMessageSender workersJobMessageSender;
 
     @Autowired
-    public CreateRabbitMQMessageImpl(IXQJobDao xqJobDao, IQueryDao queryDao, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
-                                     WorkersJobMessageSender workersJobMessageSender) {
+    public RabbitMQMessageFactoryImpl(IXQJobDao xqJobDao, IQueryDao queryDao, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
+                                      WorkersJobMessageSender workersJobMessageSender) {
         this.xqJobDao = xqJobDao;
         this.queryDao = queryDao;
         this.jobHistoryRepository = jobHistoryRepository;
