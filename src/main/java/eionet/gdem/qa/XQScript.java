@@ -113,6 +113,7 @@ public class XQScript {
 
     /**
      * Result of the XQsrcipt
+     * geJobId() is not null when script comes from a scheduled job
      * @throws XMLConvException If an error occurs.
      */
     public String getResult() throws XMLConvException {
@@ -126,6 +127,7 @@ public class XQScript {
     /**
      * Gets XQ result
      * @param out Output Stream
+     * geJobId() is not null when script comes from a scheduled job
      * @throws XMLConvException If an error occurs.
      */
     public void getResult(OutputStream out) throws XMLConvException {
