@@ -275,7 +275,14 @@ public class XQueryService extends RemoteService {
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
 
             newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
-            scheduleJob(newId, sourceSize, scriptType);
+
+            if (Properties.enableQuartz) {
+                scheduleJob(newId, sourceSize, scriptType);
+            } else {
+                getRabbitMQMessageFactory().setJobId(newId);
+                getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ();
+            }
+
             getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
             LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
 
@@ -284,9 +291,9 @@ public class XQueryService extends RemoteService {
             throw new XMLConvException("DB operation failed: " + sqe.toString());
         } catch (URISyntaxException e) {
             throw new XMLConvException("URI syntax error: " + e);
-        } catch (SchedulerException e) {
-            LOGGER.error("Scheduler exception: " + e.toString());
-            throw new XMLConvException("Scheduler exception: " + e.toString());
+        } catch (SchedulerException | CreateMQMessageException e) {
+            LOGGER.error("Scheduling job exception: " + e.toString());
+            throw new XMLConvException("Scheduling job exception: " + e.toString());
         }
         return newId;
     }

@@ -24,6 +24,7 @@
 package eionet.gdem.qa;
 
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.engines.*;
@@ -115,6 +116,9 @@ public class XQScript {
      * @throws XMLConvException If an error occurs.
      */
     public String getResult() throws XMLConvException {
+        if (!Properties.enableQuartz && getJobId()!=null) {
+            return "";
+        }
         initEngine();
         return engine.getResult(this);
     }
@@ -125,6 +129,9 @@ public class XQScript {
      * @throws XMLConvException If an error occurs.
      */
     public void getResult(OutputStream out) throws XMLConvException {
+        if (!Properties.enableQuartz && getJobId()!=null) {
+            return;
+        }
         initEngine();
         engine.getResult(this, out);
     }
