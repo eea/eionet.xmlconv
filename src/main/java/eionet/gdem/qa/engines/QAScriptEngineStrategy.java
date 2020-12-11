@@ -24,8 +24,6 @@ package eionet.gdem.qa.engines;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-
-import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.QAResultPostProcessor;
 import eionet.gdem.qa.XQEngineIF;
@@ -55,9 +53,6 @@ public abstract class QAScriptEngineStrategy implements XQEngineIF {
 
     @Override
     public void getResult(XQScript script, OutputStream out) throws XMLConvException {
-        if (!Properties.enableQuartz && script.getJobId()!=null) {
-            return;
-        }
         try {
             setOutputType(script.getOutputType());
             runQuery(script, out);
