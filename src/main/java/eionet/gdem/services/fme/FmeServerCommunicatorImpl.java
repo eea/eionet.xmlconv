@@ -198,7 +198,6 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             //status code is HttpStatus.SC_OK (200)
             LOGGER.info("Received status code 200 when downloading folder " + folderName);
 
-            //TODO Refactor everything below !
             HttpEntity entity = response.getEntity();
             InputStream is = entity.getContent();
             //Store zip file in tmp folder
