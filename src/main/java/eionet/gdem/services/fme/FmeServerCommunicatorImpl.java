@@ -213,7 +213,7 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             IOUtils.copy(new FileInputStream(zipFile),result);
             LOGGER.info("Copied content of " + folderName + ".zip" + " to stream");
             Utils.deleteFolder(folderPath+".zip");
-            LOGGER.info("Deleted folder " + folderPath);
+            LOGGER.info("Deleted folder " + folderPath + ".zip");
             LOGGER.info("Finished downloading folder " + folderName + " from FME");
 
         }  catch (URISyntaxException | HttpRequestHeaderInitializationException | IOException e) {
