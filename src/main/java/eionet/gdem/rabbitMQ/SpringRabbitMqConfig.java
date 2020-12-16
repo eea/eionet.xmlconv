@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 @Configuration
-@DependsOn("configurationPropertyResolver")
 @Conditional(RabbitMqProdEnabledCondition.class)
 public class SpringRabbitMqConfig {
 

@@ -58,7 +58,7 @@ public class QaController {
     }
 
 
-    @Autowired
+    @Autowired(required=false)
     RabbitTemplate rabbitTemplate;
   //  @Autowired
    // RabbitMQProducerServiceImpl producer;
@@ -340,9 +340,9 @@ public class QaController {
 
     @RequestMapping(value = "/rabbitMqCall/{message}", method = RequestMethod.POST)
     public ResponseEntity<String> rabbitMqCall(@PathVariable String message){
-
-        rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, message);
-
+        if(rabbitTemplate!=null) {
+            rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, message);
+        }
         return new ResponseEntity<>("OK", HttpStatus.OK);
 
     }
