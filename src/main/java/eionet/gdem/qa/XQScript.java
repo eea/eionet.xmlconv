@@ -88,6 +88,10 @@ public class XQScript {
     // XQ Engine instance
     private XQEngineIF engine;
 
+    public XQScript() {
+        super();
+    }
+
     /**
      * @param xqScript Script
      * @param scriptParams

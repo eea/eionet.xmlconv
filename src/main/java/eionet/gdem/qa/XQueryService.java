@@ -278,14 +278,14 @@ public class XQueryService extends RemoteService {
 
             if (Properties.enableQuartz) {
                 scheduleJob(newId, sourceSize, scriptType);
+                getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+                LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
             } else {
+                getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+                LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
                 getRabbitMQMessageFactory().setJobId(newId);
                 getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ();
             }
-
-            getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
-            LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
-
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new XMLConvException("DB operation failed: " + sqe.toString());
@@ -528,15 +528,18 @@ public class XQueryService extends RemoteService {
 
             if (Properties.enableQuartz) {
                 scheduleJob(jobId, sourceSize, scriptType);
+                long stopTime1 = System.nanoTime();
+                LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
+                getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
+                LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
             } else {
+                getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
+                LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
                 getRabbitMQMessageFactory().setJobId(jobId);
                 getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ();
+                long stopTime1 = System.nanoTime();
+                LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
             }
-
-            long stopTime1 = System.nanoTime();
-            LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
-            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
-            LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
