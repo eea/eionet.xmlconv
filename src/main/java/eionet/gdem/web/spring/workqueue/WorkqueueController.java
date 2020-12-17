@@ -138,7 +138,8 @@ public class WorkqueueController {
             }
 
 
-            if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING || status == Constants.XQ_INTERRUPTED)
+            if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING ||
+                    status == Constants.XQ_INTERRUPTED || status == Constants.XQ_WORKER_RECEIVED)
                 resultFile = null;
             job.setResultFile(resultFile);
 
@@ -159,6 +160,8 @@ public class WorkqueueController {
                 statusName = "RECOVERABLE ERROR";
             if (status == Constants.XQ_INTERRUPTED)
                 statusName = "INTERRUPTED";
+            if (status == Constants.XQ_WORKER_RECEIVED)
+                statusName = "RECEIVED BY WORKER";
 
             job.setStatusName(statusName);
             if (url.indexOf(Constants.GETSOURCE_URL) > 0 && url.indexOf(Constants.SOURCE_URL_PARAM) > 0) {

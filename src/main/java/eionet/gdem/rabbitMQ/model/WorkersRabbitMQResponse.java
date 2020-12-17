@@ -32,7 +32,7 @@ public class WorkersRabbitMQResponse {
         this.jobStatus = jobStatus;
     }
 
-    public boolean isHasError() {
+    public boolean hasError() {
         return hasError;
     }
 

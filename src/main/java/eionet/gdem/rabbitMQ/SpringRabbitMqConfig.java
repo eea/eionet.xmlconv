@@ -69,23 +69,7 @@ public class SpringRabbitMqConfig {
     }
     @Bean
     MessageListenerAdapter workersJobsResultsListenerAdapter() {
-        return new MessageListenerAdapter(workersJobsResultsMessageReceiver(), jsonMessageConverterForListener());
-    }
-
-    @Bean
-    public MessageConverter jsonMessageConverterForListener() {
-        final Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
-        converter.setClassMapper(classMapper());
-        return converter;
-    }
-
-    @Bean
-    public DefaultClassMapper classMapper() {
-        DefaultClassMapper typeMapper = new DefaultClassMapper();
-        Map<String, Class<?>> idClassMapping = new HashMap<>();
-        idClassMapping.put("eionet.xmlconv.jobExecutor.rabbitmq.model.WorkersRabbitMQResponse", WorkersRabbitMQResponse.class);
-        typeMapper.setIdClassMapping(idClassMapping);
-        return typeMapper;
+        return new MessageListenerAdapter(workersJobsResultsMessageReceiver(), jsonMessageConverter());
     }
 
     @Bean
