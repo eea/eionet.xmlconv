@@ -213,8 +213,14 @@ public class XQueryService extends RemoteService {
      * @param content_type Content type
      * @return Extension
      */
-    private String getExtension(Vector outputTypes, String content_type) {
-        String ret = "html";
+    private String getExtension(Vector outputTypes, String content_type, String scriptType) {
+        String ret = null;
+        if(scriptType.equals( XQScript.SCRIPT_LANG_FME)){
+            ret ="zip";
+        }else{
+            ret = "html";
+        }
+
         if (outputTypes == null) {
             return ret;
         }
@@ -489,7 +495,7 @@ public class XQueryService extends RemoteService {
             String queryFile = (String) query.get(QaScriptView.QUERY);
             String contentType = (String) query.get(QaScriptView.CONTENT_TYPE_ID);
             String scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
-            String fileExtension = getExtension(outputTypes, contentType);
+            String fileExtension = getExtension(outputTypes, contentType, scriptType);
             String resultFile =
                     Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
                             + fileExtension;

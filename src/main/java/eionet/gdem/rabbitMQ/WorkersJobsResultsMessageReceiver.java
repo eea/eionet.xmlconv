@@ -42,9 +42,10 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             WorkersRabbitMQResponse response = mapper.readValue(messageBody, WorkersRabbitMQResponse.class);
 
             xqScript = response.getXqScript();
-            if (response.hasError()) {
+            if (response.isErrorExists()) {
                 changeStatus(xqScript, Constants.XQ_FATAL_ERR);
                 LOGGER.info("Error: " + response.getErrorMessage());
+                return;
             }
 
             if (response.getJobStatus() == WorkerConstants.XQ_WORKER_RECEIVED) {

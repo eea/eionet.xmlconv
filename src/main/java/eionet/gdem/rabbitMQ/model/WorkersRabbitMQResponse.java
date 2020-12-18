@@ -8,7 +8,7 @@ public class WorkersRabbitMQResponse {
 
     private int jobStatus;
 
-    private boolean hasError;
+    private boolean errorExists;
 
     private String errorMessage;
 
@@ -32,12 +32,12 @@ public class WorkersRabbitMQResponse {
         this.jobStatus = jobStatus;
     }
 
-    public boolean hasError() {
-        return hasError;
+    public boolean isErrorExists() {
+        return errorExists;
     }
 
-    public void setHasError(boolean hasError) {
-        this.hasError = hasError;
+    public void setErrorExists(boolean errorExists) {
+        this.errorExists = errorExists;
     }
 
     public String getErrorMessage() {
