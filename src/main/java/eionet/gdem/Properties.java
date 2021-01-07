@@ -210,8 +210,9 @@ public class Properties {
 
     public static final boolean enableXqueryCrCallsInterception ;
 
+    public static final String rancherApiUrl;
+    public static final String rancherApiProjectId;
     public static final String rancherApiAccessKey;
-
     public static final String rancherApiSecretKey;
 
     public static boolean rabbitMqEnabled ;
@@ -343,8 +344,10 @@ public class Properties {
         mockCrUrl = getStringProperty("config.cr.mockCrUrl");
        enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
 
-       rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");
-       rancherApiSecretKey = getStringProperty("env.rancher.api.secretKey");
+        rancherApiUrl = getStringProperty("env.rancher.api.url");
+        rancherApiProjectId = getStringProperty("env.rancher.api.projectId");
+        rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");
+        rancherApiSecretKey = getStringProperty("env.rancher.api.secretKey");
 
         rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");
