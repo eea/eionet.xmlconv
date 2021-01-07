@@ -1,6 +1,6 @@
 package eionet.gdem.rancher.model;
 
-public class ServiceBody {
+public class ServiceApiRequestBody {
 
     public Integer scale;
     public String[] instanceIds;
