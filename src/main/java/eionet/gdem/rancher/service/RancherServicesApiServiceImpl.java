@@ -39,7 +39,7 @@ public class RancherServicesApiServiceImpl implements RancherServicesApiService 
         try {
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.GET, entity, ServiceResponse.class);
         } catch (Exception e) {
-            LOGGER.info("Error scaling up container instances for service with id " + serviceId + ": " + e.getMessage());
+            LOGGER.info("Error getting service information for service with id " + serviceId + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         }
         return result.getBody();
