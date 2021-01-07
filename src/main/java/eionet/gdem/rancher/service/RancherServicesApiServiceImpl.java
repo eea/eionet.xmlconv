@@ -26,6 +26,11 @@ public class RancherServicesApiServiceImpl implements RancherServicesApiService 
         rancherApiUrl = Properties.rancherApiUrl + "/" + Properties.rancherApiProjectId + "/services/";
     }
 
+    @Override
+    public String[] getContainerInstances(String serviceId) throws RancherApiException {
+        ServiceResponse response = getServiceInfo(serviceId);
+        return response.getInstanceIds();
+    }
 
     @Override
     public ServiceResponse getServiceInfo(String serviceId) throws RancherApiException {

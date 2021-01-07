@@ -6,6 +6,8 @@ import eionet.gdem.rancher.model.ServiceResponse;
 
 public interface RancherServicesApiService {
 
+    String[] getContainerInstances(String serviceId) throws RancherApiException;
+
     ServiceResponse getServiceInfo(String serviceId) throws RancherApiException;
 
     String scaleUpContainerInstances(String serviceId, ServiceBody serviceBody);
