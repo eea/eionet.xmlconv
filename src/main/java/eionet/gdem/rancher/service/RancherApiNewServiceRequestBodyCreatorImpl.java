@@ -1,7 +1,7 @@
 package eionet.gdem.rancher.service;
 
 import eionet.gdem.Properties;
-import eionet.gdem.rancher.model.RancherServiceRequestBody;
+import eionet.gdem.rancher.model.RancherApiNewServiceRequestBody;
 import eionet.gdem.rancher.model.ServiceLaunchConfig;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ public class RancherApiNewServiceRequestBodyCreatorImpl implements RancherApiNew
     private static final Integer SCALE = 1;
 
     @Override
-    public RancherServiceRequestBody buildBody(String serviceName, String stackId) {
+    public RancherApiNewServiceRequestBody buildBody(String serviceName, String stackId) {
         HashMap<String, String> environment = new HashMap<>();
         environment.put("spring.rabbitmq.host", Properties.rabbitMQHost);
         environment.put("spring.rabbitmq.port", Properties.rabbitMQPort.toString());
@@ -27,7 +27,7 @@ public class RancherApiNewServiceRequestBodyCreatorImpl implements RancherApiNew
                 .setStdinOpen(true).setTty(true).setMemory(Properties.rancherServiceMemory)
                 .setMemoryReservation(Properties.rancherServiceMemoryReservation);
 
-        RancherServiceRequestBody serviceRequestBody = new RancherServiceRequestBody().setLaunchConfig(launchConfig)
+        RancherApiNewServiceRequestBody serviceRequestBody = new RancherApiNewServiceRequestBody().setLaunchConfig(launchConfig)
                 .setName(serviceName).setScale(SCALE).setStackId(stackId).setStartOnCreate(true);
 
         return serviceRequestBody;

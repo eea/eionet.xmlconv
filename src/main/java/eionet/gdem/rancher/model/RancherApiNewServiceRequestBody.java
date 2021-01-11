@@ -1,6 +1,6 @@
 package eionet.gdem.rancher.model;
 
-public class RancherServiceRequestBody {
+public class RancherApiNewServiceRequestBody {
 
     private ServiceLaunchConfig launchConfig;
     private String name;
@@ -12,7 +12,7 @@ public class RancherServiceRequestBody {
         return launchConfig;
     }
 
-    public RancherServiceRequestBody setLaunchConfig(ServiceLaunchConfig launchConfig) {
+    public RancherApiNewServiceRequestBody setLaunchConfig(ServiceLaunchConfig launchConfig) {
         this.launchConfig = launchConfig;
         return this;
     }
@@ -21,7 +21,7 @@ public class RancherServiceRequestBody {
         return name;
     }
 
-    public RancherServiceRequestBody setName(String name) {
+    public RancherApiNewServiceRequestBody setName(String name) {
         this.name = name;
         return this;
     }
@@ -30,7 +30,7 @@ public class RancherServiceRequestBody {
         return scale;
     }
 
-    public RancherServiceRequestBody setScale(Integer scale) {
+    public RancherApiNewServiceRequestBody setScale(Integer scale) {
         this.scale = scale;
         return this;
     }
@@ -39,7 +39,7 @@ public class RancherServiceRequestBody {
         return stackId;
     }
 
-    public RancherServiceRequestBody setStackId(String stackId) {
+    public RancherApiNewServiceRequestBody setStackId(String stackId) {
         this.stackId = stackId;
         return this;
     }
@@ -48,7 +48,7 @@ public class RancherServiceRequestBody {
         return startOnCreate;
     }
 
-    public RancherServiceRequestBody setStartOnCreate(boolean startOnCreate) {
+    public RancherApiNewServiceRequestBody setStartOnCreate(boolean startOnCreate) {
         this.startOnCreate = startOnCreate;
         return this;
     }

@@ -1,8 +1,8 @@
 package eionet.gdem.rancher.service;
 
-import eionet.gdem.rancher.model.RancherServiceRequestBody;
+import eionet.gdem.rancher.model.RancherApiNewServiceRequestBody;
 
 public interface RancherApiNewServiceRequestBodyCreator {
 
-    RancherServiceRequestBody buildBody(String serviceName, String stackId);
+    RancherApiNewServiceRequestBody buildBody(String serviceName, String stackId);
 }

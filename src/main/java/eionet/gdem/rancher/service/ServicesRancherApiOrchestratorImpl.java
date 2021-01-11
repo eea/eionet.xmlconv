@@ -2,7 +2,7 @@ package eionet.gdem.rancher.service;
 
 import eionet.gdem.Properties;
 import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.model.RancherServiceRequestBody;
+import eionet.gdem.rancher.model.RancherApiNewServiceRequestBody;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import org.apache.commons.codec.binary.Base64;
@@ -74,8 +74,8 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
 
     @Override
     public ServiceApiResponse createService(String serviceName, String stackId) throws RancherApiException {
-        RancherServiceRequestBody rancherServiceRequestBody = rancherApiNewServiceRequestBodyCreator.buildBody(serviceName, stackId);
-        HttpEntity<RancherServiceRequestBody> entity = new HttpEntity<>(rancherServiceRequestBody, getHeaders());
+        RancherApiNewServiceRequestBody rancherApiNewServiceRequestBody = rancherApiNewServiceRequestBodyCreator.buildBody(serviceName, stackId);
+        HttpEntity<RancherApiNewServiceRequestBody> entity = new HttpEntity<>(rancherApiNewServiceRequestBody, getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl, HttpMethod.POST, entity, ServiceApiResponse.class);
