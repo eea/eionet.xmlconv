@@ -1,12 +1,14 @@
 package eionet.gdem.rancher.service;
 
 import eionet.gdem.Properties;
+import eionet.gdem.rancher.config.TemplateConfig;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ContainerApiResponse;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,7 +32,7 @@ public class ContainersRancherApiServiceImpl implements ContainersRancherApiServ
 
     @Override
     public ContainerApiResponse getContainerInfo(String containerName) throws RancherApiException {
-        HttpEntity<ContainerApiResponse> entity = new HttpEntity<>(getHeaders());
+        HttpEntity<ContainerApiResponse> entity = new HttpEntity<>(TemplateConfig.getHeaders());
         ResponseEntity<ContainerApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + "?name={containerName}", HttpMethod.GET, entity, ContainerApiResponse.class, containerName);
@@ -39,16 +41,5 @@ public class ContainersRancherApiServiceImpl implements ContainersRancherApiServ
             throw new RancherApiException(e.getMessage());
         }
         return result.getBody();
-    }
-
-    private HttpHeaders getHeaders() {
-        String credentials = Properties.rancherApiAccessKey + ":" + Properties.rancherApiSecretKey;
-        String encodedCredentials =
-                new String(Base64.encodeBase64(credentials.getBytes()));
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Basic " + encodedCredentials);
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return httpHeaders;
     }
 }

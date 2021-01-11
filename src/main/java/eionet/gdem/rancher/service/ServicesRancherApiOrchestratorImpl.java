@@ -1,15 +1,17 @@
 package eionet.gdem.rancher.service;
 
 import eionet.gdem.Properties;
+import eionet.gdem.rancher.config.TemplateConfig;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.RancherApiNewServiceRequestBody;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,7 +39,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
 
     @Override
     public ServiceApiResponse getServiceInfo(String serviceId) throws RancherApiException {
-        HttpEntity<ServiceApiResponse> entity = new HttpEntity<>(getHeaders());
+        HttpEntity<ServiceApiResponse> entity = new HttpEntity<>(TemplateConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.GET, entity, ServiceApiResponse.class);
@@ -50,7 +52,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
 
     @Override
     public String scaleUpContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) {
-        HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, getHeaders());
+        HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, TemplateConfig.getHeaders());
         try {
             restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.PUT, entity, ServiceApiResponse.class);
         } catch (Exception e) {
@@ -62,7 +64,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
 
     @Override
     public String removeContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) {
-        HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, getHeaders());
+        HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, TemplateConfig.getHeaders());
         try {
             restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.PUT, entity, ServiceApiResponse.class);
         } catch (Exception e) {
@@ -75,7 +77,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     @Override
     public ServiceApiResponse createService(String serviceName, String stackId) throws RancherApiException {
         RancherApiNewServiceRequestBody rancherApiNewServiceRequestBody = rancherApiNewServiceRequestBodyCreator.buildBody(serviceName, stackId);
-        HttpEntity<RancherApiNewServiceRequestBody> entity = new HttpEntity<>(rancherApiNewServiceRequestBody, getHeaders());
+        HttpEntity<RancherApiNewServiceRequestBody> entity = new HttpEntity<>(rancherApiNewServiceRequestBody, TemplateConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl, HttpMethod.POST, entity, ServiceApiResponse.class);
@@ -85,19 +87,6 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
         }
         return result.getBody();
     }
-
-    private HttpHeaders getHeaders() {
-        String credentials = Properties.rancherApiAccessKey + ":" + Properties.rancherApiSecretKey;
-        String encodedCredentials =
-                new String(Base64.encodeBase64(credentials.getBytes()));
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Basic " + encodedCredentials);
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return httpHeaders;
-    }
-
-
 
 }
 
