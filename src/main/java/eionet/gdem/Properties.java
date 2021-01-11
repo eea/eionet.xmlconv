@@ -211,9 +211,12 @@ public class Properties {
     public static final boolean enableXqueryCrCallsInterception ;
 
     public static final String rancherApiUrl;
-    public static final String rancherApiProjectId;
     public static final String rancherApiAccessKey;
     public static final String rancherApiSecretKey;
+    public static final String rancherJobExecutorImageUuid;
+    public static final String rancherJobExecutorStackId;
+    public static final Long rancherServiceMemory;
+    public static final Long rancherServiceMemoryReservation;
 
     public static boolean rabbitMqEnabled ;
     public static String rabbitMQHost;
@@ -345,9 +348,12 @@ public class Properties {
        enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
 
         rancherApiUrl = getStringProperty("env.rancher.api.url");
-        rancherApiProjectId = getStringProperty("env.rancher.api.projectId");
         rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");
         rancherApiSecretKey = getStringProperty("env.rancher.api.secretKey");
+        rancherJobExecutorImageUuid = getStringProperty("env.rancher.api.jobExecutor.imageUuid");
+        rancherJobExecutorStackId = getStringProperty("env.rancher.api.jobExecutor.stackId");
+        rancherServiceMemory = getLongProperty("env.rancher.api.service.memory");
+        rancherServiceMemoryReservation = getLongProperty("env.rancher.api.service.memoryReservation");
 
         rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");

@@ -2,6 +2,7 @@ package eionet.gdem.rancher.service;
 
 import eionet.gdem.Properties;
 import eionet.gdem.rancher.exception.RancherApiException;
+import eionet.gdem.rancher.model.RancherServiceRequestBody;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import org.apache.commons.codec.binary.Base64;
@@ -13,17 +14,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class ServicesRancherApiServiceImpl implements ServicesRancherApiService {
+public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrchestrator {
 
     private RestTemplate restTemplate;
+    private RancherApiNewServiceRequestBodyCreator rancherApiNewServiceRequestBodyCreator;
     private String rancherApiUrl;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServicesRancherApiServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServicesRancherApiOrchestratorImpl.class);
 
     @Autowired
-    public ServicesRancherApiServiceImpl(RestTemplate restTemplate) {
+    public ServicesRancherApiOrchestratorImpl(RestTemplate restTemplate, RancherApiNewServiceRequestBodyCreator rancherApiNewServiceRequestBodyCreator) {
         this.restTemplate = restTemplate;
-        rancherApiUrl = Properties.rancherApiUrl + "/" + Properties.rancherApiProjectId + "/services/";
+        this.rancherApiNewServiceRequestBodyCreator = rancherApiNewServiceRequestBodyCreator;
+        rancherApiUrl = Properties.rancherApiUrl + "/services/";
     }
 
     @Override
@@ -69,6 +72,20 @@ public class ServicesRancherApiServiceImpl implements ServicesRancherApiService 
         return "success";
     }
 
+    @Override
+    public ServiceApiResponse createService(String serviceName, String stackId) throws RancherApiException {
+        RancherServiceRequestBody rancherServiceRequestBody = rancherApiNewServiceRequestBodyCreator.buildBody(serviceName, stackId);
+        HttpEntity<RancherServiceRequestBody> entity = new HttpEntity<>(rancherServiceRequestBody, getHeaders());
+        ResponseEntity<ServiceApiResponse> result;
+        try {
+            result = restTemplate.exchange(rancherApiUrl, HttpMethod.POST, entity, ServiceApiResponse.class);
+        } catch (Exception e) {
+            LOGGER.info("Error creating new service for stack with id " + stackId + ": " + e.getMessage());
+            throw new RancherApiException(e.getMessage());
+        }
+        return result.getBody();
+    }
+
     private HttpHeaders getHeaders() {
         String credentials = Properties.rancherApiAccessKey + ":" + Properties.rancherApiSecretKey;
         String encodedCredentials =
@@ -79,4 +96,30 @@ public class ServicesRancherApiServiceImpl implements ServicesRancherApiService 
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
     }
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

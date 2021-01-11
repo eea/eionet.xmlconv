@@ -20,7 +20,7 @@ public class ContainersRancherApiServiceImpl implements ContainersRancherApiServ
 
     public ContainersRancherApiServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        rancherApiUrl = Properties.rancherApiUrl + "/" + Properties.rancherApiProjectId + "/containers/";
+        rancherApiUrl = Properties.rancherApiUrl + "/containers/";
     }
 
     @Override
