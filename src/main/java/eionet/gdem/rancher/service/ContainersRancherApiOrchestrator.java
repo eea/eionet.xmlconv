@@ -3,7 +3,7 @@ package eionet.gdem.rancher.service;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ContainerApiResponse;
 
-public interface ContainersRancherApiService {
+public interface ContainersRancherApiOrchestrator {
 
     String getContainerId(String containerName) throws RancherApiException;
 

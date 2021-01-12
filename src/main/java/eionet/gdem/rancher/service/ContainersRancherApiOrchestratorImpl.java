@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class ContainersRancherApiServiceImpl implements ContainersRancherApiService {
+public class ContainersRancherApiOrchestratorImpl implements ContainersRancherApiOrchestrator {
 
     private RestTemplate restTemplate;
     private String rancherApiUrl;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContainersRancherApiServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContainersRancherApiOrchestratorImpl.class);
 
-    public ContainersRancherApiServiceImpl(RestTemplate restTemplate) {
+    public ContainersRancherApiOrchestratorImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
         rancherApiUrl = Properties.rancherApiUrl + "/containers/";
     }
