@@ -9,15 +9,17 @@ public class ServiceApiRequestBody {
         return scale;
     }
 
-    public void setScale(Integer scale) {
+    public ServiceApiRequestBody setScale(Integer scale) {
         this.scale = scale;
+        return this;
     }
 
     public String[] getInstanceIds() {
         return instanceIds;
     }
 
-    public void setInstanceIds(String[] instanceIds) {
+    public ServiceApiRequestBody setInstanceIds(String[] instanceIds) {
         this.instanceIds = instanceIds;
+        return this;
     }
 }

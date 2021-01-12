@@ -10,9 +10,9 @@ public interface ServicesRancherApiOrchestrator {
 
     ServiceApiResponse getServiceInfo(String serviceId) throws RancherApiException;
 
-    String scaleUpContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody);
+    ServiceApiResponse scaleUpContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException;
 
-    String removeContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody);
+    ServiceApiResponse removeContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException;
 
-    ServiceApiResponse createService(String serviceName, String stackId) throws RancherApiException;
+    ServiceApiResponse createService(String serviceName) throws RancherApiException;
 }

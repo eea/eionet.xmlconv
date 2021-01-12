@@ -21,6 +21,7 @@ public class RancherApiNewServiceRequestBodyCreatorImpl implements RancherApiNew
         environment.put("spring.rabbitmq.password", Properties.rabbitMQPassword);
         HashMap<String, String> labels = new HashMap<>();
         labels.put("io.rancher.container.pull_image", "always");
+        labels.put("io.rancher.container.start_once", "true");
 
         ServiceLaunchConfig launchConfig = new ServiceLaunchConfig().setImageUuid(Properties.rancherJobExecutorImageUuid)
                 .setEnvironment(environment).setLabels(labels)
