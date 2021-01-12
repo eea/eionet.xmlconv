@@ -1,5 +1,7 @@
 package eionet.gdem.rancher.model;
 
+import java.util.List;
+
 public class ServiceApiResponse {
 
     private String id;
@@ -9,7 +11,7 @@ public class ServiceApiResponse {
     private String accountId;
     private Integer currentScale;
     private String healthState;
-    private String[] instanceIds;
+    private List<String> instanceIds;
     private String kind;
     private ServiceLaunchConfig launchConfig;
 
@@ -69,11 +71,11 @@ public class ServiceApiResponse {
         this.healthState = healthState;
     }
 
-    public String[] getInstanceIds() {
+    public List<String> getInstanceIds() {
         return instanceIds;
     }
 
-    public void setInstanceIds(String[] instanceIds) {
+    public void setInstanceIds(List<String> instanceIds) {
         this.instanceIds = instanceIds;
     }
 

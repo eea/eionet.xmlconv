@@ -1,9 +1,11 @@
 package eionet.gdem.rancher.model;
 
+import java.util.List;
+
 public class ContainerApiResponse {
 
     private String resourceType;
-    private ContainerData[] data;
+    private List<ContainerData> data;
 
     public String getResourceType() {
         return resourceType;
@@ -13,11 +15,11 @@ public class ContainerApiResponse {
         this.resourceType = resourceType;
     }
 
-    public ContainerData[] getData() {
+    public List<ContainerData> getData() {
         return data;
     }
 
-    public void setData(ContainerData[] data) {
+    public void setData(List<ContainerData> data) {
         this.data = data;
     }
 }

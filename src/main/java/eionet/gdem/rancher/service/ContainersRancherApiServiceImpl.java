@@ -27,7 +27,7 @@ public class ContainersRancherApiServiceImpl implements ContainersRancherApiServ
 
     @Override
     public String getContainerId(String containerName) throws RancherApiException {
-        return getContainerInfo(containerName).getData()[0].getId();
+        return getContainerInfo(containerName).getData().get(0).getId();
     }
 
     @Override

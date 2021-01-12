@@ -4,9 +4,11 @@ import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 
+import java.util.List;
+
 public interface ServicesRancherApiOrchestrator {
 
-    String[] getContainerInstances(String serviceId) throws RancherApiException;
+    List<String> getContainerInstances(String serviceId) throws RancherApiException;
 
     ServiceApiResponse getServiceInfo(String serviceId) throws RancherApiException;
 

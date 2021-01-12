@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrchestrator {
 
@@ -32,7 +34,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     }
 
     @Override
-    public String[] getContainerInstances(String serviceId) throws RancherApiException {
+    public List<String> getContainerInstances(String serviceId) throws RancherApiException {
         ServiceApiResponse response = getServiceInfo(serviceId);
         return response.getInstanceIds();
     }

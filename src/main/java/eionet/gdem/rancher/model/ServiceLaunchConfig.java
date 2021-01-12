@@ -1,56 +1,57 @@
 package eionet.gdem.rancher.model;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class ServiceLaunchConfig {
 
-    private String[] dataVolumes;
-    private String[] devices;
-    private String[] dns;
-    private String[] dnsSearch;
+    private List<String> dataVolumes;
+    private List<String> devices;
+    private List<String> dns;
+    private List<String> dnsSearch;
     private String imageUuid;
     private HashMap<String, String> environment;
-    private String[] ports;
+    private List<String> ports;
     private HashMap<String, String> labels;
     private boolean stdinOpen;
     private boolean tty;
-    private String[] dataVolumesFromLaunchConfigs;
+    private List<String> dataVolumesFromLaunchConfigs;
     private Long memory;
     private Long memoryMb;
     private Long memoryReservation;
 
-    public String[] getDataVolumes() {
+    public List<String> getDataVolumes() {
         return dataVolumes;
     }
 
-    public ServiceLaunchConfig setDataVolumes(String[] dataVolumes) {
+    public ServiceLaunchConfig setDataVolumes(List<String> dataVolumes) {
         this.dataVolumes = dataVolumes;
         return this;
     }
 
-    public String[] getDevices() {
+    public List<String> getDevices() {
         return devices;
     }
 
-    public ServiceLaunchConfig setDevices(String[] devices) {
+    public ServiceLaunchConfig setDevices(List<String> devices) {
         this.devices = devices;
         return this;
     }
 
-    public String[] getDns() {
+    public List<String> getDns() {
         return dns;
     }
 
-    public ServiceLaunchConfig setDns(String[] dns) {
+    public ServiceLaunchConfig setDns(List<String> dns) {
         this.dns = dns;
         return this;
     }
 
-    public String[] getDnsSearch() {
+    public List<String> getDnsSearch() {
         return dnsSearch;
     }
 
-    public ServiceLaunchConfig setDnsSearch(String[] dnsSearch) {
+    public ServiceLaunchConfig setDnsSearch(List<String> dnsSearch) {
         this.dnsSearch = dnsSearch;
         return this;
     }
@@ -73,11 +74,11 @@ public class ServiceLaunchConfig {
         return this;
     }
 
-    public String[] getPorts() {
+    public List<String> getPorts() {
         return ports;
     }
 
-    public ServiceLaunchConfig setPorts(String[] ports) {
+    public ServiceLaunchConfig setPorts(List<String> ports) {
         this.ports = ports;
         return this;
     }
@@ -109,11 +110,11 @@ public class ServiceLaunchConfig {
         return this;
     }
 
-    public String[] getDataVolumesFromLaunchConfigs() {
+    public List<String> getDataVolumesFromLaunchConfigs() {
         return dataVolumesFromLaunchConfigs;
     }
 
-    public ServiceLaunchConfig setDataVolumesFromLaunchConfigs(String[] dataVolumesFromLaunchConfigs) {
+    public ServiceLaunchConfig setDataVolumesFromLaunchConfigs(List<String> dataVolumesFromLaunchConfigs) {
         this.dataVolumesFromLaunchConfigs = dataVolumesFromLaunchConfigs;
         return this;
     }

@@ -1,9 +1,11 @@
 package eionet.gdem.rancher.model;
 
+import java.util.List;
+
 public class ServiceApiRequestBody {
 
     public Integer scale;
-    public String[] instanceIds;
+    public List<String> instanceIds;
 
     public Integer getScale() {
         return scale;
@@ -14,11 +16,11 @@ public class ServiceApiRequestBody {
         return this;
     }
 
-    public String[] getInstanceIds() {
+    public List<String> getInstanceIds() {
         return instanceIds;
     }
 
-    public ServiceApiRequestBody setInstanceIds(String[] instanceIds) {
+    public ServiceApiRequestBody setInstanceIds(List<String> instanceIds) {
         this.instanceIds = instanceIds;
         return this;
     }
