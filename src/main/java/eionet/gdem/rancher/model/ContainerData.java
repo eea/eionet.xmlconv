@@ -1,5 +1,7 @@
 package eionet.gdem.rancher.model;
 
+import java.util.List;
+
 public class ContainerData {
 
     private String id;
@@ -7,6 +9,7 @@ public class ContainerData {
     private String name;
     private String state;
     private String accountId;
+    private List<String> dns;
 
     public String getId() {
         return id;
@@ -46,5 +49,13 @@ public class ContainerData {
 
     public void setAccountId(String accountId) {
         this.accountId = accountId;
+    }
+
+    public List<String> getDns() {
+        return dns;
+    }
+
+    public void setDns(List<String> dns) {
+        this.dns = dns;
     }
 }
