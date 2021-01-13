@@ -72,6 +72,20 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         return result.getBody();
     }
 
+    @Override
+    public ContainerData deleteContainer(String containerName) throws RancherApiException {
+        String containerId = getContainerId(containerName);
+        HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+        ResponseEntity<ContainerData> result;
+        try {
+            result = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.DELETE, entity, ContainerData.class);
+        } catch (Exception e) {
+            LOGGER.info("Error deleting container with name: " + containerName + ": " + e.getMessage());
+            throw new RancherApiException(e.getMessage());
+        }
+        return result.getBody();
+    }
+
 }
 
 

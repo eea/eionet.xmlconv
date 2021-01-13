@@ -9,7 +9,7 @@ import java.util.List;
 public interface ServicesRancherApiOrchestrator {
 
     /**
-     * Lists all container instances of a service
+     * Lists all container instances of service with id serviceId
      * @param serviceId
      * @return
      * @throws RancherApiException
@@ -17,7 +17,7 @@ public interface ServicesRancherApiOrchestrator {
     List<String> getContainerInstances(String serviceId) throws RancherApiException;
 
     /**
-     * Returns information of a specific service
+     * Returns information of service with id serviceId
      * @param serviceId
      * @return
      * @throws RancherApiException
@@ -25,22 +25,13 @@ public interface ServicesRancherApiOrchestrator {
     ServiceApiResponse getServiceInfo(String serviceId) throws RancherApiException;
 
     /**
-     * Scales up container instances of service
+     * Scales up or down container instances of service with id serviceId
      * @param serviceId
      * @param serviceApiRequestBody
      * @return
      * @throws RancherApiException
      */
-    ServiceApiResponse scaleUpContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException;
-
-    /**
-     * Scales down container instances of service
-     * @param serviceId
-     * @param serviceApiRequestBody
-     * @return
-     * @throws RancherApiException
-     */
-    ServiceApiResponse removeContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException;
+    ServiceApiResponse scaleUpOrDownContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException;
 
     /**
      * Creates a new service

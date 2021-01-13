@@ -53,26 +53,13 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     }
 
     @Override
-    public ServiceApiResponse scaleUpContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
+    public ServiceApiResponse scaleUpOrDownContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
         HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, TemplateConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.PUT, entity, ServiceApiResponse.class);
         } catch (Exception e) {
             LOGGER.info("Error scaling up container instances for service with id " + serviceId + ": " + e.getMessage());
-            throw new RancherApiException(e.getMessage());
-        }
-        return result.getBody();
-    }
-
-    @Override
-    public ServiceApiResponse removeContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
-        HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, TemplateConfig.getHeaders());
-        ResponseEntity<ServiceApiResponse> result;
-        try {
-            result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.PUT, entity, ServiceApiResponse.class);
-        } catch (Exception e) {
-            LOGGER.info("Error removing container instances for service with id " + serviceId + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         }
         return result.getBody();

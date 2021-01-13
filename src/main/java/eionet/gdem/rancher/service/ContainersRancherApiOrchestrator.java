@@ -7,7 +7,7 @@ import eionet.gdem.rancher.model.ContainerData;
 public interface ContainersRancherApiOrchestrator {
 
     /**
-     * Returns container id of a container by container name
+     * Returns container id of container with name containerName
      * @param containerName
      * @return
      * @throws RancherApiException
@@ -15,7 +15,7 @@ public interface ContainersRancherApiOrchestrator {
     String getContainerId(String containerName) throws RancherApiException;
 
     /**
-     * Returns useful information of container
+     * Returns useful information of container with name containerName
      * @param containerName
      * @return
      * @throws RancherApiException
@@ -23,7 +23,7 @@ public interface ContainersRancherApiOrchestrator {
     ContainerApiResponse getContainerInfo(String containerName) throws RancherApiException;
 
     /**
-     * Starts a specific container
+     * Starts container with name containerName
      * @param containerName
      * @return
      * @throws RancherApiException
@@ -31,11 +31,17 @@ public interface ContainersRancherApiOrchestrator {
     ContainerData startContainer(String containerName) throws RancherApiException;
 
     /**
-     * Stops a specific container
+     * Stops container with name containerName
      * @param containerName
      * @return
      * @throws RancherApiException
      */
     ContainerData stopContainer(String containerName) throws RancherApiException;
 
+    /**
+     * Deletes container with name containerName
+     * @param containerName
+     * @return
+     */
+    ContainerData deleteContainer(String containerName) throws RancherApiException;
 }
