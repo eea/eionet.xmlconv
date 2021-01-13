@@ -59,7 +59,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
         try {
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.PUT, entity, ServiceApiResponse.class);
         } catch (Exception e) {
-            LOGGER.info("Error scaling up container instances for service with id " + serviceId + ": " + e.getMessage());
+            LOGGER.info("Error scaling container instances for service with id " + serviceId + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         }
         return result.getBody();
