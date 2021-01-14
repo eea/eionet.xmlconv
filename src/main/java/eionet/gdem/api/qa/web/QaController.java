@@ -359,11 +359,13 @@ public class QaController {
 
         Schema schema = null;
         try {
+            LOGGER.info("Retrieving schema information for schema " + schemaUrl);
             schema = qaService.getSchemaBySchemaUrl(schemaUrl);
             String json = new ObjectMapper().writeValueAsString(schema);
             return json;
         } catch (Exception e) {
-            throw new RestApiException(e.getMessage());
+            LOGGER.info(e.getMessage());
+            throw new RestApiException("Could not retrieve schema information for schema " + schemaUrl);
         }
     }
 
