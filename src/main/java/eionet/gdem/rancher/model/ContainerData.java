@@ -8,8 +8,10 @@ public class ContainerData {
     private String type;
     private String name;
     private String state;
+    private String healthState;
     private String accountId;
     private List<String> dns;
+    private List<String> serviceIds;
 
     public String getId() {
         return id;
@@ -43,6 +45,14 @@ public class ContainerData {
         this.state = state;
     }
 
+    public String getHealthState() {
+        return healthState;
+    }
+
+    public void setHealthState(String healthState) {
+        this.healthState = healthState;
+    }
+
     public String getAccountId() {
         return accountId;
     }
@@ -58,4 +68,28 @@ public class ContainerData {
     public void setDns(List<String> dns) {
         this.dns = dns;
     }
+
+    public List<String> getServiceIds() {
+        return serviceIds;
+    }
+
+    public void setServiceIds(List<String> serviceIds) {
+        this.serviceIds = serviceIds;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

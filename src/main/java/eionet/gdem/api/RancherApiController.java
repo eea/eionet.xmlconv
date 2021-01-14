@@ -6,7 +6,9 @@ import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
+import eionet.gdem.rancher.service.ContainersRancherApiOrchestratorImpl;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import eionet.gdem.rancher.service.ServicesRancherApiOrchestratorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +39,9 @@ public class RancherApiController {
 
     @PutMapping("/scaleUpOrDown/{serviceId}")
     public ServiceApiResponse scaleUpOrDownContainerInstances(@PathVariable String serviceId, @RequestBody ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
+        if (ContainersRancherApiOrchestratorImpl.lock) {
+            throw new RancherApiException("Busy");
+        }
         return servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
     }
 
