@@ -38,11 +38,16 @@ public class RancherApiController {
     }
 
     @PutMapping("/scaleUpOrDown/{serviceId}")
-    public ServiceApiResponse scaleUpOrDownContainerInstances(@PathVariable String serviceId, @RequestBody ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
+    public String scaleUpOrDownContainerInstances(@PathVariable String serviceId, @RequestBody ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
         if (ContainersRancherApiOrchestratorImpl.lock) {
-            throw new RancherApiException("Busy");
+            return "Busy";
         }
-        return servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+        try {
+            servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+        } catch (RancherApiException e) {
+            return "failure";
+        }
+        return "success";
     }
 
     @PostMapping("/createService")

@@ -24,6 +24,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainersRancherApiOrchestratorImpl.class);
+    public static volatile boolean lock;
 
     public ContainersRancherApiOrchestratorImpl(RestTemplate restTemplate, ServicesRancherApiOrchestrator servicesRancherApiOrchestrator) {
         this.restTemplate = restTemplate;
@@ -79,6 +80,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
 
     @Override
     public synchronized ContainerData deleteContainer(String containerName) throws RancherApiException {
+        lock = true;
         String containerId = getContainerId(containerName);
         HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
         ResponseEntity<ContainerData> result;
@@ -100,6 +102,8 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         } catch (Exception e) {
             LOGGER.info("Error deleting container with name: " + containerName + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
+        } finally {
+            lock = false;
         }
         return result.getBody();
     }
