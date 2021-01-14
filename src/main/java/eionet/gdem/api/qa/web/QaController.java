@@ -1,6 +1,7 @@
 package eionet.gdem.api.qa.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
@@ -9,6 +10,8 @@ import eionet.gdem.api.errors.EmptyParameterException;
 import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.dto.Schema;
+import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.rabbitMQ.SpringRabbitMqConfig;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
@@ -345,6 +348,23 @@ public class QaController {
         }
         return new ResponseEntity<>("OK", HttpStatus.OK);
 
+    }
+
+    /**
+     *Schema information by xmlUrl
+     *
+     **/
+    @RequestMapping(value = "/schemas/{schemaUrl}", method = RequestMethod.GET)
+    public String retrieveSchemaBySchemaUrl(@PathVariable String schemaUrl) throws RestApiException {
+
+        Schema schema = null;
+        try {
+            schema = qaService.getSchemaBySchemaUrl(schemaUrl);
+            String json = new ObjectMapper().writeValueAsString(schema);
+            return json;
+        } catch (Exception e) {
+            throw new RestApiException(e.getMessage());
+        }
     }
 
 }

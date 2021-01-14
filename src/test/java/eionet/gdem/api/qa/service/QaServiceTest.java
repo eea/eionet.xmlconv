@@ -3,6 +3,7 @@ package eionet.gdem.api.qa.service;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.service.impl.QaServiceImpl;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.test.ApplicationTestContext;
@@ -13,20 +14,28 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
+import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
@@ -47,10 +56,14 @@ public class QaServiceTest {
 
     DocumentBuilder documentBuilder;
 
+    @Autowired
+    private DataSource db;
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.qaService = new QaServiceImpl(xqueryServiceMock);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
     @Test
@@ -91,6 +104,20 @@ public class QaServiceTest {
         Hashtable<String, String> realResults = this.qaService.getJobResults(jobId);
         verify(xqueryServiceMock, times(1)).getResult(jobId);
         Assert.assertEquals(results, realResults);
+    }
+
+    /* Test case: get schema by url successful */
+    @Test
+    public void testGetSchemaBySchemaUrlSuccessful() throws Exception {
+        Schema result = qaService.getSchemaBySchemaUrl("http://localhost/not_existing.xsd");
+        Assert.assertThat(result.getId(), is("58"));
+        Assert.assertThat(result.getSchema(), is("http://localhost/not_existing.xsd"));
+        Assert.assertThat(result.getDescription(), is("Expired dummy"));
+        Assert.assertThat(result.getDtdPublicId(), is(""));
+        Assert.assertThat(result.isDoValidation(), is(false));
+        Assert.assertThat(result.getSchemaLang(), is("XSD"));
+        Assert.assertThat(result.isBlocker(), is(false));
+        Assert.assertThat(result.getMaxExecutionTime(), is(nullValue()));
     }
 
 }

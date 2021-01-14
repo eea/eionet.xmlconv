@@ -5,8 +5,12 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.api.qa.web.QaController;
+import eionet.gdem.dto.Schema;
+import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQueryService;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.web.spring.schemas.ISchemaDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -31,6 +36,8 @@ import java.util.*;
 public class QaServiceImpl implements QaService {
 
     private XQueryService xQueryService;
+    /** DAO for getting schema info. */
+    private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
     private static final Logger LOGGER = LoggerFactory.getLogger(QaService.class);
 
     public QaServiceImpl() {
@@ -218,6 +225,17 @@ public class QaServiceImpl implements QaService {
                 hashtable.put(obligationUrl,obligation);
             }
         }
+    }
+
+    @Override
+    public Schema getSchemaBySchemaUrl(String schemaUrl) throws Exception {
+        Schema schema = null;
+        try {
+            schema = schemaDao.getSchemaBySchemaUrl(schemaUrl);
+        } catch (Exception e) {
+            throw new Exception("Could not retrieve schema information for schema url " + schemaUrl);
+        }
+        return schema;
     }
 
 }
