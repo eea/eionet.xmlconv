@@ -79,7 +79,25 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
         return result.getBody();
     }
 
+    @Override
+    public ServiceApiResponse deleteService(String serviceId) throws RancherApiException {
+        HttpEntity<ServiceApiResponse> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+        ResponseEntity<ServiceApiResponse> result;
+        try {
+            result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.DELETE, entity, ServiceApiResponse.class);
+        } catch (Exception e) {
+            LOGGER.info("Error deleting service with id " + serviceId + ": " + e.getMessage());
+            throw new RancherApiException(e.getMessage());
+        }
+        return result.getBody();
+    }
+
 }
+
+
+
+
+
 
 
 

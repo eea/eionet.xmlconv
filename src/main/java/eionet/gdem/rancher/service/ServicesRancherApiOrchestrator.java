@@ -40,4 +40,12 @@ public interface ServicesRancherApiOrchestrator {
      * @throws RancherApiException
      */
     ServiceApiResponse createService(String serviceName) throws RancherApiException;
+
+    /**
+     * Deletes service with id serviceId
+     * @param serviceId
+     * @return
+     * @throws RancherApiException
+     */
+    ServiceApiResponse deleteService(String serviceId) throws RancherApiException;
 }

@@ -52,7 +52,12 @@ public class RancherApiController {
 
     @PostMapping("/createService")
     public ServiceApiResponse createService() throws RancherApiException {
-        return servicesRancherApiOrchestrator.createService("fTest");
+        return servicesRancherApiOrchestrator.createService("testService");
+    }
+
+    @DeleteMapping("/deleteService/{serviceId}")
+    public ServiceApiResponse deleteService(@PathVariable String serviceId) throws RancherApiException {
+        return servicesRancherApiOrchestrator.deleteService(serviceId);
     }
 
     @GetMapping("/container/info/{containerName}")
@@ -75,7 +80,7 @@ public class RancherApiController {
         return containersRancherApiOrchestrator.stopContainer(containerName);
     }
 
-    @PostMapping("/container/delete/{containerName}")
+    @DeleteMapping("/container/delete/{containerName}")
     public ContainerData deleteContainer(@PathVariable String containerName) throws RancherApiException {
         return containersRancherApiOrchestrator.deleteContainer(containerName);
     }
