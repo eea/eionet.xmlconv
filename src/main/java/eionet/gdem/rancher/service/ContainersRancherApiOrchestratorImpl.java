@@ -94,7 +94,6 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             result = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.DELETE, entity, ContainerData.class);
             String state = result.getBody().getState();
             LOGGER.info("Deleting container with id " + containerId + " for container with name " + containerName);
-            List<String> instances = instancesBeforeDelete;
             while (!state.equals("running")) {
                 try {
                     containerApiResponse = getContainerInfo(containerName);
@@ -106,19 +105,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
                     continue;
                 }
             }
-            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size()-1);
-            try {
-                servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-            } catch (RancherApiException e) {
-                LOGGER.info("Error during scaling down: " + e.getMessage());
-            }
-            List<String> instancesAfterDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
-            if (instancesAfterDelete.size()!=instancesBeforeDelete.size()-1) {
-                serviceApiRequestBody.setScale(instancesBeforeDelete.size());
-                servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-                serviceApiRequestBody.setScale(instancesBeforeDelete.size()-1);
-                servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-            }
+            scaleDownInstances(serviceId, instancesBeforeDelete);
         } catch (Exception e) {
             LOGGER.info("Error deleting container with name: " + containerName + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
@@ -126,6 +113,22 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             lock = false;
         }
         return result.getBody();
+    }
+
+    void scaleDownInstances(String serviceId, List<String> instancesBeforeDelete) throws RancherApiException {
+        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instancesBeforeDelete.size()-1);
+        try {
+            servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+        } catch (RancherApiException e) {
+            LOGGER.info("Error during scaling down: " + e.getMessage());
+        }
+        List<String> instancesAfterDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
+        if (instancesAfterDelete.size()!=instancesBeforeDelete.size()-1) {
+            serviceApiRequestBody.setScale(instancesBeforeDelete.size());
+            servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            serviceApiRequestBody.setScale(instancesBeforeDelete.size()-1);
+            servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+        }
     }
 
 }
