@@ -6,6 +6,7 @@ import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ContainerApiResponse;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
+import eionet.gdem.rancher.model.ServiceApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -84,21 +85,40 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         String containerId = getContainerId(containerName);
         HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
         ResponseEntity<ContainerData> result;
+        String serviceId;
+        List<String> instancesBeforeDelete;
         try {
             ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
+            serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
+            instancesBeforeDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
             result = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.DELETE, entity, ContainerData.class);
             String state = result.getBody().getState();
-            LOGGER.info("Deleting container with id " + containerId);
+            LOGGER.info("Deleting container with id " + containerId + " for container with name " + containerName);
+            List<String> instances = instancesBeforeDelete;
             while (!state.equals("running")) {
-                containerApiResponse = getContainerInfo(containerName);
-                if (containerApiResponse.getData().size()>0) {
-                    state = containerApiResponse.getData().get(0).getState();
+                try {
+                    containerApiResponse = getContainerInfo(containerName);
+                    if (containerApiResponse.getData().size()>0) {
+                        state = containerApiResponse.getData().get(0).getState();
+                    }
+                } catch(RancherApiException e) {
+                    LOGGER.info(e.getMessage());
+                    continue;
                 }
             }
-            String serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
-            List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
             ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size()-1);
-            servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            try {
+                servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            } catch (RancherApiException e) {
+                LOGGER.info("Error during scaling down: " + e.getMessage());
+            }
+            List<String> instancesAfterDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
+            if (instancesAfterDelete.size()!=instancesBeforeDelete.size()-1) {
+                serviceApiRequestBody.setScale(instancesBeforeDelete.size());
+                servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+                serviceApiRequestBody.setScale(instancesBeforeDelete.size()-1);
+                servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            }
         } catch (Exception e) {
             LOGGER.info("Error deleting container with name: " + containerName + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
