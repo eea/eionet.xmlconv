@@ -10,8 +10,6 @@ import java.util.HashMap;
 @Service
 public class RancherApiNewServiceRequestBodyCreatorImpl implements RancherApiNewServiceRequestBodyCreator {
 
-    private static final Integer SCALE = 1;
-
     @Override
     public RancherApiNewServiceRequestBody buildBody(String serviceName, String stackId) {
         HashMap<String, String> environment = new HashMap<>();
@@ -29,7 +27,7 @@ public class RancherApiNewServiceRequestBodyCreatorImpl implements RancherApiNew
                 .setMemoryReservation(Properties.rancherServiceMemoryReservation);
 
         RancherApiNewServiceRequestBody serviceRequestBody = new RancherApiNewServiceRequestBody().setLaunchConfig(launchConfig)
-                .setName(serviceName).setScale(SCALE).setStackId(stackId).setStartOnCreate(true);
+                .setName(serviceName).setScale(Properties.rancherJobExecutorServiceScale).setStackId(stackId).setStartOnCreate(true);
 
         return serviceRequestBody;
     }

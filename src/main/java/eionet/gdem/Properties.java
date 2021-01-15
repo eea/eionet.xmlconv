@@ -215,6 +215,7 @@ public class Properties {
     public static final String rancherApiSecretKey;
     public static final String rancherJobExecutorImageUuid;
     public static final String rancherJobExecutorStackId;
+    public static final Integer rancherJobExecutorServiceScale;
     public static final Long rancherServiceMemory;
     public static final Long rancherServiceMemoryReservation;
 
@@ -352,6 +353,7 @@ public class Properties {
         rancherApiSecretKey = getStringProperty("env.rancher.api.secretKey");
         rancherJobExecutorImageUuid = getStringProperty("env.rancher.api.jobExecutor.imageUuid");
         rancherJobExecutorStackId = getStringProperty("env.rancher.api.jobExecutor.stackId");
+        rancherJobExecutorServiceScale = getIntProperty("env.rancher.api.jobExecutor.service.scale");
         rancherServiceMemory = getLongProperty("env.rancher.api.service.memory");
         rancherServiceMemoryReservation = getLongProperty("env.rancher.api.service.memoryReservation");
 
