@@ -81,8 +81,16 @@ public class RancherApiController {
     }
 
     @DeleteMapping("/container/delete/{containerName}")
-    public ContainerData deleteContainer(@PathVariable String containerName) throws RancherApiException {
-        return containersRancherApiOrchestrator.deleteContainer(containerName);
+    public String deleteContainer(@PathVariable String containerName) throws RancherApiException {
+        if (ContainersRancherApiOrchestratorImpl.lock) {
+            return "Busy";
+        }
+        try {
+            containersRancherApiOrchestrator.deleteContainer(containerName);
+        } catch (RancherApiException e) {
+            return "failure";
+        }
+        return "success";
     }
 }
 
