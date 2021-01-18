@@ -7,7 +7,6 @@ import eionet.gdem.rancher.exception.RancherApiTimoutException;
 import eionet.gdem.rancher.model.ContainerApiResponse;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
-import eionet.gdem.rancher.model.ServiceApiResponse;
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
