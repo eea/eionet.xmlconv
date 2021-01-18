@@ -86,13 +86,12 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         String containerId = getContainerId(containerName);
         HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
         ResponseEntity<ContainerData> result;
-        String serviceId;
         List<String> instancesBeforeDelete;
         StopWatch timer = new StopWatch();
         timer.start();
         try {
             ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
-            serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
+            String serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
             instancesBeforeDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
             result = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.DELETE, entity, ContainerData.class);
             String state = result.getBody().getState();
