@@ -130,6 +130,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         }
         List<String> instancesAfterDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
         if (instancesAfterDelete.size()!=instancesBeforeDelete.size()-1) {
+            LOGGER.info("Scaling up before scaling down!");
             serviceApiRequestBody.setScale(instancesBeforeDelete.size());
             servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
             serviceApiRequestBody.setScale(instancesBeforeDelete.size()-1);
