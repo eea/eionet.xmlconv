@@ -39,7 +39,8 @@ public interface ContainersRancherApiOrchestrator {
     ContainerData stopContainer(String containerName) throws RancherApiException;
 
     /**
-     * Deletes container with name containerName
+     * Removes container with name containerName from service instances. Initially deletes the container with name containerName (a new
+     * container is then created automatically by rancher to preserve scale) and immediately scales down to remove the new container created
      * @param containerName
      * @return
      */

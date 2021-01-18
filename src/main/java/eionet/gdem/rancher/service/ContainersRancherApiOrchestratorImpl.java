@@ -3,6 +3,7 @@ package eionet.gdem.rancher.service;
 import eionet.gdem.Properties;
 import eionet.gdem.rancher.config.TemplateConfig;
 import eionet.gdem.rancher.exception.RancherApiException;
+import eionet.gdem.rancher.exception.RancherApiTimoutException;
 import eionet.gdem.rancher.model.ContainerApiResponse;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
@@ -107,14 +108,13 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
                     LOGGER.info(e.getMessage());
                     continue;
                 }
-                if (timer.equals(60000)) {
-                    LOGGER.info("Error deleting container with name: " + containerName);
-                    throw new RancherApiException("Error deleting container with name: " + containerName);
+                if (timer.getTime()>60000) {
+                    throw new RancherApiTimoutException("Time exceeded for creating new container " + containerName);
                 }
             }
             scaleDownInstances(serviceId, instancesBeforeDelete);
         } catch (Exception e) {
-            LOGGER.info("Error deleting container with name: " + containerName + ": " + e.getMessage());
+            LOGGER.info("Error deleting container with name " + containerName + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         } finally {
             lock = false;
