@@ -7,6 +7,7 @@ import eionet.gdem.rancher.model.ContainerApiResponse;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
+import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -87,6 +88,8 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         ResponseEntity<ContainerData> result;
         String serviceId;
         List<String> instancesBeforeDelete;
+        StopWatch timer = new StopWatch();
+        timer.start();
         try {
             ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
             serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
@@ -104,6 +107,10 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
                     LOGGER.info(e.getMessage());
                     continue;
                 }
+                if (timer.equals(60000)) {
+                    LOGGER.info("Error deleting container with name: " + containerName);
+                    throw new RancherApiException("Error deleting container with name: " + containerName);
+                }
             }
             scaleDownInstances(serviceId, instancesBeforeDelete);
         } catch (Exception e) {
@@ -111,6 +118,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             throw new RancherApiException(e.getMessage());
         } finally {
             lock = false;
+            timer.stop();
         }
         return result.getBody();
     }
