@@ -77,7 +77,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             Gson gson = new Gson();
             LinkedHashMap<String, String> results = new LinkedHashMap<String, String>();
             results.put("httpStatusCode", HttpStatus.UNAUTHORIZED.toString());
-            results.put("errorMessage", "Access Denied");
+            results.put("errorMessage", ex.getMessage());
             out.write(gson.toJson(results));
         }
     }
