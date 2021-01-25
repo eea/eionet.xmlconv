@@ -8,7 +8,7 @@ public class RabbitMqProdEnabledCondition  implements Condition {
     @Override
     public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata) {
         // TODO should be an external property
-        return false;
+        return true;
     }
 
 }
