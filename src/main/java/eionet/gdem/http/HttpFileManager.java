@@ -270,7 +270,7 @@ public class HttpFileManager {
         }
     }
 
-    private static String getHostCredentials(String host) {
+    public static String getHostCredentials(String host) {
         try {
             IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
             Vector v = hostDao.getHosts(host);

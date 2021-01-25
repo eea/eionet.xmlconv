@@ -3,6 +3,7 @@ package eionet.gdem.web.spring.schemas;
 import eionet.gdem.dto.Schema;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -172,4 +173,12 @@ public interface ISchemaDao {
      * @throws SQLException
      */
     Long getSchemaMaxExecutionTime(String schemaUrl) throws SQLException;
+
+    /**
+     * Returns schema information based on schema url
+     * @param schemaUrl
+     * @return Schema
+     * @throws SQLException
+     */
+    Schema getSchemaBySchemaUrl(String schemaUrl) throws SQLException, ParseException;
 }

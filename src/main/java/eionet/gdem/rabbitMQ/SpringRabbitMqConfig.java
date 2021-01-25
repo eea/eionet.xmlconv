@@ -13,12 +13,15 @@ import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@Conditional(RabbitMqProdEnabledCondition.class)
 public class SpringRabbitMqConfig {
 
     @Bean

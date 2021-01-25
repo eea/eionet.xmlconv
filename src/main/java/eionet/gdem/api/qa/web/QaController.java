@@ -1,6 +1,7 @@
 package eionet.gdem.api.qa.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
@@ -9,6 +10,8 @@ import eionet.gdem.api.errors.EmptyParameterException;
 import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.dto.Schema;
+import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.rabbitMQ.SpringRabbitMqConfig;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
@@ -58,7 +61,7 @@ public class QaController {
     }
 
 
-    @Autowired
+    @Autowired(required=false)
     RabbitTemplate rabbitTemplate;
   //  @Autowired
    // RabbitMQProducerServiceImpl producer;
@@ -174,6 +177,9 @@ public class QaController {
             throw new EmptyParameterException("envelopeUrl");
         }
         List<QaResultsWrapper> qaResults = qaService.scheduleJobs(envelopeWrapper.getEnvelopeUrl());
+        if(qaResults == null || qaResults.size() == 0){
+            LOGGER.info("No jobs were inserted");
+        }
         LinkedHashMap<String, List<QaResultsWrapper>> jobsQaResults = new LinkedHashMap<String, List<QaResultsWrapper>>();
         jobsQaResults.put("jobs", qaResults);
         return new ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>>(jobsQaResults, HttpStatus.OK);
@@ -337,11 +343,30 @@ public class QaController {
 
     @RequestMapping(value = "/rabbitMqCall/{message}", method = RequestMethod.POST)
     public ResponseEntity<String> rabbitMqCall(@PathVariable String message){
-
-        rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, message);
-
+        if(rabbitTemplate!=null) {
+            rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, message);
+        }
         return new ResponseEntity<>("OK", HttpStatus.OK);
 
+    }
+
+    /**
+     *Schema information by xmlUrl
+     *
+     **/
+    @RequestMapping(value = "/schemas/{schemaUrl}", method = RequestMethod.GET)
+    public String retrieveSchemaBySchemaUrl(@PathVariable String schemaUrl) throws RestApiException {
+
+        Schema schema = null;
+        try {
+            LOGGER.info("Retrieving schema information for schema " + schemaUrl);
+            schema = qaService.getSchemaBySchemaUrl(schemaUrl);
+            String json = new ObjectMapper().writeValueAsString(schema);
+            return json;
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+            throw new RestApiException("Could not retrieve schema information for schema " + schemaUrl);
+        }
     }
 
 }

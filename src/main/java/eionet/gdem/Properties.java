@@ -214,6 +214,7 @@ public class Properties {
 
     public static final String rancherApiSecretKey;
 
+    public static boolean rabbitMqEnabled ;
     public static String rabbitMQHost;
     public static Integer rabbitMQPort;
     public static String rabbitMQUsername;
@@ -347,6 +348,7 @@ public class Properties {
        rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");
        rancherApiSecretKey = getStringProperty("env.rancher.api.secretKey");
 
+        rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");
         rabbitMQPort = getIntProperty("env.rabbitmq.port");
         rabbitMQUsername = getStringProperty("env.rabbitmq.username");
@@ -396,6 +398,10 @@ public class Properties {
         }
     }
 
+        private static boolean getBooleanProperty(String key) {
+        String value = getStringProperty(key);
+            return Boolean.parseBoolean(value);
+    }
     private static long getLongProperty(String key) {
         String value = getStringProperty(key);
 
@@ -500,5 +506,9 @@ public class Properties {
 
     public static int getIsRancher() {
         return isRancher;
+    }
+
+    public static boolean getRabbitMqEnabled() {
+        return rabbitMqEnabled;
     }
 }
