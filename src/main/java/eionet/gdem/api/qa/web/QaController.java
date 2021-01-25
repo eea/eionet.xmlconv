@@ -354,11 +354,16 @@ public class QaController {
      *Schema information by xmlUrl
      *
      **/
-    @RequestMapping(value = "/schemas/{schemaUrl}", method = RequestMethod.GET)
-    public String retrieveSchemaBySchemaUrl(@PathVariable String schemaUrl) throws RestApiException {
-
+    @RequestMapping(value = "/schemas", method = RequestMethod.GET)
+    public String retrieveSchemaBySchemaUrl(HttpServletRequest request) throws RestApiException {
         Schema schema = null;
+        String schemaUrl = "";
         try {
+            // get request header
+            schemaUrl = request.getHeader("schemaUrl");
+            if (schemaUrl == null){
+                throw new Exception("Schema URL was not provided");
+            }
             LOGGER.info("Retrieving schema information for schema " + schemaUrl);
             schema = qaService.getSchemaBySchemaUrl(schemaUrl);
             String json = new ObjectMapper().writeValueAsString(schema);
