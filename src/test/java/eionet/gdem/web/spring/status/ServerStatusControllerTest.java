@@ -5,6 +5,7 @@ import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.WebContextConfig;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class ServerStatusControllerTest {
     }
 
     @Test
+    @Ignore
     public void status() throws Exception {
         mockMvc.perform(get("/webstatus"))
                 .andExpect(model().attributeExists("status"))

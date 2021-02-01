@@ -2,7 +2,7 @@ pipeline {
   agent { node { label 'docker-1.13' } }
   tools {
     maven 'maven3'
-    jdk 'Java8'
+    jdk 'Java11'
   }
   options {
     disableConcurrentBuilds()
@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('Project Build') {
       steps {
-          sh 'mvn clean -B -V verify'
+          sh 'mvn clean -B -V verify  -Dmaven.test.skip=true'
       }
       post {
           success {
@@ -20,22 +20,35 @@ pipeline {
           }
       }
     }
-    stage('Docker push') {
+
+        stage ('Docker build and push') {
       when {
-          branch 'master'
-          beforeAgent true
+          environment name: 'CHANGE_ID', value: ''
       }
       steps {
-        script {
-          def date = sh(returnStdout: true, script: 'echo $(date "+%Y-%m-%dT%H%M")').trim()
-          image = docker.build("eworxeea/xmlconv:latest")
-          docker.withRegistry('https://index.docker.io/v1/', 'sofiageo-hub') {
-            image.push()
-            image.push(date)
-          }
-        }
+        script{
+
+                 if (env.BRANCH_NAME == 'master') {
+                         tagName = 'latest'
+                 } else {
+                         tagName = "$BRANCH_NAME"
+                 }
+                 dockerImage = docker.build("$registry:$tagName", "--no-cache .")
+                 docker.withRegistry( '', 'eeajenkins' ) {
+                          dockerImage.push()
+                 }
+            }
       }
+      post {
+        always {
+                           sh "docker rmi $registry:$tagName | docker images $registry:$tagName"
+        }
+
+        }
     }
+
+
+
     stage('Static analysis') {
       steps {
         sh 'mvn clean -B -V -Pcobertura verify cobertura:cobertura pmd:pmd pmd:cpd findbugs:findbugs checkstyle:checkstyle'
