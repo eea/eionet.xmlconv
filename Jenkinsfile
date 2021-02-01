@@ -1,14 +1,24 @@
 pipeline {
-  agent { node { label 'docker-1.13' } }
+  agent {
+            node { label "docker-host" }
+  }
+  
+  environment {
+    GIT_NAME = "eionet.xmlconv"
+    SONARQUBE_TAGS = "converters.eionet.europa.eu"
+    registry = "eeacms/xmlconv"
+    availableport = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
+    availableport2 = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
+    availableport3 = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
+
+  }
+
+
   tools {
     maven 'maven3'
     jdk 'Java11'
   }
-  options {
-    disableConcurrentBuilds()
-    buildDiscarder(logRotator(numToKeepStr: '4', artifactNumToKeepStr: '2'))
-    timeout(time: 60, unit: 'MINUTES')
-  }
+
   stages {
     stage('Project Build') {
       steps {
@@ -16,8 +26,8 @@ pipeline {
       }
       post {
           success {
-              archive 'target/*.war'
-          }
+          archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+                    }
       }
     }
 
@@ -51,21 +61,7 @@ pipeline {
 
 
 
-    stage('Static analysis') {
-      steps {
-        sh 'mvn clean -B -V -Pcobertura verify cobertura:cobertura pmd:pmd pmd:cpd findbugs:findbugs checkstyle:checkstyle'
-      }
-      post {
-        always {
-            junit '**/target/failsafe-reports/*.xml'
-            pmd canComputeNew: false
-            dry canComputeNew: false
-            checkstyle canComputeNew: false
-            findbugs pattern: '**/target/findbugsXml.xml'
-            openTasks canComputeNew: false
-            cobertura coberturaReportFile: '**/target/site/cobertura/coverage.xml', failNoReports: true
-        }
-      }
-    }
   }
+
+  
 }
