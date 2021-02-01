@@ -24,6 +24,7 @@ public class UploadSchemaFormValidator implements Validator {
         boolean doValidation = form.isDoValidation();
         String schemaLang = form.getSchemaLang();
         boolean blocker = form.isBlockerValidation();
+        Long maxExecutionTime = form.getMaxExecutionTime();
 
         if ((schemaFile == null || schemaFile.getSize() == 0) && Utils.isNullStr(schemaUrl)) {
             errors.rejectValue("schemaFile", "label.uplSchema.validation");
@@ -31,6 +32,14 @@ public class UploadSchemaFormValidator implements Validator {
 
         if (!(new SchemaUrlValidator().isValidUrlSet(schemaUrl))) {
             errors.rejectValue("schemaUrl", "label.uplSchema.validation.urlFormat");
+        }
+
+        if (maxExecutionTime == null) {
+            errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.null.maxExecutionTime");
+        }
+
+        if (maxExecutionTime!=null && maxExecutionTime == 0) {
+            errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.zero.maxExecutionTime");
         }
     }
 }

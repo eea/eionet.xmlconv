@@ -74,7 +74,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <valid.images>mysql, tomcat, httpd</valid.images>
+                <valid.images>mysql, tomcat, httpd, rabbitmq</valid.images>
             </properties>
         </profile>
         <profile>
@@ -165,6 +165,16 @@
                                 <tmpfs>
                                     <mount>/var/lib/mysql:size=1G</mount>
                                 </tmpfs>
+                            </run>
+                        </image>
+                        <image>
+                            <alias>rabbitmq</alias>
+                            <name>rabbitmq:3-management</name>
+                            <run>
+                                <ports>
+                                    <port>rabbitmq.port:5672</port>
+                                    <port>rabbitmq.port:15672</port>
+                                </ports>
                             </run>
                         </image>
                         <image>
@@ -325,6 +335,7 @@
                         <mysql.port>${mysql.port}</mysql.port>
                         <tomcat.port>${tomcat.port}</tomcat.port>
                         <httpd.port>${httpd.port}</httpd.port>
+                        <rabbitmq.port>${rabbitmq.port}</rabbitmq.port>
                     </systemPropertyVariables>
                     <includes>
                         <include>**/*Test.java</include>
@@ -346,6 +357,30 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.basex</groupId>
+                                    <artifactId>basex</artifactId>
+                                    <version>9.1.2</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <excludes>
+                                        **/BufferInput.class , **/IOUrl.class
+                                    </excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- maven-war-plugin -->
@@ -800,6 +835,18 @@
                 <artifactId>spring-security-taglibs</artifactId>
                 <version>4.2.1.RELEASE</version>
             </dependency>
+            <!-- Spring RabbitMQ Integration Dependencies -->
+            <dependency>
+                <groupId>org.springframework.amqp</groupId>
+                <artifactId>spring-amqp</artifactId>
+                <version>1.7.14.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.amqp</groupId>
+                <artifactId>spring-rabbit</artifactId>
+                <version>1.7.14.RELEASE</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
@@ -1080,6 +1127,12 @@
                 <artifactId>webjars-locator</artifactId>
                 <version>0.30</version>
             </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+
 
         </dependencies>
 

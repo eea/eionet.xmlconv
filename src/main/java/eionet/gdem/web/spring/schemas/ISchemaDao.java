@@ -1,12 +1,12 @@
 package eionet.gdem.web.spring.schemas;
 
+import eionet.gdem.dto.Schema;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-
-import eionet.gdem.dto.Schema;
 
 /**
  *
@@ -33,7 +33,7 @@ public interface ISchemaDao {
      * @throws SQLException in case of database operation.
      */
             String
-            addSchema(String xmlSchema, String description, String schemaLang, boolean doValidate, String publicId, boolean blocker)
+            addSchema(String xmlSchema, String description, String schemaLang, boolean doValidate, String publicId, boolean blocker, Long maxExecutionTime)
                     throws SQLException;
 
     /**
@@ -53,7 +53,7 @@ public interface ISchemaDao {
      * @throws SQLException in case of database error.
      */
     void updateSchema(String schema_id, String xmlSchema, String description, String schemaLang, boolean doValidation,
-            String publicId, Date expireDate, boolean blocker) throws SQLException;
+            String publicId, Date expireDate, boolean blocker, Long maxExecutionTime) throws SQLException;
 
     /**
      * Updates a Schema validate properties in the database.
@@ -165,4 +165,11 @@ public interface ISchemaDao {
      */
     List<Schema> getSchemasWithRelations();
 
+    /**
+     * Returns schema's max execution time based on schema url
+     * @param schemaUrl XML Schema database URL
+     * @return Schema's max execution time in ms
+     * @throws SQLException
+     */
+    Long getSchemaMaxExecutionTime(String schemaUrl) throws SQLException;
 }

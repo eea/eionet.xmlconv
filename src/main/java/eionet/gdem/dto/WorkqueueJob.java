@@ -39,6 +39,7 @@ public class WorkqueueJob {
     private String scriptId;
     private String srcFile;
     private Date jobTimestamp;
+    private Long duration;
 
     /**
      * @return the jobId
@@ -158,5 +159,22 @@ public class WorkqueueJob {
      */
     public void setJobTimestamp(Date jobTimestamp) {
         this.jobTimestamp = jobTimestamp;
+    }
+
+    /**
+     *
+     * @return the job's duration
+     */
+    public Long getDuration() {
+        return duration;
+    }
+
+    /**
+     *
+     * @param duration
+     *          the job's duration to set
+     */
+    public void setDuration(Long duration) {
+        this.duration = duration;
     }
 }

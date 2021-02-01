@@ -57,3 +57,25 @@ An example docker-compose for usage on Rancher deployments can be found on docke
 **Important Note:**
 When deploying to rancher platform, any environment variables provide to tomcat container through the *CATALINA_OPTS* variable, should not include new lines for
 tomcat versions 9.0.24 and above. 
+
+### Parameters configuration for mock application
+For test purposes a mechanism has been added to mimic long running jobs. This mechanism uses maven class shadowing to override 2 key classes of 
+basex library (the library used to run xquery scripts), providing timeouts and frequent control checks in order to halt a long running job. When 
+below parameters are set in a testing environment all CR calls will be directed to a mock cr application which has been created for this purpose 
+and what really does is returning a file (like the sparql results that CR would sent) but very slowly, in order to mimic a very busy CR with a 
+very bad Sparql query. In a production environment redirection to mock application should be disabled and calls to CR will proceed normally.
+
+#### parameters config for test environment
+* config.cr.host=https://cr.eionet.europa.eu
+* config.cr.mockCrUrl=http://mockxquerydelay.ewxdevel1dub.eionet.europa.eu
+* config.enableXqueryCrCallsInterception=true
+
+#### parameters config for production
+* config.cr.host=
+* config.cr.mockCrUrl=
+* config.enableXqueryCrCallsInterception=false
+
+
+
+#### Setup a dockerized rabbitmq instance locally:
+docker run -d --hostname my-rabbit -p 0.0.0.0:15672:15672 -p 5672:5672 --name some-rabbit -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password rabbitmq:3-management

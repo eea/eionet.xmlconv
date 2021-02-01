@@ -335,7 +335,7 @@ public class WorkqueueManager {
     /**
      * Delete jobs by id.
      */
-    public static void deleteJobs(String[] jobIds) throws XMLConvException {
+    public static void deleteJobs(String[] jobIds, Boolean cancelled) throws XMLConvException {
         LOGGER.info("Request to deleteJobs jobs " + Utils.stringArray2String(jobIds, "," ) );
         try {
             List<String> jobsToDelete = new ArrayList<>();
@@ -352,12 +352,25 @@ public class WorkqueueManager {
                         if ( "2".equals(jobData[3]) ) {
                             try {
 
-                                if (getQuartzScheduler().checkExists(qJob))
-                                // try to interrupt running job
+                                if (getQuartzScheduler().checkExists(qJob)) {
+                                    // try to interrupt running job
                                     getQuartzScheduler().interrupt(qJob);
-                                else if (getQuartzHeavyScheduler().checkExists(qJob))
+                                }
+                                else if (getQuartzHeavyScheduler().checkExists(qJob)) {
                                     // try to interrupt running job
                                     getQuartzHeavyScheduler().interrupt(qJob);
+                                }
+                                if(cancelled){
+                                    List<JobHistoryEntry> entries = getJobHistoryRepository().findByJobName(jobId);
+                                    if(entries.size()==0){
+                                        LOGGER.info("Could not find job with id " + jobId + " in history table when cancelling it");
+                                    }
+                                    else{
+                                        JobHistoryEntry entry = entries.get(entries.size()-1);
+                                        getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_CANCELLED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                                        LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY as CANCELLED");
+                                    }
+                                }
                             }catch (UnableToInterruptJobException e) {
 
                                 GDEMServices.getDaoService().getXQJobDao().markDeleted(jobId);
@@ -399,6 +412,36 @@ public class WorkqueueManager {
         } catch (Exception e) {
             throw new XMLConvException(e.getMessage());
         }
+    }
+
+    public List<WorkqueueJob> getRunningJobs() throws DCMException {
+        List<WorkqueueJob> jobs = new ArrayList<>();
+        try {
+            String[][] jobsData = jobDao.getRunningJobs();
+            if (jobsData != null && jobsData.length > 0) {
+                for (String[] jobData : jobsData) {
+                    if (jobData != null) {
+                        jobs.add(parseData(jobData));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("Error getting running workqueue jobs", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
+        return jobs;
+    }
+
+    private WorkqueueJob parseData(String[] jobData) {
+        WorkqueueJob job = null;
+        if (jobData != null) {
+            job = new WorkqueueJob();
+            job.setJobId((jobData[0] == null) ? "" : jobData[0]);
+            job.setUrl((jobData[1] == null) ? "" : jobData[1]);
+            job.setDuration((jobData[2] == null) ? 0 : new Long(jobData[2]));
+        }
+        return job;
     }
 
     private static JobHistoryRepository getJobHistoryRepository() {

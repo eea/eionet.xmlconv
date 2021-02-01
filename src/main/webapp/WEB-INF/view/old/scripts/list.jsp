@@ -5,9 +5,25 @@
 
 <c:set var="permissions" scope="page" value="${sessionScope['qascript.permissions']}" />
 
+<link href="<c:url value='/static/webjars/jquery-ui/jquery-ui.css'/>" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="<c:url value='/static/webjars/jquery/jquery.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/static/webjars/jquery-ui/jquery-ui.js'/>"></script>
+<script type="text/javascript" src="/resources/js/statusModal.js"></script>
+
+<style>
+  div#operations li {
+    display: inline-block;
+    margin:0px;
+  }
+</style>
+
 <c:if test="${permissions.ssiPrm}">
   <div id="operations">
     <ul>
+      <li>
+        <button class="statusHelp" type="button" style="color:#00446A; background:#ecf4f5; cursor:pointer; border: 1px solid #cfe3e4; padding: 0.5em; border-radius:6px">QA scripts status info
+        </button>
+      </li>
       <li>
         <a href="/scripts/add"><spring:message code="label.qascript.add"/></a>
       </li>
@@ -40,7 +56,7 @@
         <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
           <td title="${schema.schema}">
             <a href="/schemas/${schema.id}/scripts" title="view QA scripts for this XML Schema">
-              ${schema.schema}
+                ${schema.schema}
             </a>
           </td>
           <td>
@@ -48,7 +64,7 @@
               <%--id="qascript" name="schema" scope="page" property="qascripts" type="QAScript">--%>
               <c:forEach items="${schema.qascripts}" var="script">
                 <a href="/scripts/${script.scriptId}" title="label.qascript.tab.title">
-                  ${script.shortName}
+                    ${script.shortName}
                 </a>
                 &#160;
               </c:forEach>

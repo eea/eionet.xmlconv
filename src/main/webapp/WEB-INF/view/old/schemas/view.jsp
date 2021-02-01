@@ -95,6 +95,14 @@
           </c:if>
         </td>
       </tr>
+      <tr>
+        <th scope="row" class="scope-row">
+          <spring:message code="label.schema.maxExecutionTime"/>
+        </th>
+        <td align="left">
+            ${form.maxExecutionTime}
+        </td>
+      </tr>
     </table>
   <%--</fieldset>--%>
 

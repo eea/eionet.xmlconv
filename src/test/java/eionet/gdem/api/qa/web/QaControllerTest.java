@@ -8,9 +8,12 @@ import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.test.ApplicationTestContext;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Hashtable;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import static org.hamcrest.CoreMatchers.is;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +23,8 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertTrue;
@@ -27,9 +32,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -160,5 +170,21 @@ public class QaControllerTest {
                 .andExpect(status().isOk());
 
         verify(qaServiceMock, times(1)).listQAScripts("http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd", "true");
+    }
+
+    /* Test case: delete with no job id */
+    @Test
+    public void testDeleteNoJobId() throws Exception {
+        ResponseEntity<HashMap<String,String>> result = qaController.delete("");
+        Assert.assertThat(result.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        Assert.assertThat(result.getBody().toString(), is("{message=Missing job id from request}"));
+    }
+
+    /* Test case: delete successful */
+    @Test
+    public void testDeleteSuccessful() throws Exception {
+        ResponseEntity<HashMap<String,String>> result = qaController.delete("12345");
+        Assert.assertThat(result.getStatusCode(), is(HttpStatus.OK));
+        Assert.assertThat(result.getBody().toString(), is("{message=Job deleted successfully}"));
     }
 }

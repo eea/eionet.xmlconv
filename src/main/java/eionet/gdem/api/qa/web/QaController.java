@@ -2,21 +2,23 @@ package eionet.gdem.api.qa.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.errors.BadRequestException;
 import eionet.gdem.api.errors.EmptyParameterException;
 import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
-import eionet.gdem.conversion.ConversionService;
-import eionet.gdem.conversion.ConvertDDXMLMethod;
-import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.qa.XQueryService;
+import eionet.gdem.rabbitMQ.SpringRabbitMqConfig;
+import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,7 @@ import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
 import java.io.File;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -55,6 +58,14 @@ public class QaController {
     }
 
 
+    @Autowired(required=false)
+    RabbitTemplate rabbitTemplate;
+  //  @Autowired
+   // RabbitMQProducerServiceImpl producer;
+
+   // @Autowired
+   // RabbitMQConsumerServiceImpl consumer;
+    
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
      * @param report
@@ -163,6 +174,9 @@ public class QaController {
             throw new EmptyParameterException("envelopeUrl");
         }
         List<QaResultsWrapper> qaResults = qaService.scheduleJobs(envelopeWrapper.getEnvelopeUrl());
+        if(qaResults == null || qaResults.size() == 0){
+            LOGGER.info("No jobs were inserted");
+        }
         LinkedHashMap<String, List<QaResultsWrapper>> jobsQaResults = new LinkedHashMap<String, List<QaResultsWrapper>>();
         jobsQaResults.put("jobs", qaResults);
         return new ResponseEntity<LinkedHashMap<String, List<QaResultsWrapper>>>(jobsQaResults, HttpStatus.OK);
@@ -245,6 +259,41 @@ public class QaController {
         }
     }
 
+    @RequestMapping(value = "/asynctasks/qajobs/delete/{jobId}", method = RequestMethod.POST)
+    public ResponseEntity<HashMap<String,String>> delete(@PathVariable String jobId) {
+        StopWatch timer = new StopWatch();
+        timer.start();
+        try {
+            if (jobId == null || jobId.length()==0) {
+                LOGGER.error("No job id was provided for job deletion via API.");
+                LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+                results.put("message","Missing job id from request");
+                return new ResponseEntity<>(results, HttpStatus.BAD_REQUEST);
+            }
+            LOGGER.info("Deleting job via API with id " + jobId);
+            /* Convert String to String array */
+            String[] jobIds = new String[1];
+            jobIds[0] = jobId;
+            callWQManagerDeleteMethod(jobIds);
+            timer.stop();
+            LOGGER.info(String.format("Deleting of job #%s via API was completed, total time of execution: %s", jobId, timer.toString()));
+            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+            results.put("message","Job deleted successfully");
+            return new ResponseEntity<>(results, HttpStatus.OK);
+
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+            return new ResponseEntity<>(results, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void callWQManagerDeleteMethod(String[] jobIds) throws XMLConvException {
+        WorkqueueManager workqueueManager = new WorkqueueManager();
+        workqueueManager.deleteJobs(jobIds, true);
+    }
+
+
 
     @ExceptionHandler(EmptyParameterException.class)
     public ResponseEntity<HashMap<String, String>> HandleEmptyParameterException(Exception exception) {
@@ -286,6 +335,16 @@ public class QaController {
 
     public String ConvertByteArrayToString(byte[] bytes) throws UnsupportedEncodingException {
         return new String(bytes, "UTF-8");
+    }
+
+
+    @RequestMapping(value = "/rabbitMqCall/{message}", method = RequestMethod.POST)
+    public ResponseEntity<String> rabbitMqCall(@PathVariable String message){
+        if(rabbitTemplate!=null) {
+            rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, message);
+        }
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+
     }
 
 }

@@ -138,7 +138,7 @@ public class WorkqueueController {
             }
 
 
-            if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING)
+            if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING || status == Constants.XQ_INTERRUPTED)
                 resultFile = null;
             job.setResultFile(resultFile);
 
@@ -157,6 +157,8 @@ public class WorkqueueController {
                 statusName = "FATAL ERROR";
             if (status == Constants.XQ_LIGHT_ERR)
                 statusName = "RECOVERABLE ERROR";
+            if (status == Constants.XQ_INTERRUPTED)
+                statusName = "INTERRUPTED";
 
             job.setStatusName(statusName);
             if (url.indexOf(Constants.GETSOURCE_URL) > 0 && url.indexOf(Constants.SOURCE_URL_PARAM) > 0) {
@@ -211,7 +213,7 @@ public class WorkqueueController {
 
         try {
             WorkqueueManager workqueueManager = new WorkqueueManager();
-            workqueueManager.deleteJobs(jobs.toArray(new String[0]));
+            workqueueManager.deleteJobs(jobs.toArray(new String[0]), false);
             messages.add(messageService.getMessage("label.workqueue.jobdeleted"));
         } catch (XMLConvException e) {
             throw new RuntimeException("Could not delete jobs! " + e.getMessage());

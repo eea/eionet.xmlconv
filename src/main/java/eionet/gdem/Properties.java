@@ -130,6 +130,10 @@ public class Properties {
     /** FME timeout. */
     public static int fmeTimeout = 0;
     public static int fmeRetryHours = 4;
+    public static String fmePollingUrl = null;
+    public static String fmeResultFolderUrl = null;
+    public static String fmeResultFolder = null;
+    public static String fmeDeleteFolderUrl = null;
 
     /** Hostname. */
     public static String hostname = null;
@@ -185,6 +189,43 @@ public class Properties {
 
     public static final String SSO_LOGIN_URL;
 
+    public static final String XQUERY_HTTP_ENDPOINTS;
+
+    public static final Long BASEX_XQUERY_TIME_LIMIT;
+
+    public static Long maxSchemaExecutionTime;
+
+    public static String jwtAudienceProperty;
+    public static String jwtIssuerProperty;
+    public static String jwtHeaderProperty;
+    public static String jwtHeaderSchemaProperty;
+    public static String jwtSecretKey;
+
+    /** interval of checking whether running jobs duration has exceeded schema's maxExecutionTime (in seconds) */
+    public static int interruptingJobsInterval;
+
+    public static final String crHost;
+
+    public static final String mockCrUrl;
+
+    public static final boolean enableXqueryCrCallsInterception ;
+
+    public static final String rancherApiAccessKey;
+
+    public static final String rancherApiSecretKey;
+
+    public static boolean rabbitMqEnabled ;
+    public static String rabbitMQHost;
+    public static Integer rabbitMQPort;
+    public static String rabbitMQUsername;
+    public static String rabbitMQPassword;
+    public static String WORKERS_JOBS_QUEUE;
+    public static String WORKERS_JOBS_RESULTS_QUEUE;
+    public static String MAIN_XMLCONV_JOBS_EXCHANGE;
+    public static String MAIN_WORKERS_EXCHANGE;
+    public static String JOBS_ROUTING_KEY;
+    public static String JOBS_RESULTS_ROUTING_KEY;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -238,6 +279,7 @@ public class Properties {
         wqJobMaxAge = getIntProperty("wq.job.max.age");
         // maximum number of jobs executed at the same time
         wqMaxJobs = getIntProperty("wq.max.jobs");
+        interruptingJobsInterval = getIntProperty("wq.job.interrupt.interval");
         // default value of the maximum size of XML file sent to ad-hoc QA
         qaValidationXmlUpperLimit = getIntProperty("qa.validation.xml.upper_limit");
         // external QA program timeout
@@ -264,6 +306,10 @@ public class Properties {
         fmeTimeout = getIntProperty("fme.timeout");
         fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
+        fmePollingUrl = getStringProperty("fme.polling.url");
+        fmeResultFolderUrl = getStringProperty("fme.result.folder.url");
+        fmeResultFolder = getStringProperty("fme.result.folder");
+        fmeDeleteFolderUrl = getStringProperty("fme.delete.folder.url");
         longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
 
         PROP_UNS_XMLRPC_SERVER_URL = getStringProperty("env.uns.xml.rpc.server.url");
@@ -279,6 +325,38 @@ public class Properties {
         PROP_UNS_EVENTS_NAMESPACE = getStringProperty("env.uns.events-namespace");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
+
+        XQUERY_HTTP_ENDPOINTS = getStringProperty("env.xquery.http.endpoints");
+
+        BASEX_XQUERY_TIME_LIMIT = getLongProperty("env.basex.xquery.timeLimit");
+
+        maxSchemaExecutionTime = getLongProperty("env.schema.maxExecutionTime");
+
+        jwtAudienceProperty = getStringProperty("jwt.audience");
+        jwtIssuerProperty = getStringProperty("jwt.issuer");
+        jwtHeaderProperty = getStringProperty("jwt.header");
+        jwtHeaderSchemaProperty = getStringProperty("jwt.header.schema");
+        jwtSecretKey = getStringProperty("jwt.secret");
+
+        crHost = getStringProperty("config.cr.host");
+
+        mockCrUrl = getStringProperty("config.cr.mockCrUrl");
+       enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
+
+       rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");
+       rancherApiSecretKey = getStringProperty("env.rancher.api.secretKey");
+
+        rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
+        rabbitMQHost = getStringProperty("env.rabbitmq.host");
+        rabbitMQPort = getIntProperty("env.rabbitmq.port");
+        rabbitMQUsername = getStringProperty("env.rabbitmq.username");
+        rabbitMQPassword = getStringProperty("env.rabbitmq.password");
+        WORKERS_JOBS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.queue");
+        WORKERS_JOBS_RESULTS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.results.queue");
+        MAIN_XMLCONV_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.jobs.exchange");
+        MAIN_WORKERS_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.exchange");
+        JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.routingkey");
+        JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
     }
 
     /**
@@ -316,6 +394,10 @@ public class Properties {
         }
     }
 
+        private static boolean getBooleanProperty(String key) {
+        String value = getStringProperty(key);
+            return Boolean.parseBoolean(value);
+    }
     private static long getLongProperty(String key) {
         String value = getStringProperty(key);
 
@@ -420,5 +502,9 @@ public class Properties {
 
     public static int getIsRancher() {
         return isRancher;
+    }
+
+    public static boolean getRabbitMqEnabled() {
+        return rabbitMqEnabled;
     }
 }

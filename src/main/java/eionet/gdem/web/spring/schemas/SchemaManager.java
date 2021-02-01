@@ -21,42 +21,15 @@ package eionet.gdem.web.spring.schemas;
  *    Original code: Istvan Alfeldi (ED)
  */
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-
 import eionet.gdem.Constants;
-import eionet.gdem.contreg.CrServiceSparqlClient;
-import eionet.gdem.datadict.DDServiceClient;
-import eionet.gdem.web.spring.FileUploadWrapper;
-import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.collections.comparators.ComparatorChain;
-import org.apache.commons.collections.comparators.NullComparator;
-import org.apache.commons.io.IOUtils;
-
 import eionet.gdem.Properties;
+import eionet.gdem.contreg.CrServiceSparqlClient;
 import eionet.gdem.conversion.ConversionService;
 import eionet.gdem.conversion.ConversionServiceIF;
+import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dcm.Conversion;
-import eionet.gdem.dto.ConversionDto;
-import eionet.gdem.dto.CrFileDto;
-import eionet.gdem.dto.DDDatasetTable;
-import eionet.gdem.dto.QAScript;
-import eionet.gdem.dto.RootElem;
-import eionet.gdem.dto.Schema;
-import eionet.gdem.dto.Stylesheet;
-import eionet.gdem.dto.UplSchema;
+import eionet.gdem.dto.*;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.GDEMServices;
@@ -64,11 +37,20 @@ import eionet.gdem.utils.HttpUtils;
 import eionet.gdem.utils.MultipartFileUpload;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.FileUploadWrapper;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections.comparators.ComparatorChain;
+import org.apache.commons.collections.comparators.NullComparator;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Business logic for managing XML schemas in XMLCONV.
@@ -227,7 +209,7 @@ public class SchemaManager {
 
     /**
      * Get XML Schema and related stylesheets information.
-     * @param schema XML Schema URL or database ID.
+     * @param schemaId XML Schema URL or database ID.
      * @return StylesheetListHolder object holding schema stylesheet and user permission information
      * @throws DCMException in case of database error occurs.
      */
@@ -421,7 +403,7 @@ public class SchemaManager {
      * @throws DCMException in case of database error.
      */
     public void update(String user, String schemaId, String schema, String description, String schemaLang, boolean doValidation,
-            String dtdPublicId, Date expireDate, boolean blocker) throws DCMException {
+            String dtdPublicId, Date expireDate, boolean blocker, Long maxExecutionTime) throws DCMException {
 
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_SCHEMA_PATH, "u")) {
@@ -436,7 +418,7 @@ public class SchemaManager {
         }
 
         try {
-            schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, blocker);
+            schemaDao.updateSchema(schemaId, schema, description, schemaLang, doValidation, dtdPublicId, expireDate, blocker, maxExecutionTime);
 
         } catch (Exception e) {
             LOGGER.error("Error updating schema", e);
@@ -495,6 +477,7 @@ public class SchemaManager {
                 boolean blocker =
                         (!Utils.isNullStr((String) schemaHash.get("blocker")) && ((String) schemaHash.get("blocker")).equals("1"));
                 schema.setBlocker(blocker);
+                schema.setMaxExecutionTime(Long.parseLong((String) schemaHash.get("max_execution_time")));
 
                 // get uploaded schema information
                 HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);
@@ -718,7 +701,7 @@ public class SchemaManager {
      * @return the database ID of added XML Schema
      * @throws DCMException in case of database error.
      */
-    public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation, boolean blocker)
+    public String addSchema(String user, String schemaUrl, String descr, String schemaLang, boolean doValidation, boolean blocker, Long maxExecutionTime)
             throws DCMException {
         String schemaID = null;
         try {
@@ -739,7 +722,7 @@ public class SchemaManager {
                 throw new DCMException(BusinessConstants.EXCEPTION_UPLSCHEMA_URL_EXISTS);
             }
             if (schemaID == null) {
-                schemaID = schemaDao.addSchema(schemaUrl, descr, schemaLang, doValidation, null, blocker);
+                schemaID = schemaDao.addSchema(schemaUrl, descr, schemaLang, doValidation, null, blocker, maxExecutionTime);
             }
 
         } catch (DCMException e) {
@@ -1325,6 +1308,15 @@ public class SchemaManager {
             updateUplSchema(user, uplSchemaId, schemaId, schemaFileName, in);
         }
 
+    }
+
+    public Long getSchemaMaxExecutionTime(String schemaUrl) throws DCMException {
+        try {
+            return schemaDao.getSchemaMaxExecutionTime(schemaUrl);
+        } catch (SQLException e) {
+            LOGGER.error("Error getting max execution time", e);
+            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+        }
     }
 
 }

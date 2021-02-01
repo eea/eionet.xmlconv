@@ -75,6 +75,8 @@ public class Schema implements Serializable {
     private int countQaScripts;
     /** Related stylesheet ID. */
     private String stylesheetSchemaId;
+    /** Max execution time of jobs related to this schema*/
+    private Long maxExecutionTime;
 
     public Date getExpireDate() {
         return expireDate;
@@ -357,4 +359,19 @@ public class Schema implements Serializable {
         this.stylesheetSchemaId = stylesheetSchemaId;
     }
 
+    /**
+     *
+     * @return the maxExecutionTime
+     */
+    public Long getMaxExecutionTime() {
+        return maxExecutionTime;
+    }
+
+    /**
+     *
+     * @param maxExecutionTime the maxExecutionTime to set
+     */
+    public void setMaxExecutionTime(Long maxExecutionTime) {
+        this.maxExecutionTime = maxExecutionTime;
+    }
 }

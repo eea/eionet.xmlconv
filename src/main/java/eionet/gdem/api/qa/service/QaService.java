@@ -22,8 +22,9 @@ public interface QaService {
      * Given an envelopeUrl , it makes a call to the envelopeUrl/xml and parses the output XML stream 
      * in order to extract the Schemas and Files of the given envelopeUrl.
      ***/
-    HashMap<String, String> extractLinksAndSchemasFromEnvelopeUrl(String envelopeUrl) throws XMLConvException;
-    
+    HashMap<String, String> extractFileLinksAndSchemasFromEnvelopeUrl(String envelopeUrl) throws XMLConvException;
+
+    List<String> extractObligationUrlsFromEnvelopeUrl(String envelopeUrl) throws XMLConvException;
     /**
      *  Calls  the method  {@link eionet.gdem.qa.XQueryService#analyzeXMLFiles(java.util.Hashtable)  }
      *  which returns a vector of vectors. Each of these vectors contains a JobID and a FileURL.

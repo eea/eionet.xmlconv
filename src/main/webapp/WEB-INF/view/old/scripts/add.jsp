@@ -2,6 +2,12 @@
 
 <ed:breadcrumbs-push label="Add QA script" level="3"/>
 
+<link href="<c:url value='/static/webjars/jquery-ui/jquery-ui.css'/>" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="<c:url value='/static/webjars/jquery/jquery.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/static/webjars/jquery-ui/jquery-ui.js'/>"></script>
+<script type="text/javascript" src="/resources/js/statusModal.js"></script>
+
+
 <form:form servletRelativeAction="/scripts" method="post" enctype="multipart/form-data" modelAttribute="form">
   <form:errors path="*" cssClass="error-msg" element="div"/>
   <fieldset class="fieldset">
@@ -77,6 +83,8 @@
       <label class="question required"><spring:message code="label.qascript.tab.title"/></label>
       <div style="font-size:75%"><i>Enter file or URL</i></div>
     </legend>
+    <button class="statusHelp" type="button" style="color:#00446A; background:#ecf4f5; cursor:pointer; border: 1px solid #cfe3e4; padding: 0.5em; border-radius:6px">QA scripts status info
+    </button><br><br>
     <div class="row">
       <div class="columns small-4">
         <label class="question" for="txtFile">
