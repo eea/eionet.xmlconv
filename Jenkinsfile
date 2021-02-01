@@ -33,9 +33,11 @@ pipeline {
                  } else {
                          tagName = "$BRANCH_NAME"
                  }
+                 def date = sh(returnStdout: true, script: 'echo $(date "+%Y-%m-%dT%H%M")').trim()
                  dockerImage = docker.build("$registry:$tagName", "--no-cache .")
                  docker.withRegistry( '', 'eeajenkins' ) {
                           dockerImage.push()
+                           dockerImage.push(date)
                  }
             }
       }
