@@ -81,7 +81,6 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 try {
                     long startTime = System.nanoTime();
-                    long stopTime = System.nanoTime();
 
                     // validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
@@ -104,6 +103,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     LOGGER.debug("Validation proceeded, now store to the result file");
                     Utils.saveStrToFile(resultFile, result, null);
                     changeStatus(Constants.XQ_READY);
+                    long stopTime = System.nanoTime();
                     LOGGER.info("### job with id: " + jobId + " has been Validated. Validation time in nanoseconds = " + (stopTime - startTime));
                 } catch (Exception e) {
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true);
