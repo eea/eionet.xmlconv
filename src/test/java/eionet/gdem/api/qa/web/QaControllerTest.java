@@ -6,10 +6,14 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.api.errors.EmptyParameterException;
 import eionet.gdem.api.qa.model.EnvelopeWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.test.ApplicationTestContext;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Hashtable;
+
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -18,11 +22,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.Matchers.anyString;
 import org.mockito.Mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,6 +47,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 /**
  *

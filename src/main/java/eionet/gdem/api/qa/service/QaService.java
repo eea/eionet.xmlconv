@@ -2,6 +2,8 @@ package eionet.gdem.api.qa.service;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
+import eionet.gdem.dto.Schema;
+import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.XQueryService;
 import org.w3c.dom.Document;
 
@@ -39,4 +41,6 @@ public interface QaService {
     XQueryService getXqueryService();
     
     public Document getXMLFromEnvelopeURL(String envelopeURL) throws XMLConvException ;
+
+    Schema getSchemaBySchemaUrl(String schemaUrl) throws Exception;
 }

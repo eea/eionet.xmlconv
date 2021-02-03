@@ -38,7 +38,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     @Value("${jwt.header.schema}")
     private String authenticationTokenSchema;
 
-    private static final List<String> INTERCEPTED_URLS = Collections.unmodifiableList(Arrays.asList("/asynctasks/", "/qajobs", "dataflows"));
+    private static final List<String> INTERCEPTED_URLS = Collections.unmodifiableList(Arrays.asList("/asynctasks/", "/qajobs", "dataflows", "/schemas", "/host/authentication"));
 
     @Autowired
     private TokenVerifier verifier;
