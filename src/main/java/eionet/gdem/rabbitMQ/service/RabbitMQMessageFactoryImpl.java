@@ -68,8 +68,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         this.workersJobMessageSender = workersJobMessageSender;
     }
 
-    public void createScriptAndSendMessageToRabbitMQ() throws CreateMQMessageException {
+    public void createScriptAndSendMessageToRabbitMQ(String jobId) throws CreateMQMessageException {
         try {
+            this.setJobId(jobId);
             schemaManager = new SchemaManager();
             init();
             String srcFile = url;
@@ -287,8 +288,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         }
     }
 
-    @Override
-    public void setJobId(String id) {
+    private void setJobId(String id) {
         this.jobId = id;
     }
 }

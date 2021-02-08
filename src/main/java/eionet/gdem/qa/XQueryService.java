@@ -283,8 +283,7 @@ public class XQueryService extends RemoteService {
             } else {
                 getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
                 LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
-                getRabbitMQMessageFactory().setJobId(newId);
-                getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ();
+                getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(newId);
             }
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
@@ -512,33 +511,25 @@ public class XQueryService extends RemoteService {
                 queryFile = Properties.queriesFolder + File.separator + queryFile;
             }
 
-            long startTime4 = System.nanoTime();
             sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
-            long stopTime4 = System.nanoTime();
 
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
-            LOGGER.info("### File with size=" + sourceSize + " Bytes has been downloaded. Download time in nanoseconds = " + (stopTime4 - startTime4) + ".");
+            LOGGER.info("### File with size=" + sourceSize + " Bytes has been downloaded.");
             //save the job definition in the DB
-            long startTime = System.nanoTime();
             jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
-            long stopTime = System.nanoTime();
             LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
-            LOGGER.info("### Job with id=" + jobId + " has been created.  Job creation time in nanoseconds = " + (stopTime - startTime) + ".");
-            long startTime1 = System.nanoTime();
+            LOGGER.info("### Job with id=" + jobId + " has been created.");
 
             if (Properties.enableQuartz) {
                 scheduleJob(jobId, sourceSize, scriptType);
-                long stopTime1 = System.nanoTime();
-                LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
+                LOGGER.info("### Job with id=" + jobId + " has been scheduled.");
                 getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
                 LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
             } else {
                 getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
                 LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
-                getRabbitMQMessageFactory().setJobId(jobId);
-                getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ();
-                long stopTime1 = System.nanoTime();
-                LOGGER.info("### Job with id=" + jobId + " has been scheduled. Scheduling time in nanoseconds = " + (stopTime1 - startTime1) + ".");
+                getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
+                LOGGER.info("### Job with id=" + jobId + " has been scheduled.");
             }
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);

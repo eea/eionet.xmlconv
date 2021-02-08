@@ -58,7 +58,6 @@ public class RabbitMQMessageFactoryImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        createRabbitMQMessage.setJobId("627015");
         jobData = new String[] {"xmlUrl", "xqFile", "resultFile", "0", "srcFile", "1246", "627015", "2020-12-09 14:07:02.0", "xquery 3.0+"};
         schema = new Schema();
         createQueryMap();
@@ -81,14 +80,14 @@ public class RabbitMQMessageFactoryImplTest {
     }
 
     @Test
-    public void createScriptAndSendMessageToRabbitMQ() throws SQLException, CreateMQMessageException {
+    public void createScriptAndSendMessageToRabbitMQTest() throws SQLException, CreateMQMessageException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, null, 1, new Timestamp(new Date().getTime()),null, null, null , null);
         when(xqJobDao.getXQJobData(anyString())).thenReturn(jobData);
         doNothing().when(xqJobDao).processXQJob(anyString());
         when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryDao.getQueryInfo(anyString())).thenReturn(queryMap);
         doNothing().when(workersJobMessageSender).sendJobInfoToRabbitMQ(any(XQScript.class));
-        createRabbitMQMessage.createScriptAndSendMessageToRabbitMQ();
+        createRabbitMQMessage.createScriptAndSendMessageToRabbitMQ("627015");
         verify(queryDao).getQueryInfo(anyString());
     }
 
