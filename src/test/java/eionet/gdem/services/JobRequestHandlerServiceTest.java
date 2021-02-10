@@ -33,5 +33,6 @@ public class JobRequestHandlerServiceTest {
         assertTrue(v.size() == 1);
         Vector v2 = (Vector) v.get(0);
         String jobId = (String) v2.get(0);
+        System.out.println("---------------------------------- jobId: " + jobId);
     }
 }
