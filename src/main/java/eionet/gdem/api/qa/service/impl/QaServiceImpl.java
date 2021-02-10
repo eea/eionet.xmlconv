@@ -10,6 +10,8 @@ import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.hosts.IHostDao;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -208,8 +212,25 @@ public class QaServiceImpl implements QaService {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             URL url = new URL(envelopeUrl + "/xml");
-            doc = db.parse(url.openStream());
-        } catch (SAXException | IOException | ParserConfigurationException ex) {
+            URLConnection uc = url.openConnection();
+
+            //get credentials for host
+            IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
+            Vector v = hostDao.getHosts(url.getHost());
+
+            if (v != null && v.size() > 0) {
+                Hashtable h = (Hashtable) v.get(0);
+                String user = (String) h.get("user_name");
+                String pwd = (String) h.get("pwd");
+                String userpass = user + ":" + pwd;
+
+                //add basic authorization
+                String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
+                uc.setRequestProperty ("Authorization", basicAuth);
+            }
+            InputStream in = uc.getInputStream();
+            doc = db.parse(in);
+        } catch (SAXException | IOException | ParserConfigurationException | SQLException ex) {
             throw new XMLConvException("exception while parsing the envelope URL:" + envelopeUrl + " to extract files and schemas", ex);
         }
         return doc;
