@@ -126,8 +126,7 @@ public class XQueryService extends RemoteService {
         Vector v = method.listQAScripts(schema, active);
         return v;
     }
-
-    /**
+    /**THIS METHOD WILL BE REMOVED
      * Request from XML/RPC client Stores the source files and starts a job in the workqueue.
      *
      * @param files - Structure with XMLschemas as a keys and values are list of XML Files
@@ -158,18 +157,7 @@ public class XQueryService extends RemoteService {
         return result;
     }
 
-    /**
-     * Stores one source file and starts a job in the workqueue.
-     *
-     * @param schema - XML Schema URL
-     * @param file - Source file URL
-     * @return Hashtable result: Structure with JOB ids as a keys and source files as values
-     */
-    // public Hashtable analyze(String schema, String file) throws XMLConvException{
-    // return analyze(schema,file, null);
-    // }
-
-    /**
+    /** THIS METHOD WILL BE REMOVED
      * Analyzes XML files
      * @param schema XML Schema
      * @param origFile Original file

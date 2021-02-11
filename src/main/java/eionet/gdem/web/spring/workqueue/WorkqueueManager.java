@@ -25,6 +25,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
@@ -32,6 +33,8 @@ import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.JobRequestHandlerService;
+import eionet.gdem.services.impl.JobRequestHandlerServiceImpl;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import org.quartz.JobKey;
@@ -60,6 +63,8 @@ public class WorkqueueManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkqueueManager.class);
     /** Dao for getting job data. */
     private static IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
+
+    JobRequestHandlerService jobRequestHandlerService = new JobRequestHandlerServiceImpl();
 
     /**
      * Get work-queue job data.
@@ -154,15 +159,14 @@ public class WorkqueueManager {
         XQueryService xqE = new XQueryService();
         xqE.setTrustedMode(false);
         try {
-            Hashtable h = new Hashtable();
-            Vector files = new Vector();
+            HashMap h = new HashMap();
+            List<String> files = new ArrayList<>();
             files.add(sourceUrl);
             h.put(schemaUrl, files);
-            Vector v_result = xqE.analyzeXMLFiles(h);
-            if (v_result != null) {
-                for (int i = 0; i < v_result.size(); i++) {
-                    Vector v = (Vector) v_result.get(i);
-                    result.add((String) v.get(0));
+            HashMap<String, String> resultMap = jobRequestHandlerService.analyzeMultipleXMLFiles(h);
+            if (resultMap != null) {
+                for (Map.Entry<String, String> entry : resultMap.entrySet()) {
+                    result.add(entry.getKey());
                 }
             }
         } catch (Exception e) {

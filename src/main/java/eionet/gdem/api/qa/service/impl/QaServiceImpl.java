@@ -10,9 +10,11 @@ import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQueryService;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -39,6 +41,9 @@ public class QaServiceImpl implements QaService {
     /** DAO for getting schema info. */
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
     private static final Logger LOGGER = LoggerFactory.getLogger(QaService.class);
+
+    @Autowired
+    JobRequestHandlerService jobRequestHandlerService;
 
     public QaServiceImpl() {
     }
@@ -93,32 +98,31 @@ public class QaServiceImpl implements QaService {
         HashMap<String, String> fileLinksAndSchemas = extractFileLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
 
         XQueryService xqService = getXqueryService();
-        Hashtable table = new Hashtable();
+        HashMap map = new HashMap();
         try {
             for (Map.Entry<String, String> entry : fileLinksAndSchemas.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 if (key != "" && value != "") {
-                    Vector files = new Vector();
+                    List<String> files = new ArrayList<>();
                     files.add(key);
-                    table.put(value, files);
+                    map.put(value, files);
                 }
             }
 
-            this.addObligationsFiles(table,envelopeUrl);
-            if (table.size() == 0) {
+            this.addObligationsFiles(map,envelopeUrl);
+            if (map.size() == 0) {
                 LOGGER.info("Could not find files and their schemas. There was an issue with the envelope " + envelopeUrl);
             }
-            Vector jobIdsAndFileUrls = xqService.analyzeXMLFiles(table);
+            HashMap<String, String> jobIdsAndFileUrls = jobRequestHandlerService.analyzeMultipleXMLFiles(map);
+
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
-            for (int i = 0; i < jobIdsAndFileUrls.size(); i++) {
-                Vector<String> KeyValuePair = (Vector<String>) jobIdsAndFileUrls.get(i);
+            for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {
                 QaResultsWrapper qaResult = new QaResultsWrapper();
-                qaResult.setJobId(KeyValuePair.get(0));
-                qaResult.setFileUrl(KeyValuePair.get(1));
+                qaResult.setJobId(entry.getKey());
+                qaResult.setFileUrl(entry.getValue());
                 results.add(qaResult);
             }
-
             return results;
         } catch (XMLConvException ex) {
             throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
@@ -215,14 +219,14 @@ public class QaServiceImpl implements QaService {
         return doc;
     }
 
-    protected void addObligationsFiles(Hashtable hashtable,String envelopeUrl) throws XMLConvException{
+    protected void addObligationsFiles(HashMap map,String envelopeUrl) throws XMLConvException{
         List<String> obligationUrls = extractObligationUrlsFromEnvelopeUrl(envelopeUrl);
         for (String obligationUrl: obligationUrls
              ) {
             if(obligationUrl!=null && !obligationUrl.isEmpty())    {
                 Vector obligation = new Vector();
                 obligation.add(envelopeUrl+"/xml");
-                hashtable.put(obligationUrl,obligation);
+                map.put(obligationUrl,obligation);
             }
         }
     }

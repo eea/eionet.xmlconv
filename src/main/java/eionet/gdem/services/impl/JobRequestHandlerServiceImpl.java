@@ -33,9 +33,9 @@ public class JobRequestHandlerServiceImpl implements JobRequestHandlerService {
      * @throws XMLConvException If an error occurs.
      */
     @Override
-    public Vector analyzeMultipleXMLFiles(HashMap<String, List<String>> filesAndSchemas) throws XMLConvException {
+    public HashMap analyzeMultipleXMLFiles(HashMap<String, List<String>> filesAndSchemas) throws XMLConvException {
 
-        Vector result = new Vector();
+        HashMap result = new HashMap();
 
         if (filesAndSchemas == null) {
             return result;
@@ -59,11 +59,7 @@ public class JobRequestHandlerServiceImpl implements JobRequestHandlerService {
 
                         String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get( ListQueriesMethod.KEY_QUERY_ID ));
                         newId = xQueryService.analyzeXMLFile( file, query_id , schema );
-
-                        Vector queryResult = new Vector();
-                        queryResult.add(newId);
-                        queryResult.add(file);
-                        result.add(queryResult);
+                        result.put(newId, file);
                     }
                 }
             }

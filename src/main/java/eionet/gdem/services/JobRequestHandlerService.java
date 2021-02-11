@@ -8,5 +8,5 @@ import java.util.Vector;
 
 public interface JobRequestHandlerService {
 
-    Vector analyzeMultipleXMLFiles(HashMap<String, List<String>> filesAndSchemas) throws XMLConvException;
+    HashMap analyzeMultipleXMLFiles(HashMap<String, List<String>> filesAndSchemas) throws XMLConvException;
 }

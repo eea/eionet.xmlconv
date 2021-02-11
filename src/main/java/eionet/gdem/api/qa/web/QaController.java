@@ -13,7 +13,8 @@ import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.XQueryService;
-import eionet.gdem.rabbitMQ.SpringRabbitMqConfig;
+import eionet.gdem.services.JobRequestHandlerService;
+import eionet.gdem.services.impl.JobRequestHandlerServiceImpl;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -59,6 +60,8 @@ public class QaController {
     public QaController(QaService qaService) {
         this.qaService = qaService;
     }
+
+    JobRequestHandlerService jobRequestHandlerService = new JobRequestHandlerServiceImpl();
 
 
     @Autowired(required=false)
@@ -235,24 +238,24 @@ public class QaController {
         HashMap<String, String> fileLinksAndSchemas =new LinkedHashMap<>();
         fileLinksAndSchemas.put(file,schema);
         XQueryService xqService = new XQueryService();
-        Hashtable table = new Hashtable();
+        HashMap map = new HashMap();
         try {
             for (Map.Entry<String, String> entry : fileLinksAndSchemas.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 if (key != "" && value != "") {
-                    Vector files = new Vector();
+                    List<String> files = new ArrayList<>();
                     files.add(key);
-                    table.put(value, files);
+                    map.put(value, files);
                 }
             }
-            Vector jobIdsAndFileUrls = xqService.analyzeXMLFiles(table);
+            HashMap<String, String> jobIdsAndFileUrls = jobRequestHandlerService.analyzeMultipleXMLFiles(map);
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
-            for (int i = 0; i < jobIdsAndFileUrls.size(); i++) {
-                Vector<String> KeyValuePair = (Vector<String>) jobIdsAndFileUrls.get(i);
+
+            for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {
                 QaResultsWrapper qaResult = new QaResultsWrapper();
-                qaResult.setJobId(KeyValuePair.get(0));
-                qaResult.setFileUrl(KeyValuePair.get(1));
+                qaResult.setJobId(entry.getKey());
+                qaResult.setFileUrl(entry.getValue());
                 results.add(qaResult);
             }
 

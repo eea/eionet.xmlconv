@@ -28,8 +28,8 @@ public interface QaService {
 
     List<String> extractObligationUrlsFromEnvelopeUrl(String envelopeUrl) throws XMLConvException;
     /**
-     *  Calls  the method  {@link eionet.gdem.qa.XQueryService#analyzeXMLFiles(java.util.Hashtable)  }
-     *  which returns a vector of vectors. Each of these vectors contains a JobID and a FileURL.
+     *  Calls  the method  {@link eionet.gdem.services.JobRequestHandlerService#analyzeMultipleXMLFiles(java.util.HashMap)  }
+     *  which returns hashmap. Each entry contains a JobID and a FileURL.
      * @return a map containing each Job Id and corresponding File URL as Key value pair.
      */
     List<QaResultsWrapper> scheduleJobs(String envelopeUrl) throws XMLConvException;
