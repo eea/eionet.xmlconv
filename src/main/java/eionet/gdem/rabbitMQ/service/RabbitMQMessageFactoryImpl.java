@@ -19,7 +19,6 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
 import eionet.gdem.web.spring.schemas.SchemaManager;
-import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
@@ -59,7 +58,6 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     /** Service for getting schema data. */
     private SchemaManager schemaManager;
 
-    private IXQJobDao xqJobDao;
     private IQueryDao queryDao;
     private JobHistoryRepository jobHistoryRepository;
     private WorkersJobMessageSender workersJobMessageSender;
@@ -67,9 +65,8 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     private JobService jobService;
 
     @Autowired
-    public RabbitMQMessageFactoryImpl(IXQJobDao xqJobDao, IQueryDao queryDao, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
+    public RabbitMQMessageFactoryImpl(IQueryDao queryDao, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
                                       WorkersJobMessageSender workersJobMessageSender, @Qualifier("jobRepository") JobRepository jobRepository, JobService jobService) {
-        this.xqJobDao = xqJobDao;
         this.queryDao = queryDao;
         this.jobHistoryRepository = jobHistoryRepository;
         this.workersJobMessageSender = workersJobMessageSender;
