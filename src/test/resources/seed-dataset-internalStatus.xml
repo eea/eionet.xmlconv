@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <INTERNAL_STATUS ID="1" NAME="RECEIVED" DESCRIPTION="job has been inserted in jobs table"/>
+    <INTERNAL_STATUS ID="2" NAME="QUEUED" DESCRIPTION="job has been inserted in rabbitmq queue"/>
+    <INTERNAL_STATUS ID="3" NAME="PROCESSING" DESCRIPTION="job has been received by worker"/>
+</dataset>
