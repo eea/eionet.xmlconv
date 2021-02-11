@@ -86,7 +86,7 @@ public class WorkqueueManagerTest {
         String content = Utils.readStrFromFile(contentFile);
 
         assertEquals(sourceUrl, job.getUrl());
-        assertEquals(0, job.getStatus());
+        assertEquals(2, job.getStatus());
         assertEquals("0", job.getScriptId());
         assertEquals(content, scriptContent);
     }
