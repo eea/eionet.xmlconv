@@ -23,13 +23,14 @@
 
 package eionet.gdem.qa;
 
-import eionet.gdem.Constants;
+import eionet.gdem.*;
 import eionet.gdem.Properties;
-import eionet.gdem.SpringApplicationContext;
-import eionet.gdem.XMLConvException;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.rabbitMQ.errors.CreateMQMessageException;
+import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dcm.remote.RemoteService;
@@ -274,7 +275,10 @@ public class XQueryService extends RemoteService {
             sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
 
-            newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
+            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            JobEntry jobEntry = getJobRepository().save(new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus));
+            newId = jobEntry.getId().toString();
+            LOGGER.info("Job with id " + newId + " has been inserted in table T_XQJOBS");
 
             if (Properties.enableQuartz) {
                 scheduleJob(newId, sourceSize, scriptType);
@@ -286,14 +290,14 @@ public class XQueryService extends RemoteService {
                 getRabbitMQMessageFactory().setJobId(newId);
                 getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ();
             }
-        } catch (SQLException sqe) {
-            LOGGER.error("DB operation failed: " + sqe.toString());
-            throw new XMLConvException("DB operation failed: " + sqe.toString());
         } catch (URISyntaxException e) {
             throw new XMLConvException("URI syntax error: " + e);
-        } catch (SchedulerException | CreateMQMessageException e) {
+        } catch (SchedulerException | CreateRabbitMQMessageException e) {
             LOGGER.error("Scheduling job exception: " + e.toString());
             throw new XMLConvException("Scheduling job exception: " + e.toString());
+        } catch (Exception sqe) {
+            LOGGER.error("DB operation failed: " + sqe.toString());
+            throw new XMLConvException("DB operation failed: " + sqe.toString());
         }
         return newId;
     }
@@ -520,7 +524,11 @@ public class XQueryService extends RemoteService {
             LOGGER.info("### File with size=" + sourceSize + " Bytes has been downloaded. Download time in nanoseconds = " + (stopTime4 - startTime4) + ".");
             //save the job definition in the DB
             long startTime = System.nanoTime();
-            jobId = xqJobDao.startXQJob(sourceURL, queryFile, resultFile, queryId ,scriptType);
+            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            JobEntry jobEntry = getJobRepository().save(new JobEntry(sourceURL, queryFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus));
+            jobId = jobEntry.getId().toString();
+            LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
+
             long stopTime = System.nanoTime();
             LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
             LOGGER.info("### Job with id=" + jobId + " has been created.  Job creation time in nanoseconds = " + (stopTime - startTime) + ".");
@@ -543,7 +551,7 @@ public class XQueryService extends RemoteService {
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
-        } catch (SchedulerException | CreateMQMessageException e) {
+        } catch (SchedulerException | CreateRabbitMQMessageException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
         } catch (URISyntaxException e) {
@@ -650,6 +658,10 @@ public class XQueryService extends RemoteService {
     }
 
     private RabbitMQMessageFactory getRabbitMQMessageFactory() {
-        return (RabbitMQMessageFactory) SpringApplicationContext.getBean("createJob");
+        return (RabbitMQMessageFactory) SpringApplicationContext.getBean("rabbitMQMessageFactory");
+    }
+
+    private JobRepository getJobRepository() {
+        return (JobRepository) SpringApplicationContext.getBean("jobRepository");
     }
 }

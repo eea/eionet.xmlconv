@@ -1,15 +1,18 @@
 package eionet.gdem.rabbitmq.service;
 
 import eionet.gdem.dto.Schema;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.errors.CreateMQMessageException;
+import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactoryImpl;
 import eionet.gdem.rabbitMQ.service.WorkersJobMessageSender;
 import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +40,10 @@ import static org.mockito.Mockito.*;
 public class RabbitMQMessageFactoryImplTest {
 
     @Mock
-    IXQJobDao xqJobDao;
+    JobRepository jobRepository;
+
+    @Mock
+    JobService jobService;
 
     @Mock
     IQueryDao queryDao;
@@ -51,7 +57,7 @@ public class RabbitMQMessageFactoryImplTest {
     @InjectMocks
     RabbitMQMessageFactoryImpl createRabbitMQMessage;
 
-    String[] jobData;
+    JobEntry jobEntry;
     Schema schema;
     HashMap queryMap;
 
@@ -59,7 +65,9 @@ public class RabbitMQMessageFactoryImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         createRabbitMQMessage.setJobId("627015");
-        jobData = new String[] {"xmlUrl", "xqFile", "resultFile", "0", "srcFile", "1246", "627015", "2020-12-09 14:07:02.0", "xquery 3.0+"};
+        InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(0);
+        jobEntry = new JobEntry("xmlUrl", "xqFile", "resultFile",0,1246,new Timestamp(new Date().getTime()),"xquery 3.0+",intStatus)
+            .setId(627015).setSrcFile("srcFile");
         schema = new Schema();
         createQueryMap();
     }
@@ -81,10 +89,13 @@ public class RabbitMQMessageFactoryImplTest {
     }
 
     @Test
-    public void createScriptAndSendMessageToRabbitMQ() throws SQLException, CreateMQMessageException {
+    public void createScriptAndSendMessageToRabbitMQ() throws SQLException, CreateRabbitMQMessageException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, null, 1, new Timestamp(new Date().getTime()),null, null, null , null);
-        when(xqJobDao.getXQJobData(anyString())).thenReturn(jobData);
-        doNothing().when(xqJobDao).processXQJob(anyString());
+        when(jobRepository.findById(anyInt())).thenReturn(jobEntry);
+        doNothing().when(jobService).changeNStatus(any(XQScript.class), anyInt());
+        when(jobRepository.getRetryCounter(anyInt())).thenReturn(0);
+        doNothing().when(jobRepository).updateJobInfo(anyInt(), anyString(), any(Timestamp.class), anyInt(), anyInt());
+        doNothing().when(jobRepository).updateInternalStatus(any(InternalSchedulingStatus.class), anyInt());
         when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryDao.getQueryInfo(anyString())).thenReturn(queryMap);
         doNothing().when(workersJobMessageSender).sendJobInfoToRabbitMQ(any(XQScript.class));

@@ -453,4 +453,37 @@
             <column name="MAX_EXECUTION_TIME" type="BIGINT"/>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-42">
+        <comment> Table for Storing internal scheduling statuses</comment>
+        <createTable tableName="INTERNAL_STATUS">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(50)"/>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-43">
+        <comment>
+            Added column INTERNAL_STATUS_ID to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="INTERNAL_STATUS_ID" type="INT">
+                <constraints foreignKeyName="FK_INTERNAL_STATUS"
+                             references="INTERNAL_STATUS(ID)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-44">
+        <sql>
+            INSERT INTO INTERNAL_STATUS VALUES (1,'RECEIVED','job has been inserted in jobs table');
+            INSERT INTO INTERNAL_STATUS VALUES (2,'QUEUED','job has been inserted in rabbitmq queue');
+            INSERT INTO INTERNAL_STATUS VALUES (3,'PROCESSING','job has been received by worker');
+        </sql>
+    </changeSet>
 </databaseChangeLog>

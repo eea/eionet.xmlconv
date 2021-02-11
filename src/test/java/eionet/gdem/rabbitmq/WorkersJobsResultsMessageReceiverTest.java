@@ -2,13 +2,12 @@ package eionet.gdem.rabbitmq;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.WorkersJobsResultsMessageReceiver;
 import eionet.gdem.rabbitMQ.model.WorkersRabbitMQResponse;
 import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,21 +21,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class WorkersJobsResultsMessageReceiverTest {
 
     @Mock
-    private IXQJobDao xqJobDao;
-
-    @Mock
-    private JobHistoryRepository jobHistoryRepository;
+    private JobService jobService;
 
     @Spy
     @InjectMocks
@@ -56,11 +52,10 @@ public class WorkersJobsResultsMessageReceiverTest {
         WorkersRabbitMQResponse response = createRabbitMQResponse(xqScript);
         Message message = convertObjectToByteArray(response);
 
-        doNothing().when(xqJobDao).changeJobStatus(anyString(),anyInt());
-        JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, null, 0, new Timestamp(new Date().getTime()),null, null, null , null);
-        when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
+        doNothing().when(jobService).changeNStatus(any(XQScript.class),anyInt());
+        doNothing().when(jobService).changeInternalStatus(any(InternalSchedulingStatus.class), anyInt());
         receiver.onMessage(message);
-        verify(xqJobDao).changeJobStatus(anyString(),anyInt());
+        verify(jobService).changeNStatus(any(XQScript.class),anyInt());
     }
 
     private Message convertObjectToByteArray(WorkersRabbitMQResponse response) throws JsonProcessingException {
