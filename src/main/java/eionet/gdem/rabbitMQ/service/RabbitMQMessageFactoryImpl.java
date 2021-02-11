@@ -197,7 +197,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     void processJob() {
         try {
             Integer retryCounter = jobRepository.getRetryCounter(Integer.parseInt(jobId));
-            jobRepository.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter==null ? 1 : retryCounter + 1, Integer.parseInt(jobId));
+            jobRepository.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, Integer.parseInt(jobId));
             InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
             jobRepository.updateInternalStatus(intStatus, Integer.parseInt(jobId));
             LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");

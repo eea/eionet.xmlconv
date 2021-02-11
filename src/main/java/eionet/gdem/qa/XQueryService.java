@@ -276,7 +276,8 @@ public class XQueryService extends RemoteService {
             long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
 
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
-            JobEntry jobEntry = getJobRepository().save(new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus));
+            JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
+            jobEntry = getJobRepository().save(jobEntry);
             newId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + newId + " has been inserted in table T_XQJOBS");
 
@@ -525,7 +526,8 @@ public class XQueryService extends RemoteService {
             //save the job definition in the DB
             long startTime = System.nanoTime();
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
-            JobEntry jobEntry = getJobRepository().save(new JobEntry(sourceURL, queryFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus));
+            JobEntry jobEntry = new JobEntry(sourceURL, queryFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
+            jobEntry = getJobRepository().save(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
 
