@@ -1,5 +1,6 @@
 package eionet.gdem.services;
 
+import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -8,6 +9,7 @@ import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class JobRequestHandlerServiceTest {
 
+    @Qualifier("jobRequestHandlerService")
     @Autowired
     JobRequestHandlerService jobRequestHandlerService;
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.errors.BadRequestException;
 import eionet.gdem.api.errors.EmptyParameterException;
@@ -61,16 +62,8 @@ public class QaController {
         this.qaService = qaService;
     }
 
-    JobRequestHandlerService jobRequestHandlerService = new JobRequestHandlerServiceImpl();
-
-
     @Autowired(required=false)
     RabbitTemplate rabbitTemplate;
-  //  @Autowired
-   // RabbitMQProducerServiceImpl producer;
-
-   // @Autowired
-   // RabbitMQConsumerServiceImpl consumer;
     
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
@@ -95,7 +88,6 @@ public class QaController {
 
         String parentdir = eionet.gdem.Properties.appRootFolder + "/tmpfile/";
         String country = StringUtils.substringBefore(report.getOriginalFilename(), "_");
-//        String uuid = "df-" + System.currentTimeMillis() + "-" + UUID.randomUUID();
         String uuid = "habitats-df-" + country;
         String tmpdir = parentdir + uuid;
         if (Files.exists(Paths.get(tmpdir))) {
@@ -249,7 +241,7 @@ public class QaController {
                     map.put(value, files);
                 }
             }
-            HashMap<String, String> jobIdsAndFileUrls = jobRequestHandlerService.analyzeMultipleXMLFiles(map);
+            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(map);
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
 
             for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {
@@ -375,6 +367,10 @@ public class QaController {
             LOGGER.info(e.getMessage());
             throw new RestApiException("Could not retrieve schema information for schema " + schemaUrl);
         }
+    }
+
+    private static JobRequestHandlerService getJobRequestHandlerServiceBean() {
+        return (JobRequestHandlerService) SpringApplicationContext.getBean("jobRequestHandlerService");
     }
 
 }

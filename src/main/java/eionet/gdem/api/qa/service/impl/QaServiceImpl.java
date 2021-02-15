@@ -219,12 +219,12 @@ public class QaServiceImpl implements QaService {
         return doc;
     }
 
-    protected void addObligationsFiles(HashMap map,String envelopeUrl) throws XMLConvException{
+    protected void addObligationsFiles(HashMap<String,List<String>> map,String envelopeUrl) throws XMLConvException{
         List<String> obligationUrls = extractObligationUrlsFromEnvelopeUrl(envelopeUrl);
         for (String obligationUrl: obligationUrls
              ) {
             if(obligationUrl!=null && !obligationUrl.isEmpty())    {
-                Vector obligation = new Vector();
+                List<String> obligation = new ArrayList<>();
                 obligation.add(envelopeUrl+"/xml");
                 map.put(obligationUrl,obligation);
             }

@@ -97,11 +97,11 @@ public class XQueryService extends RemoteService {
      * @param schema Schema
      * @throws XMLConvException If an error occurs.
      */
-    public Vector listQueries(String schema) throws XMLConvException {
+    public List<Hashtable> listQueries(String schema) throws XMLConvException {
 
         ListQueriesMethod method = new ListQueriesMethod();
-        Vector v = method.listQueries(schema);
-        return v;
+        List<Hashtable> list = method.listQueries(schema);
+        return list;
     }
 
     /**
@@ -167,8 +167,6 @@ public class XQueryService extends RemoteService {
      */
     public Vector analyzeXMLFiles(String schema, String origFile, Vector result) throws XMLConvException {
 
-//        LOGGER.info("analyzeXMLFiles: " + origFile);
-
         if (result == null) {
             result = new Vector();
         }
@@ -176,12 +174,11 @@ public class XQueryService extends RemoteService {
         String newId = "-1"; // should not be returned with value -1;
         String file = origFile;
 
-        Vector queries = listQueries(schema);
+        List<Hashtable> queries = listQueries(schema);
 
-        if (!Utils.isNullVector(queries)) {
-            for (int j = 0; j < queries.size(); j++) {
-
-                String query_id = String.valueOf( ( (Hashtable) queries.get(j)).get( ListQueriesMethod.KEY_QUERY_ID ));
+        if (!Utils.isNullList(queries)) {
+            for(Hashtable ht: queries){
+                String query_id = String.valueOf(ht.get( ListQueriesMethod.KEY_QUERY_ID ));
                 newId = analyzeXMLFile( file, query_id , schema );
 
                 Vector queryResult = new Vector();
@@ -190,8 +187,6 @@ public class XQueryService extends RemoteService {
                 result.add(queryResult);
             }
         }
-
-//        LOGGER.info("Analyze xml result: " + result.toString());
         return result;
     }
 

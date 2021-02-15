@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.junit.Before;
@@ -152,7 +153,7 @@ public class XQueryServiceTest {
     public void testListQueriesDeactivated () throws Exception {
         XQueryService qm = new XQueryService();
         queryDao.deactivateQuery("26");
-        Vector listQaResult = qm.listQueries("http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919");
+        List<Hashtable> listQaResult = qm.listQueries("http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919");
         assertTrue(listQaResult.size()==0);
         
         queryDao.activateQuery("26");

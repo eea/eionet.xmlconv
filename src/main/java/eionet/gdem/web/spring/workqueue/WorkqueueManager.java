@@ -64,8 +64,6 @@ public class WorkqueueManager {
     /** Dao for getting job data. */
     private static IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
 
-    JobRequestHandlerService jobRequestHandlerService = new JobRequestHandlerServiceImpl();
-
     /**
      * Get work-queue job data.
      *
@@ -163,7 +161,7 @@ public class WorkqueueManager {
             List<String> files = new ArrayList<>();
             files.add(sourceUrl);
             h.put(schemaUrl, files);
-            HashMap<String, String> resultMap = jobRequestHandlerService.analyzeMultipleXMLFiles(h);
+            HashMap<String, String> resultMap = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(h);
             if (resultMap != null) {
                 for (Map.Entry<String, String> entry : resultMap.entrySet()) {
                     result.add(entry.getKey());
@@ -450,5 +448,9 @@ public class WorkqueueManager {
 
     private static JobHistoryRepository getJobHistoryRepository() {
         return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
+    }
+
+    private static JobRequestHandlerService getJobRequestHandlerServiceBean() {
+        return (JobRequestHandlerService) SpringApplicationContext.getBean("jobRequestHandlerService");
     }
 }
