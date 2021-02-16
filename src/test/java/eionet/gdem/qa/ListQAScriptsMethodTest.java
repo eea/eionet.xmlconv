@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Vector;
 
-import org.dbunit.IDatabaseTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,7 +66,7 @@ public class ListQAScriptsMethodTest {
     @Test
     public void testListConversionsXSDResult() throws Exception {
 
-        XQueryService qm = new XQueryService();
+        QueryService qm = new QueryService();
 
         Vector listQaResult = qm.listQAScripts("http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd");
         assertTrue(listQaResult.size() == 1);

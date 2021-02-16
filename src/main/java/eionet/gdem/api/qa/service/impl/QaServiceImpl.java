@@ -4,13 +4,13 @@ import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
-import eionet.gdem.api.qa.web.QaController;
 import eionet.gdem.dto.Schema;
-import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.QaScriptView;
-import eionet.gdem.qa.XQueryService;
+import eionet.gdem.qa.QueryService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobRequestHandlerService;
+import eionet.gdem.services.JobResultHandlerService;
+import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -37,7 +36,7 @@ import java.util.*;
 @Service
 public class QaServiceImpl implements QaService {
 
-    private XQueryService xQueryService;
+    private QueryService queryService;
     /** DAO for getting schema info. */
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
     private static final Logger LOGGER = LoggerFactory.getLogger(QaService.class);
@@ -45,11 +44,17 @@ public class QaServiceImpl implements QaService {
     @Autowired
     JobRequestHandlerService jobRequestHandlerService;
 
+    @Autowired
+    JobResultHandlerService jobResultHandlerService;
+
+    @Autowired
+    RunScriptAutomaticService runScriptAutomaticService;
+
     public QaServiceImpl() {
     }
 
-    public QaServiceImpl(XQueryService xQueryService) {
-        this.xQueryService = xQueryService;
+    public QaServiceImpl(QueryService queryService) {
+        this.queryService = queryService;
     }
 
     @Override
@@ -97,7 +102,6 @@ public class QaServiceImpl implements QaService {
 
         HashMap<String, String> fileLinksAndSchemas = extractFileLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
 
-        XQueryService xqService = getXqueryService();
         HashMap map = new HashMap();
         try {
             for (Map.Entry<String, String> entry : fileLinksAndSchemas.entrySet()) {
@@ -125,16 +129,15 @@ public class QaServiceImpl implements QaService {
             }
             return results;
         } catch (XMLConvException ex) {
-            throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
+            throw new XMLConvException("error scheduling Jobs with QueryService ", ex);
         }
 
     }
 
     @Override
     public Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException {
-        XQueryService xqService = getXqueryService();
         try {
-            return xqService.runQAScript(sourceUrl, scriptId);
+            return runScriptAutomaticService.runQAScript(sourceUrl, scriptId);
         } catch (XMLConvException ex) {
             throw new XMLConvException("error running Qa Script for sourceUrl :" + sourceUrl + " and scriptId:" + scriptId, ex);
         }
@@ -143,8 +146,8 @@ public class QaServiceImpl implements QaService {
     @Override
     public Hashtable<String, String> getJobResults(String jobId) throws XMLConvException {
 
-        XQueryService xqueryService = getXqueryService(); // new XQueryService();
-        Hashtable<String, String> results = xqueryService.getResult(jobId);
+        QueryService queryService = getQueryService(); // new QueryService();
+        Hashtable<String, String> results = jobResultHandlerService.getResult(jobId);
         int resultCode = Integer.parseInt(results.get(Constants.RESULT_CODE_PRM));
         String executionStatusName = "";
         switch (resultCode) {
@@ -171,11 +174,11 @@ public class QaServiceImpl implements QaService {
 
     @Override
     public List<LinkedHashMap<String, String>> listQAScripts(String schema, String active) throws XMLConvException {
-        XQueryService xqueryService = new XQueryService();
-        Vector xqueryServiceResults = xqueryService.listQAScripts(schema, active);
+        QueryService queryService = new QueryService();
+        Vector queryServiceResults = queryService.listQAScripts(schema, active);
         List<LinkedHashMap<String, String>> resultsList = new LinkedList<LinkedHashMap<String, String>>();
-        for (Object xqueryServiceResult : xqueryServiceResults) {
-            Hashtable hs = (Hashtable) xqueryServiceResult;
+        for (Object queryServiceResult : queryServiceResults) {
+            Hashtable hs = (Hashtable) queryServiceResult;
             String scriptType = (String) hs.get(QaScriptView.SCRIPT_TYPE);
             if (scriptType == null) {
                 scriptType = "xsd";
@@ -197,11 +200,11 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public XQueryService getXqueryService() {
-        if (xQueryService == null) {
-            xQueryService = new XQueryService();
+    public QueryService getQueryService() {
+        if (queryService == null) {
+            queryService = new QueryService();
         }
-        return xQueryService;
+        return queryService;
     }
 
     @Override

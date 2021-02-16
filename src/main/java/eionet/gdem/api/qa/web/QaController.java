@@ -13,9 +13,8 @@ import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.RestApiException;
-import eionet.gdem.qa.XQueryService;
+import eionet.gdem.qa.QueryService;
 import eionet.gdem.services.JobRequestHandlerService;
-import eionet.gdem.services.impl.JobRequestHandlerServiceImpl;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -153,9 +152,9 @@ public class QaController {
             throw new EmptyParameterException("scriptId");
         }      
         
-        XQueryService xqueryService = new XQueryService();
-          String jobId = xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId());
-          xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
+        QueryService queryService = new QueryService();
+          String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null);
+          getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
           LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
           results.put("jobId",jobId);
           return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
@@ -229,7 +228,7 @@ public class QaController {
 
         HashMap<String, String> fileLinksAndSchemas =new LinkedHashMap<>();
         fileLinksAndSchemas.put(file,schema);
-        XQueryService xqService = new XQueryService();
+        QueryService xqService = new QueryService();
         HashMap map = new HashMap();
         try {
             for (Map.Entry<String, String> entry : fileLinksAndSchemas.entrySet()) {
@@ -253,7 +252,7 @@ public class QaController {
 
             return results;
         } catch (XMLConvException ex) {
-            throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
+            throw new XMLConvException("error scheduling Jobs with QueryService ", ex);
         }
     }
 

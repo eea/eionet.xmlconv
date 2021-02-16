@@ -3,8 +3,7 @@ package eionet.gdem.api.qa.service;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.dto.Schema;
-import eionet.gdem.exceptions.RestApiException;
-import eionet.gdem.qa.XQueryService;
+import eionet.gdem.qa.QueryService;
 import org.w3c.dom.Document;
 
 import java.util.HashMap;
@@ -38,7 +37,7 @@ public interface QaService {
     Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException;
     List<LinkedHashMap<String,String>> listQAScripts(String schema, String active) throws XMLConvException;
 
-    XQueryService getXqueryService();
+    QueryService getQueryService();
     
     public Document getXMLFromEnvelopeURL(String envelopeURL) throws XMLConvException ;
 

@@ -11,10 +11,12 @@ import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.ListQueriesMethod;
 import eionet.gdem.qa.QaScriptView;
-import eionet.gdem.qa.XQueryService;
+import eionet.gdem.qa.QueryService;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.errors.CreateMQMessageException;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.SchedulerService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.conversions.IConvTypeDao;
@@ -29,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -50,15 +54,18 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
 
     private SchemaManager schManager = new SchemaManager();
 
-    XQueryService xQueryService;
+    QueryService queryService;
+
+    @Autowired
+    SchedulerService schedulerService;
 
     @Autowired
     public JobRequestHandlerServiceImpl() {
-        xQueryService = new XQueryService();
+        queryService = new QueryService();
     }
 
     /**
-     * This method is copied from XQueryService public Vector analyzeXMLFiles(Hashtable files) throws XMLConvException {
+     * This method is copied from QueryService public Vector analyzeXMLFiles(Hashtable files) throws XMLConvException {
      *
      * @param filesAndSchemas - Structure with XMLschemas as a keys and values are list of XML Files
      * @return Hashtable result: Structure with JOB ids as a keys and source files as values
@@ -84,7 +91,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                 // get all possible xqueries from db
                 String newId = "-1"; // should not be returned with value -1;
 
-                List<Hashtable> queries = xQueryService.listQueries(schema);
+                List<Hashtable> queries = queryService.listQueries(schema);
 
                 if (!Utils.isNullList(queries)) {
                     for(Hashtable ht: queries){
@@ -159,7 +166,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             LOGGER.info("### Job with id=" + jobId + " has been created.");
 
             if (Properties.enableQuartz) {
-                xQueryService.scheduleJob(jobId, sourceSize, scriptType);
+                schedulerService.scheduleJob(jobId, sourceSize, scriptType);
                 LOGGER.info("### Job with id=" + jobId + " has been scheduled.");
                 getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, queryFile, resultFile, scriptType));
                 LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
@@ -180,6 +187,63 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             throw new XMLConvException(e.getMessage());
         }
         return jobId;
+    }
+
+    /**
+     * Request from XML/RPC client Stores the xqScript and starts a job in the workqueue.
+     *
+     * @param sourceURL - URL of the source XML
+     * @param xqScript - XQueryScript to be processed
+     * @param scriptType - xquery, xsl or xgawk
+     * @throws XMLConvException If an error occurs.
+     */
+    @Override
+    public String analyze(String sourceURL, String xqScript, String scriptType) throws XMLConvException {
+        String xqFile = "";
+        String originalSourceURL = sourceURL;
+
+        LOGGER.info("XML/RPC call for analyze xml with custom script: " + sourceURL);
+        // save XQScript in a text file for the WQ
+        try {
+            String extension = ScriptUtils.getExtensionFromScriptType(scriptType);
+            xqFile = Utils.saveStrToFile(xqScript, extension);
+        } catch (FileNotFoundException fne) {
+            throw new XMLConvException("Folder does not exist: :" + fne.toString());
+        } catch (IOException ioe) {
+            throw new XMLConvException("Error storing XQScript into file:" + ioe.toString());
+        }
+
+        // name for temporary output file where the esult is stored:
+        String resultFile = Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + ".html";
+        String newId = "-1"; // should not be returned with value -1;
+
+        // start a job in the Workqueue
+        try {
+            // get the trusted URL from source file adapter
+            sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
+            long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
+
+            newId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
+
+            if (Properties.enableQuartz) {
+                schedulerService.scheduleJob(newId, sourceSize, scriptType);
+                getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+                LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
+            } else {
+                getJobHistoryRepository().save(new JobHistoryEntry(newId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+                LOGGER.info("Job with id #" + newId + " has been inserted in table JOB_HISTORY ");
+                getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(newId);
+            }
+        } catch (SQLException sqe) {
+            LOGGER.error("DB operation failed: " + sqe.toString());
+            throw new XMLConvException("DB operation failed: " + sqe.toString());
+        } catch (URISyntaxException e) {
+            throw new XMLConvException("URI syntax error: " + e);
+        } catch (SchedulerException | CreateMQMessageException e) {
+            LOGGER.error("Scheduling job exception: " + e.toString());
+            throw new XMLConvException("Scheduling job exception: " + e.toString());
+        }
+        return newId;
     }
 
     private HashMap<String,String> createMapForJobValidation(String sourceFileURL, String schema) throws XMLConvException {

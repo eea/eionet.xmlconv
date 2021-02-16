@@ -20,7 +20,7 @@ import org.apache.struts.action.ActionMapping;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
-import eionet.gdem.qa.XQueryService;
+import eionet.gdem.qa.QueryService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class RunQAScriptAction extends BaseMethodAction {
     protected static final String URL_PARAM_NAME = "url";
 
     /**
-     * Purpose of this action is to execute <code>XQueryService</code> runQAScript method. The method expects 2 request parameters:
+     * Purpose of this action is to execute <code>QueryService</code> runQAScript method. The method expects 2 request parameters:
      * convert_id and url;
      */
     @Override
@@ -78,13 +78,13 @@ public class RunQAScriptAction extends BaseMethodAction {
                 throw new XMLConvException(URL_PARAM_NAME + " parameter is missing from request.");
             }
 
-            // call XQueryService
-            XQueryService xqs = new XQueryService();
+            // call QueryService
+            QueryService qs = new QueryService();
             // set up the servlet outputstream form converter
-            xqs.setHttpResponse(methodResponse);
-            xqs.setTicket(getTicket(request));
+            qs.setHttpResponse(methodResponse);
+            qs.setTicket(getTicket(request));
             // execute conversion
-            xqs.runQAScript(url, scriptId);
+            qs.runQAScript(url, scriptId);
         } catch (Exception e) {
             LOGGER.error(e.toString());
             try {

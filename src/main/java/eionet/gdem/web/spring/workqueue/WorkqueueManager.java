@@ -25,23 +25,21 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.qa.XQueryService;
+import eionet.gdem.qa.QueryService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobRequestHandlerService;
-import eionet.gdem.services.impl.JobRequestHandlerServiceImpl;
+import eionet.gdem.services.SchedulerService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import org.quartz.JobKey;
 import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -115,10 +113,10 @@ public class WorkqueueManager {
             LOGGER.error("Error adding job to workqueue", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
-        XQueryService xqE = new XQueryService();
+        QueryService xqE = new QueryService();
         xqE.setTrustedMode(false);
         try {
-            String result = xqE.analyze(sourceUrl, scriptContent, scriptType);
+            String result = getJobRequestHandlerServiceBean().analyze(sourceUrl, scriptContent, scriptType);
             return result;
         } catch (Exception e) {
             LOGGER.error("Error adding job to workqueue", e);
@@ -154,7 +152,7 @@ public class WorkqueueManager {
             LOGGER.error("Error adding job to workqueue", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
-        XQueryService xqE = new XQueryService();
+        QueryService xqE = new QueryService();
         xqE.setTrustedMode(false);
         try {
             HashMap h = new HashMap();
@@ -284,7 +282,7 @@ public class WorkqueueManager {
      */
     public static void restartJobs(String[] jobIds) throws XMLConvException {
         LOGGER.info("Request to restart jobs " + Utils.stringArray2String(jobIds, "," ) );
-        XQueryService xQueryService = new XQueryService();
+        QueryService queryService = new QueryService();
         List<String> jobsToRestart = new ArrayList<>();
         try{
             if (jobIds.length > 0) {
@@ -323,7 +321,7 @@ public class WorkqueueManager {
                 LOGGER.info("Jobs restarted: " + Utils.stringArray2String(jobIds, "," ));
                 for (String jobId : jobIds) {
                     // and reschedule each job
-                    xQueryService.rescheduleJob(jobId);
+                    getSchedulerServiceBean().rescheduleJob(jobId);
                     getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), null, null, null, null));
                     LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
                 }
@@ -452,5 +450,9 @@ public class WorkqueueManager {
 
     private static JobRequestHandlerService getJobRequestHandlerServiceBean() {
         return (JobRequestHandlerService) SpringApplicationContext.getBean("jobRequestHandlerService");
+    }
+
+    private static SchedulerService getSchedulerServiceBean() {
+        return (SchedulerService) SpringApplicationContext.getBean("schedulerService");
     }
 }
