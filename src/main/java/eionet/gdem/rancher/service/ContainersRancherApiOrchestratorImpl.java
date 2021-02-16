@@ -83,13 +83,13 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     @Override
     public synchronized ContainerData deleteContainer(String containerName) throws RancherApiException {
         lock = true;
-        String containerId = getContainerId(containerName);
-        HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
-        ResponseEntity<ContainerData> result;
-        List<String> instancesBeforeDelete;
         StopWatch timer = new StopWatch();
-        timer.start();
+        ResponseEntity<ContainerData> result;
         try {
+            timer.start();
+            String containerId = getContainerId(containerName);
+            HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+            List<String> instancesBeforeDelete;
             ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
             String serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
             instancesBeforeDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
