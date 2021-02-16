@@ -117,8 +117,8 @@ public class FixedTimeScheduledTasks {
                 readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
             }
             Integer workersToDelete = readyWorkers.size() - jobs.size();
+            Integer count = 0;
             for (JobExecutor worker : readyWorkers) {
-                Integer count = 0;
                 containersOrchestrator.deleteContainer(worker.getName());
                 count++;
                 if (count == workersToDelete) {
