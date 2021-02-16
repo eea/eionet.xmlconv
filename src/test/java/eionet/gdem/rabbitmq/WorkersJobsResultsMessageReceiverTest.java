@@ -3,6 +3,7 @@ package eionet.gdem.rabbitmq;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.WorkersJobsResultsMessageReceiver;
@@ -20,10 +21,7 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.sql.SQLException;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
@@ -33,6 +31,9 @@ public class WorkersJobsResultsMessageReceiverTest {
 
     @Mock
     private JobService jobService;
+
+    @Mock
+    private JobExecutorService jobExecutorService;
 
     @Spy
     @InjectMocks
@@ -44,7 +45,7 @@ public class WorkersJobsResultsMessageReceiverTest {
     }
 
     @Test
-    public void testOnMessage() throws JsonProcessingException, SQLException {
+    public void testOnMessage() throws JsonProcessingException {
         String[] scriptParams = new String[0];
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12452");
@@ -53,6 +54,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         Message message = convertObjectToByteArray(response);
 
         doNothing().when(jobService).changeNStatus(any(XQScript.class),anyInt());
+        doNothing().when(jobExecutorService).updateStatus(anyInt(), anyInt(), anyString());
         doNothing().when(jobService).changeInternalStatus(any(InternalSchedulingStatus.class), anyInt());
         receiver.onMessage(message);
         verify(jobService).changeNStatus(any(XQScript.class),anyInt());
