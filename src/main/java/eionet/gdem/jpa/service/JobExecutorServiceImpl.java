@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class JobExecutorServiceImpl implements JobExecutorService {
 
@@ -38,9 +36,8 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     @Override
     public void saveJobExecutor(JobExecutor jobExecutor) {
         try {
-            List<JobExecutor> jobExecutors = jobExecutorRepository.findByName(jobExecutor.getName());
-            boolean jobExecExists = jobExecutors.stream().anyMatch(je -> je.getName().equals(jobExecutor.getName()));
-            if (jobExecExists) {
+            JobExecutor jobExec = jobExecutorRepository.findByName(jobExecutor.getName());
+            if (jobExec!=null) {
                 jobExecutorRepository.updateStatus(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getName());
             } else {
                 jobExecutorRepository.save(jobExecutor);

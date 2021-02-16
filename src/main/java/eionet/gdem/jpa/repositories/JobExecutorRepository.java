@@ -14,7 +14,7 @@ public interface JobExecutorRepository extends JpaRepository<JobExecutor, Intege
 
     List<JobExecutor> findByStatus(Integer status);
 
-    List<JobExecutor> findByName(String name);
+    JobExecutor findByName(String name);
 
     @Modifying
     @Query(value = "update JOB_EXECUTOR set STATUS= :status, JOB_ID= :jobId where NAME= :name", nativeQuery=true)

@@ -43,18 +43,17 @@ public class JobExecutorTestIT {
 
     @Test
     public void testFindByName() {
-        List<JobExecutor> jobExecutors = jobExecutorRepository.findByName("jobExecutor2");
-        assertThat(jobExecutors.size(), is(1));
-        assertThat(jobExecutors.get(0).getJobId(), is(46));
-        assertThat(jobExecutors.get(0).getStatus(), is(1));
+        JobExecutor jobExecutor = jobExecutorRepository.findByName("jobExecutor2");
+        assertThat(jobExecutor.getJobId(), is(46));
+        assertThat(jobExecutor.getStatus(), is(1));
     }
 
     @Transactional
     @Test
     public void testUpdateStatus() {
         jobExecutorRepository.updateStatus(0, 47, "jobExecutor3");
-        List<JobExecutor> jobExecutors = jobExecutorRepository.findByName("jobExecutor3");
-        assertThat(jobExecutors.get(0).getStatus(), is(0));
+        JobExecutor jobExecutor = jobExecutorRepository.findByName("jobExecutor3");
+        assertThat(jobExecutor.getStatus(), is(0));
     }
 }
 
