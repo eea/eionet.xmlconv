@@ -486,4 +486,24 @@
             INSERT INTO INTERNAL_STATUS VALUES (3,'PROCESSING','job has been received by worker');
         </sql>
     </changeSet>
+    <changeSet author="favvmary" id="rev-45">
+        <comment> Table for Storing worker info</comment>
+        <createTable tableName="JOB_EXECUTOR">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
 </databaseChangeLog>

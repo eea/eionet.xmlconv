@@ -2,22 +2,31 @@ package eionet.gdem.infrastructure.scheduling;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SchedulingConstants;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.repositories.JobExecutorRepository;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.notifications.UNSEventSender;
+import eionet.gdem.rancher.exception.RancherApiException;
+import eionet.gdem.rancher.model.ServiceApiRequestBody;
+import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
+import eionet.gdem.rancher.service.ContainersRancherApiOrchestratorImpl;
+import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.*;
 
 @Service
@@ -31,6 +40,16 @@ public class FixedTimeScheduledTasks {
     @Qualifier("jobHistoryRepository")
     @Autowired
     JobHistoryRepository repository;
+
+    @Qualifier("jobRepository")
+    @Autowired
+    private JobRepository jobRepository;
+    @Autowired
+    private JobExecutorRepository jobExecutorRepository;
+    @Autowired
+    private ServicesRancherApiOrchestrator servicesOrchestrator;
+    @Autowired
+    private ContainersRancherApiOrchestrator containersOrchestrator;
 
     @Autowired
     public FixedTimeScheduledTasks() {
@@ -71,4 +90,59 @@ public class FixedTimeScheduledTasks {
             LOGGER.info("Sent notifications for long running jobs");
         }
     }
+
+    @Transactional
+    @Scheduled(cron= "0 */2 * * * *")  //every 2 minutes
+    public void scheduleWorkersCreationOrDeletion() throws RancherApiException {
+        String serviceId = Properties.rancherServiceId;
+        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(2);
+        List<JobEntry> jobs = jobRepository.findByIntSchedulingStatus(internalStatus);
+        List<JobExecutor> readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
+        if (jobs.size()>readyWorkers.size()) {
+            Integer newWorkers = jobs.size() - readyWorkers.size();
+            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(newWorkers+1);
+            while (ContainersRancherApiOrchestratorImpl.lock) {
+                LOGGER.info("Waiting for rancher to complete other tasks");
+            }
+            try {
+                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+                LOGGER.info("Created " + newWorkers + " new worker(s)");
+            } catch (RancherApiException e) {
+                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+                LOGGER.info("Created " + newWorkers + " new worker(s)");
+            }
+        } else {
+            while (ContainersRancherApiOrchestratorImpl.lock) {
+                LOGGER.info("Waiting for rancher to complete other tasks");
+                readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
+            }
+            Integer workersToDelete = readyWorkers.size() - jobs.size();
+            for (JobExecutor worker : readyWorkers) {
+                Integer count = 0;
+                containersOrchestrator.deleteContainer(worker.getName());
+                count++;
+                if (count == workersToDelete) {
+                    LOGGER.info("Deleted unused containers");
+                    return;
+                }
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

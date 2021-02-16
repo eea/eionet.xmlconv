@@ -9,11 +9,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Repository("jobRepository")
 public interface JobRepository extends JpaRepository<JobEntry, Integer> {
 
     JobEntry findById(Integer id);
+
+    List<JobEntry> findByIntSchedulingStatus(InternalSchedulingStatus intSchedulingStatus);
 
     @Modifying
     @Query(value = "update T_XQJOBS set N_STATUS = :nStatus, INSTANCE= :instance, TIME_STAMP= :timestamp, RETRY_COUNTER= :retryCounter where JOB_ID = :jobId", nativeQuery=true)

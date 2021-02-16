@@ -4,7 +4,7 @@ import eionet.gdem.qa.XQScript;
 
 public class WorkersRabbitMQResponse {
 
-    private XQScript xqScript;
+    private XQScript script;
 
     private int jobStatus;
 
@@ -16,12 +16,12 @@ public class WorkersRabbitMQResponse {
 
     private String executionTime;
 
-    public XQScript getXqScript() {
-        return xqScript;
+    public XQScript getScript() {
+        return script;
     }
 
-    public void setXqScript(XQScript xqScript) {
-        this.xqScript = xqScript;
+    public void setScript(XQScript script) {
+        this.script = script;
     }
 
     public int getJobStatus() {

@@ -218,6 +218,7 @@ public class Properties {
     public static final Integer rancherJobExecutorServiceScale;
     public static final Long rancherServiceMemory;
     public static final Long rancherServiceMemoryReservation;
+    public static final String rancherServiceId;
 
     public static boolean rabbitMqEnabled ;
     public static String rabbitMQHost;
@@ -358,6 +359,7 @@ public class Properties {
         rancherJobExecutorServiceScale = getIntProperty("env.rancher.api.jobExecutor.service.scale");
         rancherServiceMemory = getLongProperty("env.rancher.api.service.memory");
         rancherServiceMemoryReservation = getLongProperty("env.rancher.api.service.memoryReservation");
+        rancherServiceId = getStringProperty("env.rancher.api.service.id");
 
         rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");
