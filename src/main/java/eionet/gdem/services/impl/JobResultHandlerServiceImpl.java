@@ -41,7 +41,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
      * @throws XMLConvException If an error occurs.
      */
     @Override
-    public Hashtable getResult(String jobId) throws XMLConvException {
+    public Hashtable<String,String> getResult(String jobId) throws XMLConvException {
 
         LOGGER.info("XML/RPC call for getting result with JOB ID: " + jobId);
 
@@ -86,7 +86,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
      * @throws XMLConvException If an error occurs.
      */
     @Override
-    public Hashtable result(int status, String[] jobData, HashMap scriptData, String jobId) throws XMLConvException {
+    public Hashtable<String,String> result(int status, String[] jobData, HashMap scriptData, String jobId) throws XMLConvException {
         Hashtable<String, String> h = new Hashtable<String, String>();
         int resultCode;
         String resultValue = "";
