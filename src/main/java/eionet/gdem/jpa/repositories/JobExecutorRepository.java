@@ -16,6 +16,8 @@ public interface JobExecutorRepository extends JpaRepository<JobExecutor, Intege
 
     JobExecutor findByName(String name);
 
+    void deleteByName(String name);
+
     @Modifying
     @Query(value = "update JOB_EXECUTOR set STATUS= :status, JOB_ID= :jobId where NAME= :name", nativeQuery=true)
     void updateStatus(@Param("status") Integer status, @Param("jobId") Integer jobId, @Param("name") String name);

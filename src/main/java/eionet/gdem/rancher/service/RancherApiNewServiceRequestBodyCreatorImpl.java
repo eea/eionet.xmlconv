@@ -23,8 +23,8 @@ public class RancherApiNewServiceRequestBodyCreatorImpl implements RancherApiNew
 
         ServiceLaunchConfig launchConfig = new ServiceLaunchConfig().setImageUuid(Properties.rancherJobExecutorImageUuid)
                 .setEnvironment(environment).setLabels(labels)
-                .setStdinOpen(true).setTty(true).setMemory(Properties.rancherServiceMemory)
-                .setMemoryReservation(Properties.rancherServiceMemoryReservation);
+                .setStdinOpen(true).setTty(true).setMemory(Properties.rancherJobExecServiceMemory)
+                .setMemoryReservation(Properties.rancherJobExecServiceMemoryReservation);
 
         RancherApiNewServiceRequestBody serviceRequestBody = new RancherApiNewServiceRequestBody().setLaunchConfig(launchConfig)
                 .setName(serviceName).setScale(Properties.rancherJobExecutorServiceScale).setStackId(stackId).setStartOnCreate(true);

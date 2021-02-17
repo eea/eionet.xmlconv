@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 /**
  * Several settings and properties for XMLCONV application.
@@ -216,9 +215,10 @@ public class Properties {
     public static final String rancherJobExecutorImageUuid;
     public static final String rancherJobExecutorStackId;
     public static final Integer rancherJobExecutorServiceScale;
-    public static final Long rancherServiceMemory;
-    public static final Long rancherServiceMemoryReservation;
-    public static final String rancherServiceId;
+    public static final Long rancherJobExecServiceMemory;
+    public static final Long rancherJobExecServiceMemoryReservation;
+    public static final String rancherJobExecServiceId;
+    public static final boolean enableJobExecRancherScheduledTask;
 
     public static boolean rabbitMqEnabled ;
     public static String rabbitMQHost;
@@ -357,9 +357,10 @@ public class Properties {
         rancherJobExecutorImageUuid = getStringProperty("env.rancher.api.jobExecutor.imageUuid");
         rancherJobExecutorStackId = getStringProperty("env.rancher.api.jobExecutor.stackId");
         rancherJobExecutorServiceScale = getIntProperty("env.rancher.api.jobExecutor.service.scale");
-        rancherServiceMemory = getLongProperty("env.rancher.api.service.memory");
-        rancherServiceMemoryReservation = getLongProperty("env.rancher.api.service.memoryReservation");
-        rancherServiceId = getStringProperty("env.rancher.api.service.id");
+        rancherJobExecServiceMemory = getLongProperty("env.rancher.api.jobExec.service.memory");
+        rancherJobExecServiceMemoryReservation = getLongProperty("env.rancher.api.jobExec.service.memoryReservation");
+        rancherJobExecServiceId = getStringProperty("env.rancher.api.jobExec.service.id");
+        enableJobExecRancherScheduledTask = Boolean.parseBoolean(getStringProperty("env.enable.jobExecutor.rancher.scheduled.task"));
 
         rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");

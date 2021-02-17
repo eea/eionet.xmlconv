@@ -75,7 +75,10 @@ very bad Sparql query. In a production environment redirection to mock applicati
 * config.cr.mockCrUrl=
 * config.enableXqueryCrCallsInterception=false
 
-
-
 #### Setup a dockerized rabbitmq instance locally:
 docker run -d --hostname my-rabbit -p 0.0.0.0:15672:15672 -p 5672:5672 --name some-rabbit -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password rabbitmq:3-management
+
+#### Property for enabling scheduled task that orchestrates creation/deletion of jobExecutor containers
+* env.enable.jobExecutor.rancher.scheduled.task=false
+
+It should be set to false locally so as not to run.

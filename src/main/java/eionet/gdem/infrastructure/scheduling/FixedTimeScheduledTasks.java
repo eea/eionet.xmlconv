@@ -94,39 +94,54 @@ public class FixedTimeScheduledTasks {
     @Transactional
     @Scheduled(cron= "0 */2 * * * *")  //every 2 minutes
     public void scheduleWorkersCreationOrDeletion() throws RancherApiException {
-        String serviceId = Properties.rancherServiceId;
+        if (!Properties.enableJobExecRancherScheduledTask) {
+            return;
+        }
+        String serviceId = Properties.rancherJobExecServiceId;
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(2);
         List<JobEntry> jobs = jobRepository.findByIntSchedulingStatus(internalStatus);
         List<JobExecutor> readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
         if (jobs.size()>readyWorkers.size()) {
             Integer newWorkers = jobs.size() - readyWorkers.size();
-            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(newWorkers+1);
             while (ContainersRancherApiOrchestratorImpl.lock) {
                 LOGGER.info("Waiting for rancher to complete other tasks");
             }
             try {
-                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-                LOGGER.info("Created " + newWorkers + " new worker(s)");
+                createWorkers(serviceId, newWorkers);
             } catch (RancherApiException e) {
-                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-                LOGGER.info("Created " + newWorkers + " new worker(s)");
+                LOGGER.info("JobExecutor scaling failed. Trying again.");
+                createWorkers(serviceId, newWorkers);
             }
         } else {
             while (ContainersRancherApiOrchestratorImpl.lock) {
                 LOGGER.info("Waiting for rancher to complete other tasks");
                 readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
             }
+            List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+            if (instances.size()==1) {
+                return;
+            }
             Integer workersToDelete = readyWorkers.size() - jobs.size();
-            Integer count = 0;
+            Integer count = 1;
             for (JobExecutor worker : readyWorkers) {
-                containersOrchestrator.deleteContainer(worker.getName());
-                count++;
                 if (count == workersToDelete) {
-                    LOGGER.info("Deleted unused containers");
-                    return;
+                    instances = servicesOrchestrator.getContainerInstances(serviceId);
+                    if (instances.size()==1) {
+                        return;
+                    }
                 }
+                containersOrchestrator.deleteContainer(worker.getName());
+                jobExecutorRepository.deleteByName(worker.getName());
+                count++;
             }
         }
+    }
+
+    void createWorkers(String serviceId, Integer newWorkers) throws RancherApiException {
+        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size()+newWorkers);
+        servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+        LOGGER.info("Created " + newWorkers + " new worker(s)");
     }
 }
 
