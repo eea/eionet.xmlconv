@@ -97,15 +97,15 @@ public class FixedTimeScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
+        while (ContainersRancherApiOrchestratorImpl.lock) {
+            LOGGER.info("Waiting for rancher to complete other tasks");
+        }
         String serviceId = Properties.rancherJobExecServiceId;
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(2);
         List<JobEntry> jobs = jobRepository.findByIntSchedulingStatus(internalStatus);
         List<JobExecutor> readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
         if (jobs.size()>readyWorkers.size()) {
             Integer newWorkers = jobs.size() - readyWorkers.size();
-            while (ContainersRancherApiOrchestratorImpl.lock) {
-                LOGGER.info("Waiting for rancher to complete other tasks");
-            }
             try {
                 createWorkers(serviceId, newWorkers);
             } catch (RancherApiException e) {
@@ -113,10 +113,6 @@ public class FixedTimeScheduledTasks {
                 createWorkers(serviceId, newWorkers);
             }
         } else {
-            while (ContainersRancherApiOrchestratorImpl.lock) {
-                LOGGER.info("Waiting for rancher to complete other tasks");
-                readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
-            }
             List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
             if (instances.size()==1) {
                 return;
