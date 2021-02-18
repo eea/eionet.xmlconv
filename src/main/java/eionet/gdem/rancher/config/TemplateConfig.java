@@ -6,14 +6,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class TemplateConfig {
 
+    /**
+     * time in seconds, corresponds to 2 minutes
+     */
+    private final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(120);
+
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpRequestFactory.setConnectTimeout(TIMEOUT);
+        httpRequestFactory.setReadTimeout(TIMEOUT);
+        return new RestTemplate(httpRequestFactory);
     }
 
     public static HttpHeaders getHeaders() {

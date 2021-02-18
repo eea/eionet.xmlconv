@@ -23,6 +23,11 @@ public class JobExecutor {
     public JobExecutor() {
     }
 
+    public JobExecutor(String name, Integer status) {
+        this.name = name;
+        this.status = status;
+    }
+
     public JobExecutor(String name, Integer status, Integer jobId) {
         this.name = name;
         this.status = status;

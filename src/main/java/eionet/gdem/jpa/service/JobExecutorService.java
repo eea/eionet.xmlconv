@@ -4,7 +4,7 @@ import eionet.gdem.jpa.Entities.JobExecutor;
 
 public interface JobExecutorService {
 
-    void updateStatus(Integer status, Integer jobId, String jobExecutorName);
+    void updateJobExecutor(Integer status, Integer jobId, String jobExecutorName);
 
     void saveJobExecutor(JobExecutor jobExecutor);
 }

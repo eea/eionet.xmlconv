@@ -16,6 +16,8 @@ public class WorkersRabbitMQResponse {
 
     private String executionTime;
 
+    private Integer jobExecutorStatus;
+
     public XQScript getScript() {
         return script;
     }
@@ -62,5 +64,13 @@ public class WorkersRabbitMQResponse {
 
     public void setExecutionTime(String executionTime) {
         this.executionTime = executionTime;
+    }
+
+    public Integer getJobExecutorStatus() {
+        return jobExecutorStatus;
+    }
+
+    public void setJobExecutorStatus(Integer jobExecutorStatus) {
+        this.jobExecutorStatus = jobExecutorStatus;
     }
 }

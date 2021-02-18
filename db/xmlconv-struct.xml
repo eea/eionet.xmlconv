@@ -499,7 +499,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="JOB_ID" type="INT">
-                <constraints nullable="false"/>
             </column>
         </createTable>
         <modifySql dbms="mysql">

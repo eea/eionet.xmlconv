@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
-public class JobExecutorTestIT {
+public class JobExecutorRepositoryTestIT {
 
     @Autowired
     private DataSource db;
@@ -50,8 +50,8 @@ public class JobExecutorTestIT {
 
     @Transactional
     @Test
-    public void testUpdateStatus() {
-        jobExecutorRepository.updateStatus(0, 47, "jobExecutor3");
+    public void testUpdateStatusAndJobId() {
+        jobExecutorRepository.updateStatusAndJobId(0, 47, "jobExecutor3");
         JobExecutor jobExecutor = jobExecutorRepository.findByName("jobExecutor3");
         assertThat(jobExecutor.getStatus(), is(0));
     }

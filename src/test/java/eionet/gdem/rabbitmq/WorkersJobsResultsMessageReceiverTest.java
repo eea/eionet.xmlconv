@@ -3,6 +3,7 @@ package eionet.gdem.rabbitmq;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
@@ -53,8 +54,9 @@ public class WorkersJobsResultsMessageReceiverTest {
         WorkersRabbitMQResponse response = createRabbitMQResponse(xqScript);
         Message message = convertObjectToByteArray(response);
 
+        doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
         doNothing().when(jobService).changeNStatus(any(XQScript.class),anyInt());
-        doNothing().when(jobExecutorService).updateStatus(anyInt(), anyInt(), anyString());
+        doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString());
         doNothing().when(jobService).changeInternalStatus(any(InternalSchedulingStatus.class), anyInt());
         receiver.onMessage(message);
         verify(jobService).changeNStatus(any(XQScript.class),anyInt());

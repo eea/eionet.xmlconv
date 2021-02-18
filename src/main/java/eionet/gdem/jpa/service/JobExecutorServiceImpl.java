@@ -23,11 +23,11 @@ public class JobExecutorServiceImpl implements JobExecutorService {
 
     @Transactional
     @Override
-    public void updateStatus(Integer status, Integer jobId, String name) {
+    public void updateJobExecutor(Integer status, Integer jobId, String name) {
         try {
-            jobExecutorRepository.updateStatus(status, jobId, name);
+            jobExecutorRepository.updateStatusAndJobId(status, jobId, name);
         } catch (Exception e) {
-            LOGGER.error("Database exception when changing status of worker with name " + name + ", " + e.toString());
+            LOGGER.error("Database exception when updating worker with name " + name + ", " + e.toString());
             throw e;
         }
     }
@@ -36,14 +36,9 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     @Override
     public void saveJobExecutor(JobExecutor jobExecutor) {
         try {
-            JobExecutor jobExec = jobExecutorRepository.findByName(jobExecutor.getName());
-            if (jobExec!=null) {
-                jobExecutorRepository.updateStatus(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getName());
-            } else {
-                jobExecutorRepository.save(jobExecutor);
-            }
+            jobExecutorRepository.save(jobExecutor);
         } catch (Exception e) {
-            LOGGER.error("Database exception when changing status of worker with name " + jobExecutor.getName() + ", " + e.toString());
+            LOGGER.error("Database exception when saving worker with name " + jobExecutor.getName() + ", " + e.toString());
             throw e;
         }
     }
