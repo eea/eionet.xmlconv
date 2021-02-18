@@ -131,9 +131,16 @@ public class FixedTimeScheduledTasks {
 
     void createWorkers(String serviceId, Integer newWorkers) throws RancherApiException {
         List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size()+newWorkers);
+        Integer maxJobExecutorsAllowed = Properties.maxJobExecutorContainersAllowed;
+        Integer scale = newWorkers;
+        if (instances.size()==maxJobExecutorsAllowed) {
+            return;
+        } else if (instances.size()+newWorkers>maxJobExecutorsAllowed) {
+            scale = maxJobExecutorsAllowed - instances.size();
+        }
+        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size()+scale);
         servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-        LOGGER.info("Created " + newWorkers + " new worker(s)");
+        LOGGER.info("Created " + scale + " new worker(s)");
     }
 }
 

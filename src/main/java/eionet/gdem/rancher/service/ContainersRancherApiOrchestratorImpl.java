@@ -25,6 +25,10 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     private String rancherApiUrl;
     private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
 
+    /**
+     * time in milliseconds
+     */
+    private static final Integer TIME_LIMIT = 60000;
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainersRancherApiOrchestratorImpl.class);
 
     public ContainersRancherApiOrchestratorImpl(RestTemplate restTemplate, ServicesRancherApiOrchestrator servicesRancherApiOrchestrator) {
@@ -104,7 +108,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
                     LOGGER.info(e.getMessage());
                     continue;
                 }
-                if (timer.getTime()>60000) {
+                if (timer.getTime()>TIME_LIMIT) {
                     throw new RancherApiTimoutException("Time exceeded for creating new container " + containerName);
                 }
             }

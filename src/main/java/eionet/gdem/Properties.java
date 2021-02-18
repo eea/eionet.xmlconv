@@ -219,6 +219,7 @@ public class Properties {
     public static final Long rancherJobExecServiceMemoryReservation;
     public static final String rancherJobExecServiceId;
     public static final boolean enableJobExecRancherScheduledTask;
+    public static final Integer maxJobExecutorContainersAllowed;
 
     public static boolean rabbitMqEnabled ;
     public static String rabbitMQHost;
@@ -361,6 +362,7 @@ public class Properties {
         rancherJobExecServiceMemoryReservation = getLongProperty("env.rancher.api.jobExec.service.memoryReservation");
         rancherJobExecServiceId = getStringProperty("env.rancher.api.jobExec.service.id");
         enableJobExecRancherScheduledTask = Boolean.parseBoolean(getStringProperty("env.enable.jobExecutor.rancher.scheduled.task"));
+        maxJobExecutorContainersAllowed = getIntProperty("env.max.jobExecutor.containers.allowed");
 
         rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");

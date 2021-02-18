@@ -45,9 +45,9 @@ public class RancherApiController {
         return "success";
     }
 
-    @PostMapping("/createService")
-    public ServiceApiResponse createService() throws RancherApiException {
-        return servicesRancherApiOrchestrator.createService("testService");
+    @PostMapping("/createService/{containerName}")
+    public ServiceApiResponse createService(@PathVariable String containerName) throws RancherApiException {
+        return servicesRancherApiOrchestrator.createService(containerName);
     }
 
     @DeleteMapping("/deleteService/{serviceId}")
