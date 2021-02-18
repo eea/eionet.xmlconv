@@ -121,12 +121,23 @@ public class FixedTimeScheduledTasks {
                     if (instances.size()==1) {
                         return;
                     }
+                    deleteFromRancherAndDatabase(worker);
+                    return;
                 }
-                containersOrchestrator.deleteContainer(worker.getName());
-                jobExecutorRepository.deleteByName(worker.getName());
+                deleteFromRancherAndDatabase(worker);
                 count++;
             }
         }
+    }
+
+    /**
+     * deletes worker from rancher and JOB_EXECUTOR table
+     * @param worker
+     * @throws RancherApiException
+     */
+    void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException {
+        containersOrchestrator.deleteContainer(worker.getName());
+        jobExecutorRepository.deleteByName(worker.getName());
     }
 
     /**

@@ -36,7 +36,12 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     @Override
     public void saveJobExecutor(JobExecutor jobExecutor) {
         try {
-            jobExecutorRepository.save(jobExecutor);
+            JobExecutor jobExec = jobExecutorRepository.findByName(jobExecutor.getName());
+            if (jobExec!=null) {
+                jobExecutorRepository.updateStatusAndJobId(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getName());
+            } else {
+                jobExecutorRepository.save(jobExecutor);
+            }
         } catch (Exception e) {
             LOGGER.error("Database exception when saving worker with name " + jobExecutor.getName() + ", " + e.toString());
             throw e;
