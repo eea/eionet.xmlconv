@@ -53,7 +53,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     }
 
     @Override
-    public ServiceApiResponse scaleUpOrDownContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
+    public synchronized ServiceApiResponse scaleUpOrDownContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
         HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, TemplateConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         try {

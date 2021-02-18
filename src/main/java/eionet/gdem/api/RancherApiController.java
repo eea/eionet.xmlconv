@@ -6,9 +6,7 @@ import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestratorImpl;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestratorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,10 +36,7 @@ public class RancherApiController {
     }
 
     @PutMapping("/scaleUpOrDown/{serviceId}")
-    public String scaleUpOrDownContainerInstances(@PathVariable String serviceId, @RequestBody ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
-        if (ContainersRancherApiOrchestratorImpl.lock) {
-            return "Busy";
-        }
+    public String scaleUpOrDownContainerInstances(@PathVariable String serviceId, @RequestBody ServiceApiRequestBody serviceApiRequestBody) {
         try {
             servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         } catch (RancherApiException e) {
@@ -81,10 +76,7 @@ public class RancherApiController {
     }
 
     @DeleteMapping("/container/delete/{containerName}")
-    public String deleteContainer(@PathVariable String containerName) throws RancherApiException {
-        if (ContainersRancherApiOrchestratorImpl.lock) {
-            return "Busy";
-        }
+    public String deleteContainer(@PathVariable String containerName) {
         try {
             containersRancherApiOrchestrator.deleteContainer(containerName);
         } catch (RancherApiException e) {

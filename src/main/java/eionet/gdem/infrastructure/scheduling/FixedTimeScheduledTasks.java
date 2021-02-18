@@ -13,7 +13,6 @@ import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestratorImpl;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
@@ -96,9 +95,6 @@ public class FixedTimeScheduledTasks {
     public void scheduleWorkersOrchestration() throws RancherApiException {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
-        }
-        while (ContainersRancherApiOrchestratorImpl.lock) {
-            LOGGER.info("Waiting for rancher to complete other tasks");
         }
         String serviceId = Properties.rancherJobExecServiceId;
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(2);
