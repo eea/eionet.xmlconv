@@ -1,4 +1,4 @@
-package eionet.gdem.services;
+package eionet.gdem.services.impl;
 
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 public class JobResultHandlerServiceTest {
 
     @Autowired
-    private JobResultHandlerService jobResultHandlerService;
+    private JobResultHandlerServiceImpl jobResultHandlerService;
 
     private QaServiceImpl qaService;
 
@@ -60,37 +60,37 @@ public class JobResultHandlerServiceTest {
 
     @Test
     public void testJobFatalError() throws Exception {
-        Hashtable table = jobResultHandlerService.result(Constants.XQ_FATAL_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = jobResultHandlerService.prepareResult(Constants.XQ_FATAL_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
         assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test
     public void testJobLightError() throws Exception {
-        Hashtable table = jobResultHandlerService.result(Constants.XQ_LIGHT_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = jobResultHandlerService.prepareResult(Constants.XQ_LIGHT_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
         assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test
     public void testJobReady() throws Exception {
-        Hashtable table = jobResultHandlerService.result(Constants.XQ_READY, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = jobResultHandlerService.prepareResult(Constants.XQ_READY, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
         assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test
     public void testJobNotFound() throws Exception {
-        Hashtable table = jobResultHandlerService.result(Constants.XQ_JOBNOTFOUND_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = jobResultHandlerService.prepareResult(Constants.XQ_JOBNOTFOUND_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
         assertEquals("Wrong result code", "3", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test
     public void testJobDownloading() throws Exception {
-        Hashtable table = jobResultHandlerService.result(Constants.XQ_DOWNLOADING_SRC, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = jobResultHandlerService.prepareResult(Constants.XQ_DOWNLOADING_SRC, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
         assertEquals("Wrong result code", "1", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test
     public void testJobReceived() throws Exception {
-        Hashtable table = jobResultHandlerService.result(Constants.XQ_RECEIVED, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = jobResultHandlerService.prepareResult(Constants.XQ_RECEIVED, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
         assertEquals("Wrong result code", "1", table.get(Constants.RESULT_CODE_PRM));
     }
 }

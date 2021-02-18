@@ -65,7 +65,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
 
         LOGGER.info("QueryService found status for job (" + jobId + "):" + String.valueOf(status));
 
-        Hashtable ret = result(status, jobData, scriptData, jobId);
+        Hashtable ret = prepareResult(status, jobData, scriptData, jobId);
         if (LOGGER.isInfoEnabled()) {
             String result = ret.toString();
             if (result.length() > 100) {
@@ -85,8 +85,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
      * @return Result
      * @throws XMLConvException If an error occurs.
      */
-    @Override
-    public Hashtable<String,String> result(int status, String[] jobData, HashMap scriptData, String jobId) throws XMLConvException {
+    protected Hashtable<String,String> prepareResult(int status, String[] jobData, HashMap scriptData, String jobId) throws XMLConvException {
         Hashtable<String, String> h = new Hashtable<String, String>();
         int resultCode;
         String resultValue = "";
