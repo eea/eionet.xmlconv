@@ -129,6 +129,12 @@ public class FixedTimeScheduledTasks {
         }
     }
 
+    /**
+     * increase workers so that maxJobExecutorContainersAllowed is not exceeded for JobExecutor containers
+     * @param serviceId
+     * @param newWorkers
+     * @throws RancherApiException
+     */
     void createWorkers(String serviceId, Integer newWorkers) throws RancherApiException {
         List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
         Integer maxJobExecutorsAllowed = Properties.maxJobExecutorContainersAllowed;
