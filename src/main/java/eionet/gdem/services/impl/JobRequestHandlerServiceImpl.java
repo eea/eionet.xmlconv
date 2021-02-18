@@ -156,7 +156,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                 queryFile = eionet.gdem.Properties.queriesFolder + File.separator + queryFile;
             }
 
-            jobId = startJobInDbAndSend(sourceURL, originalSourceURL, queryFile, resultFile, scriptType, queryId);
+            jobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, queryFile, resultFile, scriptType, queryId);
 
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
@@ -200,7 +200,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         String newJobId = "-1"; // should not be returned with value -1;
 
         try {
-            newJobId = startJobInDbAndSend(sourceURL, originalSourceURL, xqFile, resultFile, scriptType, null);
+            newJobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, xqFile, resultFile, scriptType, null);
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new XMLConvException("DB operation failed: " + sqe.toString());
@@ -213,7 +213,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         return newJobId;
     }
 
-    private String startJobInDbAndSend(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId) throws URISyntaxException, XMLConvException, SQLException, CreateMQMessageException, SchedulerException {
+    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId) throws URISyntaxException, XMLConvException, SQLException, CreateMQMessageException, SchedulerException {
         // get the trusted URL from source file adapter
         sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
         long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
