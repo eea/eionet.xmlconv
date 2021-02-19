@@ -74,7 +74,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
             LOGGER.info("Error scaling container instances for service with id " + serviceId + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         } finally {
-
+            timer.stop();
         }
         return result.getBody();
     }
