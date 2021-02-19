@@ -142,7 +142,6 @@ public class FixedTimeScheduledTasks {
                 LOGGER.info("Scaling up again because of error");
                 servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
             }
-            return;
         }
     }
 
