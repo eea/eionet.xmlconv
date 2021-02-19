@@ -124,14 +124,8 @@ public class FixedTimeScheduledTasks {
                         if (instances.size()==1) {
                             return;
                         }
-                        while (ContainersRancherApiOrchestratorImpl.lock) {
-                            LOGGER.info("Waiting for rancher to complete other tasks");
-                        }
                         deleteFromRancherAndDatabase(worker);
                         return;
-                    }
-                    while (ContainersRancherApiOrchestratorImpl.lock) {
-                        LOGGER.info("Waiting for rancher to complete other tasks");
                     }
                     deleteFromRancherAndDatabase(worker);
                     count++;
@@ -159,9 +153,6 @@ public class FixedTimeScheduledTasks {
     void deleteFailedWorkers() throws RancherApiException {
         List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
         for (JobExecutor worker : failedWorkers) {
-            while (ContainersRancherApiOrchestratorImpl.lock) {
-                LOGGER.info("Waiting for rancher to complete other tasks");
-            }
             deleteFromRancherAndDatabase(worker);
         }
     }

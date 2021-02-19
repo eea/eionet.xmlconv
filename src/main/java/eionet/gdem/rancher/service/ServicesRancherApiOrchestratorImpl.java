@@ -3,9 +3,11 @@ package eionet.gdem.rancher.service;
 import eionet.gdem.Properties;
 import eionet.gdem.rancher.config.TemplateConfig;
 import eionet.gdem.rancher.exception.RancherApiException;
+import eionet.gdem.rancher.exception.RancherApiTimoutException;
 import eionet.gdem.rancher.model.RancherApiNewServiceRequestBody;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
+import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     private RestTemplate restTemplate;
     private RancherApiNewServiceRequestBodyCreator rancherApiNewServiceRequestBodyCreator;
     private String rancherApiUrl;
+    private static final Integer TIME_LIMIT = 60000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServicesRancherApiOrchestratorImpl.class);
 
@@ -56,11 +59,22 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     public synchronized ServiceApiResponse scaleUpOrDownContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
         HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, TemplateConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
+        StopWatch timer = new StopWatch();
         try {
+            timer.start();
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.PUT, entity, ServiceApiResponse.class);
+            String state = getServiceInfo(serviceId).getState();
+            while (state.equals("updating-active")) {
+                state = getServiceInfo(serviceId).getState();
+                if (timer.getTime()>TIME_LIMIT) {
+                    throw new RancherApiTimoutException("Time exceeded for getting service info of service " + serviceId);
+                }
+            }
         } catch (Exception e) {
             LOGGER.info("Error scaling container instances for service with id " + serviceId + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
+        } finally {
+
         }
         return result.getBody();
     }
