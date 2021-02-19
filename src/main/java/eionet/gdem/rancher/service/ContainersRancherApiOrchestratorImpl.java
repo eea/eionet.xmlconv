@@ -24,6 +24,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     private RestTemplate restTemplate;
     private String rancherApiUrl;
     private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
+    public static volatile boolean lock;
 
     /**
      * time in milliseconds
@@ -85,6 +86,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
 
     @Override
     public synchronized ContainerData deleteContainer(String containerName) throws RancherApiException {
+        lock = true;
         StopWatch timer = new StopWatch();
         ResponseEntity<ContainerData> result;
         try {
@@ -117,6 +119,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             LOGGER.info("Error deleting container with name " + containerName + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         } finally {
+            lock = false;
             timer.stop();
         }
         return result.getBody();

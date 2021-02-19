@@ -14,6 +14,7 @@ import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
+import eionet.gdem.rancher.service.ContainersRancherApiOrchestratorImpl;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
@@ -123,8 +124,14 @@ public class FixedTimeScheduledTasks {
                         if (instances.size()==1) {
                             return;
                         }
+                        while (ContainersRancherApiOrchestratorImpl.lock) {
+                            LOGGER.info("Waiting for rancher to complete other tasks");
+                        }
                         deleteFromRancherAndDatabase(worker);
                         return;
+                    }
+                    while (ContainersRancherApiOrchestratorImpl.lock) {
+                        LOGGER.info("Waiting for rancher to complete other tasks");
                     }
                     deleteFromRancherAndDatabase(worker);
                     count++;
@@ -152,6 +159,9 @@ public class FixedTimeScheduledTasks {
     void deleteFailedWorkers() throws RancherApiException {
         List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
         for (JobExecutor worker : failedWorkers) {
+            while (ContainersRancherApiOrchestratorImpl.lock) {
+                LOGGER.info("Waiting for rancher to complete other tasks");
+            }
             deleteFromRancherAndDatabase(worker);
         }
     }
@@ -162,7 +172,7 @@ public class FixedTimeScheduledTasks {
      * @param worker
      * @throws RancherApiException
      */
-    void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException {
+    synchronized void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException {
         containersOrchestrator.deleteContainer(worker.getName());
         jobExecutorRepository.deleteByName(worker.getName());
     }
