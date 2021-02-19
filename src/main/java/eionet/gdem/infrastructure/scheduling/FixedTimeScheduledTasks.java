@@ -128,7 +128,20 @@ public class FixedTimeScheduledTasks {
                 count++;
             }
         }
+        deleteFailedWorkers();
     }
+
+    /**
+     * deletes workers that have failed to run correctly
+     * @throws RancherApiException
+     */
+    void deleteFailedWorkers() throws RancherApiException {
+        List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
+        for (JobExecutor worker : failedWorkers) {
+            deleteFromRancherAndDatabase(worker);
+        }
+    }
+
 
     /**
      * deletes worker from rancher and JOB_EXECUTOR table
