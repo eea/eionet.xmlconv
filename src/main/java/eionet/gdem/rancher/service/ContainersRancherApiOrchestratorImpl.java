@@ -122,7 +122,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         return result.getBody();
     }
 
-    void scaleDownInstances(String serviceId, List<String> instancesBeforeDelete) throws RancherApiException {
+    synchronized void scaleDownInstances(String serviceId, List<String> instancesBeforeDelete) throws RancherApiException {
         ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instancesBeforeDelete.size()-1);
         try {
             servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);

@@ -101,58 +101,38 @@ public class FixedTimeScheduledTasks {
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(2);
         List<JobEntry> jobs = jobRepository.findByIntSchedulingStatus(internalStatus);
         List<JobExecutor> readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
-        if (jobs.size()>readyWorkers.size()) {
-            Integer newWorkers = jobs.size() - readyWorkers.size();
-            try {
-                createWorkers(serviceId, newWorkers);
-            } catch (RancherApiException e) {
-                LOGGER.info("JobExecutor scaling failed. Trying again.");
-                createWorkers(serviceId, newWorkers);
-            }
-        } else {
-            List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-            if (instances.size()==1) {
-                return;
-            }
-            Integer workersToDelete = readyWorkers.size() - jobs.size();
-            Integer count = 1;
-            for (JobExecutor worker : readyWorkers) {
-                if (count == workersToDelete) {
-                    instances = servicesOrchestrator.getContainerInstances(serviceId);
-                    if (instances.size()==1) {
-                        return;
-                    }
-                    deleteFromRancherAndDatabase(serviceId, worker);
+        try {
+            if (jobs.size()>readyWorkers.size()) {
+                Integer newWorkers = jobs.size() - readyWorkers.size();
+                try {
+                    createWorkers(serviceId, newWorkers);
+                } catch (RancherApiException e) {
+                    LOGGER.info("JobExecutor scaling failed. Trying again.");
+                    createWorkers(serviceId, newWorkers);
+                }
+            } else {
+                List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+                if (instances.size()==1) {
                     return;
                 }
-                deleteFromRancherAndDatabase(serviceId, worker);
-                count++;
+                Integer workersToDelete = readyWorkers.size() - jobs.size();
+                Integer count = 1;
+                for (JobExecutor worker : readyWorkers) {
+                    if (count == workersToDelete) {
+                        instances = servicesOrchestrator.getContainerInstances(serviceId);
+                        if (instances.size()==1) {
+                            return;
+                        }
+                        deleteFromRancherAndDatabase(worker);
+                        return;
+                    }
+                    deleteFromRancherAndDatabase(worker);
+                    count++;
+                }
             }
-        }
-        deleteFailedWorkers(serviceId);
-    }
-
-    /**
-     * deletes workers that have failed to run correctly
-     * @throws RancherApiException
-     */
-    void deleteFailedWorkers(String serviceId) throws RancherApiException {
-        List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
-        for (JobExecutor worker : failedWorkers) {
-            deleteFromRancherAndDatabase(serviceId, worker);
-        }
-    }
-
-
-    /**
-     * deletes worker from rancher and JOB_EXECUTOR table
-     * @param worker
-     * @throws RancherApiException
-     */
-    void deleteFromRancherAndDatabase(String serviceId, JobExecutor worker) throws RancherApiException {
-        try {
-            containersOrchestrator.deleteContainer(worker.getName());
+            deleteFailedWorkers();
         } catch (RancherApiException e) {
+            LOGGER.info("Error occurred during workers orchestration, " + e.getMessage());
             ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
             List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
             if (serviceInfo.getScale() < instances.size()) {
@@ -163,6 +143,27 @@ public class FixedTimeScheduledTasks {
             }
             return;
         }
+    }
+
+    /**
+     * deletes workers that have failed to run correctly
+     * @throws RancherApiException
+     */
+    void deleteFailedWorkers() throws RancherApiException {
+        List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
+        for (JobExecutor worker : failedWorkers) {
+            deleteFromRancherAndDatabase(worker);
+        }
+    }
+
+
+    /**
+     * deletes worker from rancher and JOB_EXECUTOR table
+     * @param worker
+     * @throws RancherApiException
+     */
+    void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException {
+        containersOrchestrator.deleteContainer(worker.getName());
         jobExecutorRepository.deleteByName(worker.getName());
     }
 
