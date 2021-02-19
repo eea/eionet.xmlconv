@@ -59,7 +59,7 @@ public class BaseXLocalImpl extends QAScriptEngineStrategy {
             proc = new QueryProcessor(scriptSource, Properties.queriesFolder + "/script", context);
 
             HttpFileManager fileManager = new HttpFileManager();
-            URL url = fileManager.followUrlRedirectIfNeeded(new URL(script.getSrcFileUrl()));
+            URL url = fileManager.followUrlRedirectIfNeeded(new URL(script.getSrcFileUrl()), null);
             script.setSrcFileUrl(url.toString());
             LOGGER.info("Script Source URL:"+script.getSrcFileUrl());
             proc.bind("source_url", script.getSrcFileUrl(), "xs:string");
