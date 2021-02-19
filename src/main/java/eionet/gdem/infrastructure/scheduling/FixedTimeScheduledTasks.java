@@ -12,6 +12,7 @@ import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
+import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
@@ -121,24 +122,24 @@ public class FixedTimeScheduledTasks {
                     if (instances.size()==1) {
                         return;
                     }
-                    deleteFromRancherAndDatabase(worker);
+                    deleteFromRancherAndDatabase(serviceId, worker);
                     return;
                 }
-                deleteFromRancherAndDatabase(worker);
+                deleteFromRancherAndDatabase(serviceId, worker);
                 count++;
             }
         }
-        deleteFailedWorkers();
+        deleteFailedWorkers(serviceId);
     }
 
     /**
      * deletes workers that have failed to run correctly
      * @throws RancherApiException
      */
-    void deleteFailedWorkers() throws RancherApiException {
+    void deleteFailedWorkers(String serviceId) throws RancherApiException {
         List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
         for (JobExecutor worker : failedWorkers) {
-            deleteFromRancherAndDatabase(worker);
+            deleteFromRancherAndDatabase(serviceId, worker);
         }
     }
 
@@ -148,8 +149,20 @@ public class FixedTimeScheduledTasks {
      * @param worker
      * @throws RancherApiException
      */
-    void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException {
-        containersOrchestrator.deleteContainer(worker.getName());
+    void deleteFromRancherAndDatabase(String serviceId, JobExecutor worker) throws RancherApiException {
+        try {
+            containersOrchestrator.deleteContainer(worker.getName());
+        } catch (RancherApiException e) {
+            ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
+            List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+            if (serviceInfo.getScale() < instances.size()) {
+                Integer newScale = instances.size() - serviceInfo.getScale();
+                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(serviceInfo.getScale() + newScale);
+                LOGGER.info("Scaling up again because of error");
+                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            }
+            return;
+        }
         jobExecutorRepository.deleteByName(worker.getName());
     }
 

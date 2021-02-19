@@ -13,6 +13,7 @@ public class ServiceApiResponse {
     private String healthState;
     private List<String> instanceIds;
     private String kind;
+    private Integer scale;
     private ServiceLaunchConfig launchConfig;
 
     public String getId() {
@@ -93,5 +94,13 @@ public class ServiceApiResponse {
 
     public void setLaunchConfig(ServiceLaunchConfig launchConfig) {
         this.launchConfig = launchConfig;
+    }
+
+    public Integer getScale() {
+        return scale;
+    }
+
+    public void setScale(Integer scale) {
+        this.scale = scale;
     }
 }
