@@ -162,7 +162,7 @@ public class HttpFileManager {
         CustomURI customURL = new CustomURI(srcUrl);
         URL url = customURL.getRawURL();
         try {
-            url = this.followUrlRedirectIfNeeded(url);
+            url = this.followUrlRedirectIfNeeded(url, ticket);
         } catch (FollowRedirectException e) {
             LOGGER.error( e.getMessage(), e.getCause() );
             throw new IOException("Failed to Redirect URL");
@@ -291,14 +291,22 @@ public class HttpFileManager {
 
     /**
      * @param url the Url to check for redirection
+     * @param ticket for basic authorization
      * @return url the Url redirected if required
      * */
-    public URL followUrlRedirectIfNeeded(URL url) throws FollowRedirectException {
+    public URL followUrlRedirectIfNeeded(URL url, String ticket) throws FollowRedirectException {
 
         LOGGER.info("Checking URL:"+ url.toString()+" for redirects.");
-        HttpGet request = new HttpGet(url.toString());
         try {
             HttpURLConnection con = (HttpURLConnection)(url.openConnection());
+
+            if (ticket == null) {
+                ticket = getHostCredentials(url.getHost());
+            }
+            if (ticket != null) {
+                con.addRequestProperty("Authorization", " Basic " + ticket);
+            }
+
             con.setInstanceFollowRedirects(false);
             con.connect();
             int responseCode = con.getResponseCode();
