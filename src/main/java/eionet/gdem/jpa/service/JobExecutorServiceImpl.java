@@ -38,7 +38,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
         try {
             JobExecutor jobExec = jobExecutorRepository.findByName(jobExecutor.getName());
             if (jobExec!=null) {
-                jobExecutorRepository.updateStatusAndJobId(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getName());
+                return;
             } else {
                 jobExecutorRepository.save(jobExecutor);
             }
