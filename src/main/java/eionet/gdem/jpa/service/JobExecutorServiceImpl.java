@@ -25,7 +25,13 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     @Override
     public void updateJobExecutor(Integer status, Integer jobId, String name) {
         try {
-            jobExecutorRepository.updateStatusAndJobId(status, jobId, name);
+            JobExecutor jobExec = jobExecutorRepository.findByName(name);
+            if (jobExec!=null) {
+                jobExecutorRepository.updateStatusAndJobId(status, jobId, name);
+            } else {
+                JobExecutor exec = new JobExecutor(name, status, jobId);
+                jobExecutorRepository.save(exec);
+            }
         } catch (Exception e) {
             LOGGER.error("Database exception when updating worker with name " + name + ", " + e.toString());
             throw e;

@@ -42,17 +42,11 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             if (script == null) {
                 JobExecutor jobExecutor = new JobExecutor(response.getContainerName(), response.getJobExecutorStatus());
                 jobExecutorService.saveJobExecutor(jobExecutor);
-                return;
-            }
-
-            if (response.isErrorExists()) {
+            } else if (response.isErrorExists()) {
                 jobService.changeNStatus(script, Constants.XQ_FATAL_ERR);
                 LOGGER.info("Error: " + response.getErrorMessage());
                 jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), response.getContainerName());
-                return;
-            }
-
-            if (response.getJobStatus() == SchedulingConstants.WORKER_RECEIVED) {
+            } else if (response.getJobStatus() == SchedulingConstants.WORKER_RECEIVED) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getContainerName());
                 jobService.changeNStatus(script, Constants.XQ_WORKER_RECEIVED);
                 InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
