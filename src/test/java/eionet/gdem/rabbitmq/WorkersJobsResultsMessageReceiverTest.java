@@ -22,6 +22,8 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.sql.Timestamp;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -57,7 +59,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
         doNothing().when(jobService).changeNStatus(any(XQScript.class),anyInt());
         doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString());
-        doNothing().when(jobService).changeInternalStatus(any(InternalSchedulingStatus.class), anyInt());
+        doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
         receiver.onMessage(message);
         verify(jobService).changeNStatus(any(XQScript.class),anyInt());
     }

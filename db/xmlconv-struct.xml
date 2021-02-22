@@ -505,4 +505,13 @@
             <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
         </modifySql>
     </changeSet>
+    <changeSet author="favvmary" id="rev-46">
+        <comment>
+            Added column JOB_EXECUTOR_NAME to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="JOB_EXECUTOR_NAME" type="VARCHAR(50)">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

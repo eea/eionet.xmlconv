@@ -54,6 +54,9 @@ public class JobEntry implements Serializable {
     @JoinColumn(name = "INTERNAL_STATUS_ID")
     private InternalSchedulingStatus intSchedulingStatus;
 
+    @Column(name = "JOB_EXECUTOR_NAME")
+    private String jobExecutorName;
+
     public JobEntry() {
     }
 
@@ -191,6 +194,15 @@ public class JobEntry implements Serializable {
 
     public JobEntry setIntSchedulingStatus(InternalSchedulingStatus intSchedulingStatus) {
         this.intSchedulingStatus = intSchedulingStatus;
+        return this;
+    }
+
+    public String getJobExecutorName() {
+        return jobExecutorName;
+    }
+
+    public JobEntry setJobExecutorName(String jobExecutorName) {
+        this.jobExecutorName = jobExecutorName;
         return this;
     }
 }

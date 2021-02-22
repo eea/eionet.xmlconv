@@ -18,6 +18,9 @@ import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 @Service
 public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
@@ -50,7 +53,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getContainerName());
                 jobService.changeNStatus(script, Constants.XQ_WORKER_RECEIVED);
                 InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
-                jobService.changeInternalStatus(intStatus, Integer.parseInt(script.getJobId()));
+                jobService.changeIntStatusAndJobExecutorName(intStatus, response.getContainerName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
                 jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_RECEIVED, Integer.parseInt(script.getJobId()), response.getContainerName());
             } else if (response.getJobStatus() == SchedulingConstants.WORKER_READY) {
                 jobService.changeNStatus(script, Constants.XQ_READY);

@@ -55,6 +55,7 @@ public class ServicesRancherApiOrchestratorImplTest {
         instanceIds = new ArrayList<>();
         instanceIds.add("1i1644182");
         response.setInstanceIds(instanceIds);
+        response.setState("active");
     }
 
     @Test
@@ -77,6 +78,7 @@ public class ServicesRancherApiOrchestratorImplTest {
         ResponseEntity<ServiceApiResponse> result = new ResponseEntity(response, HttpStatus.OK);
         ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
         when(restTemplate.exchange(anyString(), eq(HttpMethod.PUT), any(HttpEntity.class), eq(ServiceApiResponse.class))).thenReturn(result);
+        doReturn(response).when(servicesRancherApiOrchestrator).getServiceInfo(anyString());
         ServiceApiResponse actualRes = servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances("1s9121", serviceApiRequestBody);
         Assert.assertEquals(result.getBody(), actualRes);
     }

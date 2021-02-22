@@ -55,9 +55,9 @@ public class JobServiceImpl implements JobService {
 
     @Transactional
     @Override
-    public void changeInternalStatus(InternalSchedulingStatus intStatus, Integer jobId) {
+    public void changeIntStatusAndJobExecutorName(InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, Integer jobId) {
         try {
-            jobRepository.updateInternalStatus(intStatus, jobId);
+            jobRepository.updateIntStatusAndJobExecutorName(intStatus, jobExecutorName, timestamp, jobId);
         } catch (Exception e) {
             LOGGER.error("Database exception when changing internal status of job with id " + jobId + ", " + e.toString());
             throw e;

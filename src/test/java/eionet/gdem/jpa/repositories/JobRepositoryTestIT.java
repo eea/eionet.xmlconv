@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -60,7 +63,7 @@ public class JobRepositoryTestIT {
     @Transactional
     public void testUpdateInternalStatus() {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(2);
-        jobRepository.updateInternalStatus(intStatus, 1);
+        jobRepository.updateIntStatusAndJobExecutorName(intStatus, null, new Timestamp(new Date().getTime()), 1);
         JobEntry jobEntry = jobRepository.findById(1);
         assertThat(jobEntry.getIntSchedulingStatus().getId(), is(2));
     }

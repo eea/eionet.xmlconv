@@ -95,7 +95,7 @@ public class RabbitMQMessageFactoryImplTest {
         doNothing().when(jobService).changeNStatus(any(XQScript.class), anyInt());
         when(jobRepository.getRetryCounter(anyInt())).thenReturn(0);
         doNothing().when(jobRepository).updateJobInfo(anyInt(), anyString(), any(Timestamp.class), anyInt(), anyInt());
-        doNothing().when(jobRepository).updateInternalStatus(any(InternalSchedulingStatus.class), anyInt());
+        doNothing().when(jobRepository).updateIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
         when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryDao.getQueryInfo(anyString())).thenReturn(queryMap);
         doNothing().when(workersJobMessageSender).sendJobInfoToRabbitMQ(any(XQScript.class));
