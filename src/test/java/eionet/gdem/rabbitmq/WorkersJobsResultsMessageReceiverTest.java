@@ -9,6 +9,7 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.WorkersJobsResultsMessageReceiver;
 import eionet.gdem.rabbitMQ.model.WorkersRabbitMQResponse;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,9 @@ public class WorkersJobsResultsMessageReceiverTest {
     @Mock
     private JobExecutorService jobExecutorService;
 
+    @Mock
+    private JobHistoryService jobHistoryService;
+
     @Spy
     @InjectMocks
     private WorkersJobsResultsMessageReceiver receiver;
@@ -58,6 +62,7 @@ public class WorkersJobsResultsMessageReceiverTest {
 
         doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
         doNothing().when(jobService).changeNStatus(any(XQScript.class),anyInt());
+        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyString());
         doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString());
         doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
         receiver.onMessage(message);
