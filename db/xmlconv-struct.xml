@@ -514,4 +514,22 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-47">
+        <comment>
+            Added column INTERNAL_STATUS_ID to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="INTERNAL_STATUS_ID" type="INT">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-48">
+        <comment>
+            Added column JOB_EXECUTOR_NAME to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="JOB_EXECUTOR_NAME" type="VARCHAR(50)">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

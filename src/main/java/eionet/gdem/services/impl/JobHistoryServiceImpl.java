@@ -1,14 +1,18 @@
 package eionet.gdem.services.impl;
 
+import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.JobHistoryService;
-import org.jooq.tools.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.jooq.tools.json.JSONObject;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +22,9 @@ public class JobHistoryServiceImpl implements JobHistoryService {
     @Qualifier("jobHistoryRepository")
     @Autowired
     JobHistoryRepository repository;
+
+    /** */
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
 
     @Override
     public List<JobHistoryEntry> getAdditionalInfoOfJob(String jobId){
@@ -65,4 +72,27 @@ public class JobHistoryServiceImpl implements JobHistoryService {
         }
         return entries;
     }
+
+    @Override
+    public void updateStatusesAndJobExecutorName(XQScript script, Integer status, String jobExecutorName) {
+        try {
+            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(script.getJobId(), status, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
+            jobHistoryEntry.setJobExecutorName(jobExecutorName);
+            repository.save(jobHistoryEntry);
+            LOGGER.info("Job with id=" + script.getJobId() + " has been inserted in table JOB_HISTORY ");
+        } catch (Exception e) {
+            LOGGER.error("Database exception when changing status of job with id " + script.getJobId() + ", " + e.toString());
+            throw e;
+        }
+    }
 }
+
+
+
+
+
+
+
+
+

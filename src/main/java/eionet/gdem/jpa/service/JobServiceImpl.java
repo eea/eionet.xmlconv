@@ -3,8 +3,6 @@ package eionet.gdem.jpa.service;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.XQScript;
 import org.slf4j.Logger;
@@ -21,15 +19,13 @@ import java.util.Date;
 public class JobServiceImpl implements JobService {
 
     JobRepository jobRepository;
-    JobHistoryRepository jobHistoryRepository;
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Autowired
-    public JobServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository) {
+    public JobServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository) {
         this.jobRepository = jobRepository;
-        this.jobHistoryRepository = jobHistoryRepository;
     }
 
     @Transactional
@@ -45,8 +41,6 @@ public class JobServiceImpl implements JobService {
                 LOGGER.info("### Job with id=" + script.getJobId() + " has changed status to " + Constants.XQ_WORKER_RECEIVED + ".");
             else
                 LOGGER.info("### Job with id=" + script.getJobId() + " has changed status to " + Constants.XQ_FATAL_ERR + ".");
-            jobHistoryRepository.save(new JobHistoryEntry(script.getJobId(), status, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType()));
-            LOGGER.info("Job with id=" + script.getJobId() + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing status of job with id " + script.getJobId() + ", " + e.toString());
             throw e;

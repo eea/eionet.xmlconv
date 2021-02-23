@@ -74,6 +74,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         this.jobService = jobService;
     }
 
+    @Transactional
     public void createScriptAndSendMessageToRabbitMQ(String jobId) throws CreateRabbitMQMessageException {
         try {
             this.setJobId(jobId);
@@ -198,7 +199,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
             jobRepository.updateIntStatusAndJobExecutorName(intStatus, null, new Timestamp(new Date().getTime()), Integer.parseInt(jobId));
             LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");
-            jobHistoryRepository.save(new JobHistoryEntry(jobId, Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType));
+            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType);
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
+            jobHistoryRepository.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());

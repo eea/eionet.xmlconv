@@ -249,7 +249,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
             LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         } else {
-            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType);
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            getJobHistoryRepository().save(jobHistoryEntry);
             LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
             getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
             LOGGER.info("### Job with id=" + jobId + " has been send to the queue.");

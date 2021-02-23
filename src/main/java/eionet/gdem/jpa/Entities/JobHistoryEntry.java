@@ -40,6 +40,12 @@ public class JobHistoryEntry implements Serializable {
     @Transient
     private String fullStatusName;
 
+    @Column(name = "INTERNAL_STATUS_ID")
+    private Integer intSchedulingStatus;
+
+    @Column(name = "JOB_EXECUTOR_NAME")
+    private String jobExecutorName;
+
     public JobHistoryEntry() {
     }
 
@@ -118,5 +124,21 @@ public class JobHistoryEntry implements Serializable {
 
     public Long getDuration() {
         return duration;
+    }
+
+    public Integer getIntSchedulingStatus() {
+        return intSchedulingStatus;
+    }
+
+    public void setIntSchedulingStatus(Integer intSchedulingStatus) {
+        this.intSchedulingStatus = intSchedulingStatus;
+    }
+
+    public String getJobExecutorName() {
+        return jobExecutorName;
+    }
+
+    public void setJobExecutorName(String jobExecutorName) {
+        this.jobExecutorName = jobExecutorName;
     }
 }
