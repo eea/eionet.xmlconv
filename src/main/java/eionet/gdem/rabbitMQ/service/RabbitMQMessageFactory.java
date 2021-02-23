@@ -4,5 +4,5 @@ import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 
 public interface RabbitMQMessageFactory {
 
-    void createScriptAndSendMessageToRabbitMQ(String jobId) throws CreateMQMessageException;
+    void createScriptAndSendMessageToRabbitMQ(String jobId) throws CreateRabbitMQMessageException;
 }

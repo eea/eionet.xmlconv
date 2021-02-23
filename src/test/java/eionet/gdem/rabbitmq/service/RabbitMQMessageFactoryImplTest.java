@@ -68,7 +68,6 @@ public class RabbitMQMessageFactoryImplTest {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(0);
         jobEntry = new JobEntry("xmlUrl", "xqFile", "resultFile",0,1246,new Timestamp(new Date().getTime()),"xquery 3.0+",intStatus)
             .setId(627015).setSrcFile("srcFile");
-        jobData = new String[] {"xmlUrl", "xqFile", "resultFile", "0", "srcFile", "1246", "627015", "2020-12-09 14:07:02.0", "xquery 3.0+"};
         schema = new Schema();
         createQueryMap();
     }
@@ -90,7 +89,7 @@ public class RabbitMQMessageFactoryImplTest {
     }
 
     @Test
-    public void createScriptAndSendMessageToRabbitMQTest() throws SQLException, CreateMQMessageException {
+    public void createScriptAndSendMessageToRabbitMQTest() throws SQLException, CreateRabbitMQMessageException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, null, 1, new Timestamp(new Date().getTime()),null, null, null , null);
         when(jobRepository.findById(anyInt())).thenReturn(jobEntry);
         doNothing().when(jobService).changeNStatus(any(XQScript.class), anyInt());

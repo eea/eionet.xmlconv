@@ -74,7 +74,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         this.jobService = jobService;
     }
 
-    public void createScriptAndSendMessageToRabbitMQ(String jobId) throws CreateMQMessageException {
+    public void createScriptAndSendMessageToRabbitMQ(String jobId) throws CreateRabbitMQMessageException {
         try {
             this.setJobId(jobId);
             schemaManager = new SchemaManager();
@@ -288,7 +288,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
          jobService.changeNStatus(script, status);
     }
 
-    private void setJobId(String id) {
+    public void setJobId(String id) {
         this.jobId = id;
     }
 }
