@@ -1,19 +1,20 @@
 package eionet.gdem.services.impl;
 
-import eionet.gdem.Constants;
+import eionet.gdem.*;
 import eionet.gdem.Properties;
-import eionet.gdem.SpringApplicationContext;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.ListQueriesMethod;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.QueryService;
 import eionet.gdem.qa.utils.ScriptUtils;
-import eionet.gdem.rabbitMQ.errors.CreateMQMessageException;
+import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.SchedulerService;
@@ -162,7 +163,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
-        } catch (SchedulerException | CreateMQMessageException e) {
+        } catch (SchedulerException | CreateRabbitMQMessageException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
         } catch (URISyntaxException e) {
@@ -207,14 +208,17 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             throw new XMLConvException("DB operation failed: " + sqe.toString());
         } catch (URISyntaxException e) {
             throw new XMLConvException("URI syntax error: " + e);
-        } catch (SchedulerException | CreateMQMessageException e) {
+        } catch (SchedulerException | CreateRabbitMQMessageException e) {
             LOGGER.error("Scheduling job exception: " + e.toString());
             throw new XMLConvException("Scheduling job exception: " + e.toString());
+        } catch (Exception sqe) {
+            LOGGER.error("DB operation failed: " + sqe.toString());
+            throw new XMLConvException("DB operation failed: " + sqe.toString());
         }
         return newJobId;
     }
 
-    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId) throws URISyntaxException, XMLConvException, SQLException, CreateMQMessageException, SchedulerException {
+    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId) throws URISyntaxException, XMLConvException, SQLException, CreateRabbitMQMessageException, SchedulerException {
         // get the trusted URL from source file adapter
         sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
         long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
@@ -222,10 +226,19 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
 
         String jobId = "-1";
         if(queryId == null) {
-            jobId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, scriptType);
+            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
+            jobEntry = getJobRepository().save(jobEntry);
+            jobId = jobEntry.getId().toString();
+            LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
+
         }
         else{
-            jobId = xqJobDao.startXQJob(sourceURL, xqFile, resultFile, queryId, scriptType);
+            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
+            jobEntry = getJobRepository().save(jobEntry);
+            jobId = jobEntry.getId().toString();
+            LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
         }
         LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
         LOGGER.info("### Job with id=" + jobId + " has been created.");
@@ -263,14 +276,6 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         return query;
     }
 
-    private JobHistoryRepository getJobHistoryRepository() {
-        return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
-    }
-
-    private RabbitMQMessageFactory getRabbitMQMessageFactory() {
-        return (RabbitMQMessageFactory) SpringApplicationContext.getBean("createJob");
-    }
-
     /**
      * Gets file extension
      * @param outputTypes Output Types
@@ -303,5 +308,17 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         }
         return ret;
     }
+
+    private RabbitMQMessageFactory getRabbitMQMessageFactory() {
+        return (RabbitMQMessageFactory) SpringApplicationContext.getBean("rabbitMQMessageFactory");
+    }
+    private JobRepository getJobRepository() {
+        return (JobRepository) SpringApplicationContext.getBean("jobRepository");
+    }
+
+    private JobHistoryRepository getJobHistoryRepository() {
+        return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
+    }
+
 
 }
