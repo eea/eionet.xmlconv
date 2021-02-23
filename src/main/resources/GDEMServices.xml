@@ -64,7 +64,7 @@
             </Method>
         </Methods>
     </Service>
-    <Service Name="XQueryService" Provider="eionet.gdem.qa.XQueryService">
+    <Service Name="QueryService" Provider="eionet.gdem.qa.QueryService">
         <Methods>
             <Method Name="analyze" Auth="false">
                 <Parameters>

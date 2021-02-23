@@ -1,19 +1,18 @@
 package eionet.gdem.api.qa.service;
 
-import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.service.impl.QaServiceImpl;
 import eionet.gdem.dto.Schema;
-import eionet.gdem.qa.QaScriptView;
-import eionet.gdem.qa.XQueryService;
+import eionet.gdem.qa.QueryService;
+import eionet.gdem.services.JobRequestHandlerService;
+import eionet.gdem.services.JobResultHandlerService;
+import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.test.ApplicationTestContext;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Vector;
 import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,7 +22,6 @@ import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -31,7 +29,6 @@ import org.mockito.Mock;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
@@ -52,7 +49,16 @@ public class QaServiceTest {
     private QaServiceImpl qaService;
 
     @Mock
-    private XQueryService xqueryServiceMock;
+    private JobRequestHandlerService jobRequestHandlerService;
+
+    @Mock
+    private JobResultHandlerService jobResultHandlerService;
+
+    @Mock
+    private RunScriptAutomaticService runScriptAutomaticService;
+
+    @Mock
+    private QueryService queryServiceMock;
 
     DocumentBuilder documentBuilder;
 
@@ -62,7 +68,7 @@ public class QaServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        this.qaService = new QaServiceImpl(xqueryServiceMock);
+        this.qaService = new QaServiceImpl(queryServiceMock, jobRequestHandlerService, jobResultHandlerService, runScriptAutomaticService);
         DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
@@ -82,29 +88,6 @@ public class QaServiceTest {
         Assert.assertEquals(fileLinksAndSchemas.get("http://cdrtest.eionet.europa.eu/gr/sample.xml"), realResults.get("http://cdrtest.eionet.europa.eu/gr/sample.xml"));
     }
 
-    @Test
-    public void testSuccessRunQaScript() throws XMLConvException {
-        this.qaService = new QaServiceImpl(xqueryServiceMock);
-        String sourceUrl = "source.url";
-        String scriptId = "-1";
-        when(xqueryServiceMock.runQAScript(sourceUrl, scriptId)).thenReturn(new Vector());
-        qaService.runQaScript(sourceUrl, scriptId);
-        verify(xqueryServiceMock, times(1)).runQAScript(sourceUrl, scriptId);
-    }
-
- 
-
-    @Test
-    public void testSuccessGetJobResults() throws XMLConvException {
-        this.qaService = new QaServiceImpl(xqueryServiceMock);
-        String jobId = "22";
-        Hashtable<String, String> results = new Hashtable<String, String>();
-        results.put(Constants.RESULT_CODE_PRM, "0");
-        when(xqueryServiceMock.getResult(jobId)).thenReturn(results);
-        Hashtable<String, String> realResults = this.qaService.getJobResults(jobId);
-        verify(xqueryServiceMock, times(1)).getResult(jobId);
-        Assert.assertEquals(results, realResults);
-    }
 
     /* Test case: get schema by url successful */
     @Test

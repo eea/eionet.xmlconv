@@ -62,7 +62,7 @@ https://taskman.eionet.europa.eu/issues/29005 regarding the REST API of the xmlc
 ### 3.1 Synchronous QA for a single file
 
 
-  Wrapper around XQueryService.runQAScript
+  Wrapper around QueryService.runQAScript
 
 * **URL**
 

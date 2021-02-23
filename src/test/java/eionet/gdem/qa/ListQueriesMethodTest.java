@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import eionet.gdem.XMLConvException;
@@ -51,9 +52,9 @@ public class ListQueriesMethodTest {
 
         ListQueriesMethod qm = new ListQueriesMethod();
 
-        Vector v = qm.listQueries("http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd");
-        assertTrue(v.size() == 1);
-        Hashtable ht = (Hashtable) v.get(0);
+        List<Hashtable> list = qm.listQueries("http://cdrtest.eionet.eu.int/xmlexports/dir9243eec/schema.xsd");
+        assertTrue(list.size() == 1);
+        Hashtable ht = list.get(0);
 
         assertEquals(ht.get(ListQueriesMethod.KEY_TYPE), "xsd");
         assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
@@ -66,10 +67,10 @@ public class ListQueriesMethodTest {
 
         ListQueriesMethod qas = new ListQueriesMethod();
         // get all queries (xqueries, xml schemas, xslts)
-        Vector v = qas.listQueries("http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd");
-        assertTrue(v.size() == 2);
+        List<Hashtable> list = qas.listQueries("http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd");
+        assertTrue(list.size() == 2);
 
-        Hashtable ht = (Hashtable) v.get(0);
+        Hashtable ht = (Hashtable) list.get(0);
 
         assertEquals(ht.get(ListQueriesMethod.KEY_TYPE), Constants.QA_TYPE_XQUERY);
         assertEquals(ht.get(ListQueriesMethod.KEY_CONTENT_TYPE_ID), "HTML");
@@ -83,8 +84,8 @@ public class ListQueriesMethodTest {
         ListQueriesMethod qas = new ListQueriesMethod();
 
         // get all queries (xqueries, xml schemas, xslts)
-        Vector v = qas.listQueries(null);
-        assertTrue(v.size() > 10);
+        List<Hashtable> list = qas.listQueries(null);
+        assertTrue(list.size() > 10);
 
     }
 
@@ -92,7 +93,7 @@ public class ListQueriesMethodTest {
     @Test
     public void testListQAScriptsKeys() throws XMLConvException {
         ListQueriesMethod qas = new ListQueriesMethod();
-        Vector listQaResult = qas.listQueries("http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd");
+        List<Hashtable> listQaResult = qas.listQueries("http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd");
         Hashtable ht = (Hashtable) listQaResult.get(0);
         assertTrue(ht.containsKey(ListQueriesMethod.KEY_QUERY_ID));
         assertTrue(ht.containsKey(ListQueriesMethod.KEY_SHORT_NAME));

@@ -74,9 +74,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         this.jobService = jobService;
     }
 
-    @Transactional
-    public void createScriptAndSendMessageToRabbitMQ() throws CreateRabbitMQMessageException {
+    public void createScriptAndSendMessageToRabbitMQ(String jobId) throws CreateMQMessageException {
         try {
+            this.setJobId(jobId);
             schemaManager = new SchemaManager();
             init();
             String srcFile = url;
@@ -288,8 +288,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
          jobService.changeNStatus(script, status);
     }
 
-    @Override
-    public void setJobId(String id) {
+    private void setJobId(String id) {
         this.jobId = id;
     }
 }

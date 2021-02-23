@@ -1,10 +1,12 @@
 package eionet.gdem.web.spring.remoteapi;
 
 import eionet.gdem.Constants;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
-import eionet.gdem.qa.XQueryService;
+import eionet.gdem.qa.QueryService;
 import eionet.gdem.services.MessageService;
+import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
@@ -16,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.ServletException;
@@ -81,13 +82,13 @@ public class QAScriptsApiController {
             throw new XMLConvException(URL_PARAM_NAME + " parameter is missing from request.");
         }
 
-        // call XQueryService
-        XQueryService xqs = new XQueryService();
+        // call QueryService
+        QueryService xqs = new QueryService();
         // set up the servlet outputstream form converter
         xqs.setHttpResponse(methodResponse);
         xqs.setTicket(getTicket(request));
         // execute conversion
-        xqs.runQAScript(url, scriptId);
+        getRunScriptAutomaticServiceBean().runQAScript(url, scriptId);
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -112,5 +113,9 @@ public class QAScriptsApiController {
         HttpMethodResponseWrapper methodResponse = new HttpMethodResponseWrapper(response);
         Map params = request.getParameterMap();
         methodResponse.flushXMLError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage(), "/runQAScript", params);
+    }
+
+    private static RunScriptAutomaticService getRunScriptAutomaticServiceBean() {
+        return (RunScriptAutomaticService) SpringApplicationContext.getBean("runScriptAutomaticService");
     }
 }

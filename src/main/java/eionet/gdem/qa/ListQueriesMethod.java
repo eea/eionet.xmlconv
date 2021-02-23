@@ -65,14 +65,14 @@ public class ListQueriesMethod extends RemoteServiceMethod {
      *
      * @param schema
      *            URL of XML schema
-     * @return array of Hastables with the following keys: qyery_id, short_name, description, query, schema_id, xml_schema,
+     * @return list of Hastables with the following keys: qyery_id, short_name, description, query, schema_id, xml_schema,
      *         content_type_out, type
      *
      * @throws XMLConvException If an error occurs.
      */
-    public Vector listQueries(String schema) throws XMLConvException {
+    public List<Hashtable> listQueries(String schema) throws XMLConvException {
 
-        Vector v = new Vector();
+        List<Hashtable> list = new ArrayList();
         if (schema != null && schema.equals("")) {
             schema = null;
         }
@@ -102,7 +102,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                             ht.put(KEY_CONTENT_TYPE_OUT, contentType);
                             ht.put(KEY_TYPE, ((String) h.get("schema_lang")).toLowerCase());
                             ht.put(KEY_UPPER_LIMIT, String.valueOf(VALIDATION_UPPER_LIMIT));
-                            v.add(ht);
+                            list.add(ht);
                         }
                     }
                 }
@@ -116,13 +116,13 @@ public class ListQueriesMethod extends RemoteServiceMethod {
                     ht.put(KEY_TYPE, Constants.QA_TYPE_XQUERY);
                     // return full URL of XQuerys
                     ht.put(KEY_QUERY, Properties.gdemURL + "/" + Constants.QUERIES_FOLDER + (String) ht.get("query"));
-                    v.add(ht);
+                    list.add(ht);
                 }
             }
         } catch (Exception e) {
             throw new XMLConvException("Error getting data from the DB " + e.toString(), e);
         }
-        return v;
+        return list;
     }
 
     /**

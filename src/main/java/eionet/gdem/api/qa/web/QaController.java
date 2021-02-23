@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.errors.BadRequestException;
 import eionet.gdem.api.errors.EmptyParameterException;
@@ -12,8 +13,8 @@ import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.RestApiException;
-import eionet.gdem.qa.XQueryService;
-import eionet.gdem.rabbitMQ.SpringRabbitMqConfig;
+import eionet.gdem.qa.QueryService;
+import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -60,14 +61,8 @@ public class QaController {
         this.qaService = qaService;
     }
 
-
     @Autowired(required=false)
     RabbitTemplate rabbitTemplate;
-  //  @Autowired
-   // RabbitMQProducerServiceImpl producer;
-
-   // @Autowired
-   // RabbitMQConsumerServiceImpl consumer;
     
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
@@ -92,7 +87,6 @@ public class QaController {
 
         String parentdir = eionet.gdem.Properties.appRootFolder + "/tmpfile/";
         String country = StringUtils.substringBefore(report.getOriginalFilename(), "_");
-//        String uuid = "df-" + System.currentTimeMillis() + "-" + UUID.randomUUID();
         String uuid = "habitats-df-" + country;
         String tmpdir = parentdir + uuid;
         if (Files.exists(Paths.get(tmpdir))) {
@@ -158,9 +152,9 @@ public class QaController {
             throw new EmptyParameterException("scriptId");
         }      
         
-        XQueryService xqueryService = new XQueryService();
-          String jobId = xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId());
-          xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
+        QueryService queryService = new QueryService();
+          String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null);
+          getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
           LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
           results.put("jobId",jobId);
           return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
@@ -234,31 +228,31 @@ public class QaController {
 
         HashMap<String, String> fileLinksAndSchemas =new LinkedHashMap<>();
         fileLinksAndSchemas.put(file,schema);
-        XQueryService xqService = new XQueryService();
-        Hashtable table = new Hashtable();
+        QueryService xqService = new QueryService();
+        HashMap map = new HashMap();
         try {
             for (Map.Entry<String, String> entry : fileLinksAndSchemas.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 if (key != "" && value != "") {
-                    Vector files = new Vector();
+                    List<String> files = new ArrayList<>();
                     files.add(key);
-                    table.put(value, files);
+                    map.put(value, files);
                 }
             }
-            Vector jobIdsAndFileUrls = xqService.analyzeXMLFiles(table);
+            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(map);
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
-            for (int i = 0; i < jobIdsAndFileUrls.size(); i++) {
-                Vector<String> KeyValuePair = (Vector<String>) jobIdsAndFileUrls.get(i);
+
+            for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {
                 QaResultsWrapper qaResult = new QaResultsWrapper();
-                qaResult.setJobId(KeyValuePair.get(0));
-                qaResult.setFileUrl(KeyValuePair.get(1));
+                qaResult.setJobId(entry.getKey());
+                qaResult.setFileUrl(entry.getValue());
                 results.add(qaResult);
             }
 
             return results;
         } catch (XMLConvException ex) {
-            throw new XMLConvException("error scheduling Jobs with XQueryService ", ex);
+            throw new XMLConvException("error scheduling Jobs with QueryService ", ex);
         }
     }
 
@@ -372,6 +366,10 @@ public class QaController {
             LOGGER.info(e.getMessage());
             throw new RestApiException("Could not retrieve schema information for schema " + schemaUrl);
         }
+    }
+
+    private static JobRequestHandlerService getJobRequestHandlerServiceBean() {
+        return (JobRequestHandlerService) SpringApplicationContext.getBean("jobRequestHandlerService");
     }
 
 }
