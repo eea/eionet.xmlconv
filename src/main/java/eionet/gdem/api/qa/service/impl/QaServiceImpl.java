@@ -42,13 +42,13 @@ public class QaServiceImpl implements QaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(QaService.class);
 
     @Autowired
-    JobRequestHandlerService jobRequestHandlerService;
+    private JobRequestHandlerService jobRequestHandlerService;
 
     @Autowired
-    JobResultHandlerService jobResultHandlerService;
+    private JobResultHandlerService jobResultHandlerService;
 
     @Autowired
-    RunScriptAutomaticService runScriptAutomaticService;
+    private RunScriptAutomaticService runScriptAutomaticService;
 
     public QaServiceImpl() {
     }
@@ -118,7 +118,7 @@ public class QaServiceImpl implements QaService {
             if (map.size() == 0) {
                 LOGGER.info("Could not find files and their schemas. There was an issue with the envelope " + envelopeUrl);
             }
-            HashMap<String, String> jobIdsAndFileUrls = jobRequestHandlerService.analyzeMultipleXMLFiles(map);
+            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerService().analyzeMultipleXMLFiles(map);
 
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
             for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {
@@ -137,7 +137,7 @@ public class QaServiceImpl implements QaService {
     @Override
     public Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException {
         try {
-            return runScriptAutomaticService.runQAScript(sourceUrl, scriptId);
+            return getRunScriptAutomaticService().runQAScript(sourceUrl, scriptId);
         } catch (XMLConvException ex) {
             throw new XMLConvException("error running Qa Script for sourceUrl :" + sourceUrl + " and scriptId:" + scriptId, ex);
         }
@@ -147,7 +147,7 @@ public class QaServiceImpl implements QaService {
     public Hashtable<String, String> getJobResults(String jobId) throws XMLConvException {
 
         QueryService queryService = getQueryService(); // new QueryService();
-        Hashtable<String, String> results = jobResultHandlerService.getResult(jobId);
+        Hashtable<String, String> results = getJobResultHandlerService().getResult(jobId);
         int resultCode = Integer.parseInt(results.get(Constants.RESULT_CODE_PRM));
         String executionStatusName = "";
         switch (resultCode) {
@@ -245,4 +245,15 @@ public class QaServiceImpl implements QaService {
         return schema;
     }
 
+    public JobRequestHandlerService getJobRequestHandlerService() {
+        return jobRequestHandlerService;
+    }
+
+    public JobResultHandlerService getJobResultHandlerService() {
+        return jobResultHandlerService;
+    }
+
+    public RunScriptAutomaticService getRunScriptAutomaticService() {
+        return runScriptAutomaticService;
+    }
 }
