@@ -3,6 +3,7 @@ package eionet.gdem.services;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.service.impl.QaServiceImpl;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.services.impl.RunScriptAutomaticServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -92,15 +93,5 @@ public class RunScriptAutomaticServiceTest {
 
         assertTrue(ok);
 
-    }
-
-    @Test
-    public void testSuccessRunQaScript() throws XMLConvException {
-        this.qaService = new QaServiceImpl(queryServiceMock);
-        String sourceUrl = "source.url";
-        String scriptId = "-1";
-        when(runScriptAutomaticService.runQAScript(sourceUrl, scriptId)).thenReturn(new Vector());
-        qaService.runQaScript(sourceUrl, scriptId);
-        verify(runScriptAutomaticService, times(1)).runQAScript(sourceUrl, scriptId);
     }
 }
