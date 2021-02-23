@@ -4,6 +4,9 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.service.impl.QaServiceImpl;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.services.JobRequestHandlerService;
+import eionet.gdem.services.JobResultHandlerService;
+import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.test.ApplicationTestContext;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +49,15 @@ public class QaServiceTest {
     private QaServiceImpl qaService;
 
     @Mock
+    private JobRequestHandlerService jobRequestHandlerService;
+
+    @Mock
+    private JobResultHandlerService jobResultHandlerService;
+
+    @Mock
+    private RunScriptAutomaticService runScriptAutomaticService;
+
+    @Mock
     private QueryService queryServiceMock;
 
     DocumentBuilder documentBuilder;
@@ -56,7 +68,7 @@ public class QaServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        this.qaService = new QaServiceImpl(queryServiceMock);
+        this.qaService = new QaServiceImpl(queryServiceMock, jobRequestHandlerService, jobResultHandlerService, runScriptAutomaticService);
         DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 

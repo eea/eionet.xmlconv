@@ -27,6 +27,9 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.RemoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.*;
 
 /**
@@ -35,6 +38,7 @@ import java.util.*;
  *
  * @author Enriko Käsper
  */
+@Service
 public class QueryService extends RemoteService {
 
     /** */
@@ -44,6 +48,7 @@ public class QueryService extends RemoteService {
     /**
      * Default constructor.
      */
+    @Autowired
     public QueryService() {
         // for remote clients use trusted mode
         setTrustedMode(true);

@@ -62,6 +62,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
     @Autowired
     public JobRequestHandlerServiceImpl() {
         queryService = new QueryService();
+        setTrustedMode(true);
     }
 
     /**

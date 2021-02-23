@@ -32,6 +32,12 @@ public class RunScriptAutomaticServiceTest {
     private QaServiceImpl qaService;
 
     @Mock
+    private JobRequestHandlerService jobRequestHandlerService;
+
+    @Mock
+    private JobResultHandlerService jobResultHandlerService;
+
+    @Mock
     private QueryService queryServiceMock;
 
     @Autowired
@@ -40,7 +46,7 @@ public class RunScriptAutomaticServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        this.qaService = new QaServiceImpl(queryServiceMock);
+        this.qaService = new QaServiceImpl(queryServiceMock, jobRequestHandlerService, jobResultHandlerService, runScriptAutomaticService);
         DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 

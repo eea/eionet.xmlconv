@@ -18,6 +18,7 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
 
     @Autowired
     public RunScriptAutomaticServiceImpl() {
+        setTrustedMode(true);
     }
 
     /**

@@ -4,6 +4,9 @@ import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.service.impl.QaServiceImpl;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.services.JobRequestHandlerService;
+import eionet.gdem.services.JobResultHandlerService;
+import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -27,10 +30,18 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class JobResultHandlerServiceTest {
 
+
+    private QaServiceImpl qaService;
+
+    @Mock
+    private JobRequestHandlerService jobRequestHandlerService;
+
+    @Spy
     @Autowired
     private JobResultHandlerServiceImpl jobResultHandlerService;
 
-    private QaServiceImpl qaService;
+    @Mock
+    private RunScriptAutomaticService runScriptAutomaticService;
 
     @Mock
     private QueryService queryServiceMock;
@@ -41,19 +52,18 @@ public class JobResultHandlerServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        this.qaService = new QaServiceImpl(queryServiceMock);
+        this.qaService = new QaServiceImpl(queryServiceMock, jobRequestHandlerService, jobResultHandlerService, runScriptAutomaticService);
         DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
     @Test
     public void testSuccessGetJobResults() throws XMLConvException {
-        this.qaService = new QaServiceImpl(queryServiceMock);
         String jobId = "22";
         Hashtable<String, String> results = new Hashtable<String, String>();
         results.put(Constants.RESULT_CODE_PRM, "0");
         when(jobResultHandlerService.getResult(jobId)).thenReturn(results);
         Hashtable<String, String> realResults = this.qaService.getJobResults(jobId);
-        verify(jobResultHandlerService, times(1)).getResult(jobId);
+        verify(jobResultHandlerService, times(2)).getResult(jobId);
         Assert.assertEquals(results, realResults);
     }
 

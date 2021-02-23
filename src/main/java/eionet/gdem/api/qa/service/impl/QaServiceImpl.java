@@ -41,20 +41,21 @@ public class QaServiceImpl implements QaService {
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
     private static final Logger LOGGER = LoggerFactory.getLogger(QaService.class);
 
-    @Autowired
     private JobRequestHandlerService jobRequestHandlerService;
 
-    @Autowired
     private JobResultHandlerService jobResultHandlerService;
 
-    @Autowired
     private RunScriptAutomaticService runScriptAutomaticService;
 
     public QaServiceImpl() {
     }
 
-    public QaServiceImpl(QueryService queryService) {
+    @Autowired
+    public QaServiceImpl(QueryService queryService, JobRequestHandlerService jobRequestHandlerService, JobResultHandlerService jobResultHandlerService, RunScriptAutomaticService runScriptAutomaticService) {
         this.queryService = queryService;
+        this.jobRequestHandlerService = jobRequestHandlerService;
+        this.jobResultHandlerService = jobResultHandlerService;
+        this.runScriptAutomaticService = runScriptAutomaticService;
     }
 
     @Override
