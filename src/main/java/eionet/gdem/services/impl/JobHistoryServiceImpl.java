@@ -66,6 +66,9 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                 case 7:
                     entry.setFullStatusName("JOB INTERRUPTED");
                     break;
+                case 9:
+                    entry.setFullStatusName("RECEIVED BY WORKER");
+                    break;
                 default:
                     entry.setFullStatusName("UNKNOWN STATUS");
             }
