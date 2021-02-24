@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.*;
 
@@ -608,6 +609,58 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
 
         return Long.parseLong(r[0][0]);
 
+    }
+
+    @Override
+    public Schema getSchemaBySchemaUrl(String schemaUrl) throws SQLException, ParseException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Schema schema = null;
+
+        try {
+            conn = getConnection();
+            if (isDebugMode) {
+                LOGGER.debug("Query is " + qSchemaByName);
+            }
+            pstmt = conn.prepareStatement(qSchemaByName);
+            pstmt.setString(1, schemaUrl);
+
+            rs = pstmt.executeQuery();
+            String[][] r = getResults(rs);
+            schema = new Schema();
+            schema.setId(String.valueOf(r[0][0]));
+            schema.setSchema(r[0][1]);
+            if (r[0][2] != null){
+                schema.setDescription(r[0][2]);
+            }
+            if (r[0][3] != null){
+                schema.setDtdPublicId(r[0][3]);
+            }
+            if (r[0][4] != null){
+                schema.setDoValidation(Boolean.parseBoolean(r[0][4]));
+            }
+            if (r[0][5] != null){
+                schema.setSchemaLang(r[0][5]);
+            }
+            if (r[0][6] != null){
+                schema.setExpireDate(Utils.parseDate((String) r[0][6], "yyyy-MM-dd HH:mm:ss"));
+            }
+            if (r[0][7] != null){
+                schema.setBlocker(Boolean.parseBoolean(r[0][7]));
+            }
+            if (r[0][8] != null){
+                schema.setMaxExecutionTime(Long.parseLong(r[0][8]));
+            }
+
+            Vector v_xls = getSchemaStylesheets(r[0][0], conn);
+            schema.setStylesheets(v_xls);
+            Vector v_queries = getSchemaQueries(r[0][0], conn);
+            schema.setQascripts(v_queries);
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
+        return schema;
     }
 
 }

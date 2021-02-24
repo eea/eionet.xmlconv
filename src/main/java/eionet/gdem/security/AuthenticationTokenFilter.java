@@ -38,7 +38,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     @Value("${jwt.header.schema}")
     private String authenticationTokenSchema;
 
-    private static final List<String> INTERCEPTED_URLS = Collections.unmodifiableList(Arrays.asList("/asynctasks/", "/qajobs", "dataflows"));
+    private static final List<String> INTERCEPTED_URLS = Collections.unmodifiableList(Arrays.asList("/asynctasks/", "/qajobs", "dataflows", "/schemas", "/host/authentication"));
 
     @Autowired
     private TokenVerifier verifier;
@@ -82,7 +82,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             Gson gson = new Gson();
             LinkedHashMap<String, String> results = new LinkedHashMap<String, String>();
             results.put("httpStatusCode", HttpStatus.UNAUTHORIZED.toString());
-            results.put("errorMessage", "Access Denied");
+            results.put("errorMessage", ex.getMessage());
             out.write(gson.toJson(results));
         }
     }
