@@ -56,6 +56,19 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     }
 
     @Override
+    public ContainerData getContainerInfoById(String containerId) throws RancherApiException {
+        HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+        ResponseEntity<ContainerData> result;
+        try {
+            result = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.GET, entity, ContainerData.class);
+        } catch (Exception e) {
+            LOGGER.info("Error getting container information of container with id: " + containerId + ": " + e.getMessage());
+            throw new RancherApiException(e.getMessage());
+        }
+        return result.getBody();
+    }
+
+    @Override
     public ContainerData startContainer(String containerName) throws RancherApiException {
         String containerId = getContainerId(containerName);
         HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());

@@ -532,4 +532,33 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-49">
+        <comment> Table for Storing worker info history</comment>
+        <createTable tableName="JOB_EXECUTOR_HISTORY">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_ID" type="INT">
+            </column>
+            <column name="DATE_ADDED" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-50">
+        <comment>
+            Added column CONTAINER_ID to JOB_EXECUTOR_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_EXECUTOR_HISTORY">
+            <column name="CONTAINER_ID" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

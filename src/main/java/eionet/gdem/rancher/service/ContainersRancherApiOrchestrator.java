@@ -23,6 +23,14 @@ public interface ContainersRancherApiOrchestrator {
     ContainerApiResponse getContainerInfo(String containerName) throws RancherApiException;
 
     /**
+     * Returns useful information of container with id containerId
+     * @param containerId
+     * @return
+     * @throws RancherApiException
+     */
+    ContainerData getContainerInfoById(String containerId) throws RancherApiException;
+
+    /**
      * Starts container with name containerName
      * @param containerName
      * @return
