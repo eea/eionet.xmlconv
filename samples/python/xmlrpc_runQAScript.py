@@ -6,7 +6,7 @@ import sys
 server = xmlrpc.client.ServerProxy(sys.argv[1])
 
 try:
-	method_result = server.QueryService.runQAScript("https://cdrtest.eionet.europa.eu/ro/colwkcutw/envxxyxia/REP_D-RO_ANPM_20170929_C-001.xml","1271")
+	method_result = server.RunScriptAutomaticService.runQAScript("https://cdrtest.eionet.europa.eu/ro/colwkcutw/envxxyxia/REP_D-RO_ANPM_20170929_C-001.xml","1271")
 
 except xmlrpc.client.ProtocolError as err:
 	print("A protocol error occurred")
