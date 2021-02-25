@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
@@ -40,6 +42,9 @@ public class WorkersJobsResultsMessageReceiverTest {
     private JobExecutorService jobExecutorService;
 
     @Mock
+    private JobExecutorHistoryService jobExecutorHistoryService;
+
+    @Mock
     private JobHistoryService jobHistoryService;
 
     @Spy
@@ -61,6 +66,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         Message message = convertObjectToByteArray(response);
 
         doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
+        doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
         doNothing().when(jobService).changeNStatus(any(XQScript.class),anyInt());
         doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyString());
         doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString());

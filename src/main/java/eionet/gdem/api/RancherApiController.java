@@ -60,6 +60,11 @@ public class RancherApiController {
         return containersRancherApiOrchestrator.getContainerInfo(containerName);
     }
 
+    @GetMapping("/container/info/id/{containerId}")
+    public ContainerData getContainerInfoById(@PathVariable String containerId) throws RancherApiException {
+        return containersRancherApiOrchestrator.getContainerInfoById(containerId);
+    }
+
     @GetMapping("/container/id/{containerName}")
     public String getContainerId(@PathVariable String containerName) throws RancherApiException {
         return containersRancherApiOrchestrator.getContainerId(containerName);

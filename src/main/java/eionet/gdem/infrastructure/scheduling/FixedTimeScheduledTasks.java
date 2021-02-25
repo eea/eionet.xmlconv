@@ -6,11 +6,16 @@ import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.jpa.service.JobExecutorHistoryService;
+import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rancher.exception.RancherApiException;
+import eionet.gdem.rancher.model.ContainerApiResponse;
+import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
@@ -51,6 +56,12 @@ public class FixedTimeScheduledTasks {
     private ServicesRancherApiOrchestrator servicesOrchestrator;
     @Autowired
     private ContainersRancherApiOrchestrator containersOrchestrator;
+
+    @Autowired
+    private JobExecutorService jobExecutorService;
+
+    @Autowired
+    private JobExecutorHistoryService jobExecutorHistoryService;
 
     @Autowired
     public FixedTimeScheduledTasks() {
@@ -185,6 +196,31 @@ public class FixedTimeScheduledTasks {
         ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size()+scale);
         servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         LOGGER.info("Created " + scale + " new worker(s)");
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 */2 * * * *") //Every 2 minutes
+    public void checkWorkersStatusInRancherAndUpdateDB() throws RancherApiException {
+        try {
+            //Retrieve jobExecutor instances names from Rancher
+            List<String> instances = servicesOrchestrator.getContainerInstances(Properties.rancherJobExecServiceId);
+            for (String containerId: instances) {
+                //for each instance find status
+                ContainerData data = containersOrchestrator.getContainerInfoById(containerId);
+                String healthState = data.getHealthState();
+                if(healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue())) {
+                    //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
+                    String containerName = data.getName();
+                    jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, null, containerName);
+                    JobExecutorHistory entry = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()));
+                    jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
+                }
+            }
+        }
+        catch(RancherApiException rae){
+            LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
+            throw rae;
+        }
     }
 }
 
