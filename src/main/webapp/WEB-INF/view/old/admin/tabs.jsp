@@ -12,6 +12,9 @@
     <ed:tabItem selectedTab="${selectedTab}" href="/admin/generateJWTToken" id="generateJWTToken" title="label.admin.generateJWTToken">
       <spring:message code="label.admin.generateJWTToken"/>
     </ed:tabItem>
+    <ed:tabItem selectedTab="${selectedTab}" href="/admin/jobExecutorInstancesView" id="jobExecutorInstancesView" title="label.admin.jobExecutorInstancesView">
+      <spring:message code="label.admin.jobExecutorInstancesView"/>
+    </ed:tabItem>
   </ul>
 </div>
 <div id="tabbedmenuend"></div>

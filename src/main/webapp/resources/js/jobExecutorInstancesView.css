@@ -1,0 +1,8 @@
+#job_executor_instances_table{
+    width: 1250px;
+    table-layout: fixed;
+}
+
+#selectableContainerId{
+    cursor:pointer;
+}
