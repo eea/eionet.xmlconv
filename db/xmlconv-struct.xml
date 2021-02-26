@@ -561,4 +561,14 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-51">
+        <comment>
+            Added column CONTAINER_ID to JOB_EXECUTOR table
+        </comment>
+        <addColumn tableName="JOB_EXECUTOR">
+            <column name="CONTAINER_ID" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

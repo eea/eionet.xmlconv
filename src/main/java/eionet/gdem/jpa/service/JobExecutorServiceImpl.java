@@ -2,11 +2,14 @@ package eionet.gdem.jpa.service;
 
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
+import org.quartz.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class JobExecutorServiceImpl implements JobExecutorService {
@@ -23,13 +26,13 @@ public class JobExecutorServiceImpl implements JobExecutorService {
 
     @Transactional
     @Override
-    public void updateJobExecutor(Integer status, Integer jobId, String name) {
+    public void updateJobExecutor(Integer status, Integer jobId, String name, String containerId) {
         try {
             JobExecutor jobExec = jobExecutorRepository.findByName(name);
             if (jobExec!=null) {
                 jobExecutorRepository.updateStatusAndJobId(status, jobId, name);
             } else {
-                JobExecutor exec = new JobExecutor(name, status, jobId);
+                JobExecutor exec = new JobExecutor(name, containerId, status, jobId);
                 jobExecutorRepository.save(exec);
             }
         } catch (Exception e) {
@@ -50,6 +53,17 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             }
         } catch (Exception e) {
             LOGGER.error("Database exception when saving worker with name " + jobExecutor.getName() + ", " + e.toString());
+            throw e;
+        }
+    }
+
+    @Transactional
+    @Override
+    public List<JobExecutor> listJobExecutor() {
+        try {
+            return jobExecutorRepository.findAll();
+        } catch (Exception e) {
+            LOGGER.error("Database exception when retrieving entries from JOB_EXECUTOR table");
             throw e;
         }
     }

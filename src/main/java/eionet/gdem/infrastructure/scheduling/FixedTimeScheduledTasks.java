@@ -201,6 +201,9 @@ public class FixedTimeScheduledTasks {
     @Transactional
     @Scheduled(cron = "0 */2 * * * *") //Every 2 minutes
     public void checkWorkersStatusInRancherAndUpdateDB() throws RancherApiException {
+        if (!Properties.enableJobExecRancherScheduledTask) {
+            return;
+        }
         try {
             //Retrieve jobExecutor instances names from Rancher
             List<String> instances = servicesOrchestrator.getContainerInstances(Properties.rancherJobExecServiceId);
@@ -211,7 +214,7 @@ public class FixedTimeScheduledTasks {
                 if(healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue())) {
                     //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
                     String containerName = data.getName();
-                    jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, null, containerName);
+                    jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, null, containerName, containerId);
                     JobExecutorHistory entry = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()));
                     jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
                 }

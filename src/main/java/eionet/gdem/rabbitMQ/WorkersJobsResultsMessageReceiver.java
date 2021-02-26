@@ -57,7 +57,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
             script = response.getScript();
             if (script == null) {
-                JobExecutor jobExecutor = new JobExecutor(response.getContainerName(), response.getJobExecutorStatus());
+                JobExecutor jobExecutor = new JobExecutor(response.getContainerName(), containerId, response.getJobExecutorStatus());
                 jobExecutorService.saveJobExecutor(jobExecutor);
                 JobExecutorHistory entry = new JobExecutorHistory(response.getContainerName(), containerId, response.getJobExecutorStatus(), new Timestamp(new Date().getTime()));
                 jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
@@ -65,7 +65,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 jobService.changeNStatus(script, Constants.XQ_FATAL_ERR);
                 jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, response.getContainerName());
                 LOGGER.info("Job with id " + response.getScript().getJobId() + " failed with error: " + response.getErrorMessage());
-                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), response.getContainerName());
+                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), response.getContainerName(), containerId);
                 JobExecutorHistory entry = new JobExecutorHistory(response.getContainerName(), containerId, SchedulingConstants.WORKER_READY, new Timestamp(new Date().getTime()));
                 jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
             } else if (response.getJobStatus() == SchedulingConstants.WORKER_RECEIVED) {
@@ -74,14 +74,14 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
                 jobService.changeIntStatusAndJobExecutorName(intStatus, response.getContainerName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
                 jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_WORKER_RECEIVED, response.getContainerName());
-                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_RECEIVED, Integer.parseInt(script.getJobId()), response.getContainerName());
+                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_RECEIVED, Integer.parseInt(script.getJobId()), response.getContainerName(), containerId);
                 JobExecutorHistory entry = new JobExecutorHistory(response.getContainerName(), containerId, SchedulingConstants.WORKER_RECEIVED, new Timestamp(new Date().getTime()));
                 jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
             } else if (response.getJobStatus() == SchedulingConstants.WORKER_READY) {
                 jobService.changeNStatus(script, Constants.XQ_READY);
                 jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_READY, response.getContainerName());
                 LOGGER.info("### Job with id=" + script.getJobId() + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
-                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), response.getContainerName());
+                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), response.getContainerName(), containerId);
                 JobExecutorHistory entry = new JobExecutorHistory(response.getContainerName(), containerId, SchedulingConstants.WORKER_READY, new Timestamp(new Date().getTime()));
                 jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
             }
