@@ -242,6 +242,9 @@ public class Properties {
 
     public static boolean enableQuartz;
 
+    public static final Long jobsOnDemandLimitBeforeTimeout;
+    public static final Long jobsOnDemandUITimeout;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -391,6 +394,9 @@ public class Properties {
         JOBS_RESULTS_ON_DEMAND_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.onDemand.routingkey");
 
         enableQuartz = Boolean.parseBoolean(getStringProperty("env.enable.quartz"));
+
+        jobsOnDemandLimitBeforeTimeout = getLongProperty("env.jobs.onDemand.limit.before.time.out");
+        jobsOnDemandUITimeout = getLongProperty("env.jobs.onDemand.ui.time.out");
     }
 
     /**

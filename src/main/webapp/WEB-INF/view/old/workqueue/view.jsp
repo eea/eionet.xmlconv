@@ -1,4 +1,5 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
 
@@ -148,7 +149,12 @@
           <td>
             <c:choose>
               <c:when test="${job.scriptType != 'fme'}">
-                <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
+                <c:if test="${fn:startsWith(job.scriptFile, 'gdem')}">
+                  <a href="/tmp/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
+                </c:if>
+                <c:if test="${not fn:startsWith(job.scriptFile, 'gdem')}">
+                  <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
+                </c:if>
               </c:when>
               <c:otherwise>
                 ${job.scriptType}

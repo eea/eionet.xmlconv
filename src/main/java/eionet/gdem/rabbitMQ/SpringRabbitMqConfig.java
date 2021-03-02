@@ -59,10 +59,44 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
+    Queue workersJobsOnDemandQueue() {
+        return new Queue(Properties.WORKERS_JOBS_ON_DEMAND_QUEUE, true);
+    }
+
+
+    @Bean
+    Queue workersJobsResultsOnDemandQueue() {
+        return new Queue(Properties.WORKERS_JOBS_RESULTS_ON_DEMAND_QUEUE, true);
+    }
+
+    @Bean
+    DirectExchange mainXmlconvJobsOnDemandExchange() {
+        return new DirectExchange(Properties.MAIN_XMLCONV_JOBS_ON_DEMAND_EXCHANGE,true,false);
+    }
+
+
+    @Bean
+    DirectExchange mainWorkersOnDemandExchange() {
+        return new DirectExchange(Properties.MAIN_WORKERS_ON_DEMAND_EXCHANGE,true,false);
+    }
+
+    @Bean
+    Binding xmlconvExchangeToXmlConvJobsOnDemandQueueBinding() {
+        return BindingBuilder.bind(workersJobsOnDemandQueue()).to(mainXmlconvJobsOnDemandExchange()).with(Properties.JOBS_ON_DEMAND_ROUTING_KEY);
+
+    }
+
+    @Bean
+    Binding workersExchangeToWorkersJobResultsOnDemandQueueBinding() {
+        return BindingBuilder.bind(workersJobsResultsOnDemandQueue()).to(mainWorkersOnDemandExchange()).with(Properties.JOBS_RESULTS_ON_DEMAND_ROUTING_KEY);
+
+    }
+
+    @Bean
     SimpleMessageListenerContainer workersJobsResultsContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.addQueueNames(Properties.WORKERS_JOBS_RESULTS_QUEUE, Properties.WORKERS_JOBS_RESULTS_ON_DEMAND_QUEUE);
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(Properties.WORKERS_JOBS_RESULTS_QUEUE);
         container.setMessageListener(workersJobsResultsListenerAdapter());
         return container;
     }
@@ -104,6 +138,15 @@ public class SpringRabbitMqConfig {
 
         admin.declareBinding(workersExchangeToWorkersJobResultsQueueBinding());
         admin.declareBinding(xmlconvExchangeToXmlConvJobsQUeueBinding());
+
+        admin.declareExchange(mainWorkersOnDemandExchange());
+        admin.declareExchange(mainXmlconvJobsOnDemandExchange());
+
+        admin.declareQueue(workersJobsOnDemandQueue());
+        admin.declareQueue(workersJobsResultsOnDemandQueue());
+
+        admin.declareBinding(workersExchangeToWorkersJobResultsOnDemandQueueBinding());
+        admin.declareBinding(xmlconvExchangeToXmlConvJobsOnDemandQueueBinding());
         return admin;
     }
 
