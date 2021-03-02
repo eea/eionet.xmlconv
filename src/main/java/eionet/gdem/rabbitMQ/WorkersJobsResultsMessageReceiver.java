@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobExecutor;
@@ -53,7 +54,10 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
             WorkersRabbitMQResponse response = mapper.readValue(messageBody, WorkersRabbitMQResponse.class);
-            String containerId = containersOrchestrator.getContainerId(response.getContainerName());
+            String containerId="";
+            if (Properties.enableJobExecRancherScheduledTask) {
+                containerId = containersOrchestrator.getContainerId(response.getContainerName());
+            }
 
             script = response.getScript();
             if (script == null) {
