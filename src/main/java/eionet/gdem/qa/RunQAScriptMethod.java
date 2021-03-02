@@ -163,8 +163,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                             xq.setScriptSource((String) hash.get(QaScriptView.URL));
                         }
 
-                        HashMap query = queryDao.getQueryInfo(scriptId);
-                        String scriptFile = (String) query.get(QaScriptView.QUERY);
+                        String scriptFile = (String) hash.get(QaScriptView.QUERY);
 
                         String resultFile = Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "." + xq.getOutputType().toLowerCase();
                         xq.setStrResultFile(resultFile);
