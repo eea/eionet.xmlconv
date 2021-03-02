@@ -441,7 +441,8 @@ public class QASandboxController {
                 String scriptFile;
                 if (scriptId != null) {
                     query = queryDao.getQueryInfo(scriptId);
-                    scriptFile = (String) query.get(QaScriptView.QUERY);
+                    String scriptFileName = (String) query.get(QaScriptView.QUERY);
+                    scriptFile = Properties.queriesFolder + File.separator + scriptFileName;
                 } else {
                     String extension = ScriptUtils.getExtensionFromScriptType(xq.getScriptType());
                     scriptFile = Utils.saveStrToFile(xq.getScriptSource(), extension);

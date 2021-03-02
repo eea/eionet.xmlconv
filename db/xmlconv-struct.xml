@@ -532,4 +532,22 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-49">
+        <comment>
+            Added column JOB_TYPE to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="JOB_TYPE" type="VARCHAR(10)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-50">
+        <comment>
+            Added column JOB_TYPE to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="JOB_TYPE" type="VARCHAR(10)">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

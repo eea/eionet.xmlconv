@@ -62,7 +62,7 @@ public class WorkersJobsResultsMessageReceiverTest {
 
         doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
         doNothing().when(jobService).changeNStatus(any(XQScript.class),anyInt());
-        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyString());
+        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyString(), anyString());
         doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString());
         doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
         receiver.onMessage(message);

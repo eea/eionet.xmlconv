@@ -77,11 +77,12 @@ public class JobHistoryServiceImpl implements JobHistoryService {
     }
 
     @Override
-    public void updateStatusesAndJobExecutorName(XQScript script, Integer status, String jobExecutorName) {
+    public void updateStatusesAndJobExecutorName(XQScript script, Integer status, String jobExecutorName, String jobType) {
         try {
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(script.getJobId(), status, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
             jobHistoryEntry.setJobExecutorName(jobExecutorName);
+            jobHistoryEntry.setJobType(jobType);
             repository.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + script.getJobId() + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {

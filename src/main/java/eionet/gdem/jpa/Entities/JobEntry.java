@@ -57,6 +57,9 @@ public class JobEntry implements Serializable {
     @Column(name = "JOB_EXECUTOR_NAME")
     private String jobExecutorName;
 
+    @Column(name = "JOB_TYPE")
+    private String jobType;
+
     public JobEntry() {
     }
 
@@ -203,6 +206,15 @@ public class JobEntry implements Serializable {
 
     public JobEntry setJobExecutorName(String jobExecutorName) {
         this.jobExecutorName = jobExecutorName;
+        return this;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public JobEntry setJobType(String jobType) {
+        this.jobType = jobType;
         return this;
     }
 }

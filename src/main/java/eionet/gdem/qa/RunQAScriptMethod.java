@@ -168,7 +168,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
 
                         String resultFile = Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "." + xq.getOutputType().toLowerCase();
                         xq.setStrResultFile(resultFile);
-                        xq.setScriptFileName(scriptFile);
+                        xq.setScriptFileName(Properties.queriesFolder + File.separator + scriptFile);
 
                         JobEntry jobEntry = getJobOnDemandHandlerService().createJobAndSendToRabbitMQ(xq, Integer.parseInt(scriptId));
                         LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle xmlrpc/rest call.");

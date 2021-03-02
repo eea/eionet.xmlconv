@@ -3,6 +3,7 @@ package eionet.gdem.jpa.service;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.XQScript;
 import org.slf4j.Logger;
@@ -56,6 +57,18 @@ public class JobServiceImpl implements JobService {
             LOGGER.error("Database exception when changing internal status of job with id " + jobId + ", " + e.toString());
             throw e;
         }
+    }
+
+    @Override
+    public JobEntry findById(Integer id) {
+        JobEntry jobEntry = null;
+        try {
+            jobEntry = jobRepository.findById(id);
+        } catch (Exception e) {
+            LOGGER.info("Exception during retrieval of job with id " + id);
+            throw e;
+        }
+        return jobEntry;
     }
 }
 

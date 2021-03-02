@@ -46,6 +46,9 @@ public class JobHistoryEntry implements Serializable {
     @Column(name = "JOB_EXECUTOR_NAME")
     private String jobExecutorName;
 
+    @Column(name = "JOB_TYPE")
+    private String jobType;
+
     public JobHistoryEntry() {
     }
 
@@ -140,5 +143,13 @@ public class JobHistoryEntry implements Serializable {
 
     public void setJobExecutorName(String jobExecutorName) {
         this.jobExecutorName = jobExecutorName;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
     }
 }

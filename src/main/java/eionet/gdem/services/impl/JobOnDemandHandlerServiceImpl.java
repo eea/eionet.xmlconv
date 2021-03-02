@@ -31,6 +31,8 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobOnDemandHandlerServiceImpl.class);
 
+    private static final String ON_DEMAND_TYPE = "ON DEMAND";
+
     @Autowired
     public JobOnDemandHandlerServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
                                          WorkersJobMessageSender jobMessageSender) {
@@ -45,7 +47,8 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
         JobEntry jobEntry = new JobEntry();
         try {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
-            jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus).setRetryCounter(0);
+            jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus)
+                    .setRetryCounter(0).setJobType(ON_DEMAND_TYPE);
             jobEntry = jobRepository.save(jobEntry);
             LOGGER.info("Job with id " + jobEntry.getId() + " has been inserted in table T_XQJOBS");
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED);
@@ -68,6 +71,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
     void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus) {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
         jobHistoryEntry.setIntSchedulingStatus(internalStatus);
+        jobHistoryEntry.setJobType(ON_DEMAND_TYPE);
         jobHistoryRepository.save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
     }
