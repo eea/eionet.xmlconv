@@ -1,13 +1,12 @@
 package eionet.gdem.services;
 
-import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.service.impl.QaServiceImpl;
 import eionet.gdem.qa.QueryService;
-import eionet.gdem.services.impl.RunScriptAutomaticServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -20,10 +19,12 @@ import javax.sql.DataSource;
 import java.util.Vector;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
+
+//These tests were used for saxon engine which has been moved to jobExecutor application
+@Ignore
 public class RunScriptAutomaticServiceTest {
 
     @Autowired
