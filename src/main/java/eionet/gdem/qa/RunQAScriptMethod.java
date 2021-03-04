@@ -1,30 +1,36 @@
 package eionet.gdem.qa;
 
+import eionet.gdem.Constants;
+import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
+import eionet.gdem.XMLConvException;
+import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
+import eionet.gdem.dcm.remote.RemoteServiceMethod;
+import eionet.gdem.dto.Schema;
+import eionet.gdem.http.HttpFileManager;
+import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.qa.utils.ScriptUtils;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.JobOnDemandHandlerService;
+import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.xml.FeedbackAnalyzer;
+import eionet.gdem.validation.JaxpValidationService;
+import eionet.gdem.validation.ValidationService;
+import eionet.gdem.web.spring.schemas.SchemaManager;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Vector;
-
-import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.http.HttpFileManager;
-import eionet.gdem.validation.JaxpValidationService;
-import org.apache.commons.io.IOUtils;
-
-import eionet.gdem.Constants;
-import eionet.gdem.XMLConvException;
-import eionet.gdem.Properties;
-import eionet.gdem.web.spring.schemas.SchemaManager;
-import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
-import eionet.gdem.dcm.remote.RemoteServiceMethod;
-import eionet.gdem.dto.Schema;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.utils.Utils;
-import eionet.gdem.utils.xml.FeedbackAnalyzer;
-import eionet.gdem.validation.ValidationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of run ad-hoc QA script methods.
@@ -91,9 +97,13 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
      * DAO for getting query info.
      */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
-
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(RunQAScriptMethod.class);
+
+    /**
+     * time in milliseconds (2 minutes)
+     */
+    private static final int TIME_INTERVAL_FOR_JOB_STATUS = 120000;
 
     /**
      * Remote method for running the QA script on the fly.
@@ -104,10 +114,11 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
      * @throws XMLConvException in case of business logic error
      */
     public Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException {
+        StopWatch timer = new StopWatch();
         Vector result = new Vector();
         String fileUrl;
         String contentType = DEFAULT_QA_CONTENT_TYPE;
-        String strResult;
+        String strResult = "";
         LOGGER.debug("==xmlconv== runQAScript: id=" + scriptId + " file_url=" + sourceUrl + "; ");
         try {
             if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
@@ -152,7 +163,30 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                             xq.setScriptSource((String) hash.get(QaScriptView.URL));
                         }
 
-                        strResult = xq.getResult();
+                        String scriptFile = (String) hash.get(QaScriptView.QUERY);
+
+                        String resultFile = Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "." + xq.getOutputType().toLowerCase();
+                        xq.setStrResultFile(resultFile);
+                        xq.setScriptFileName(Properties.queriesFolder + File.separator + scriptFile);
+
+                        JobEntry jobEntry = getJobOnDemandHandlerService().createJobAndSendToRabbitMQ(xq, Integer.parseInt(scriptId));
+                        LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle xmlrpc/rest call.");
+
+                        timer.start();
+                        while (jobEntry.getnStatus() != Constants.XQ_READY) {
+                            if (jobEntry.getnStatus() == Constants.XQ_FATAL_ERR) {
+                                LOGGER.info("Error retrieving job with id " + jobEntry.getId());
+                                throw new XMLConvException("Job with id " + jobEntry.getId() + " failed");
+                            }
+                            if (timer.getTime()>Properties.jobsOnDemandLimitBeforeTimeout) {
+                                throw new XMLConvException("Time exceeded for getting status of job with id " + jobEntry.getId());
+                            }
+                            Thread.sleep(TIME_INTERVAL_FOR_JOB_STATUS);
+                            jobEntry = getJobRepository().findById(jobEntry.getId());
+                        }
+                        String jobResult = jobEntry.getResultFile();
+                        File file = new File(jobResult);
+                        strResult = FileUtils.readFileToString(file, "UTF-8");
                     }
                 } catch (SQLException sqle) {
                     throw new XMLConvException("Error getting data from DB: " + sqle.toString());
@@ -160,6 +194,8 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                     String errMess = "Could not execute runQAMethod";
                     LOGGER.error(errMess + "; " + e.toString(), e);
                     throw new XMLConvException(errMess, e);
+                } finally {
+                    timer.stop();
                 }
             }
             if (isHttpRequest()) {
@@ -189,5 +225,13 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private JobOnDemandHandlerService getJobOnDemandHandlerService() {
+        return (JobOnDemandHandlerService) SpringApplicationContext.getBean("jobOnDemandHandlerService");
+    }
+
+    private JobRepository getJobRepository() {
+        return (JobRepository) SpringApplicationContext.getBean("jobRepository");
     }
 }

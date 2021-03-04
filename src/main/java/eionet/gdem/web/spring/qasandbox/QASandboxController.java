@@ -9,8 +9,15 @@ import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QAScriptManager;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.qa.utils.ScriptUtils;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.JobOnDemandHandlerService;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
@@ -24,9 +31,12 @@ import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
 import eionet.gdem.web.spring.scripts.QAScriptListLoader;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,8 +49,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -52,10 +65,21 @@ public class QASandboxController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QASandboxController.class);
     private MessageService messageService;
+    private JobOnDemandHandlerService jobOnDemandHandlerService;
+    private JobRepository jobRepository;
+    private IQueryDao queryDao;
+    /**
+     * time in milliseconds (2 minutes)
+     */
+    private static final int TIME_INTERVAL_FOR_JOB_STATUS = 120000;
 
     @Autowired
-    public QASandboxController(MessageService messageService) {
+    public QASandboxController(MessageService messageService, JobOnDemandHandlerService jobOnDemandHandlerService,
+                               @Qualifier("jobRepository") JobRepository jobRepository, IQueryDao queryDao) {
         this.messageService = messageService;
+        this.jobOnDemandHandlerService = jobOnDemandHandlerService;
+        this.jobRepository = jobRepository;
+        this.queryDao = queryDao;
     }
 
     @ModelAttribute
@@ -314,7 +338,7 @@ public class QASandboxController {
     @PostMapping(params = {"runScript"})
     public String runQAScript(@ModelAttribute("form") QASandboxForm cForm, BindingResult bindingResult, RedirectAttributes redirectAttributes,
                               HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-
+        StopWatch timer = new StopWatch();
         SpringMessages errors = new SpringMessages();
         cForm.setResult(null);
         String scriptId = cForm.getScriptId();
@@ -412,7 +436,44 @@ public class QASandboxController {
                 response.setContentType(outputContentType);
                 response.setCharacterEncoding("utf-8");
                 output = response.getOutputStream();
-                xq.getResult(output);
+
+                HashMap query;
+                String scriptFile;
+                if (scriptId != null) {
+                    query = queryDao.getQueryInfo(scriptId);
+                    String scriptFileName = (String) query.get(QaScriptView.QUERY);
+                    scriptFile = Properties.queriesFolder + File.separator + scriptFileName;
+                } else {
+                    String extension = ScriptUtils.getExtensionFromScriptType(xq.getScriptType());
+                    scriptFile = Utils.saveStrToFile(xq.getScriptSource(), extension);
+                }
+
+                String resultFile = Properties.tmpFolder + File.separatorChar + "gdem_" + System.currentTimeMillis() + "." + xq.getOutputType().toLowerCase();
+                xq.setStrResultFile(resultFile);
+                xq.setScriptFileName(scriptFile);
+
+                JobEntry jobEntry = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(xq, scriptId!=null ? Integer.parseInt(scriptId) : Constants.JOB_FROMSTRING);
+                LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle runScript through GUI.");
+                session.setAttribute("jobId", jobEntry.getId());
+
+                timer.start();
+                while (jobEntry.getnStatus() != Constants.XQ_READY) {
+                    jobEntry = jobRepository.findById(jobEntry.getId());
+                    if (jobEntry.getnStatus() == Constants.XQ_READY) {
+                        break;
+                    }
+                    if (jobEntry.getnStatus() == Constants.XQ_FATAL_ERR) {
+                        LOGGER.info("Error retrieving job with id " + jobEntry.getId());
+                        throw new XMLConvException("Job with id " + jobEntry.getId() + " failed");
+                    }
+                    if (timer.getTime()>Properties.jobsOnDemandUITimeout) {
+                        throw new XMLConvException("Time exceeded for getting status of job with id " + jobEntry.getId());
+                    }
+                    Thread.sleep(TIME_INTERVAL_FOR_JOB_STATUS);
+                }
+                String jobResult = jobEntry.getResultFile();
+                File file = new File(jobResult);
+                IOUtils.copy(new FileInputStream(file), output);
 
                 /*} else {
                     result = xq.getResult();
@@ -421,8 +482,11 @@ public class QASandboxController {
             } catch (XMLConvException ge) {
                 throw new RuntimeException("Exception:" + ge.getMessage());
             }
-        } catch (IOException | DCMException | SignOnException e) {
+        } catch (IOException | DCMException | SignOnException | SQLException | InterruptedException e) {
             throw new RuntimeException("Exception:" + e.getMessage());
+        } finally {
+            timer.stop();
+            session.removeAttribute("jobId");
         }
         return null;
     }

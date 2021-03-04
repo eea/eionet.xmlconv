@@ -1,4 +1,5 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 <ed:breadcrumbs-push label="Workqueue" level="1"/>
 
@@ -88,7 +89,7 @@
       <tr>
         <th scope="col" class="scope-col details-control" colspan="2">Job ID</th>
         <th scope="col" class="scope-col">Document URL</th>
-        <th scope="col" class="scope-col">XQuery script</th>
+        <th scope="col" class="scope-col">Query script</th>
         <th scope="col" class="scope-col">Job Result</th>
         <th scope="col" class="scope-col">
           <div class="dropdown-container">
@@ -122,6 +123,7 @@
         <th scope="col" class="scope-col">Started at</th>
         <th scope="col" class="scope-col">Instance</th>
         <th scope="col" class="scope-col">Duration</th>
+        <th scope="col" class="scope-col">Job type</th>
       </tr>
       </thead>
       <tbody>
@@ -148,7 +150,12 @@
           <td>
             <c:choose>
               <c:when test="${job.scriptType != 'fme'}">
-                <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
+                <c:if test="${fn:startsWith(job.scriptFile, 'gdem')}">
+                  <a href="/tmp/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
+                </c:if>
+                <c:if test="${not fn:startsWith(job.scriptFile, 'gdem')}">
+                  <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
+                </c:if>
               </c:when>
               <c:otherwise>
                 ${job.scriptType}
@@ -195,6 +202,7 @@
               </c:when>
             </c:choose>
           </td>
+          <td>${job.jobType}</td>
         </tr>
       </c:forEach>
       </tbody>

@@ -288,7 +288,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
          script.setScriptFileName(scriptFile);
          script.setStrResultFile(resultFile);
          script.setScriptType(scriptType);
-         jobService.changeNStatus(script, status);
+         jobService.changeNStatus(Integer.parseInt(jobId), status);
     }
 
     public void setJobId(String id) {

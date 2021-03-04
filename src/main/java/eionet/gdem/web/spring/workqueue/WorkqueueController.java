@@ -101,6 +101,7 @@ public class WorkqueueController {
             String xqStringID = list[i][6];
             String instance = list[i][7];
             String durationMs = list[i][8];
+            String jobType = list[i][9];
 
             job.setJobId(jobId);
             /*job.setUrl(url);*/
@@ -111,6 +112,7 @@ public class WorkqueueController {
             job.setTimestamp(timeStamp);
             job.setScriptId(xqStringID);
             job.setInstance(instance);
+            job.setJobType(jobType);
             int xqID = 0;
             String scriptType = "";
             try {
@@ -139,7 +141,7 @@ public class WorkqueueController {
 
 
             if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING ||
-                    status == Constants.XQ_INTERRUPTED || status == Constants.XQ_WORKER_RECEIVED)
+                    status == Constants.XQ_INTERRUPTED || status == Constants.CANCELLED_BY_USER)
                 resultFile = null;
             job.setResultFile(resultFile);
 
@@ -160,8 +162,8 @@ public class WorkqueueController {
                 statusName = "RECOVERABLE ERROR";
             if (status == Constants.XQ_INTERRUPTED)
                 statusName = "INTERRUPTED";
-            if (status == Constants.XQ_WORKER_RECEIVED)
-                statusName = "RECEIVED BY WORKER";
+            if (status == Constants.CANCELLED_BY_USER)
+                statusName = "CANCELLED BY USER";
 
             job.setStatusName(statusName);
             if (url.indexOf(Constants.GETSOURCE_URL) > 0 && url.indexOf(Constants.SOURCE_URL_PARAM) > 0) {

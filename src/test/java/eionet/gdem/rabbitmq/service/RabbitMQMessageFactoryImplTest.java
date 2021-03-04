@@ -90,9 +90,9 @@ public class RabbitMQMessageFactoryImplTest {
 
     @Test
     public void createScriptAndSendMessageToRabbitMQTest() throws SQLException, CreateRabbitMQMessageException {
-        JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, null, 1, new Timestamp(new Date().getTime()),null, null, null , null);
+        JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, "627015", 1, new Timestamp(new Date().getTime()),null, null, null , null);
         when(jobRepository.findById(anyInt())).thenReturn(jobEntry);
-        doNothing().when(jobService).changeNStatus(any(XQScript.class), anyInt());
+        doNothing().when(jobService).changeNStatus(anyInt(), anyInt());
         when(jobRepository.getRetryCounter(anyInt())).thenReturn(0);
         doNothing().when(jobRepository).updateJobInfo(anyInt(), anyString(), any(Timestamp.class), anyInt(), anyInt());
         doNothing().when(jobRepository).updateIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());

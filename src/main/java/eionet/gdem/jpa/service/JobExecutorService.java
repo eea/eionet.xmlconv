@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface JobExecutorService {
 
+    JobExecutor findByName(String jobExecutorName);
+
     void updateJobExecutor(Integer status, Integer jobId, String jobExecutorName, String containerId);
 
     void saveJobExecutor(JobExecutor jobExecutor);

@@ -33,7 +33,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
 
     public ContainersRancherApiOrchestratorImpl(RestTemplate restTemplate, ServicesRancherApiOrchestrator servicesRancherApiOrchestrator) {
         this.restTemplate = restTemplate;
-        rancherApiUrl = Properties.rancherApiUrl + "/containers/";
+        rancherApiUrl = Properties.rancherApiUrl + "/containers";
         this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
     }
 

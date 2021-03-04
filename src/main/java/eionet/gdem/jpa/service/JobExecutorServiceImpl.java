@@ -2,7 +2,6 @@ package eionet.gdem.jpa.service;
 
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
-import org.quartz.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,18 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     @Autowired
     public JobExecutorServiceImpl(JobExecutorRepository jobExecutorRepository) {
         this.jobExecutorRepository = jobExecutorRepository;
+    }
+
+    @Override
+    public JobExecutor findByName(String jobExecutorName) {
+        JobExecutor jobExecutor = null;
+        try {
+            jobExecutor = jobExecutorRepository.findByName(jobExecutorName);
+        } catch (Exception e) {
+            LOGGER.info("Database exception during retrieval of jobExecutor with name " + jobExecutorName);
+            throw e;
+        }
+        return jobExecutor;
     }
 
     @Transactional

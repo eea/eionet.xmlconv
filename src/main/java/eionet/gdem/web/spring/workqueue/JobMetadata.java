@@ -18,6 +18,7 @@ public class JobMetadata {
     private String instance;
     private String scriptType;
     private String durationInProgress;
+    private String jobType;
 
     public String getJobId() {
         return jobId;
@@ -114,5 +115,13 @@ public class JobMetadata {
 
     public void setDurationInProgress(String durationInProgress) {
         this.durationInProgress = durationInProgress;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
     }
 }

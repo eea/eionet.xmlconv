@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-    <JOB_EXECUTOR ID="1" NAME="jobExecutor1" STATUS="0" JOB_ID="45"/>
-    <JOB_EXECUTOR ID="2" NAME="jobExecutor2" STATUS="1" JOB_ID="46"/>
-    <JOB_EXECUTOR ID="3" NAME="jobExecutor3" STATUS="1" JOB_ID="47"/>
+    <JOB_EXECUTOR ID="1" NAME="jobExecutor1" STATUS="0" JOB_ID="45" CONTAINER_ID="contId3"/>
+    <JOB_EXECUTOR ID="2" NAME="jobExecutor2" STATUS="1" JOB_ID="46" CONTAINER_ID="contId2"/>
+    <JOB_EXECUTOR ID="3" NAME="jobExecutor3" STATUS="1" JOB_ID="47" CONTAINER_ID="contId4"/>
 </dataset>
