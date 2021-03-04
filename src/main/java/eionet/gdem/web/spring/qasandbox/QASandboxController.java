@@ -454,6 +454,7 @@ public class QASandboxController {
 
                 JobEntry jobEntry = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(xq, scriptId!=null ? Integer.parseInt(scriptId) : Constants.JOB_FROMSTRING);
                 LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle runScript through GUI.");
+                session.setAttribute("jobId", jobEntry.getId());
 
                 timer.start();
                 while (jobEntry.getnStatus() != Constants.XQ_READY) {
@@ -485,6 +486,7 @@ public class QASandboxController {
             throw new RuntimeException("Exception:" + e.getMessage());
         } finally {
             timer.stop();
+            session.setAttribute("jobId", null);
         }
         return null;
     }

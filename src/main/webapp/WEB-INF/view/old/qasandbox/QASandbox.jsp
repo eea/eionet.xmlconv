@@ -449,3 +449,40 @@
   </div>
 </form:form>
 </fieldset>
+
+<script>
+  $(window).on("beforeunload", function() {
+    $.ajax({
+      async: false,
+      type: "POST",
+      url: 'restapi/worker/fail/'
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
