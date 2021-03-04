@@ -5,7 +5,6 @@ import eionet.gdem.Properties;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.repositories.JobRepository;
-import eionet.gdem.qa.XQScript;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,19 +30,19 @@ public class JobServiceImpl implements JobService {
 
     @Transactional
     @Override
-    public void changeNStatus(XQScript script, Integer status) {
+    public void changeNStatus(Integer jobId, Integer status) {
         try {
-            jobRepository.updateJobNStatus(status, Properties.getHostname(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
+            jobRepository.updateJobNStatus(status, Properties.getHostname(), new Timestamp(new Date().getTime()), jobId);
             if (status == 3)
-                LOGGER.info("### Job with id=" + script.getJobId() + " has changed status to " + Constants.JOB_READY + ".");
+                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.JOB_READY + ".");
             else if (status == 7)
-                LOGGER.info("### Job with id=" + script.getJobId() + " has changed status to " + Constants.XQ_INTERRUPTED + ".");
+                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_INTERRUPTED + ".");
             else if (status == 9)
-                LOGGER.info("### Job with id=" + script.getJobId() + " has changed status to " + Constants.XQ_WORKER_RECEIVED + ".");
+                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.CANCELLED_BY_USER + ".");
             else
-                LOGGER.info("### Job with id=" + script.getJobId() + " has changed status to " + Constants.XQ_FATAL_ERR + ".");
+                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_FATAL_ERR + ".");
         } catch (Exception e) {
-            LOGGER.error("Database exception when changing status of job with id " + script.getJobId() + ", " + e.toString());
+            LOGGER.error("Database exception when changing status of job with id " + jobId + ", " + e.toString());
             throw e;
         }
     }

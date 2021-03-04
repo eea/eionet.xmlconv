@@ -49,26 +49,41 @@ public class WorkersJobsResultsMessageReceiverTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
+        doNothing().when(jobService).changeNStatus(anyInt(),anyInt());
+        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyInt(), anyString(), anyString());
+        doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString());
+        doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
     }
 
     @Test
-    public void testOnMessage() throws JsonProcessingException {
+    public void testOnMessageReadyJob() throws JsonProcessingException {
         String[] scriptParams = new String[0];
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12452");
 
-        WorkersRabbitMQResponse response = createRabbitMQResponse(xqScript);
+        WorkersRabbitMQResponse response = createRabbitMQResponse(xqScript, false);
         Message message = convertObjectToByteArray(response);
 
-        JobEntry jobEntry = new JobEntry().setId(1);
+        JobEntry jobEntry = new JobEntry().setId(12452);
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
-        doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
-        doNothing().when(jobService).changeNStatus(any(XQScript.class),anyInt());
-        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyString(), anyString());
-        doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString());
-        doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
         receiver.onMessage(message);
-        verify(jobService).changeNStatus(any(XQScript.class),anyInt());
+        verify(jobService).changeNStatus(anyInt(),anyInt());
+    }
+
+    @Test
+    public void testOnMessageJobFailure() throws JsonProcessingException {
+        String[] scriptParams = new String[0];
+        XQScript xqScript = new XQScript(null, scriptParams, "HTML");
+        xqScript.setJobId("12453");
+
+        WorkersRabbitMQResponse response = createRabbitMQResponse(xqScript, true);
+        Message message = convertObjectToByteArray(response);
+
+        JobEntry jobEntry = new JobEntry().setId(12453);
+        when(jobService.findById(anyInt())).thenReturn(jobEntry);
+        receiver.onMessage(message);
+        verify(jobService).changeNStatus(anyInt(),anyInt());
     }
 
     private Message convertObjectToByteArray(WorkersRabbitMQResponse response) throws JsonProcessingException {
@@ -79,12 +94,12 @@ public class WorkersJobsResultsMessageReceiverTest {
         return new Message(body, messageProperties);
     }
 
-    private WorkersRabbitMQResponse createRabbitMQResponse(XQScript xqScript) {
+    private WorkersRabbitMQResponse createRabbitMQResponse(XQScript xqScript, boolean errorExists) {
         WorkersRabbitMQResponse response = new WorkersRabbitMQResponse();
         response.setScript(xqScript);
-        response.setJobStatus(0);
+        response.setJobStatus(1);
         response.setContainerName("demoJobExecutor");
-        response.setErrorExists(false);
+        response.setErrorExists(errorExists);
         return response;
     }
 

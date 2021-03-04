@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 public interface JobService {
 
-    void changeNStatus(XQScript xqScript, Integer status);
+    void changeNStatus(Integer jobId, Integer status);
 
     void changeIntStatusAndJobExecutorName(InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, Integer jobId);
 

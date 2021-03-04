@@ -42,6 +42,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
     public void onMessage(Message message) {
         String messageBody = new String(message.getBody());
         XQScript script = null;
+        Integer jobId = null;
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
             WorkersRabbitMQResponse response = mapper.readValue(messageBody, WorkersRabbitMQResponse.class);
@@ -50,28 +51,28 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             JobEntry jobEntry = null;
             if (script != null) {
                 jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
+                jobId = Integer.parseInt(script.getJobId());
             }
 
             if (script == null) {
                 JobExecutor jobExecutor = new JobExecutor(response.getContainerName(), response.getJobExecutorStatus());
                 jobExecutorService.saveJobExecutor(jobExecutor);
             } else if (response.isErrorExists()) {
-                jobService.changeNStatus(script, Constants.XQ_FATAL_ERR);
-                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, response.getContainerName(), jobEntry.getJobType());
-                LOGGER.info("Job with id " + response.getScript().getJobId() + " failed with error: " + response.getErrorMessage());
-                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), response.getContainerName());
+                jobService.changeNStatus(jobId, Constants.XQ_FATAL_ERR);
+                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response.getContainerName(), jobEntry.getJobType());
+                LOGGER.info("Job with id " + jobId + " failed with error: " + response.getErrorMessage());
+                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, jobId, response.getContainerName());
             } else if (response.getJobStatus() == SchedulingConstants.WORKER_RECEIVED) {
-                LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getContainerName());
-                jobService.changeNStatus(script, Constants.XQ_WORKER_RECEIVED);
+                LOGGER.info("Job with id=" + jobId + " received by worker with container name " + response.getContainerName());
                 InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
                 jobService.changeIntStatusAndJobExecutorName(intStatus, response.getContainerName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
-                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_WORKER_RECEIVED, response.getContainerName(), jobEntry.getJobType());
-                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_RECEIVED, Integer.parseInt(script.getJobId()), response.getContainerName());
+                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response.getContainerName(), jobEntry.getJobType());
+                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_RECEIVED, jobId, response.getContainerName());
             } else if (response.getJobStatus() == SchedulingConstants.WORKER_READY) {
-                jobService.changeNStatus(script, Constants.XQ_READY);
-                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_READY, response.getContainerName(), jobEntry.getJobType());
-                LOGGER.info("### Job with id=" + script.getJobId() + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
-                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), response.getContainerName());
+                jobService.changeNStatus(jobId, Constants.XQ_READY);
+                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_READY, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response.getContainerName(), jobEntry.getJobType());
+                LOGGER.info("### Job with id=" + jobId + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
+                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_READY, jobId, response.getContainerName());
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

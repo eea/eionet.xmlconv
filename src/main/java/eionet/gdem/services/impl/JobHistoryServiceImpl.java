@@ -1,6 +1,7 @@
 package eionet.gdem.services.impl;
 
 import eionet.gdem.SchedulingConstants;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.XQScript;
@@ -67,7 +68,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                     entry.setFullStatusName("JOB INTERRUPTED");
                     break;
                 case 9:
-                    entry.setFullStatusName("RECEIVED BY WORKER");
+                    entry.setFullStatusName("CANCELLED BY USER");
                     break;
                 default:
                     entry.setFullStatusName("UNKNOWN STATUS");
@@ -77,10 +78,10 @@ public class JobHistoryServiceImpl implements JobHistoryService {
     }
 
     @Override
-    public void updateStatusesAndJobExecutorName(XQScript script, Integer status, String jobExecutorName, String jobType) {
+    public void updateStatusesAndJobExecutorName(XQScript script, Integer nStatus, Integer internalStatus, String jobExecutorName, String jobType) {
         try {
-            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(script.getJobId(), status, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
-            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
+            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(script.getJobId(), nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
+            jobHistoryEntry.setIntSchedulingStatus(internalStatus);
             jobHistoryEntry.setJobExecutorName(jobExecutorName);
             jobHistoryEntry.setJobType(jobType);
             repository.save(jobHistoryEntry);

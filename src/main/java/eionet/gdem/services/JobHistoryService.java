@@ -9,5 +9,5 @@ public interface JobHistoryService {
 
     List<JobHistoryEntry> getAdditionalInfoOfJob(String jobId);
 
-    void updateStatusesAndJobExecutorName(XQScript script, Integer status, String jobExecutorName, String jobType);
+    void updateStatusesAndJobExecutorName(XQScript script, Integer nStatus, Integer internalStatus, String jobExecutorName, String jobType);
 }
