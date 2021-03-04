@@ -76,6 +76,7 @@ public class XQueryService extends RemoteService {
         Hashtable table = new Hashtable();
             // getting keySet() into Set
 
+            Set<String> schemaSet = files.keySet();
             for(String schema : schemaSet) {
                 List fileList = new ArrayList();
 
