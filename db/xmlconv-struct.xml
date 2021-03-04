@@ -532,7 +532,7 @@
             </column>
         </addColumn>
     </changeSet>
-    <changeSet author="favvmary" id="rev-49">
+    <changeSet author="favvmary" id="rev-52">
         <comment>
             Added column JOB_TYPE to Jobs table
         </comment>
@@ -541,7 +541,7 @@
             </column>
         </addColumn>
     </changeSet>
-    <changeSet author="favvmary" id="rev-50">
+    <changeSet author="favvmary" id="rev-53">
         <comment>
             Added column JOB_TYPE to JOB_HISTORY table
         </comment>
