@@ -64,23 +64,7 @@
             </Method>
         </Methods>
     </Service>
-    <Service Name="QueryService" Provider="eionet.gdem.qa.QueryService">
-        <Methods>
-            <Method Name="listQueries" Auth="false">
-                <Parameters>
-                    <Parameter Name="xml_schema" Type="STRING"/>
-                </Parameters>
-                <Value Type="ARRAY"/>
-            </Method>
-            <Method Name="listQAScripts" Auth="false">
-                <Parameters>
-                    <Parameter Name="xml_schema" Type="STRING"/>
-                </Parameters>
-                <Value Type="ARRAY"/>
-            </Method>
-        </Methods>
-    </Service>
-    <Service Name="JobRequestHandlerService" Provider="eionet.gdem.services.impl.JobRequestHandlerServiceImpl">
+    <Service Name="XQueryService" Provider="eionet.gdem.qa.xmlrpc.XQueryService">
         <Methods>
             <Method Name="analyze" Auth="false">
                 <Parameters>
@@ -90,16 +74,18 @@
                 </Parameters>
                 <Value Type="STRING"/>
             </Method>
-            <Method Name="analyzeMultipleXMLFiles" Auth="false">
+            <Method Name="analyzeXMLFiles" Auth="false">
                 <Parameters>
                     <Parameter Name="files" Type="STRUCT"/>
                 </Parameters>
                 <Value Type="ARRAY"/>
             </Method>
-        </Methods>
-    </Service>
-    <Service Name="JobResultHandlerService" Provider="eionet.gdem.services.impl.JobResultHandlerServiceImpl">
-        <Methods>
+            <Method Name="listQueries" Auth="false">
+                <Parameters>
+                    <Parameter Name="xml_schema" Type="STRING"/>
+                </Parameters>
+                <Value Type="ARRAY"/>
+            </Method>
             <Method Name="getResult" Auth="false">
                 <Parameters>
                     <Parameter Name="job_id" Type="STRING"/>
@@ -109,10 +95,12 @@
                     <Member Name="RESULT" Type="STRING"/>
                 </Value-->
             </Method>
-        </Methods>
-    </Service>
-    <Service Name="RunScriptAutomaticService" Provider="eionet.gdem.services.impl.RunScriptAutomaticServiceImpl">
-        <Methods>
+            <Method Name="listQAScripts" Auth="false">
+                <Parameters>
+                    <Parameter Name="xml_schema" Type="STRING"/>
+                </Parameters>
+                <Value Type="ARRAY"/>
+            </Method>
             <Method Name="runQAScript" Auth="false">
                 <Parameters>
                     <Parameter Name="url" Type="STRING"/>
