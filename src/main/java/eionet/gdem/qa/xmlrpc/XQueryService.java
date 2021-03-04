@@ -47,7 +47,7 @@ public class XQueryService extends RemoteService {
      * @throws XMLConvException If an error occurs.
      */
     public Vector listQueries(String schema) throws XMLConvException {
-        List<Hashtable> queries = queryService.listQueries(schema);
+        List<Hashtable> queries = getQueryService().listQueries(schema);
         if(!Utils.isNullList(queries)){
             //convert list of hashtables into vector of hashtables
             return new Vector(queries);
@@ -61,7 +61,7 @@ public class XQueryService extends RemoteService {
      * @throws XMLConvException If an error occurs.
      */
     public Vector listQAScripts(String schema) throws XMLConvException {
-        return queryService.listQAScripts(schema);
+        return getQueryService().listQAScripts(schema);
     }
 
     /**
@@ -86,7 +86,7 @@ public class XQueryService extends RemoteService {
                 }
                 filesAndSchemas.put(schema, fileList);
             }
-            HashMap<String,String> hashMapResult = jobRequestHandlerService.analyzeMultipleXMLFiles(filesAndSchemas);
+            HashMap<String,String> hashMapResult = getJobRequestHandlerService().analyzeMultipleXMLFiles(filesAndSchemas);
             Vector result = new Vector();
             if(!Utils.isNullHashMap(hashMapResult)){
                 //convert hashmap to vector where each element is a vector of strings
@@ -110,7 +110,7 @@ public class XQueryService extends RemoteService {
      * @throws XMLConvException If an error occurs.
      */
     public String analyze(String sourceURL, String xqScript, String scriptType) throws XMLConvException {
-        return jobRequestHandlerService.analyze(sourceURL, xqScript, scriptType);
+        return getJobRequestHandlerService().analyze(sourceURL, xqScript, scriptType);
     }
 
     /**
@@ -121,7 +121,7 @@ public class XQueryService extends RemoteService {
      * @throws XMLConvException If an error occurs.
      */
     public Hashtable getResult(String jobId) throws XMLConvException {
-        return jobResultHandlerService.getResult(jobId);
+        return getJobResultHandlerService().getResult(jobId);
     }
 
     /**
@@ -133,7 +133,22 @@ public class XQueryService extends RemoteService {
      * @throws XMLConvException in case of business logic error
      */
     public Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException {
-        return runScriptAutomaticService.runQAScript(sourceUrl, scriptId);
+        return getRunScriptAutomaticService().runQAScript(sourceUrl, scriptId);
     }
 
+    public QueryService getQueryService() {
+        return queryService;
+    }
+
+    public JobRequestHandlerService getJobRequestHandlerService() {
+        return jobRequestHandlerService;
+    }
+
+    public JobResultHandlerService getJobResultHandlerService() {
+        return jobResultHandlerService;
+    }
+
+    public RunScriptAutomaticService getRunScriptAutomaticService() {
+        return runScriptAutomaticService;
+    }
 }
