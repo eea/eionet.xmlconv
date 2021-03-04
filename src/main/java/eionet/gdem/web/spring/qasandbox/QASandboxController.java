@@ -486,7 +486,7 @@ public class QASandboxController {
             throw new RuntimeException("Exception:" + e.getMessage());
         } finally {
             timer.stop();
-            session.setAttribute("jobId", null);
+            session.removeAttribute("jobId");
         }
         return null;
     }

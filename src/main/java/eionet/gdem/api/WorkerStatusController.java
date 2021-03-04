@@ -32,7 +32,7 @@ public class WorkerStatusController {
                 JobEntry jobEntry = jobService.findById(jobId);
                 jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, jobId, jobEntry.getJobExecutorName());
             } finally {
-                session.setAttribute("jobId", null);
+                session.removeAttribute("jobId");
             }
         }
     }
