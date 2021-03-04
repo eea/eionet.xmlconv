@@ -1,6 +1,5 @@
 package eionet.gdem.services;
 
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
