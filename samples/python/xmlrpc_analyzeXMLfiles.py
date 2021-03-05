@@ -19,7 +19,7 @@ try:
    # param1 = sys.argv[2]
    # print(param1)
 
-    method_result = server.XQueryService.analyzeXMLFiles({'http://rod.eionet.europa.eu/obligations/788': ['https://cdrtest.eionet.europa.eu/ro/colxmes8w/envx7jwya/xml']})
+    method_result = server.XQueryService.analyzeXMLFiles({'http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd': ['https://cdrtest.eionet.europa.eu/ro/colwkcutw/envxxyxia/REP_D-RO_ANPM_20170929_C-001.xml']})
 
 except xmlrpc.client.ProtocolError as err:
     print("A protocol error occurred")
