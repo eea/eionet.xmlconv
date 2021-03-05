@@ -50,11 +50,8 @@ public class WorkerStatusController {
                 JobEntry jobEntry = jobService.findById(jobId);
                 LOGGER.info("jobEntry: ", jobEntry);
                 LOGGER.info("jobExecutorName: ", jobEntry.getJobExecutorName());
-                JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-                LOGGER.info("jobExecutor: ", jobExecutor);
-                LOGGER.info("ContainerId: ", jobExecutor.getContainerId());
-                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, jobId, jobEntry.getJobExecutorName(), jobExecutor.getContainerId());
-                JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()));
+                jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, jobId, jobEntry.getJobExecutorName(), "");
+                JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), "", SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()));
                 jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
                 jobService.changeNStatus(jobId, Constants.CANCELLED_BY_USER);
                 XQScript script = getScript(jobId, jobEntry);
