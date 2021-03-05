@@ -109,6 +109,7 @@ public class FixedTimeScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
+        deleteFailedWorkers();
         String serviceId = Properties.rancherJobExecServiceId;
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(2);
         List<JobEntry> jobs = jobRepository.findByIntSchedulingStatus(internalStatus);
@@ -142,7 +143,6 @@ public class FixedTimeScheduledTasks {
                     count++;
                 }
             }
-            deleteFailedWorkers();
         } catch (RancherApiException e) {
             LOGGER.info("Error occurred during workers orchestration, " + e.getMessage());
             ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
