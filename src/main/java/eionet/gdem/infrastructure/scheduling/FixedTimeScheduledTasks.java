@@ -109,8 +109,8 @@ public class FixedTimeScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        deleteFailedWorkers();
         String serviceId = Properties.rancherJobExecServiceId;
+        deleteFailedWorkers(serviceId);
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(2);
         List<JobEntry> jobs = jobRepository.findByIntSchedulingStatus(internalStatus);
         List<JobExecutor> readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
@@ -160,7 +160,11 @@ public class FixedTimeScheduledTasks {
      * deletes workers that have failed to run correctly
      * @throws RancherApiException
      */
-    void deleteFailedWorkers() throws RancherApiException {
+    void deleteFailedWorkers(String serviceId) throws RancherApiException {
+        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+        if (instances.size()==1) {
+            return;
+        }
         List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
         for (JobExecutor worker : failedWorkers) {
             deleteFromRancherAndDatabase(worker);
