@@ -25,10 +25,4 @@ public class WorkersJobMessageSenderImpl implements WorkersJobMessageSender {
         rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, xq);
         LOGGER.info("Job with id " + xq.getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_QUEUE);
     }
-
-    @Override
-    public void sendJobInfoOnDemandToRabbitMQ(XQScript xq) {
-        rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_ON_DEMAND_QUEUE, xq);
-        LOGGER.info("Job with id " + xq.getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_QUEUE);
-    }
 }

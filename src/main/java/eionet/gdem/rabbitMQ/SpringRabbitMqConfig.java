@@ -1,24 +1,21 @@
 package eionet.gdem.rabbitMQ;
 
 import eionet.gdem.Properties;
-import eionet.gdem.rabbitMQ.model.WorkersRabbitMQResponse;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @Conditional(RabbitMqProdEnabledCondition.class)
@@ -48,7 +45,7 @@ public class SpringRabbitMqConfig {
 
     @Bean
     Binding xmlconvExchangeToXmlConvJobsQUeueBinding() {
-         return BindingBuilder.bind(workersJobsQueue()).to(mainXmlconvJobsExchange()).with(Properties.JOBS_ROUTING_KEY);
+        return BindingBuilder.bind(workersJobsQueue()).to(mainXmlconvJobsExchange()).with(Properties.JOBS_ROUTING_KEY);
 
     }
 
@@ -59,44 +56,10 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
-    Queue workersJobsOnDemandQueue() {
-        return new Queue(Properties.WORKERS_JOBS_ON_DEMAND_QUEUE, true);
-    }
-
-
-    @Bean
-    Queue workersJobsResultsOnDemandQueue() {
-        return new Queue(Properties.WORKERS_JOBS_RESULTS_ON_DEMAND_QUEUE, true);
-    }
-
-    @Bean
-    DirectExchange mainXmlconvJobsOnDemandExchange() {
-        return new DirectExchange(Properties.MAIN_XMLCONV_JOBS_ON_DEMAND_EXCHANGE,true,false);
-    }
-
-
-    @Bean
-    DirectExchange mainWorkersOnDemandExchange() {
-        return new DirectExchange(Properties.MAIN_WORKERS_ON_DEMAND_EXCHANGE,true,false);
-    }
-
-    @Bean
-    Binding xmlconvExchangeToXmlConvJobsOnDemandQueueBinding() {
-        return BindingBuilder.bind(workersJobsOnDemandQueue()).to(mainXmlconvJobsOnDemandExchange()).with(Properties.JOBS_ON_DEMAND_ROUTING_KEY);
-
-    }
-
-    @Bean
-    Binding workersExchangeToWorkersJobResultsOnDemandQueueBinding() {
-        return BindingBuilder.bind(workersJobsResultsOnDemandQueue()).to(mainWorkersOnDemandExchange()).with(Properties.JOBS_RESULTS_ON_DEMAND_ROUTING_KEY);
-
-    }
-
-    @Bean
     SimpleMessageListenerContainer workersJobsResultsContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.addQueueNames(Properties.WORKERS_JOBS_RESULTS_QUEUE, Properties.WORKERS_JOBS_RESULTS_ON_DEMAND_QUEUE);
         container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(Properties.WORKERS_JOBS_RESULTS_QUEUE);
         container.setMessageListener(workersJobsResultsListenerAdapter());
         return container;
     }
@@ -138,15 +101,6 @@ public class SpringRabbitMqConfig {
 
         admin.declareBinding(workersExchangeToWorkersJobResultsQueueBinding());
         admin.declareBinding(xmlconvExchangeToXmlConvJobsQUeueBinding());
-
-        admin.declareExchange(mainWorkersOnDemandExchange());
-        admin.declareExchange(mainXmlconvJobsOnDemandExchange());
-
-        admin.declareQueue(workersJobsOnDemandQueue());
-        admin.declareQueue(workersJobsResultsOnDemandQueue());
-
-        admin.declareBinding(workersExchangeToWorkersJobResultsOnDemandQueueBinding());
-        admin.declareBinding(xmlconvExchangeToXmlConvJobsOnDemandQueueBinding());
         return admin;
     }
 
