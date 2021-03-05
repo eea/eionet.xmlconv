@@ -10,6 +10,9 @@ import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.services.impl.RunScriptAutomaticServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +31,8 @@ public class WorkerStatusController {
     private JobHistoryService jobHistoryService;
     private JobExecutorHistoryService jobExecutorHistoryService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkerStatusController.class);
+
     @Autowired
     public WorkerStatusController(JobService jobService, JobExecutorService jobExecutorService, JobHistoryService jobHistoryService,
                                   JobExecutorHistoryService jobExecutorHistoryService) {
@@ -43,7 +48,11 @@ public class WorkerStatusController {
         if (jobId!=null) {
             try {
                 JobEntry jobEntry = jobService.findById(jobId);
+                LOGGER.info("jobEntry: ", jobEntry);
+                LOGGER.info("jobExecutorName: ", jobEntry.getJobExecutorName());
                 JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
+                LOGGER.info("jobExecutor: ", jobExecutor);
+                LOGGER.info("ContainerId: ", jobExecutor.getContainerId());
                 jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, jobId, jobEntry.getJobExecutorName(), jobExecutor.getContainerId());
                 JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()));
                 jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
