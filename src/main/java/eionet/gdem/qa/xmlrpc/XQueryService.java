@@ -20,13 +20,13 @@ import java.util.*;
 @Service
 public class XQueryService extends RemoteService {
 
-    private QueryService queryService;
+    private static QueryService queryService;
 
-    private JobRequestHandlerService jobRequestHandlerService;
+    private static JobRequestHandlerService jobRequestHandlerService;
 
-    private JobResultHandlerService jobResultHandlerService;
+    private static JobResultHandlerService jobResultHandlerService;
 
-    private RunScriptAutomaticService runScriptAutomaticService;
+    private static RunScriptAutomaticService runScriptAutomaticService;
 
     /**
      * Default constructor.
@@ -46,7 +46,7 @@ public class XQueryService extends RemoteService {
      * @param schema Schema
      * @throws XMLConvException If an error occurs.
      */
-    public Vector listQueries(String schema) throws XMLConvException {
+    public static Vector listQueries(String schema) throws XMLConvException {
         List<Hashtable> queries = getQueryService().listQueries(schema);
         if(!Utils.isNullList(queries)){
             //convert list of hashtables into vector of hashtables
@@ -60,7 +60,7 @@ public class XQueryService extends RemoteService {
      * @param schema Schema
      * @throws XMLConvException If an error occurs.
      */
-    public Vector listQAScripts(String schema) throws XMLConvException {
+    public static Vector listQAScripts(String schema) throws XMLConvException {
         return getQueryService().listQAScripts(schema);
     }
 
@@ -71,7 +71,7 @@ public class XQueryService extends RemoteService {
      * @return Hashtable result: Structure with JOB ids as a keys and source files as values
      * @throws XMLConvException If an error occurs.
      */
-    public Vector analyzeXMLFiles(Hashtable files) throws XMLConvException {
+    public static Vector analyzeXMLFiles(Hashtable files) throws XMLConvException {
         HashMap<String, List<String>> filesAndSchemas = new HashMap<>();
         Hashtable table = new Hashtable();
             // getting keySet() into Set
@@ -109,7 +109,7 @@ public class XQueryService extends RemoteService {
      * @param scriptType - xquery, xsl or xgawk
      * @throws XMLConvException If an error occurs.
      */
-    public String analyze(String sourceURL, String xqScript, String scriptType) throws XMLConvException {
+    public static String analyze(String sourceURL, String xqScript, String scriptType) throws XMLConvException {
         return getJobRequestHandlerService().analyze(sourceURL, xqScript, scriptType);
     }
 
@@ -120,7 +120,7 @@ public class XQueryService extends RemoteService {
      * @return Hash including code and result
      * @throws XMLConvException If an error occurs.
      */
-    public Hashtable getResult(String jobId) throws XMLConvException {
+    public static Hashtable getResult(String jobId) throws XMLConvException {
         return getJobResultHandlerService().getResult(jobId);
     }
 
@@ -132,23 +132,23 @@ public class XQueryService extends RemoteService {
      * @return Vector of 2 fields: content type and byte array
      * @throws XMLConvException in case of business logic error
      */
-    public Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException {
+    public static Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException {
         return getRunScriptAutomaticService().runQAScript(sourceUrl, scriptId);
     }
 
-    public QueryService getQueryService() {
+    public static QueryService getQueryService() {
         return queryService;
     }
 
-    public JobRequestHandlerService getJobRequestHandlerService() {
+    public static JobRequestHandlerService getJobRequestHandlerService() {
         return jobRequestHandlerService;
     }
 
-    public JobResultHandlerService getJobResultHandlerService() {
+    public static JobResultHandlerService getJobResultHandlerService() {
         return jobResultHandlerService;
     }
 
-    public RunScriptAutomaticService getRunScriptAutomaticService() {
+    public static RunScriptAutomaticService getRunScriptAutomaticService() {
         return runScriptAutomaticService;
     }
 }
