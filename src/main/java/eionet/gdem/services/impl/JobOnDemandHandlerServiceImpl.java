@@ -54,7 +54,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             script.setJobId(jobEntry.getId().toString());
 
-            jobMessageSender.sendJobInfoOnDemandToRabbitMQ(script);
+            jobMessageSender.sendJobInfoToRabbitMQ(script);
 
             Integer retryCounter = jobRepository.getRetryCounter(jobEntry.getId());
             jobRepository.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());

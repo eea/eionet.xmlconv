@@ -233,13 +233,6 @@ public class Properties {
     public static String JOBS_ROUTING_KEY;
     public static String JOBS_RESULTS_ROUTING_KEY;
 
-    public static String WORKERS_JOBS_ON_DEMAND_QUEUE;
-    public static String WORKERS_JOBS_RESULTS_ON_DEMAND_QUEUE;
-    public static String MAIN_XMLCONV_JOBS_ON_DEMAND_EXCHANGE;
-    public static String MAIN_WORKERS_ON_DEMAND_EXCHANGE;
-    public static String JOBS_ON_DEMAND_ROUTING_KEY;
-    public static String JOBS_RESULTS_ON_DEMAND_ROUTING_KEY;
-
     public static boolean enableQuartz;
 
     public static final Long jobsOnDemandLimitBeforeTimeout;
@@ -385,13 +378,6 @@ public class Properties {
         MAIN_WORKERS_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.exchange");
         JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.routingkey");
         JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
-
-        WORKERS_JOBS_ON_DEMAND_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.onDemand.queue");
-        WORKERS_JOBS_RESULTS_ON_DEMAND_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.results.onDemand.queue");
-        MAIN_XMLCONV_JOBS_ON_DEMAND_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.jobs.onDemand.exchange");
-        MAIN_WORKERS_ON_DEMAND_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.onDemand.exchange");
-        JOBS_ON_DEMAND_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.onDemand.routingkey");
-        JOBS_RESULTS_ON_DEMAND_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.onDemand.routingkey");
 
         enableQuartz = Boolean.parseBoolean(getStringProperty("env.enable.quartz"));
 
