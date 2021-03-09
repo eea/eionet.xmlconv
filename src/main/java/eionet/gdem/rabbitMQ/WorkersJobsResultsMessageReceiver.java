@@ -1,6 +1,5 @@
 package eionet.gdem.rabbitMQ;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
@@ -95,11 +94,9 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 JobExecutorHistory entry = new JobExecutorHistory(response.getContainerName(), containerId, SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()));
                 jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
             }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e1) {
-            LOGGER.info(e1.getMessage());
-            throw new RuntimeException(e1);
+        } catch (Exception e) {
+            LOGGER.info("Error during jobExecutor message processing: ", e.getMessage());
+            return;
         }
     }
 }

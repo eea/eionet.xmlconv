@@ -38,7 +38,7 @@ public class WorkerStatusController {
     }
 
     @PostMapping("/fail")
-    public void changeWorkerStatusToFailed(HttpSession session) {
+    public void changeJobAndWorkerStatusToFailed(HttpSession session) {
         Integer jobId = (Integer) session.getAttribute("jobId");
         if (jobId!=null) {
             try {
