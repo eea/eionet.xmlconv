@@ -93,6 +93,7 @@ public class QAScriptsController {
         String scriptType = form.getScriptType();
         String url = form.getUrl();
         String upperLimit = form.getUpperLimit();
+        Boolean asynchronousExecution = form.isAsynchronousExecution();
         MultipartFile scriptFile = form.getScriptFile();
 
 /*        // if URL is filled download from the remote source
@@ -119,7 +120,7 @@ public class QAScriptsController {
 
         try {
             QAScriptManager qaScriptManager = new QAScriptManager();
-            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url);
+            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution);
             messages.add(messageService.getMessage("label.qascript.inserted"));
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
@@ -171,6 +172,7 @@ public class QAScriptsController {
             form.setUpperLimit(qaScript.getUpperLimit());
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
+            form.setAsynchronousExecution(qaScript.isAsynchronousExecution());
 
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
         } catch (DCMException e) {
@@ -200,6 +202,7 @@ public class QAScriptsController {
             form.setUpperLimit(qaScript.getUpperLimit());
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
+            form.setAsynchronousExecution(qaScript.isAsynchronousExecution());
 
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
 
@@ -226,6 +229,7 @@ public class QAScriptsController {
         MultipartFile content = form.getScriptFile();
         String upperLimit = form.getUpperLimit();
         String url = form.getUrl();
+        Boolean asynchronousExecution = form.isAsynchronousExecution();
 
 
         String user = (String) request.getSession().getAttribute("user");
@@ -237,7 +241,7 @@ public class QAScriptsController {
 
         try {
             QAScriptManager qm = new QAScriptManager();
-            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit, url);
+            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit, url, asynchronousExecution);
 
             messages.add(messageService.getMessage("label.qascript.updated"));
 
@@ -272,6 +276,7 @@ public class QAScriptsController {
         String upperLimit = form.getUpperLimit();
         String url = form.getUrl();
         String checksum = form.getChecksum();
+        Boolean asynchronousExecution = form.isAsynchronousExecution();
         boolean active = form.getActive();
 
         boolean updateContent = false;
@@ -304,7 +309,7 @@ public class QAScriptsController {
         try {
             QAScriptManager qm = new QAScriptManager();
             qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
-                    url, scriptContent, updateContent);
+                    url, scriptContent, updateContent, asynchronousExecution);
             qm.activateDeactivate(user, scriptId, active);
             // clear qascript list in cache
             QAScriptListLoader.reloadList(request);

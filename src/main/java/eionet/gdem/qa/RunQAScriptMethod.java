@@ -150,6 +150,19 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
 
                         if (XQScript.SCRIPT_LANG_FME.equals(xq.getScriptType())) {
                             xq.setScriptSource((String) hash.get(QaScriptView.URL));
+                            Boolean asynchronousExecution = false;
+                            try {
+                                asynchronousExecution = queryDao.getAsynchronousExecution(scriptId);
+                                if (asynchronousExecution != null){
+                                    xq.setAsynchronousExecution(asynchronousExecution);
+                                }
+                                else{
+                                    xq.setAsynchronousExecution(false);
+                                }
+                            }
+                            catch(Exception e){
+                                xq.setAsynchronousExecution(false);
+                            }
                         }
 
                         strResult = xq.getResult();

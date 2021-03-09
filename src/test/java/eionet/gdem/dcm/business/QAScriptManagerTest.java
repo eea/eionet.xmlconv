@@ -71,7 +71,7 @@ public class QAScriptManagerTest {
         QAScriptManager qm = new QAScriptManager();
 
         MockMultipartFile scriptFile = new MockMultipartFile("file", queryFileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(queryFileName).getFile().getBytes());
-        String scriptId = qm.add(TestConstants.ADMIN_USER, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit, url);
+        String scriptId = qm.add(TestConstants.ADMIN_USER, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit, url, false);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -83,6 +83,7 @@ public class QAScriptManagerTest {
         assertEquals(scriptType, qascript.getScriptType());
         assertEquals(upperLimit, qascript.getUpperLimit());
         assertEquals(url, qascript.getUrl());
+        assertEquals(false, qascript.isAsynchronousExecution());
 
     }
 
@@ -189,7 +190,7 @@ public class QAScriptManagerTest {
         QAScriptManager qm = new QAScriptManager();
 
         // update qa script properties
-        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false);
+        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false, false);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -230,7 +231,7 @@ public class QAScriptManagerTest {
         MockMultipartFile scriptFile = new MockMultipartFile("scriptFile", fileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(fileName).getFile().getBytes());
 
         QAScriptManager qm = new QAScriptManager();
-        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url);
+        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url, false);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);

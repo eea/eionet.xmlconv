@@ -402,6 +402,14 @@
             <column name="AUTHORITIES" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-
+    <changeSet author="anthaant" id="rev-37">
+        <comment>
+            Added ASYNCHRONOUS_EXECUTION column in T_QUERY
+        </comment>
+        <addColumn tableName="T_QUERY">
+            <column name="ASYNCHRONOUS_EXECUTION" defaultValue="false" type="BOOLEAN">
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

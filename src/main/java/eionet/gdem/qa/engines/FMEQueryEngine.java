@@ -2,17 +2,24 @@ package eionet.gdem.qa.engines;
 
 import java.io.*;
 
+import java.net.SocketTimeoutException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import eionet.gdem.SpringApplicationContext;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.services.fme.FmeJobStatus;
 import eionet.gdem.services.fme.FmeServerCommunicator;
 import eionet.gdem.services.fme.exceptions.*;
 import eionet.gdem.services.fme.request.SynchronousSubmitJobRequest;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
@@ -63,6 +70,74 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     @Override
     protected void runQuery(XQScript script, OutputStream result) throws IOException {
+
+        if(script.getAsynchronousExecution()){
+            LOGGER.info("The script " + script.getScriptFileName() + " will be run asynchronously");
+            runQueryAsynchronous(script, result);
+        }
+        else{
+            LOGGER.info("The script " + script.getScriptFileName() + " will be run synchronously");
+            runQuerySynchronous(script, result);
+        }
+    }
+
+    protected void runQuerySynchronous(XQScript script, OutputStream result) {
+
+        HttpPost runMethod = null;
+        CloseableHttpResponse response = null;
+        int count = 0;
+        int retryMilisecs = Properties.fmeRetryHours * 60 * 60 * 1000;
+        int timeoutMilisecs = Properties.fmeTimeout;
+        int retries = retryMilisecs / timeoutMilisecs;
+        retries = (retries <= 0) ? 1 : retries;
+        while (count < retries) {
+            try {
+                java.net.URI uri = new URIBuilder(script.getScriptSource())
+                        .addParameter("token", getFmeTokenProperty())
+                        .addParameter("opt_showresult", "true")
+                        .addParameter("opt_servicemode", "sync")
+                        .addParameter("source_xml", script.getOrigFileUrl()) // XML file
+                        .addParameter("format", script.getOutputType())
+                        .build(); // Output format
+                runMethod = new HttpPost(uri);
+
+                // Request Config (Timeout)
+                runMethod.setConfig(requestConfigBuilder.build());
+                response = client_.execute(runMethod);
+                if (response.getStatusLine().getStatusCode() == 200) { // Valid Result: 200 HTTP status code
+                    HttpEntity entity = response.getEntity();
+                    // We get an InputStream and copy it to the 'result' OutputStream
+                    LOGGER.info(FMEQueryEngine.class.getName() +": Response 200 OK From FME SERVER in :"+ count +"retry");
+                    IOUtils.copy(entity.getContent(), result);
+                } else { // NOT Valid Result
+                    // If the last retry fails a BLOCKER predefined error is returned
+                    if (count + 1 == retries){
+                        LOGGER.error(FMEQueryEngine.class.getName() +" Failed for last Retry  number :"+ count );
+
+                        IOUtils.copy(IOUtils.toInputStream("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>", "UTF-8"), result);
+                    } else {
+
+                        LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString() + "-- #Retry: " + count);
+                        Thread.sleep(timeoutMilisecs); // The thread is forced to wait 'timeoutMilisecs' before trying to retry the FME call
+                        throw new Exception("The application has encountered an error. The FME QC process request failed.");
+                    }
+                }
+                count = retries;
+            } catch (SocketTimeoutException e) { // Timeout Exceeded
+                LOGGER.error("Retries = "+count+"\n The FME request has exceeded the allotted timeout of :"+Properties.fmeTimeout+" -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource());
+            } catch (Exception e) {
+                LOGGER.error("Generic Exception handling. FME request error: " + e.getMessage());
+            } finally {
+                if (runMethod != null) {
+                    runMethod.releaseConnection();
+                }
+                count++;
+            }
+        }
+
+    }
+
+    protected void runQueryAsynchronous(XQScript script, OutputStream result) throws IOException {
         String[] urlSegments = script.getOrigFileUrl().split("/");
         String fileNameWthXml = urlSegments[urlSegments.length-1];
         String[] fileNameSegments = fileNameWthXml.split("\\.");
