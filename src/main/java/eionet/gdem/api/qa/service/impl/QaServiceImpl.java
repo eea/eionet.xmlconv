@@ -168,6 +168,10 @@ public class QaServiceImpl implements QaService {
                 executionStatusName = "Pending";
                 break;
 
+            case Constants.CANCELLED_BY_USER:
+                executionStatusName = "Cancelled by user";
+                break;
+
         }
         results.put("executionStatusName", executionStatusName);
         return results;
