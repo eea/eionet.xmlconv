@@ -9,6 +9,7 @@ public interface SchedulingConstants {
     int INTERNAL_STATUS_RECEIVED = 1;
     int INTERNAL_STATUS_QUEUED = 2;
     int INTERNAL_STATUS_PROCESSING = 3;
+    int INTERNAL_STATUS_CANCELLED = 4;
 
     public enum CONTAINER_HEALTH_STATE_ENUM {
         HEALTHY("healthy"), UNHEALTHY("unhealthy"), UPDATING_HEALTHY("updating-healthy"),

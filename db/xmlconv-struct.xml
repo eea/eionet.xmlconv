@@ -589,4 +589,9 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-54">
+        <sql>
+            INSERT INTO INTERNAL_STATUS VALUES (4,'CANCELLED','job has been cancelled');
+        </sql>
+    </changeSet>
 </databaseChangeLog>

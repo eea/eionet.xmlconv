@@ -2,6 +2,7 @@ package eionet.gdem.api;
 
 import eionet.gdem.Constants;
 import eionet.gdem.SchedulingConstants;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
@@ -50,8 +51,10 @@ public class WorkerStatusController {
                     jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
                 }
                 jobService.changeNStatus(jobId, Constants.CANCELLED_BY_USER);
+                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobId);
                 XQScript script = getScript(jobId, jobEntry);
-                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.CANCELLED_BY_USER, SchedulingConstants.INTERNAL_STATUS_PROCESSING, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.CANCELLED_BY_USER, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
             } finally {
                 session.removeAttribute("jobId");
             }
