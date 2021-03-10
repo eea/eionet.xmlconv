@@ -90,6 +90,41 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     }
 
     @Override
+    public ContainerData restartContainer(String containerName) throws RancherApiException {
+        String containerId = getContainerId(containerName);
+        HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+        ResponseEntity<ContainerData> result;
+        StopWatch timer = new StopWatch();
+        try {
+            timer.start();
+            result = restTemplate.exchange(rancherApiUrl + "/" + containerId + "?action=restart", HttpMethod.POST, entity, ContainerData.class);
+            String state = result.getBody().getState();
+            LOGGER.info("Restarting container with id " + containerId + " for container with name " + containerName);
+            ContainerApiResponse containerApiResponse;
+            while (!state.equals("running")) {
+                try {
+                    containerApiResponse = getContainerInfo(containerName);
+                    if (containerApiResponse.getData().size()>0) {
+                        state = containerApiResponse.getData().get(0).getState();
+                    }
+                } catch(RancherApiException e) {
+                    LOGGER.info(e.getMessage());
+                    continue;
+                }
+                if (timer.getTime()>TIME_LIMIT) {
+                    throw new RancherApiTimoutException("Time exceeded for restarting container " + containerName);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.info("Error restarting container with name: " + containerName + ": " + e.getMessage());
+            throw new RancherApiException(e.getMessage());
+        } finally {
+            timer.stop();
+        }
+        return result.getBody();
+    }
+
+    @Override
     public ContainerData stopContainer(String containerName) throws RancherApiException {
         String containerId = getContainerId(containerName);
         HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());

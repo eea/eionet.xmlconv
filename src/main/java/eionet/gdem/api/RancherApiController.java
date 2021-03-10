@@ -75,6 +75,11 @@ public class RancherApiController {
         return containersRancherApiOrchestrator.startContainer(containerName);
     }
 
+    @PostMapping("/container/restart/{containerName}")
+    public ContainerData reStartContainer(@PathVariable String containerName) throws RancherApiException {
+        return containersRancherApiOrchestrator.restartContainer(containerName);
+    }
+
     @PostMapping("/container/stop/{containerName}")
     public ContainerData stopContainer(@PathVariable String containerName) throws RancherApiException {
         return containersRancherApiOrchestrator.stopContainer(containerName);

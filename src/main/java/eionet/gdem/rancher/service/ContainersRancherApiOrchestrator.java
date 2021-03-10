@@ -39,6 +39,14 @@ public interface ContainersRancherApiOrchestrator {
     ContainerData startContainer(String containerName) throws RancherApiException;
 
     /**
+     * Restarts container with name containerName
+     * @param containerName
+     * @return
+     * @throws RancherApiException
+     */
+    ContainerData restartContainer(String containerName) throws RancherApiException;
+
+    /**
      * Stops container with name containerName
      * @param containerName
      * @return

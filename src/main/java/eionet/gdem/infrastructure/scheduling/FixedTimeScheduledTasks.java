@@ -14,12 +14,10 @@ import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.model.ContainerApiResponse;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestratorImpl;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
@@ -162,15 +160,19 @@ public class FixedTimeScheduledTasks {
      */
     void deleteFailedWorkers(String serviceId) throws RancherApiException {
         List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        if (instances.size()==1) {
+        List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
+        if (failedWorkers.size()==0) {
             return;
         }
-        List<JobExecutor> failedWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_FAILED);
+        if (instances.size()==1) {
+            ContainerData data = containersOrchestrator.getContainerInfoById(instances.get(0));
+            containersOrchestrator.restartContainer(data.getName());
+            return;
+        }
         for (JobExecutor worker : failedWorkers) {
             deleteFromRancherAndDatabase(worker);
         }
     }
-
 
     /**
      * deletes worker from rancher and JOB_EXECUTOR table
