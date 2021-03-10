@@ -104,7 +104,7 @@ public class WorkersJobsResultsMessageReceiverTest {
     private WorkersRabbitMQResponse createRabbitMQResponse(XQScript xqScript, boolean errorExists) {
         WorkersRabbitMQResponse response = new WorkersRabbitMQResponse();
         response.setScript(xqScript);
-        response.setJobStatus(1);
+        response.setJobExecutorStatus(1);
         response.setContainerName("demoJobExecutor");
         response.setErrorExists(errorExists);
         return response;

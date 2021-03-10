@@ -6,8 +6,6 @@ public class WorkersRabbitMQResponse {
 
     private XQScript script;
 
-    private int jobStatus;
-
     private boolean errorExists;
 
     private String errorMessage;
@@ -24,14 +22,6 @@ public class WorkersRabbitMQResponse {
 
     public void setScript(XQScript script) {
         this.script = script;
-    }
-
-    public int getJobStatus() {
-        return jobStatus;
-    }
-
-    public void setJobStatus(int jobStatus) {
-        this.jobStatus = jobStatus;
     }
 
     public boolean isErrorExists() {

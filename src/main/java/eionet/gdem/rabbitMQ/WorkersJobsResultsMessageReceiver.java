@@ -74,10 +74,10 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             } else if (response.isErrorExists()) {
                 LOGGER.info("Job with id " + script.getJobId() + " failed with error: " + response.getErrorMessage());
                 updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response, containerId, jobEntry);
-            } else if (response.getJobStatus() == SchedulingConstants.WORKER_RECEIVED) {
+            } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getContainerName());
                 updateJobAndJobExecTables(Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response, containerId, jobEntry);
-            } else if (response.getJobStatus() == SchedulingConstants.WORKER_READY) {
+            } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_READY) {
                 LOGGER.info("### Job with id=" + script.getJobId() + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
                 updateJobAndJobExecTables(Constants.XQ_READY, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response, containerId, jobEntry);
             }
