@@ -88,6 +88,16 @@ public class ContainersRancherApiOrchestratorImplTest {
         Assert.assertEquals(containerData, actualRes);
     }
 
+    @Test
+    public void testRestartContainer() throws RancherApiException {
+        doReturn(CONTAINER_ID).when(containersRancherApiOrchestrator).getContainerId(anyString());
+        containerData.setState("running");
+        ResponseEntity<ContainerData> responseEntity = new ResponseEntity<>(containerData, HttpStatus.OK);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(ContainerData.class))).thenReturn(responseEntity);
+        ContainerData actualRes = containersRancherApiOrchestrator.restartContainer("testContainer");
+        Assert.assertEquals(containerData, actualRes);
+    }
+
 }
 
 
