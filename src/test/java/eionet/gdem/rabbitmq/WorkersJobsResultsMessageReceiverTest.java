@@ -11,7 +11,7 @@ import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.WorkersJobsResultsMessageReceiver;
-import eionet.gdem.rabbitMQ.model.WorkersRabbitMQResponse;
+import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
@@ -23,7 +23,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -69,7 +68,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12452");
 
-        WorkersRabbitMQResponse response = createRabbitMQResponse(xqScript, false);
+        WorkerJobInfoRabbitMQResponse response = createRabbitMQResponse(xqScript, false);
         Message message = convertObjectToByteArray(response);
 
         JobEntry jobEntry = new JobEntry().setId(12452);
@@ -84,7 +83,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12453");
 
-        WorkersRabbitMQResponse response = createRabbitMQResponse(xqScript, true);
+        WorkerJobInfoRabbitMQResponse response = createRabbitMQResponse(xqScript, true);
         Message message = convertObjectToByteArray(response);
 
         JobEntry jobEntry = new JobEntry().setId(12453);
@@ -93,7 +92,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         verify(jobService).changeNStatus(anyInt(),anyInt());
     }
 
-    private Message convertObjectToByteArray(WorkersRabbitMQResponse response) throws JsonProcessingException {
+    private Message convertObjectToByteArray(WorkerJobInfoRabbitMQResponse response) throws JsonProcessingException {
         ObjectMapper jsonMapper = new ObjectMapper();
         String responseObject = jsonMapper.writeValueAsString(response);
         byte[] body = responseObject.getBytes();
@@ -101,11 +100,11 @@ public class WorkersJobsResultsMessageReceiverTest {
         return new Message(body, messageProperties);
     }
 
-    private WorkersRabbitMQResponse createRabbitMQResponse(XQScript xqScript, boolean errorExists) {
-        WorkersRabbitMQResponse response = new WorkersRabbitMQResponse();
+    private WorkerJobInfoRabbitMQResponse createRabbitMQResponse(XQScript xqScript, boolean errorExists) {
+        WorkerJobInfoRabbitMQResponse response = new WorkerJobInfoRabbitMQResponse();
         response.setScript(xqScript);
         response.setJobExecutorStatus(1);
-        response.setContainerName("demoJobExecutor");
+        response.setJobExecutorName("demoJobExecutor");
         response.setErrorExists(errorExists);
         return response;
     }

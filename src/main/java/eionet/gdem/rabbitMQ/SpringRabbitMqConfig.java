@@ -33,10 +33,14 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
+    Queue workersStatusQueue() {
+        return new Queue(Properties.WORKERS_STATUS_QUEUE, true);
+    }
+
+    @Bean
     DirectExchange mainXmlconvJobsExchange() {
         return new DirectExchange(Properties.MAIN_XMLCONV_JOBS_EXCHANGE,true,false);
     }
-
 
     @Bean
     DirectExchange mainWorkersExchange() {
@@ -56,6 +60,12 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
+    Binding workersExchangeToWorkersStatusQueueBinding() {
+        return BindingBuilder.bind(workersStatusQueue()).to(mainWorkersExchange()).with(Properties.WORKER_STATUS_ROUTING_KEY);
+
+    }
+
+    @Bean
     SimpleMessageListenerContainer workersJobsResultsContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
@@ -70,6 +80,23 @@ public class SpringRabbitMqConfig {
     @Bean
     MessageListenerAdapter workersJobsResultsListenerAdapter() {
         return new MessageListenerAdapter(workersJobsResultsMessageReceiver(), jsonMessageConverter());
+    }
+
+    @Bean
+    SimpleMessageListenerContainer workersStatusContainer(ConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(Properties.WORKERS_STATUS_QUEUE);
+        container.setMessageListener(workersStatusListenerAdapter());
+        return container;
+    }
+    @Bean
+    WorkersStatusMessageReceiver workersStatusMessageReceiver() {
+        return new WorkersStatusMessageReceiver();
+    }
+    @Bean
+    MessageListenerAdapter workersStatusListenerAdapter() {
+        return new MessageListenerAdapter(workersStatusMessageReceiver(), jsonMessageConverter());
     }
 
     @Bean
@@ -98,9 +125,11 @@ public class SpringRabbitMqConfig {
 
         admin.declareQueue(workersJobsQueue());
         admin.declareQueue(workersJobsResultsQueue());
+        admin.declareQueue(workersStatusQueue());
 
         admin.declareBinding(workersExchangeToWorkersJobResultsQueueBinding());
         admin.declareBinding(xmlconvExchangeToXmlConvJobsQUeueBinding());
+        admin.declareBinding(workersExchangeToWorkersStatusQueueBinding());
         return admin;
     }
 

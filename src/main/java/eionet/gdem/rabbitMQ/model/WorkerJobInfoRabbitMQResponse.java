@@ -2,7 +2,7 @@ package eionet.gdem.rabbitMQ.model;
 
 import eionet.gdem.qa.XQScript;
 
-public class WorkersRabbitMQResponse {
+public class WorkerJobInfoRabbitMQResponse {
 
     private XQScript script;
 
@@ -10,7 +10,7 @@ public class WorkersRabbitMQResponse {
 
     private String errorMessage;
 
-    private String containerName;
+    private String jobExecutorName;
 
     private String executionTime;
 
@@ -40,12 +40,12 @@ public class WorkersRabbitMQResponse {
         this.errorMessage = errorMessage;
     }
 
-    public String getContainerName() {
-        return containerName;
+    public String getJobExecutorName() {
+        return jobExecutorName;
     }
 
-    public void setContainerName(String containerName) {
-        this.containerName = containerName;
+    public void setJobExecutorName(String jobExecutorName) {
+        this.jobExecutorName = jobExecutorName;
     }
 
     public String getExecutionTime() {
