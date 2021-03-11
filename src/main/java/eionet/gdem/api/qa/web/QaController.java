@@ -190,7 +190,7 @@ public class QaController {
     @ResponseBody
     public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId,HttpServletResponse response) throws XMLConvException, JsonProcessingException {
 
-        Hashtable<String, Object> results = qaService.getJobResults(jobId);
+        Hashtable<String, String> results = qaService.getJobResults(jobId);
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
         LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
         executionStatusView.put("statusId", (String) results.get(Constants.RESULT_CODE_PRM));

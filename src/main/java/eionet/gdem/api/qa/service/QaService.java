@@ -33,7 +33,7 @@ public interface QaService {
      */
     List<QaResultsWrapper> scheduleJobs(String envelopeUrl) throws XMLConvException;
     
-    Hashtable<String,Object> getJobResults(String jobId) throws XMLConvException;
+    Hashtable<String,String> getJobResults(String jobId) throws XMLConvException;
     Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException;
     List<LinkedHashMap<String,String>> listQAScripts(String schema, String active) throws XMLConvException;
 
