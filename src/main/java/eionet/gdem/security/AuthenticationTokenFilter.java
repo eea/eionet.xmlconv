@@ -16,8 +16,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import eionet.gdem.security.service.AuthTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +44,8 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     private TokenVerifier verifier;
 
     @Autowired
-    private AuthTokenService authTokenService;
+    @Qualifier("apiuserdetailsservice")
+    private UserDetailsService userDetailsService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -61,7 +60,10 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
                 return;
             }
             String rawAuthenticationToken = httpRequest.getHeader(this.tokenHeader);
-            String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
+            if (rawAuthenticationToken == null || !rawAuthenticationToken.startsWith(authenticationTokenSchema)) {
+                throw new JWTException("Missing or invalid Authorization header.");
+            }
+            String parsedAuthenticationToken = removeAuthenticationSchemaFromHeader(rawAuthenticationToken);
 
             if (parsedAuthenticationToken != null) {
                 String username = verifier.verify(parsedAuthenticationToken);
@@ -80,9 +82,16 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             Gson gson = new Gson();
             LinkedHashMap<String, String> results = new LinkedHashMap<String, String>();
             results.put("httpStatusCode", HttpStatus.UNAUTHORIZED.toString());
-            results.put("errorMessage", ex.getMessage());
+            results.put("errorMessage", "Access Denied");
             out.write(gson.toJson(results));
         }
+    }
+
+    private String removeAuthenticationSchemaFromHeader(String tokenHeader) throws JWTException {
+
+        String stripedTokenHeader;
+        stripedTokenHeader = tokenHeader.replace(authenticationTokenSchema, "");
+        return stripedTokenHeader.trim();
     }
 
     private boolean requiresAuthentication(String url) {
