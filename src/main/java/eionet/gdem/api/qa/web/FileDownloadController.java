@@ -35,7 +35,7 @@ public class FileDownloadController {
         String urlPath = new StringBuilder("/tmp/").append(fileName).append(".zip").toString();
 
         String rawAuthenticationToken = authorization;
-        String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, Properties.jwtHeaderSchema);
+        String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, Properties.jwtHeaderSchemaProperty);
         if (authTokenService.verifyUser(parsedAuthenticationToken)) {
            filePath = getFilePath(urlPath, fileName);
         }

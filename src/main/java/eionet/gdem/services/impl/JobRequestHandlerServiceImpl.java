@@ -9,10 +9,7 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
-import eionet.gdem.qa.IQueryDao;
-import eionet.gdem.qa.ListQueriesMethod;
-import eionet.gdem.qa.QaScriptView;
-import eionet.gdem.qa.QueryService;
+import eionet.gdem.qa.*;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
@@ -135,7 +132,15 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             String queryFile = (String) query.get(QaScriptView.QUERY);
             String contentType = (String) query.get(QaScriptView.CONTENT_TYPE_ID);
             String scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
-            String fileExtension = getExtension(outputTypes, contentType);
+            String asynchronousExecutionStr = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+            Boolean asynchronousExecution;
+            if(asynchronousExecutionStr != null && asynchronousExecutionStr.equals("1")){
+                asynchronousExecution = true;
+            }
+            else{
+                asynchronousExecution = false;
+            }
+            String fileExtension = getExtension(outputTypes, contentType,scriptType, asynchronousExecution);
             String resultFile =
                     eionet.gdem.Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
                             + fileExtension;
@@ -284,8 +289,14 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
      * @param content_type Content type
      * @return Extension
      */
-    private String getExtension(Vector outputTypes, String content_type) {
-        String ret = "html";
+    private String getExtension(Vector outputTypes, String content_type,String scriptType, Boolean asynchronousExecution)  {
+        String ret = null;
+        if(scriptType.equals( XQScript.SCRIPT_LANG_FME) && asynchronousExecution == true){
+            ret ="zip";
+        }else{
+            ret = "html";
+        }
+
         if (outputTypes == null) {
             return ret;
         }

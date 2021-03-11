@@ -340,9 +340,6 @@ public class Properties {
         PROP_UNS_EVENTTYPE_PREDICATE = getStringProperty("env.uns.eventtype.predicate");
         PROP_UNS_EVENTS_NAMESPACE = getStringProperty("env.uns.events-namespace");
 
-        jwtHeader = getStringProperty("jwt.header");
-        jwtHeaderSchema = getStringProperty("jwt.header.schema");
-
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
 
         XQUERY_HTTP_ENDPOINTS = getStringProperty("env.xquery.http.endpoints");
