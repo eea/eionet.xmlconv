@@ -73,6 +73,9 @@ public class QASandboxController {
      */
     private static final int TIME_INTERVAL_FOR_JOB_STATUS = 120000;
 
+    /** Dao for getting query data. */
+    private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+
     @Autowired
     public QASandboxController(MessageService messageService, JobOnDemandHandlerService jobOnDemandHandlerService,
                                @Qualifier("jobRepository") JobRepository jobRepository, IQueryDao queryDao) {
@@ -426,6 +429,23 @@ public class QASandboxController {
 
             if (qascript != null && qascript.getSchemaId() != null) {
                 xq.setSchema(schM.getSchema(qascript.getSchemaId()));
+            }
+
+            if (xq.getScriptType().equals(XQScript.SCRIPT_LANG_FME)){
+                //set asynchronousExecution field
+                Boolean asynchronousExecution = false;
+                try {
+                    asynchronousExecution = queryDao.getAsynchronousExecution(scriptId);
+                    if (asynchronousExecution != null){
+                        xq.setAsynchronousExecution(asynchronousExecution);
+                    }
+                    else{
+                        xq.setAsynchronousExecution(false);
+                    }
+                }
+                catch(Exception e){
+                    xq.setAsynchronousExecution(false);
+                }
             }
 
             OutputStream output = null;

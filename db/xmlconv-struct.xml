@@ -594,4 +594,14 @@
             INSERT INTO INTERNAL_STATUS VALUES (4,'CANCELLED','job has been cancelled');
         </sql>
     </changeSet>
+    <changeSet author="anthaant" id="rev-55">
+        <comment>
+            Added ASYNCHRONOUS_EXECUTION column in T_QUERY
+        </comment>
+        <addColumn tableName="T_QUERY">
+            <column name="ASYNCHRONOUS_EXECUTION" defaultValue="false" type="BOOLEAN">
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
