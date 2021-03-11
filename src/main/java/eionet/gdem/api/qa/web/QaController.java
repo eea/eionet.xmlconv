@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -64,7 +63,7 @@ public class QaController {
 
     @Autowired(required=false)
     RabbitTemplate rabbitTemplate;
-    
+
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
      * @param report
@@ -146,19 +145,19 @@ public class QaController {
     @RequestMapping(value = "/asynctasks/qajobs")
     public ResponseEntity<HashMap<String,String>> scheduleQARequestOnFile(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException, UnsupportedEncodingException {
 
-         if (envelopeWrapper.getSourceUrl() == null) {
+        if (envelopeWrapper.getSourceUrl() == null) {
             throw new EmptyParameterException("sourceUrl");
         }
         if (envelopeWrapper.getScriptId() == null) {
             throw new EmptyParameterException("scriptId");
-        }      
-        
+        }
+
         QueryService queryService = new QueryService();
-          String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null);
-          getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
-          LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
-          results.put("jobId",jobId);
-          return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
+        String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null);
+        getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
+        LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
+        results.put("jobId",jobId);
+        return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
     }
 
     /**
@@ -187,37 +186,26 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId,HttpServletResponse response) throws XMLConvException, JsonProcessingException {
+    public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
 
         Hashtable<String, String> results = qaService.getJobResults(jobId);
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
         LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
-        executionStatusView.put("statusId", (String) results.get(Constants.RESULT_CODE_PRM));
-        executionStatusView.put("statusName",(String) results.get("executionStatusName"));
+        executionStatusView.put("statusId", results.get(Constants.RESULT_CODE_PRM));
+        executionStatusView.put("statusName",results.get("executionStatusName"));
         jsonResults.put("scriptTitle",results.get(Constants.RESULT_SCRIPTTITLE_PRM));
         jsonResults.put("executionStatus",executionStatusView);
         jsonResults.put("feedbackStatus", results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
-
-        if(results.get("REMOTE_FILES")!=null){
-            String[] fileUrls = (String[]) results.get("REMOTE_FILES");
-            if(fileUrls[0]!=null) {
-                jsonResults.put("feedbackContent", "");
-                jsonResults.put("REMOTE_FILES",fileUrls);
-
-            }
-        }else{
-            jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
-        }
+        jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
         return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.OK);
     }
 
-   /**
-    *Get Qa Scripts for a given schema and status , or if empty , return all schemas.
-    * 
-    **/
+    /**
+     *Get Qa Scripts for a given schema and status , or if empty , return all schemas.
+     *
+     **/
     @RequestMapping(value = "/qascripts", method = RequestMethod.GET)
     public ResponseEntity<List<LinkedHashMap<String,String>>> listQaScripts(@RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "active", required = false, defaultValue = "true") String active) throws XMLConvException, BadRequestException {
 
@@ -226,7 +214,7 @@ public class QaController {
         }
 
         List<LinkedHashMap<String,String>> results = qaService.listQAScripts(schema, active);
-       
+
         return new ResponseEntity<List<LinkedHashMap<String,String>>>(results, HttpStatus.OK);
     }
 
@@ -306,7 +294,7 @@ public class QaController {
 
     @ExceptionHandler(EmptyParameterException.class)
     public ResponseEntity<HashMap<String, String>> HandleEmptyParameterException(Exception exception) {
-        
+
         LOGGER.info("QAController Empty Parameter Exception:",exception);
         HashMap<String, String> errorResult = new HashMap<String, String>();
         errorResult.put("httpStatusCode", HttpStatus.BAD_REQUEST.toString());
@@ -317,7 +305,7 @@ public class QaController {
     @ExceptionHandler(XMLConvException.class)
     public ResponseEntity<HashMap<String, String>> HandleXMLConvException(Exception exception, HttpServletResponse response) {
         LOGGER.error("XMLConv Exception:",exception);
-           HashMap<String, String> errorResult = new HashMap<String, String>();
+        HashMap<String, String> errorResult = new HashMap<String, String>();
         errorResult.put("httpStatusCode", HttpStatus.INTERNAL_SERVER_ERROR.toString());
         errorResult.put("errorMessage", exception.getMessage());
         errorResult.put("errorDescription", String.valueOf(ExceptionUtils.getRootCause(exception)));
