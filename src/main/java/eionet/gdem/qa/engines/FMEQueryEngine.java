@@ -7,7 +7,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import eionet.gdem.SpringApplicationContext;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.services.fme.FmeJobStatus;
 import eionet.gdem.services.fme.FmeServerCommunicator;
 import eionet.gdem.services.fme.exceptions.*;
@@ -143,11 +142,12 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         String[] fileNameSegments = fileNameWthXml.split("\\.");
         String fileName = fileNameSegments[0];
         String folderName = fileName + "_" +  getRandomStr();
+        String jobId="";
         try {
 
 
             FmeServerCommunicator fmeServerCommunicator = this.getFmeServerCommunicator();
-            String jobId =     fmeServerCommunicator.submitJob(script,new SynchronousSubmitJobRequest(script.getOrigFileUrl(),folderName));
+            jobId = fmeServerCommunicator.submitJob(script,new SynchronousSubmitJobRequest(script.getOrigFileUrl(),folderName));
 
 
             this.pollFmeServerWithRetries(jobId,script,fmeServerCommunicator);
@@ -157,7 +157,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         } catch (FmeAuthorizationException | FmeCommunicationException | GenericFMEexception | FMEBadRequestException |RetryCountForGettingJobResultReachedException | InterruptedException e) {
             String message = "Generic Exception handling. FME request error: " + e.getMessage();
             LOGGER.error(message);
-            String resultString ="<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>";
+            String resultString ="<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. The id in the FME server is #" + jobId + ". Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>";
             ZipOutputStream out = new ZipOutputStream(result);
             ZipEntry entry = new ZipEntry("output.html");
             out.putNextEntry(entry);
