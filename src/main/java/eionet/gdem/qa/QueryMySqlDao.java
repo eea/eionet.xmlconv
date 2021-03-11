@@ -617,8 +617,10 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             if (r.length == 0) {
                 return null;
             }
-
-            result = Boolean.parseBoolean(r[0][0]);
+            if(r[0][0] != null && r[0][0].equals("1")){
+                return true;
+            }
+            return false;
         } catch (Exception e ){
             LOGGER.error ("Error while retrieving asynchronous execution field for script " + queryId + " : " + e.getMessage() );
             return null;
@@ -627,7 +629,6 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         finally {
             closeAllResources(rs, pstmt, conn);
         }
-        return result;
     }
 
 }

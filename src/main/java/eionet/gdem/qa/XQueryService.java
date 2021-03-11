@@ -208,9 +208,9 @@ public class XQueryService extends RemoteService {
      * @param content_type Content type
      * @return Extension
      */
-    private String getExtension(Vector outputTypes, String content_type,String scriptType) {
+    private String getExtension(Vector outputTypes, String content_type,String scriptType, Boolean asynchronousExecution) {
         String ret = null;
-        if(scriptType.equals( XQScript.SCRIPT_LANG_FME)){
+        if(scriptType.equals( XQScript.SCRIPT_LANG_FME) && asynchronousExecution == true){
             ret ="zip";
         }else{
             ret = "html";
@@ -495,7 +495,15 @@ public class XQueryService extends RemoteService {
             String queryFile = (String) query.get(QaScriptView.QUERY);
             String contentType = (String) query.get(QaScriptView.CONTENT_TYPE_ID);
             String scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
-            String fileExtension = getExtension(outputTypes, contentType,scriptType);
+            String asynchronousExecutionStr = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+            Boolean asynchronousExecution;
+            if(asynchronousExecutionStr != null && asynchronousExecutionStr.equals("1")){
+                asynchronousExecution = true;
+            }
+            else{
+                asynchronousExecution = false;
+            }
+            String fileExtension = getExtension(outputTypes, contentType,scriptType, asynchronousExecution);
             String resultFile =
                     Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
                             + fileExtension;
