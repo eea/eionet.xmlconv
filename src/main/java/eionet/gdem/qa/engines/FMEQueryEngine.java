@@ -157,7 +157,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         } catch (FmeAuthorizationException | FmeCommunicationException | GenericFMEexception | FMEBadRequestException |RetryCountForGettingJobResultReachedException | InterruptedException e) {
             String message = "Generic Exception handling. FME request error: " + e.getMessage();
             LOGGER.error(message);
-            String resultString ="<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. The id in the FME server is #" + jobId + ". Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>";
+            String resultString ="<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. The id in the FME server is #" + jobId + ". Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. The id in the FME server is #" + jobId + ".  Please try again. If the issue persists please contact the dataflow helpdesk.</div>";
             ZipOutputStream out = new ZipOutputStream(result);
             ZipEntry entry = new ZipEntry("output.html");
             out.putNextEntry(entry);
