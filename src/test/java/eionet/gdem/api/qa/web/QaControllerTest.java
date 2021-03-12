@@ -129,7 +129,7 @@ public class QaControllerTest {
     public void SuccessToGetQaResultsForJob() throws XMLConvException, Exception {
 
         String jobid = "42";
-        Hashtable<String, Object> results = new Hashtable<String, Object>();
+        Hashtable<String, String> results = new Hashtable<String, String>();
         results.put(Constants.RESULT_CODE_PRM, "0");
         results.put("executionStatusName", "Ready");
         results.put(Constants.RESULT_SCRIPTTITLE_PRM, "XML Schema validation");
