@@ -6,6 +6,7 @@ import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.WorkersJobMessageSender;
 import eionet.gdem.services.impl.JobOnDemandHandlerServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
@@ -67,7 +68,7 @@ public class JobOnDemandHandlerServiceTest {
     public void testCreateJobAndSendToRabbitMQ() throws SQLException {
         when(jobRepository.save(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
-        doNothing().when(jobMessageSender).sendJobInfoToRabbitMQ(any(XQScript.class));
+        doNothing().when(jobMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
         when(jobRepository.getRetryCounter(anyInt())).thenReturn(0);
         JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0);
         Assert.assertEquals(jobEntry.getId(), jobEntryResult.getId());

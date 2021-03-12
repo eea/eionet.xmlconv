@@ -1,6 +1,7 @@
 package eionet.gdem.rabbitmq.service;
 
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.WorkersJobMessageSenderImpl;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
@@ -38,7 +39,8 @@ public class WorkersJobMessageSenderImplTest {
         String[] scriptParams = new String[0];
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         doNothing().when(rabbitTemplate).convertAndSend(anyString(), any(XQScript.class));
-        workersJobMessageSender.sendJobInfoToRabbitMQ(xqScript);
+        WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(xqScript);
+        workersJobMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
         verify(rabbitTemplate).convertAndSend(anyString(), any(XQScript.class));
     }
 }

@@ -32,4 +32,7 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     @Modifying
     @Query(value = "update T_XQJOBS set INTERNAL_STATUS_ID= :intStatus, JOB_EXECUTOR_NAME= :jobExecutorName, TIME_STAMP= :timestamp where JOB_ID = :jobId", nativeQuery=true)
     void updateIntStatusAndJobExecutorName(@Param("intStatus") InternalSchedulingStatus intStatus, @Param("jobExecutorName") String jobExecutorName, @Param("timestamp") Timestamp timestamp, @Param("jobId") Integer jobId);
+
+    @Query(value = "SELECT * FROM T_XQJOBS WHERE N_STATUS=2 AND INTERNAL_STATUS_ID=3", nativeQuery = true)
+    List<JobEntry> findProcessingJobs();
 }

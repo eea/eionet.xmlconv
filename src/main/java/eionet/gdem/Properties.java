@@ -229,11 +229,15 @@ public class Properties {
     public static String WORKERS_JOBS_QUEUE;
     public static String WORKERS_JOBS_RESULTS_QUEUE;
     public static String WORKERS_STATUS_QUEUE;
+    public static String WORKER_JOB_EXECUTION_REQUEST_QUEUE;
+    public static String WORKER_JOB_EXECUTION_RESPONSE_QUEUE;
     public static String MAIN_XMLCONV_JOBS_EXCHANGE;
     public static String MAIN_WORKERS_EXCHANGE;
     public static String JOBS_ROUTING_KEY;
     public static String JOBS_RESULTS_ROUTING_KEY;
     public static String WORKER_STATUS_ROUTING_KEY;
+    public static String WORKER_JOB_EXECUTION_REQUEST_ROUTING_KEY;
+    public static String WORKER_JOB_EXECUTION_RESPONSE_ROUTING_KEY;
 
     public static boolean enableQuartz;
 
@@ -377,11 +381,15 @@ public class Properties {
         WORKERS_JOBS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.queue");
         WORKERS_JOBS_RESULTS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.results.queue");
         WORKERS_STATUS_QUEUE = getStringProperty("env.rabbitmq.workers.status.queue");
+        WORKER_JOB_EXECUTION_REQUEST_QUEUE = getStringProperty("env.rabbitmq.worker.jobExecution.request.queue");
+        WORKER_JOB_EXECUTION_RESPONSE_QUEUE = getStringProperty("env.rabbitmq.worker.jobExecution.response.queue");
         MAIN_XMLCONV_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.jobs.exchange");
         MAIN_WORKERS_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.exchange");
         JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.routingkey");
         JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
         WORKER_STATUS_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.status.routingkey");
+        WORKER_JOB_EXECUTION_REQUEST_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.jobExecution.request.routingKey");
+        WORKER_JOB_EXECUTION_RESPONSE_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.jobExecution.response.routingKey");
 
         enableQuartz = Boolean.parseBoolean(getStringProperty("env.enable.quartz"));
 
