@@ -12,7 +12,6 @@ import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
-import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rabbitMQ.errors.RabbitMQMessageException;
 import eionet.gdem.rabbitMQ.model.WorkerJobExecutionInfo;
@@ -23,11 +22,9 @@ import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
-import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -64,17 +61,6 @@ public class FixedTimeScheduledTasks {
     private JobExecutorHistoryService jobExecutorHistoryService;
     @Autowired
     private WorkersJobMessageSender workersJobMessageSender;
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private JobService jobService;
-    @Autowired
-    private JobHistoryService jobHistoryService;
-
-    /**
-     * time in milliseconds
-     */
-    private static final Integer TIME_LIMIT = 60000;
 
     @Autowired
     public FixedTimeScheduledTasks() {
