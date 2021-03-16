@@ -163,6 +163,15 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     if (query != null && query.containsKey(QaScriptView.URL)) {
                         xq.setScriptSource((String) query.get(QaScriptView.URL));
                     }
+
+                    String asynchronousExecution = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+                    if(asynchronousExecution != null && asynchronousExecution.equals("1")){
+                        xq.setAsynchronousExecution(true);
+                    }
+                    else{
+                        xq.setAsynchronousExecution(false);
+                    }
+
                     LOGGER.info("** FME Job will be added in queue, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 } else {
                     LOGGER.info("** XQuery Job will be added in queue, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
