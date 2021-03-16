@@ -1,4 +1,4 @@
-package eionet.gdem.rabbitmq;
+package eionet.gdem.rabbitmq.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +10,7 @@ import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.WorkersJobsResultsMessageReceiver;
+import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.test.ApplicationTestContext;

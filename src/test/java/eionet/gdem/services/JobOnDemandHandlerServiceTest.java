@@ -1,5 +1,6 @@
 package eionet.gdem.services;
 
+import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
@@ -65,7 +66,7 @@ public class JobOnDemandHandlerServiceTest {
     }
 
     @Test
-    public void testCreateJobAndSendToRabbitMQ() throws SQLException {
+    public void testCreateJobAndSendToRabbitMQ() throws XMLConvException {
         when(jobRepository.save(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         doNothing().when(jobMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));

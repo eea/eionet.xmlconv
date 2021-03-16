@@ -1,6 +1,9 @@
-package eionet.gdem.rabbitMQ;
+package eionet.gdem.rabbitMQ.config;
 
 import eionet.gdem.Properties;
+import eionet.gdem.rabbitMQ.listeners.WorkerJobExecutionResponseReceiver;
+import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
+import eionet.gdem.rabbitMQ.listeners.WorkersStatusMessageReceiver;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -118,6 +121,23 @@ public class SpringRabbitMqConfig {
     @Bean
     MessageListenerAdapter workersStatusListenerAdapter() {
         return new MessageListenerAdapter(workersStatusMessageReceiver(), jsonMessageConverter());
+    }
+
+    @Bean
+    SimpleMessageListenerContainer workerJobExecutionResponseContainer(ConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(Properties.WORKER_JOB_EXECUTION_RESPONSE_QUEUE);
+        container.setMessageListener(workerJobExecutionResponseListenerAdapter());
+        return container;
+    }
+    @Bean
+    WorkerJobExecutionResponseReceiver workerJobExecutionResponseReceiver() {
+        return new WorkerJobExecutionResponseReceiver();
+    }
+    @Bean
+    MessageListenerAdapter workerJobExecutionResponseListenerAdapter() {
+        return new MessageListenerAdapter(workerJobExecutionResponseReceiver(), jsonMessageConverter());
     }
 
     @Bean

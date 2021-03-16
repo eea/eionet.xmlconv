@@ -1,7 +1,5 @@
 package eionet.gdem.infrastructure.scheduling;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
@@ -16,12 +14,10 @@ import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.notifications.UNSEventSender;
-import eionet.gdem.qa.XQScript;
+import eionet.gdem.rabbitMQ.errors.RabbitMQMessageException;
 import eionet.gdem.rabbitMQ.model.WorkerJobExecutionInfo;
-import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.rabbitMQ.service.WorkersJobMessageSender;
 import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.exception.RancherApiTimoutException;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
@@ -29,10 +25,8 @@ import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
-import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,7 +34,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -173,6 +166,12 @@ public class FixedTimeScheduledTasks {
                 LOGGER.info("Scaling up again because of error");
                 servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
             }
+        } finally {
+            ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
+            if (serviceInfo.getScale()==0) {
+                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
+                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            }
         }
     }
 
@@ -256,48 +255,19 @@ public class FixedTimeScheduledTasks {
 
     @Transactional
     @Scheduled(cron= "0 */2 * * * *")  //every 2 minutes
-    public void checkProcessingJobs() throws IOException {
-        List<JobEntry> processingJobs = jobRepository.findProcessingJobs();
-        for (JobEntry jobEntry : processingJobs) {
-            WorkerJobExecutionInfo jobExecInfo = new WorkerJobExecutionInfo(jobEntry.getJobExecutorName(), jobEntry.getId());
-            workersJobMessageSender.sendMessageForJobExecution(jobExecInfo);
-            Message message = rabbitTemplate.receive(Properties.WORKER_JOB_EXECUTION_RESPONSE_QUEUE, TIME_LIMIT);
-            StopWatch timer = new StopWatch();
-            timer.start();
-            while (message==null) {
-                message = rabbitTemplate.receive(Properties.WORKER_JOB_EXECUTION_RESPONSE_QUEUE, TIME_LIMIT);
-                if (timer.getTime()>TIME_LIMIT) {
-                    throw new RuntimeException("Time exceeded for getting jobExecutor answer");
-                }
-            }
-            timer.stop();
-            ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
-            try {
-                WorkerJobExecutionInfo response = mapper.readValue(message.getBody(), WorkerJobExecutionInfo.class);
-                if (!response.isExecuting()) {
-                    jobService.changeNStatus(jobEntry.getId(), Constants.XQ_FATAL_ERR);
-                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                    jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
-                    XQScript script = createScriptFromJobEntry(jobEntry);
-                    jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
-                }
-            } catch (IOException e) {
-                timer.stop();
-                LOGGER.info("Error while parsing jobExecutor response");
-                throw e;
-            }
-        }
+    public void checkProcessingJobs() throws RabbitMQMessageException {
+       List<JobEntry> processingJobs = jobRepository.findProcessingJobs();
+       try {
+           for (JobEntry jobEntry : processingJobs) {
+               WorkerJobExecutionInfo jobExecInfo = new WorkerJobExecutionInfo(jobEntry.getJobExecutorName(), jobEntry.getId());
+               workersJobMessageSender.sendMessageForJobExecution(jobExecInfo);
+           }
+       } catch (Exception e) {
+           LOGGER.info("Error while sending message to rabbitmq for processing job(s)");
+           throw new RabbitMQMessageException(e.getMessage());
+       }
     }
 
-    protected XQScript createScriptFromJobEntry(JobEntry jobEntry) {
-        XQScript script = new XQScript();
-        script.setJobId(jobEntry.getId().toString());
-        script.setSrcFileUrl(jobEntry.getUrl());
-        script.setScriptFileName(jobEntry.getFile());
-        script.setStrResultFile(jobEntry.getResultFile());
-        script.setScriptType(jobEntry.getType());
-        return script;
-    }
 }
 
 

@@ -1,4 +1,4 @@
-package eionet.gdem.rabbitMQ;
+package eionet.gdem.rabbitMQ.listeners;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

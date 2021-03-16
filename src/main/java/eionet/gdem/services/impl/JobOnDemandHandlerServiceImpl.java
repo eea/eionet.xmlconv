@@ -3,6 +3,7 @@ package eionet.gdem.services.impl;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -44,7 +44,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     @Transactional
     @Override
-    public JobEntry createJobAndSendToRabbitMQ(XQScript script, Integer scriptId) throws SQLException {
+    public JobEntry createJobAndSendToRabbitMQ(XQScript script, Integer scriptId) throws XMLConvException {
         JobEntry jobEntry = new JobEntry();
         try {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
@@ -64,8 +64,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             jobRepository.updateIntStatusAndJobExecutorName(internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry.getId());
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_QUEUED);
         } catch (Exception e) {
-            LOGGER.info("Error during database transaction for job with id " + jobEntry.getId());
-            throw new SQLException("Error during database transaction for job with id " + jobEntry.getId());
+            throw new XMLConvException(e.getMessage());
         }
         return jobEntry;
     }

@@ -38,10 +38,10 @@ public class WorkersJobMessageSenderImplTest {
     public void testSendJobInfoToRabbitMQ() {
         String[] scriptParams = new String[0];
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
-        doNothing().when(rabbitTemplate).convertAndSend(anyString(), any(XQScript.class));
+        doNothing().when(rabbitTemplate).convertAndSend(anyString(), any(WorkerJobRabbitMQRequest.class));
         WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(xqScript);
         workersJobMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
-        verify(rabbitTemplate).convertAndSend(anyString(), any(XQScript.class));
+        verify(rabbitTemplate).convertAndSend(anyString(), any(WorkerJobRabbitMQRequest.class));
     }
 }
 
