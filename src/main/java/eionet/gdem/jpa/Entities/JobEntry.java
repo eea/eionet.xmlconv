@@ -39,7 +39,7 @@ public class JobEntry implements Serializable {
     private String srcFile;
 
     @Column(name = "XQ_TYPE")
-    private String type;
+    private String scriptType;
 
     @Column(name = "INSTANCE")
     private String instance;
@@ -63,14 +63,14 @@ public class JobEntry implements Serializable {
     public JobEntry() {
     }
 
-    public JobEntry(String url, String file, String resultFile, Integer nStatus, Integer queryId, Timestamp timestamp, String type, InternalSchedulingStatus intSchStatus) {
+    public JobEntry(String url, String file, String resultFile, Integer nStatus, Integer queryId, Timestamp timestamp, String scriptType, InternalSchedulingStatus intSchStatus) {
         this.url = url;
         this.file = file;
         this.resultFile = resultFile;
         this.timestamp = timestamp;
         this.nStatus = nStatus;
         this.queryId = queryId;
-        this.type = type;
+        this.scriptType = scriptType;
         this.intSchedulingStatus = intSchStatus;
     }
 
@@ -155,12 +155,12 @@ public class JobEntry implements Serializable {
         return this;
     }
 
-    public String getType() {
-        return type;
+    public String getScriptType() {
+        return scriptType;
     }
 
-    public JobEntry setType(String type) {
-        this.type = type;
+    public JobEntry setScriptType(String type) {
+        this.scriptType = type;
         return this;
     }
 

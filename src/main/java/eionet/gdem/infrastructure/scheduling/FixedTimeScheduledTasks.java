@@ -168,7 +168,7 @@ public class FixedTimeScheduledTasks {
             }
         } finally {
             ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
-            if (serviceInfo.getScale()==0) {
+            if (serviceInfo.getScale()==0 || serviceInfo.getInstanceIds()==null) {
                 ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
                 servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
             }

@@ -189,7 +189,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             scriptFile = jobEntry.getFile();
             resultFile = jobEntry.getResultFile(); // just a file name, file is not created
             queryID = jobEntry.getQueryId().toString();
-            scriptType = jobEntry.getType();
+            scriptType = jobEntry.getScriptType();
         } catch (Exception e) {
             handleError("Error getting WQ data from the DB: " + e.toString(), true);
         }

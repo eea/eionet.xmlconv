@@ -7,10 +7,8 @@ import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
-import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.services.JobHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -25,16 +23,10 @@ import java.util.Date;
 public class WorkersStatusMessageReceiver implements MessageListener {
 
     @Autowired
-    JobService jobService;
-
-    @Autowired
     JobExecutorService jobExecutorService;
 
     @Autowired
     JobExecutorHistoryService jobExecutorHistoryService;
-
-    @Autowired
-    JobHistoryService jobHistoryService;
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkersStatusMessageReceiver.class);

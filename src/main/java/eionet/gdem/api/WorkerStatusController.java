@@ -67,7 +67,7 @@ public class WorkerStatusController {
         script.setSrcFileUrl(jobEntry.getUrl());
         script.setScriptFileName(jobEntry.getFile());
         script.setStrResultFile(jobEntry.getResultFile());
-        script.setScriptType(jobEntry.getType());
+        script.setScriptType(jobEntry.getScriptType());
         return script;
     }
 }
