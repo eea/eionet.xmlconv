@@ -44,6 +44,7 @@ public interface Constants {
     int XQ_INTERRUPTED = 7; // job interrupted
 
     int CANCELLED_BY_USER = 9;
+    int JOB_NOT_FOUND = 10;
 
     int JOB_VALIDATION = -1;
     int JOB_FROMSTRING = 0;

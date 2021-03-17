@@ -6,9 +6,12 @@ import eionet.gdem.Constants;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
+import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobExecutionInfo;
+import eionet.gdem.qa.utils.ScriptUtils;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.services.JobHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +24,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Service
-public class WorkerJobExecutionResponseReceiver implements MessageListener {
+public class WorkerHeartBeatResponseReceiver implements MessageListener {
 
     @Autowired
     JobService jobService;
@@ -29,21 +32,27 @@ public class WorkerJobExecutionResponseReceiver implements MessageListener {
     @Autowired
     JobHistoryService jobHistoryService;
 
+    @Autowired
+    WorkerHeartBeatMsgRepository workerHeartBeatMsgRepository;
+
     /** */
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorkerJobExecutionResponseReceiver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkerHeartBeatResponseReceiver.class);
 
     @Override
     public void onMessage(Message message) {
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            WorkerJobExecutionInfo response = mapper.readValue(message.getBody(), WorkerJobExecutionInfo.class);
+            WorkerHeartBeatMessageInfo response = mapper.readValue(message.getBody(), WorkerHeartBeatMessageInfo.class);
+
+            WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(response.getJobId(), response.getJobExecutorName(), response.getRequestTimestamp(), new Timestamp(new Date().getTime()), response.getJobStatus());
+            workerHeartBeatMsgRepository.save(workerHeartBeatMsgEntry);
 
             JobEntry jobEntry = jobService.findById(response.getJobId());
-            if (jobEntry.getnStatus()==Constants.XQ_PROCESSING && !response.isExecuting()) {
+            if (jobEntry.getnStatus()==Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND)) {
                 jobService.changeNStatus(response.getJobId(), Constants.XQ_FATAL_ERR);
                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                 jobService.changeIntStatusAndJobExecutorName(internalStatus, response.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
-                XQScript script = createScriptFromJobEntry(jobEntry);
+                XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
                 jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
             }
         } catch (Exception e) {
@@ -51,17 +60,6 @@ public class WorkerJobExecutionResponseReceiver implements MessageListener {
             return;
         }
     }
-
-    protected XQScript createScriptFromJobEntry(JobEntry jobEntry) {
-        XQScript script = new XQScript();
-        script.setJobId(jobEntry.getId().toString());
-        script.setSrcFileUrl(jobEntry.getUrl());
-        script.setScriptFileName(jobEntry.getFile());
-        script.setStrResultFile(jobEntry.getResultFile());
-        script.setScriptType(jobEntry.getScriptType());
-        return script;
-    }
-
 }
 
 

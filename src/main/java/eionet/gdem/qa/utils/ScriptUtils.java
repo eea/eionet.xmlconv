@@ -1,5 +1,6 @@
 package eionet.gdem.qa.utils;
 
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.qa.XQScript;
 
 /**
@@ -29,5 +30,15 @@ public final class ScriptUtils {
             extension = scriptType;
         }
         return extension;
+    }
+
+    public static XQScript createScriptFromJobEntry(JobEntry jobEntry) {
+        XQScript script = new XQScript();
+        script.setJobId(jobEntry.getId().toString());
+        script.setSrcFileUrl(jobEntry.getUrl());
+        script.setScriptFileName(jobEntry.getFile());
+        script.setStrResultFile(jobEntry.getResultFile());
+        script.setScriptType(jobEntry.getScriptType());
+        return script;
     }
 }

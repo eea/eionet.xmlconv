@@ -594,4 +594,27 @@
             INSERT INTO INTERNAL_STATUS VALUES (4,'CANCELLED','job has been cancelled');
         </sql>
     </changeSet>
+    <changeSet author="favvmary" id="rev-55">
+        <comment> Table for storing worker heart beat messages</comment>
+        <createTable tableName="WORKER_HEART_BEAT_MSG">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="JOB_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_EXECUTOR_NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REQUEST_TIMESTAMP" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RESPONSE_TIMESTAMP" type="TIMESTAMP"></column>
+            <column name="JOB_STATUS" type="INT">
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
 </databaseChangeLog>

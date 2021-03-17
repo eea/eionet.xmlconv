@@ -1,7 +1,7 @@
 package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.Properties;
-import eionet.gdem.rabbitMQ.model.WorkerJobExecutionInfo;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class WorkersJobMessageSenderImpl implements WorkersJobMessageSender {
     }
 
     @Override
-    public void sendMessageForJobExecution(WorkerJobExecutionInfo workerJobExecutionInfo) {
-        rabbitTemplate.convertAndSend(Properties.WORKER_JOB_EXECUTION_REQUEST_QUEUE, workerJobExecutionInfo);
+    public void sendMessageForJobExecution(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo) {
+        rabbitTemplate.convertAndSend(Properties.WORKER_HEART_BEAT_REQUEST_QUEUE, workerHeartBeatMessageInfo);
     }
 }
