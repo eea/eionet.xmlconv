@@ -1,4 +1,4 @@
-package eionet.gdem.rabbitMQ;
+package eionet.gdem.rabbitMQ.config;
 
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;

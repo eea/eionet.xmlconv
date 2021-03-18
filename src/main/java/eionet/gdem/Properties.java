@@ -231,10 +231,16 @@ public class Properties {
     public static String rabbitMQPassword;
     public static String WORKERS_JOBS_QUEUE;
     public static String WORKERS_JOBS_RESULTS_QUEUE;
+    public static String WORKERS_STATUS_QUEUE;
+    public static String WORKER_HEART_BEAT_REQUEST_QUEUE;
+    public static String WORKER_HEART_BEAT_RESPONSE_QUEUE;
     public static String MAIN_XMLCONV_JOBS_EXCHANGE;
     public static String MAIN_WORKERS_EXCHANGE;
     public static String JOBS_ROUTING_KEY;
     public static String JOBS_RESULTS_ROUTING_KEY;
+    public static String WORKER_STATUS_ROUTING_KEY;
+    public static String WORKER_HEART_BEAT_REQUEST_ROUTING_KEY;
+    public static String WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY;
 
     public static boolean enableQuartz;
 
@@ -378,10 +384,16 @@ public class Properties {
         rabbitMQPassword = getStringProperty("env.rabbitmq.password");
         WORKERS_JOBS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.queue");
         WORKERS_JOBS_RESULTS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.results.queue");
+        WORKERS_STATUS_QUEUE = getStringProperty("env.rabbitmq.workers.status.queue");
+        WORKER_HEART_BEAT_REQUEST_QUEUE = getStringProperty("env.rabbitmq.worker.heartBeat.request.queue");
+        WORKER_HEART_BEAT_RESPONSE_QUEUE = getStringProperty("env.rabbitmq.worker.heartBeat.response.queue");
         MAIN_XMLCONV_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.jobs.exchange");
         MAIN_WORKERS_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.exchange");
         JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.routingkey");
         JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
+        WORKER_STATUS_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.status.routingkey");
+        WORKER_HEART_BEAT_REQUEST_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.heartBeat.request.routingKey");
+        WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.heartBeat.response.routingKey");
 
         enableQuartz = Boolean.parseBoolean(getStringProperty("env.enable.quartz"));
 

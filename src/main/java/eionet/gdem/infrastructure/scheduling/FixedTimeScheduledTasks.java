@@ -3,22 +3,26 @@ package eionet.gdem.infrastructure.scheduling;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
+import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.notifications.UNSEventSender;
+import eionet.gdem.qa.XQScript;
+import eionet.gdem.qa.utils.ScriptUtils;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.service.WorkersJobMessageSender;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +44,9 @@ public class FixedTimeScheduledTasks {
 
     @Autowired
     private IXQJobDao xqJobDao;
-
     @Qualifier("jobHistoryRepository")
     @Autowired
     JobHistoryRepository repository;
-
     @Qualifier("jobRepository")
     @Autowired
     private JobRepository jobRepository;
@@ -54,12 +56,20 @@ public class FixedTimeScheduledTasks {
     private ServicesRancherApiOrchestrator servicesOrchestrator;
     @Autowired
     private ContainersRancherApiOrchestrator containersOrchestrator;
-
     @Autowired
     private JobExecutorService jobExecutorService;
-
     @Autowired
     private JobExecutorHistoryService jobExecutorHistoryService;
+    @Autowired
+    private WorkersJobMessageSender workersJobMessageSender;
+    @Autowired
+    private WorkerHeartBeatMsgRepository workerHeartBeatMsgRepository;
+    @Autowired
+    private JobService jobService;
+    @Autowired
+    private JobHistoryService jobHistoryService;
+
+    private static final Integer MIN_UNANSWERED_REQUESTS = 5;
 
     @Autowired
     public FixedTimeScheduledTasks() {
@@ -109,7 +119,7 @@ public class FixedTimeScheduledTasks {
         }
         String serviceId = Properties.rancherJobExecServiceId;
         deleteFailedWorkers(serviceId);
-        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(2);
+        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         List<JobEntry> jobs = jobRepository.findByIntSchedulingStatus(internalStatus);
         List<JobExecutor> readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
         try {
@@ -149,6 +159,12 @@ public class FixedTimeScheduledTasks {
                 Integer newScale = instances.size() - serviceInfo.getScale();
                 ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(serviceInfo.getScale() + newScale);
                 LOGGER.info("Scaling up again because of error");
+                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            }
+        } finally {
+            ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
+            if (serviceInfo.getScale()==0 || serviceInfo.getInstanceIds()==null) {
+                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
                 servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
             }
         }
@@ -229,6 +245,38 @@ public class FixedTimeScheduledTasks {
         catch(RancherApiException rae){
             LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
             throw rae;
+        }
+    }
+
+    @Transactional
+    @Scheduled(cron= "0 */5 * * * *")  //every 5 minutes
+    public void sendPeriodicHeartBeatMessages() {
+       List<JobEntry> processingJobs = jobRepository.findProcessingJobs();
+        for (JobEntry jobEntry : processingJobs) {
+            try {
+                WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
+                workersJobMessageSender.sendMessageForJobExecution(heartBeatMsgInfo);
+                WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
+                workerHeartBeatMsgRepository.save(workerHeartBeatMsgEntry);
+            } catch (Exception e) {
+                LOGGER.info("Error while setting heart beat message for job with id " + jobEntry.getId() + ", " + e.getMessage());
+            }
+        }
+    }
+
+    @Transactional
+    @Scheduled(cron= "0 */5 * * * *")  //every 5 minutes
+    public void checkProcessingJobs() {
+        List<JobEntry> processingJobs = jobRepository.findProcessingJobs();
+        for (JobEntry jobEntry : processingJobs) {
+            List<WorkerHeartBeatMsgEntry> heartBeatMsgList = workerHeartBeatMsgRepository.findJobHeartBeatMessages(jobEntry.getId());
+            if (heartBeatMsgList.size()>=MIN_UNANSWERED_REQUESTS) {
+                jobService.changeNStatus(jobEntry.getId(), Constants.XQ_FATAL_ERR);
+                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
+                XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
+                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+            }
         }
     }
 }

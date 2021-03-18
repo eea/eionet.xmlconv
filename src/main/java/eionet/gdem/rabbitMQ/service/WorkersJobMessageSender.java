@@ -1,9 +1,12 @@
 package eionet.gdem.rabbitMQ.service;
 
-import eionet.gdem.qa.XQScript;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 
 public interface WorkersJobMessageSender {
 
-    void sendJobInfoToRabbitMQ(XQScript xq);
+    void sendJobInfoToRabbitMQ(WorkerJobRabbitMQRequest workerJobRabbitMQRequest);
+
+    void sendMessageForJobExecution(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo);
 
 }

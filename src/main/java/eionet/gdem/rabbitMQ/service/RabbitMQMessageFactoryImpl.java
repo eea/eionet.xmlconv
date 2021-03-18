@@ -15,6 +15,7 @@ import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
@@ -176,7 +177,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 } else {
                     LOGGER.info("** XQuery Job will be added in queue, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 }
-                workersJobMessageSender.sendJobInfoToRabbitMQ(xq);
+
+                WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(xq);
+                workersJobMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
                 processJob();
             }
         } catch (Exception e) {
@@ -195,7 +198,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             scriptFile = jobEntry.getFile();
             resultFile = jobEntry.getResultFile(); // just a file name, file is not created
             queryID = jobEntry.getQueryId().toString();
-            scriptType = jobEntry.getType();
+            scriptType = jobEntry.getScriptType();
         } catch (Exception e) {
             handleError("Error getting WQ data from the DB: " + e.toString(), true);
         }
