@@ -7,8 +7,8 @@ import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
-import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
@@ -33,7 +33,7 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
     JobHistoryService jobHistoryService;
 
     @Autowired
-    WorkerHeartBeatMsgRepository workerHeartBeatMsgRepository;
+    WorkerHeartBeatMsgService workerHeartBeatMsgService;
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerHeartBeatResponseReceiver.class);
@@ -45,7 +45,7 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
             WorkerHeartBeatMessageInfo response = mapper.readValue(message.getBody(), WorkerHeartBeatMessageInfo.class);
 
             WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(response.getJobId(), response.getJobExecutorName(), response.getRequestTimestamp(), new Timestamp(new Date().getTime()), response.getJobStatus());
-            workerHeartBeatMsgRepository.save(workerHeartBeatMsgEntry);
+            workerHeartBeatMsgService.updateEntry(workerHeartBeatMsgEntry);
 
             JobEntry jobEntry = jobService.findById(response.getJobId());
             if (jobEntry.getnStatus()==Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND)) {

@@ -111,6 +111,11 @@ public class FixedTimeScheduledTasks {
         }
     }
 
+    /**
+     * The task runs every 2 minutes and checks how many jobs have internalScedulingStatus=2 (meaning the job has been added to rabbitmq queue and is waiting
+     * for a worker to grab it) and how many workers have status=1 (meaning they are ready to receive a job) and creates or deletes workers accordingly.
+     * @throws RancherApiException
+     */
     @Transactional
     @Scheduled(cron= "0 */2 * * * *")  //every 2 minutes
     public void scheduleWorkersOrchestration() throws RancherApiException {
@@ -248,6 +253,11 @@ public class FixedTimeScheduledTasks {
         }
     }
 
+    /**
+     * The task runs every 5 minutes, finds jobs that have n_status=2 (processing) and internal_status_id=3 (the job has been received by a worker)
+     * and sends messages to workers asking whether they are executing a specific job. The task also saves a record with the message request in the
+     * table WORKER_HEART_BEAT_MSG
+     */
     @Transactional
     @Scheduled(cron= "0 */5 * * * *")  //every 5 minutes
     public void sendPeriodicHeartBeatMessages() {
@@ -264,12 +274,17 @@ public class FixedTimeScheduledTasks {
         }
     }
 
+    /**
+     * The task runs every 5 minutes, finds jobs that have n_status=2 (processing) and internal_status_id=3 (the job has been received by a worker)
+     * and checks whether there are unanswered heart beat messages in table WORKER_HEART_BEAT_MSG, meaning messages with null RESPONSE_TIMESTAMP.
+     * If it finds at least 5 records for a job, then the job gets n_status=FATAL_ERROR and internal_status=cancelled.
+     */
     @Transactional
     @Scheduled(cron= "0 */5 * * * *")  //every 5 minutes
-    public void checkProcessingJobs() {
+    public void checkHeartBeatMessagesForProcessingJobs() {
         List<JobEntry> processingJobs = jobRepository.findProcessingJobs();
         for (JobEntry jobEntry : processingJobs) {
-            List<WorkerHeartBeatMsgEntry> heartBeatMsgList = workerHeartBeatMsgRepository.findJobHeartBeatMessages(jobEntry.getId());
+            List<WorkerHeartBeatMsgEntry> heartBeatMsgList = workerHeartBeatMsgRepository.findUnAnsweredHeartBeatMessages(jobEntry.getId());
             if (heartBeatMsgList.size()>=MIN_UNANSWERED_REQUESTS) {
                 jobService.changeNStatus(jobEntry.getId(), Constants.XQ_FATAL_ERR);
                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);

@@ -36,7 +36,7 @@ public class WorkerHeartBeatMsgRepositoryTestIT {
 
     @Test
     public void testFindJobHeartBeatMessages() {
-        List<WorkerHeartBeatMsgEntry> workerHeartBeatMsgEntries = repository.findJobHeartBeatMessages(15);
+        List<WorkerHeartBeatMsgEntry> workerHeartBeatMsgEntries = repository.findUnAnsweredHeartBeatMessages(15);
         assertEquals(workerHeartBeatMsgEntries.size(), 2);
     }
 

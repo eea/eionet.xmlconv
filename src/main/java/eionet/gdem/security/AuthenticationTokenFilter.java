@@ -2,6 +2,22 @@ package eionet.gdem.security;
 
 import com.google.gson.Gson;
 import eionet.gdem.security.errors.JWTException;
+import eionet.gdem.security.service.AuthTokenService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -10,22 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
 /**
  *
@@ -38,14 +38,10 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     @Value("${jwt.header.schema}")
     private String authenticationTokenSchema;
 
-    private static final List<String> INTERCEPTED_URLS = Collections.unmodifiableList(Arrays.asList("/asynctasks/", "/qajobs", "dataflows", "/schemas", "/host/authentication"));
+    private static final List<String> INTERCEPTED_URLS = Collections.unmodifiableList(Arrays.asList("/asynctasks/", "/qajobs", "dataflows"));
 
     @Autowired
-    private TokenVerifier verifier;
-
-    @Autowired
-    @Qualifier("apiuserdetailsservice")
-    private UserDetailsService userDetailsService;
+    private AuthTokenService authTokenService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -60,19 +56,13 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
                 return;
             }
             String rawAuthenticationToken = httpRequest.getHeader(this.tokenHeader);
-            if (rawAuthenticationToken == null || !rawAuthenticationToken.startsWith(authenticationTokenSchema)) {
-                throw new JWTException("Missing or invalid Authorization header.");
-            }
-            String parsedAuthenticationToken = removeAuthenticationSchemaFromHeader(rawAuthenticationToken);
+            String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
 
-            if (parsedAuthenticationToken != null) {
-                String username = verifier.verify(parsedAuthenticationToken);
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+            if (authTokenService.verifyUser(parsedAuthenticationToken)) {
+                UserDetails userDetails = authTokenService.getUserDetails();
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             chain.doFilter(request, response);
         } catch (JWTException ex) {
@@ -82,16 +72,9 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             Gson gson = new Gson();
             LinkedHashMap<String, String> results = new LinkedHashMap<String, String>();
             results.put("httpStatusCode", HttpStatus.UNAUTHORIZED.toString());
-            results.put("errorMessage", "Access Denied");
+            results.put("errorMessage", ex.getMessage());
             out.write(gson.toJson(results));
         }
-    }
-
-    private String removeAuthenticationSchemaFromHeader(String tokenHeader) throws JWTException {
-
-        String stripedTokenHeader;
-        stripedTokenHeader = tokenHeader.replace(authenticationTokenSchema, "");
-        return stripedTokenHeader.trim();
     }
 
     private boolean requiresAuthentication(String url) {

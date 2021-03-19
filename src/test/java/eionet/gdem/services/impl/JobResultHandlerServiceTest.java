@@ -59,10 +59,10 @@ public class JobResultHandlerServiceTest {
     @Test
     public void testSuccessGetJobResults() throws XMLConvException {
         String jobId = "22";
-        Hashtable<String, String> results = new Hashtable<String, String>();
+        Hashtable<String, Object> results = new Hashtable<String, Object>();
         results.put(Constants.RESULT_CODE_PRM, "0");
         when(jobResultHandlerService.getResult(jobId)).thenReturn(results);
-        Hashtable<String, String> realResults = this.qaService.getJobResults(jobId);
+        Hashtable<String, Object> realResults = this.qaService.getJobResults(jobId);
         verify(jobResultHandlerService, times(2)).getResult(jobId);
         Assert.assertEquals(results, realResults);
     }

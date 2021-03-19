@@ -145,11 +145,11 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public Hashtable<String, String> getJobResults(String jobId) throws XMLConvException {
+    public Hashtable<String, Object> getJobResults(String jobId) throws XMLConvException {
 
         QueryService queryService = getQueryService(); // new QueryService();
-        Hashtable<String, String> results = getJobResultHandlerService().getResult(jobId);
-        int resultCode = Integer.parseInt(results.get(Constants.RESULT_CODE_PRM));
+        Hashtable<String, Object> results = getJobResultHandlerService().getResult(jobId);
+        int resultCode = Integer.parseInt((String) results.get(Constants.RESULT_CODE_PRM));
         String executionStatusName = "";
         switch (resultCode) {
 

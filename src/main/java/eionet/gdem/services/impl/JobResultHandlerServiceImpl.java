@@ -1,6 +1,7 @@
 package eionet.gdem.services.impl;
 
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -41,7 +43,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
      * @throws XMLConvException If an error occurs.
      */
     @Override
-    public Hashtable<String,String> getResult(String jobId) throws XMLConvException {
+    public Hashtable<String,Object> getResult(String jobId) throws XMLConvException {
 
         LOGGER.info("XML/RPC call for getting result with JOB ID: " + jobId);
 
@@ -72,6 +74,12 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
                 result = result.substring(0, 100).concat("....");
             }
             LOGGER.info("result: " + result);
+        }
+        if(jobData[8]!=null ){
+            if(jobData[8].equals("fme")){
+                String[] fmeUrls = {Properties.gdemURL.concat("/restapi/download/zip/"+Paths.get(jobData[2]).getFileName())};
+                ret.put("REMOTE_FILES",fmeUrls);
+            }
         }
         return ret;
     }
