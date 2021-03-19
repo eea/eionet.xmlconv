@@ -265,7 +265,7 @@ public class FixedTimeScheduledTasks {
         for (JobEntry jobEntry : processingJobs) {
             try {
                 WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
-                workersJobMessageSender.sendMessageForJobExecution(heartBeatMsgInfo);
+                workersJobMessageSender.sendHeartBeatMessage(heartBeatMsgInfo);
                 WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
                 workerHeartBeatMsgRepository.save(workerHeartBeatMsgEntry);
             } catch (Exception e) {

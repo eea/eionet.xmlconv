@@ -7,6 +7,6 @@ public interface WorkersJobMessageSender {
 
     void sendJobInfoToRabbitMQ(WorkerJobRabbitMQRequest workerJobRabbitMQRequest);
 
-    void sendMessageForJobExecution(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo);
+    void sendHeartBeatMessage(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo);
 
 }

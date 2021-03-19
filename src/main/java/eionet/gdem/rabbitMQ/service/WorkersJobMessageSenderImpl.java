@@ -28,7 +28,7 @@ public class WorkersJobMessageSenderImpl implements WorkersJobMessageSender {
     }
 
     @Override
-    public void sendMessageForJobExecution(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo) {
-        rabbitTemplate.convertAndSend(Properties.WORKER_HEART_BEAT_REQUEST_QUEUE, workerHeartBeatMessageInfo);
+    public void sendHeartBeatMessage(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo) {
+        rabbitTemplate.convertAndSend(Properties.WORKER_HEART_BEAT_REQUEST_EXCHANGE, "", workerHeartBeatMessageInfo);
     }
 }

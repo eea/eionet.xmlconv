@@ -4,10 +4,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.rabbitMQ.listeners.WorkerHeartBeatResponseReceiver;
 import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
 import eionet.gdem.rabbitMQ.listeners.WorkersStatusMessageReceiver;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -19,9 +16,6 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @Conditional(RabbitMqProdEnabledCondition.class)
@@ -50,18 +44,16 @@ public class SpringRabbitMqConfig {
         return new Queue(Properties.WORKERS_STATUS_QUEUE, true);
     }
 
-    //Queue where converters sends message asking worker if it's executing a specific job
-    @Bean
-    Queue workerHeartBeatRequestQueue() {
-        Map<String, Object> args = new HashMap<>();
-        args.put("x-message-ttl", MESSAGE_TIME_EXPIRATION);
-        return new Queue(Properties.WORKER_HEART_BEAT_REQUEST_QUEUE, true, false, false, args);
-    }
-
     //Queue where worker respond whether it's executing a specific job
     @Bean
     Queue workerHeartBeatResponseQueue() {
         return new Queue(Properties.WORKER_HEART_BEAT_RESPONSE_QUEUE, true);
+    }
+
+    //Exchange where converters sends message asking worker if it's executing a specific job
+    @Bean
+    FanoutExchange workersHeartBeatRequestExchange() {
+        return new FanoutExchange(Properties.WORKER_HEART_BEAT_REQUEST_EXCHANGE,true,false);
     }
 
     @Bean
@@ -87,11 +79,6 @@ public class SpringRabbitMqConfig {
     @Bean
     Binding workersExchangeToWorkersStatusQueueBinding() {
         return BindingBuilder.bind(workersStatusQueue()).to(mainWorkersExchange()).with(Properties.WORKER_STATUS_ROUTING_KEY);
-    }
-
-    @Bean
-    Binding exchangeToWorkerHeartBeatRequestQueueBinding() {
-        return BindingBuilder.bind(workerHeartBeatRequestQueue()).to(mainXmlconvJobsExchange()).with(Properties.WORKER_HEART_BEAT_REQUEST_ROUTING_KEY);
     }
 
     @Bean
@@ -172,17 +159,16 @@ public class SpringRabbitMqConfig {
 
         admin.declareExchange(mainWorkersExchange());
         admin.declareExchange(mainXmlconvJobsExchange());
+        admin.declareExchange(workersHeartBeatRequestExchange());
 
         admin.declareQueue(workersJobsQueue());
         admin.declareQueue(workersJobsResultsQueue());
         admin.declareQueue(workersStatusQueue());
-        admin.declareQueue(workerHeartBeatRequestQueue());
         admin.declareQueue(workerHeartBeatResponseQueue());
 
         admin.declareBinding(workersExchangeToWorkersJobResultsQueueBinding());
         admin.declareBinding(xmlconvExchangeToXmlConvJobsQUeueBinding());
         admin.declareBinding(workersExchangeToWorkersStatusQueueBinding());
-        admin.declareBinding(exchangeToWorkerHeartBeatRequestQueueBinding());
         admin.declareBinding(exchangeToWorkerHeartBeatResponseQueueBinding());
         return admin;
     }
