@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ApplicationTestContext.class})
-public class WorkerStatusControllerTest {
+public class WorkerAndJobStatusControllerTest {
 
     @Mock
     private JobService jobService;
@@ -51,7 +51,7 @@ public class WorkerStatusControllerTest {
 
     @Spy
     @InjectMocks
-    private WorkerStatusController workerStatusController;
+    private WorkerAndJobStatusController workerAndJobStatusController;
 
     private MockHttpSession session;
     private MockMvc mockMvc;
@@ -60,7 +60,7 @@ public class WorkerStatusControllerTest {
     public void setUp()  {
         MockitoAnnotations.initMocks(this);
         setSession();
-        mockMvc = MockMvcBuilders.standaloneSetup(workerStatusController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(workerAndJobStatusController).build();
     }
 
     void setSession() {

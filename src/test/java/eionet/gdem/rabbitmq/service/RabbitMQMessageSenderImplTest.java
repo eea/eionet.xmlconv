@@ -2,7 +2,7 @@ package eionet.gdem.rabbitmq.service;
 
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
-import eionet.gdem.rabbitMQ.service.WorkersJobMessageSenderImpl;
+import eionet.gdem.rabbitMQ.service.RabbitMQMessageSenderImpl;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,13 +21,13 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
-public class WorkersJobMessageSenderImplTest {
+public class RabbitMQMessageSenderImplTest {
 
     @Mock
     RabbitTemplate rabbitTemplate;
 
     @InjectMocks
-    WorkersJobMessageSenderImpl workersJobMessageSender;
+    RabbitMQMessageSenderImpl workersJobMessageSender;
 
     @Before
     public void setUp() {

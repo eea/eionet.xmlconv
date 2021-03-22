@@ -61,16 +61,16 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
     private IQueryDao queryDao;
     private JobHistoryRepository jobHistoryRepository;
-    private WorkersJobMessageSender workersJobMessageSender;
+    private RabbitMQMessageSender rabbitMQMessageSender;
     private JobRepository jobRepository;
     private JobService jobService;
 
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
-                                      WorkersJobMessageSender workersJobMessageSender, @Qualifier("jobRepository") JobRepository jobRepository, JobService jobService) {
+                                      RabbitMQMessageSender rabbitMQMessageSender, @Qualifier("jobRepository") JobRepository jobRepository, JobService jobService) {
         this.queryDao = queryDao;
         this.jobHistoryRepository = jobHistoryRepository;
-        this.workersJobMessageSender = workersJobMessageSender;
+        this.rabbitMQMessageSender = rabbitMQMessageSender;
         this.jobRepository = jobRepository;
         this.jobService = jobService;
     }
@@ -179,7 +179,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 }
 
                 WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(xq);
-                workersJobMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
+                rabbitMQMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
                 processJob();
             }
         } catch (Exception e) {

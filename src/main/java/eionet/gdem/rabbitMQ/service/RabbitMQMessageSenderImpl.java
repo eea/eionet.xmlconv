@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WorkersJobMessageSenderImpl implements WorkersJobMessageSender {
+public class RabbitMQMessageSenderImpl implements RabbitMQMessageSender {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorkersJobMessageSenderImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQMessageSenderImpl.class);
 
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public WorkersJobMessageSenderImpl(RabbitTemplate rabbitTemplate) {
+    public RabbitMQMessageSenderImpl(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 

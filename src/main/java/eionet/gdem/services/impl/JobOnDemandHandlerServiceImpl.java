@@ -11,7 +11,7 @@ import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
-import eionet.gdem.rabbitMQ.service.WorkersJobMessageSender;
+import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.services.JobOnDemandHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     private JobRepository jobRepository;
     private JobHistoryRepository jobHistoryRepository;
-    private WorkersJobMessageSender jobMessageSender;
+    private RabbitMQMessageSender jobMessageSender;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobOnDemandHandlerServiceImpl.class);
 
@@ -36,7 +36,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     @Autowired
     public JobOnDemandHandlerServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
-                                         WorkersJobMessageSender jobMessageSender) {
+                                         RabbitMQMessageSender jobMessageSender) {
         this.jobRepository = jobRepository;
         this.jobHistoryRepository = jobHistoryRepository;
         this.jobMessageSender = jobMessageSender;

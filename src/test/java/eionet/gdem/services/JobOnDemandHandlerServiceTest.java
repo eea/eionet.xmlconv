@@ -8,7 +8,7 @@ import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
-import eionet.gdem.rabbitMQ.service.WorkersJobMessageSender;
+import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.services.impl.JobOnDemandHandlerServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Assert;
@@ -21,7 +21,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -41,7 +40,7 @@ public class JobOnDemandHandlerServiceTest {
     private JobHistoryRepository jobHistoryRepository;
 
     @Mock
-    private WorkersJobMessageSender jobMessageSender;
+    private RabbitMQMessageSender jobMessageSender;
 
     @InjectMocks
     private JobOnDemandHandlerServiceImpl jobOnDemandHandlerService;

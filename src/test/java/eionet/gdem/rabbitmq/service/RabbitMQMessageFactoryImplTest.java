@@ -11,7 +11,7 @@ import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactoryImpl;
-import eionet.gdem.rabbitMQ.service.WorkersJobMessageSender;
+import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class RabbitMQMessageFactoryImplTest {
     JobHistoryRepository jobHistoryRepository;
 
     @Mock
-    WorkersJobMessageSender workersJobMessageSender;
+    RabbitMQMessageSender rabbitMQMessageSender;
 
     @InjectMocks
     RabbitMQMessageFactoryImpl createRabbitMQMessage;
@@ -98,7 +98,7 @@ public class RabbitMQMessageFactoryImplTest {
         doNothing().when(jobRepository).updateIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
         when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryDao.getQueryInfo(anyString())).thenReturn(queryMap);
-        doNothing().when(workersJobMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
+        doNothing().when(rabbitMQMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
         createRabbitMQMessage.createScriptAndSendMessageToRabbitMQ("627015");
         verify(queryDao).getQueryInfo(anyString());
     }

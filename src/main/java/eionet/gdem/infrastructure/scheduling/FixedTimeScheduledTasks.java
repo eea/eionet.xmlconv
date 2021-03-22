@@ -15,7 +15,7 @@ import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
-import eionet.gdem.rabbitMQ.service.WorkersJobMessageSender;
+import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
@@ -62,7 +62,7 @@ public class FixedTimeScheduledTasks {
     @Autowired
     private JobExecutorHistoryService jobExecutorHistoryService;
     @Autowired
-    private WorkersJobMessageSender workersJobMessageSender;
+    private RabbitMQMessageSender rabbitMQMessageSender;
     @Autowired
     private WorkerHeartBeatMsgRepository workerHeartBeatMsgRepository;
     @Autowired
@@ -274,7 +274,7 @@ public class FixedTimeScheduledTasks {
         for (JobEntry jobEntry : processingJobs) {
             try {
                 WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
-                workersJobMessageSender.sendHeartBeatMessage(heartBeatMsgInfo);
+                rabbitMQMessageSender.sendHeartBeatMessage(heartBeatMsgInfo);
                 WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
                 workerHeartBeatMsgRepository.save(workerHeartBeatMsgEntry);
             } catch (Exception e) {

@@ -3,7 +3,7 @@ package eionet.gdem.rabbitMQ.service;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 
-public interface WorkersJobMessageSender {
+public interface RabbitMQMessageSender {
 
     void sendJobInfoToRabbitMQ(WorkerJobRabbitMQRequest workerJobRabbitMQRequest);
 

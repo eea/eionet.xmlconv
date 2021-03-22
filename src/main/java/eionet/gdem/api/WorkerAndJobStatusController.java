@@ -22,7 +22,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/worker")
-public class WorkerStatusController {
+public class WorkerAndJobStatusController {
 
     private JobService jobService;
     private JobExecutorService jobExecutorService;
@@ -30,8 +30,8 @@ public class WorkerStatusController {
     private JobExecutorHistoryService jobExecutorHistoryService;
 
     @Autowired
-    public WorkerStatusController(JobService jobService, JobExecutorService jobExecutorService, JobHistoryService jobHistoryService,
-                                  JobExecutorHistoryService jobExecutorHistoryService) {
+    public WorkerAndJobStatusController(JobService jobService, JobExecutorService jobExecutorService, JobHistoryService jobHistoryService,
+                                        JobExecutorHistoryService jobExecutorHistoryService) {
         this.jobService = jobService;
         this.jobExecutorService = jobExecutorService;
         this.jobHistoryService = jobHistoryService;
