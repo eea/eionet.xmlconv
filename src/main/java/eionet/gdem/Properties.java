@@ -243,6 +243,7 @@ public class Properties {
     public static String WORKER_STATUS_ROUTING_KEY;
     public static String WORKER_HEART_BEAT_REQUEST_ROUTING_KEY;
     public static String WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY;
+    public static String WORKERS_DEAD_LETTER_ROUTING_KEY;
 
     public static boolean enableQuartz;
 
@@ -404,6 +405,7 @@ public class Properties {
 
         WORKERS_DEAD_LETTER_QUEUE = getStringProperty("env.rabbitmq.dead.letter.queue");
         WORKERS_DEAD_LETTER_EXCHANGE = getStringProperty("env.rabbitmq.dead.letter.exchange");
+        WORKERS_DEAD_LETTER_ROUTING_KEY = getStringProperty("env.rabbitmq.dead.letter.routingKey");
     }
 
     /**

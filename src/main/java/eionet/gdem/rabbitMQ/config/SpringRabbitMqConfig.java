@@ -35,6 +35,7 @@ public class SpringRabbitMqConfig {
     Queue workersJobsQueue() {
         return QueueBuilder.durable(Properties.WORKERS_JOBS_QUEUE)
                 .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
                 .build();
     }
 
@@ -81,8 +82,8 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
-    FanoutExchange deadLetterExchange() {
-        return new FanoutExchange(Properties.WORKERS_DEAD_LETTER_EXCHANGE);
+    DirectExchange deadLetterExchange() {
+        return new DirectExchange(Properties.WORKERS_DEAD_LETTER_EXCHANGE);
     }
 
     @Bean
@@ -112,7 +113,7 @@ public class SpringRabbitMqConfig {
 
     @Bean
     Binding exchangeToDeadLetterQueueBinding() {
-        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange());
+        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with(Properties.WORKERS_DEAD_LETTER_ROUTING_KEY);
     }
 
     @Bean
