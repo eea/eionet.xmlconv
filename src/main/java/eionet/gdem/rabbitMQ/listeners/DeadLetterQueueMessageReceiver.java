@@ -1,13 +1,5 @@
 package eionet.gdem.rabbitMQ.listeners;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
