@@ -85,7 +85,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
         jobService.changeIntStatusAndJobExecutorName(intStatus, response.getJobExecutorName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
         jobHistoryService.updateStatusesAndJobExecutorName(script, nStatus, internalStatus, response.getJobExecutorName(), jobEntry.getJobType());
         jobExecutorService.updateJobExecutor(response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), response.getJobExecutorName(), containerId);
-        JobExecutorHistory entry = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()));
+        JobExecutorHistory entry = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
     }
 }

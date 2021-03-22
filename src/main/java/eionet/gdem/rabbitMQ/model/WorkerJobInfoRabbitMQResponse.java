@@ -16,6 +16,8 @@ public class WorkerJobInfoRabbitMQResponse {
 
     private Integer jobExecutorStatus;
 
+    private String heartBeatQueue;
+
     public XQScript getScript() {
         return script;
     }
@@ -62,5 +64,13 @@ public class WorkerJobInfoRabbitMQResponse {
 
     public void setJobExecutorStatus(Integer jobExecutorStatus) {
         this.jobExecutorStatus = jobExecutorStatus;
+    }
+
+    public String getHeartBeatQueue() {
+        return heartBeatQueue;
+    }
+
+    public void setHeartBeatQueue(String heartBeatQueue) {
+        this.heartBeatQueue = heartBeatQueue;
     }
 }

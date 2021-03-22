@@ -47,7 +47,7 @@ public class WorkerAndJobStatusController {
                 if (jobEntry.getJobExecutorName()!=null) {
                     JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
                     jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, jobId, jobEntry.getJobExecutorName(), jobExecutor.getContainerId());
-                    JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()));
+                    JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
                     jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
                 }
                 jobService.changeNStatus(jobId, Constants.CANCELLED_BY_USER);

@@ -41,12 +41,13 @@ public class JobExecutorHistory {
         this.heartBeatQueue = heartBeatQueue;
     }
 
-    public JobExecutorHistory(String name, String containerId, Integer status, Integer jobId, Timestamp dateAdded) {
+    public JobExecutorHistory(String name, String containerId, Integer status, Integer jobId, Timestamp dateAdded, String heartBeatQueue) {
         this.name = name;
         this.containerId = containerId;
         this.status = status;
         this.jobId = jobId;
         this.dateAdded = dateAdded;
+        this.heartBeatQueue = heartBeatQueue;
     }
 
     public Integer getId() {

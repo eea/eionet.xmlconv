@@ -105,6 +105,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         response.setScript(xqScript);
         response.setJobExecutorStatus(1);
         response.setJobExecutorName("demoJobExecutor");
+        response.setHeartBeatQueue("demoJobExecutor-queue");
         response.setErrorExists(errorExists);
         return response;
     }
