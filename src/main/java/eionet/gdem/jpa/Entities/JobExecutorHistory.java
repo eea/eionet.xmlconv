@@ -27,14 +27,18 @@ public class JobExecutorHistory {
     @Column(name = "DATE_ADDED")
     private Timestamp dateAdded;
 
+    @Column(name = "HEART_BEAT_QUEUE")
+    private String heartBeatQueue;
+
     public JobExecutorHistory() {
     }
 
-    public JobExecutorHistory(String name, String containerId, Integer status, Timestamp dateAdded) {
+    public JobExecutorHistory(String name, String containerId, Integer status, Timestamp dateAdded, String heartBeatQueue) {
         this.name = name;
         this.containerId = containerId;
         this.status = status;
         this.dateAdded = dateAdded;
+        this.heartBeatQueue = heartBeatQueue;
     }
 
     public JobExecutorHistory(String name, String containerId, Integer status, Integer jobId, Timestamp dateAdded) {
@@ -91,5 +95,13 @@ public class JobExecutorHistory {
 
     public void setDateAdded(Timestamp dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    public String getHeartBeatQueue() {
+        return heartBeatQueue;
+    }
+
+    public void setHeartBeatQueue(String heartBeatQueue) {
+        this.heartBeatQueue = heartBeatQueue;
     }
 }

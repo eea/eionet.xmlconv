@@ -50,6 +50,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
         String[] jobData = null;
         HashMap scriptData = null;
         int status = 0;
+        Boolean asynchronousExecution = false;
         try {
             jobData = xqJobDao.getXQJobData(jobId);
 
@@ -60,6 +61,8 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
                 scriptData = queryDao.getQueryInfo(jobData[5]);
 
                 status = Integer.valueOf(jobData[3]).intValue();
+
+                asynchronousExecution = queryDao.getAsynchronousExecution(jobData[5]);
             }
         } catch (SQLException sqle) {
             throw new XMLConvException("Error getting XQJob data from DB: " + sqle.toString());
@@ -75,7 +78,8 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
             }
             LOGGER.info("result: " + result);
         }
-        if(jobData[8]!=null ){
+
+        if(jobData[8]!=null && asynchronousExecution!=null && asynchronousExecution){
             if(jobData[8].equals("fme")){
                 String[] fmeUrls = {Properties.gdemURL.concat("/restapi/download/zip/"+Paths.get(jobData[2]).getFileName())};
                 ret.put("REMOTE_FILES",fmeUrls);

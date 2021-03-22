@@ -26,6 +26,7 @@ import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -68,6 +69,8 @@ public class FixedTimeScheduledTasks {
     private JobService jobService;
     @Autowired
     private JobHistoryService jobHistoryService;
+    @Autowired
+    private RabbitAdmin rabbitAdmin;
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
 
@@ -203,6 +206,7 @@ public class FixedTimeScheduledTasks {
     synchronized void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException {
         containersOrchestrator.deleteContainer(worker.getName());
         jobExecutorRepository.deleteByName(worker.getName());
+        rabbitAdmin.deleteQueue(worker.getHeartBeatQueue());
     }
 
     /**
@@ -242,7 +246,12 @@ public class FixedTimeScheduledTasks {
                     //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
                     String containerName = data.getName();
                     jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, null, containerName, containerId);
-                    JobExecutorHistory entry = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()));
+                    JobExecutor jobExecutor = jobExecutorService.findByName(containerName);
+                    String heartBeatQueue = "";
+                    if (jobExecutor!=null && jobExecutor.getHeartBeatQueue()!=null) {
+                        heartBeatQueue = jobExecutor.getHeartBeatQueue();
+                    }
+                    JobExecutorHistory entry = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
                     jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
                 }
             }

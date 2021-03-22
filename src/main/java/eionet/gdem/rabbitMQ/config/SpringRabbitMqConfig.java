@@ -21,11 +21,6 @@ import org.springframework.context.annotation.Configuration;
 @Conditional(RabbitMqProdEnabledCondition.class)
 public class SpringRabbitMqConfig {
 
-    /**
-     * time in milliseconds (2 minutes) that a message should stay in queue
-     */
-    private static final Integer MESSAGE_TIME_EXPIRATION = 120000;
-
     //Queue where converters sends script messages for workers to retrieve
     @Bean
     Queue workersJobsQueue() {

@@ -626,4 +626,20 @@
             <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
         </modifySql>
     </changeSet>
+    <changeSet author="favvmary" id="rev-57">
+        <comment>
+            Added column HEART_BEAT_QUEUE to JOB_EXECUTOR table
+        </comment>
+        <addColumn tableName="JOB_EXECUTOR">
+            <column name="HEART_BEAT_QUEUE" type="VARCHAR(50)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-58">
+        <comment>
+            Added column HEART_BEAT_QUEUE to JOB_EXECUTOR_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_EXECUTOR_HISTORY">
+            <column name="HEART_BEAT_QUEUE" type="VARCHAR(50)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

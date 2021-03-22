@@ -5,7 +5,7 @@ public class WorkerStateRabbitMQResponse {
     private String jobExecutorName;
     private Integer jobExecutorStatus;
     private String healthState;
-    private String queueName;
+    private String heartBeatQueue;
 
     public WorkerStateRabbitMQResponse() {
     }
@@ -42,12 +42,12 @@ public class WorkerStateRabbitMQResponse {
         return this;
     }
 
-    public String getQueueName() {
-        return queueName;
+    public String getHeartBeatQueue() {
+        return heartBeatQueue;
     }
 
-    public WorkerStateRabbitMQResponse setQueueName(String queueName) {
-        this.queueName = queueName;
+    public WorkerStateRabbitMQResponse setHeartBeatQueue(String heartBeatQueue) {
+        this.heartBeatQueue = heartBeatQueue;
         return this;
     }
 }
