@@ -403,9 +403,9 @@ public class Properties {
         jobsOnDemandLimitBeforeTimeout = getLongProperty("env.jobs.onDemand.limit.before.time.out");
         jobsOnDemandUITimeout = getLongProperty("env.jobs.onDemand.ui.time.out");
 
-        WORKERS_DEAD_LETTER_QUEUE = getStringProperty("workers-dead-letter-queue");
-        WORKERS_DEAD_LETTER_EXCHANGE = getStringProperty("workers-dead-letter-exchange");
-        WORKERS_DEAD_LETTER_ROUTING_KEY = getStringProperty("workers-dead-letter");
+        WORKERS_DEAD_LETTER_QUEUE = getStringProperty("env.rabbitmq.dead.letter.queue");
+        WORKERS_DEAD_LETTER_EXCHANGE = getStringProperty("env.rabbitmq.dead.letter.exchange");
+        WORKERS_DEAD_LETTER_ROUTING_KEY = getStringProperty("env.rabbitmq.dead.letter.routingKey");
     }
 
     /**

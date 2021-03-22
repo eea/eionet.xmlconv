@@ -34,7 +34,7 @@ public class SpringRabbitMqConfig {
     @Bean
     Queue workersJobsQueue() {
         return QueueBuilder.durable(Properties.WORKERS_JOBS_QUEUE)
-                .withArgument("x-dead-letter-exchange", Properties.WORKERS_JOBS_QUEUE + ".dlx")
+                .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
                 .build();
     }
 
