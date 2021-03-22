@@ -52,7 +52,7 @@ public class WorkersStatusMessageReceiverTest {
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12452");
 
-        WorkerStateRabbitMQResponse response = new WorkerStateRabbitMQResponse("demoJobExecutor", SchedulingConstants.WORKER_READY);
+        WorkerStateRabbitMQResponse response = new WorkerStateRabbitMQResponse("demoJobExecutor", SchedulingConstants.WORKER_READY).setHeartBeatQueue("demoJobExecutor-queue");
         Message message = convertObjectToByteArray(response);
 
         receiver.onMessage(message);
