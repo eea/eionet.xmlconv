@@ -1,22 +1,19 @@
 package eionet.gdem.web.servlets;
 
 import eionet.acl.AppUser;
+import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
@@ -68,7 +65,7 @@ public abstract class FileServlet extends HttpServlet {
 
     private void doRequest(HttpServletRequest request, HttpServletResponse response, boolean head) throws IOException {
         response.reset();
-        Resource resource;
+        Resource resource = null;
 
         try {
             resource = new Resource(getFile(request));
@@ -76,6 +73,10 @@ public abstract class FileServlet extends HttpServlet {
         catch (IllegalArgumentException e) {
             LOGGER.info("Got an IllegalArgumentException from user code; interpreting it as 400 Bad Request.", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        } catch (SignOnException e) {
+            LOGGER.info(e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access denied");
             return;
         }
 
@@ -130,7 +131,7 @@ public abstract class FileServlet extends HttpServlet {
      * @throws IllegalArgumentException When the request is mangled in such way that it's not recognizable as a valid
      * file request. The servlet will then return a HTTP 400 error.
      */
-    protected abstract File getFile(HttpServletRequest request) throws IllegalArgumentException;
+    protected abstract File getFile(HttpServletRequest request) throws IllegalArgumentException, SignOnException;
 
     /**
      * Handles the case when the file is not found.

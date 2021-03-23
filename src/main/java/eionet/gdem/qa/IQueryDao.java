@@ -24,11 +24,12 @@ public interface IQueryDao {
      * @param script_type Script type
      * @param upperLimit Upper Limit
      * @param url URL
+     * @param asynchronousExecution
      * @return Result
      * @throws SQLException If an error occurs.
      */
     String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type,
-            String script_type, String upperLimit, String url) throws SQLException;
+            String script_type, String upperLimit, String url, Boolean asynchronousExecution) throws SQLException;
 
     /**
      * Updates a Query properties in the database.
@@ -42,10 +43,11 @@ public interface IQueryDao {
      * @param script_type - xquery, xsl, xgawk
      * @param upperLimit - result upper limit in MB
      * @param url - original url of the XQ file
+     * @param asynchronousExecution
      * @throws SQLException If an error occurs.
      */
     void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName,
-            String content_type, String script_type, String upperLimit, String url) throws SQLException;
+            String content_type, String script_type, String upperLimit, String url, Boolean asynchronousExecution) throws SQLException;
 
     /**
      * Remove query
@@ -116,5 +118,12 @@ public interface IQueryDao {
      * @throws SQLException If an error occurs.
      */
     void deactivateQuery(String queryId) throws SQLException;
+
+    /**
+     * Retrieves field ASYNCHRONOUS_EXECIUTION
+     * @param queryId Query id
+     * @throws SQLException If an error occurs.
+     */
+    Boolean getAsynchronousExecution(String queryId) throws SQLException;
 
 }

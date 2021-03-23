@@ -45,6 +45,7 @@ public class XQScript {
     private String srcFileUrl;
     private Schema schema;
     private String jobId;
+    private Boolean asynchronousExecution;
 
     private boolean srcFileDownloaded;
 
@@ -255,4 +256,11 @@ public class XQScript {
         this.jobId = jobId;
     }
 
+    public Boolean getAsynchronousExecution() {
+        return asynchronousExecution;
+    }
+
+    public void setAsynchronousExecution(Boolean asynchronousExecution) {
+        this.asynchronousExecution = asynchronousExecution;
+    }
 }

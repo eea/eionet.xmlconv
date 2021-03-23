@@ -1,6 +1,9 @@
 package eionet.gdem.web.servlets;
 
+import eionet.acl.SignOnException;
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.annotation.WebServlet;
@@ -15,35 +18,42 @@ import java.net.URLDecoder;
 @WebServlet(value = {"/xmlfile/*", "/queries/*", "/schema/*", "/tmp/*", "/tmpfile/*", "/xsl/*"})
 public class FileDownloadServlet extends FileServlet {
     @Override
-    protected File getFile(HttpServletRequest request) throws IllegalArgumentException {
-
+    protected File getFile(HttpServletRequest request) throws IllegalArgumentException, SignOnException {
         String urlPath = null;
+        String filePath = null;
         try {
             urlPath = URLDecoder.decode(StringUtils.substringAfter(request.getRequestURI(), request.getContextPath()), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException();
         }
-        String filePath = Properties.appRootFolder + urlPath;
 
-        /*String securityMessage = checkPermissions(request, urlPath);
-        if (securityMessage != null) {
-            handleNotAuthorised(securityMessage, request, response);
-            return;
+        String userName = getUser(request);
+        if (userHasPerm(userName)) {
+            filePath = getFilePath(request, urlPath);
         }
+        return new File(filePath);
+    }
 
-        // Get the file object from the file store
-        File file = new File(filePath);
+    protected String getUser(HttpServletRequest request) throws SignOnException {
+        String userName = (String) request.getSession().getAttribute("user");
+        if (userName == null) {
+            throw new SignOnException("Unauthorized. Must be logged in.");
+        }
+        return userName;
+    }
 
-        // If file was not found, send 404.
-        if (file == null || !file.exists() || !file.isFile()) {
-            handleFileNotFound("Could not find file by the following URI: " + request.getRequestURI(), request, response);
-            return;
-        }*/
+    protected String getFilePath(HttpServletRequest request, String urlPath) {
+        String filePath;
+        filePath = Properties.appRootFolder + urlPath;
         String pathInfo = request.getPathInfo();
         if (pathInfo == null || pathInfo.isEmpty() || "/".equals(pathInfo)) {
             throw new IllegalArgumentException();
         }
-
-        return new File(filePath);
+        return filePath;
     }
+
+    protected boolean userHasPerm(String userName) throws SignOnException {
+       return SecurityUtil.hasPerm(userName, "/" + Constants.ACL_WQ_PATH, "v");
+    }
+
 }

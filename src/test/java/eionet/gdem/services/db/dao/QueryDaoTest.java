@@ -90,7 +90,7 @@ public class QueryDaoTest {
 
         // add query int db
         String queryId =
-                queryDao.addQuery(schemaID, shortName, queryFileName, description, content_type, script_type, upperLimit, url);
+                queryDao.addQuery(schemaID, shortName, queryFileName, description, content_type, script_type, upperLimit, url, false);
 
         // count queries
         List queries2 = queryDao.listQueries(null);
@@ -112,12 +112,13 @@ public class QueryDaoTest {
         assertEquals(query.get(QaScriptView.UPPER_LIMIT), upperLimit);
         assertEquals(query.get(QaScriptView.URL), url);
         assertEquals(query.get(QaScriptView.IS_ACTIVE), "1");
+        assertEquals(query.get(QaScriptView.ASYNCHRONOUS_EXECUTION), false);
         // check boolean methods
         assertTrue(queryDao.checkQueryFile(queryFileName));
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
 
         // upadate query fileds
-        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type, upperLimit, url);
+        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type, upperLimit, url, false);
 
         // Get query by ID and test if all upadted fields are in DB
         query = queryDao.getQueryInfo(queryId);

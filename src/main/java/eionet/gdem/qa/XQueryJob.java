@@ -195,10 +195,23 @@ public class XQueryJob implements Job, InterruptableJob {
                 xq.setSchema(schema);
                 xq.setJobId(this.jobId);
 
-                    if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
-                        if (query != null && query.containsKey(QaScriptView.URL)) {
-                            xq.setScriptSource((String) query.get(QaScriptView.URL));
+                if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
+                    if (query != null && query.containsKey(QaScriptView.URL)) {
+                        xq.setScriptSource((String) query.get(QaScriptView.URL));
+                    }
+                    Boolean asynchronousExecution = false;
+                    try {
+                        asynchronousExecution = queryDao.getAsynchronousExecution(queryID);
+                        if (asynchronousExecution != null){
+                            xq.setAsynchronousExecution(asynchronousExecution);
                         }
+                        else{
+                            xq.setAsynchronousExecution(false);
+                        }
+                    }
+                    catch(Exception e){
+                        xq.setAsynchronousExecution(false);
+                    }
                     LOGGER.info("** FME Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 } else {
                     LOGGER.info("** XQuery Job starts, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);

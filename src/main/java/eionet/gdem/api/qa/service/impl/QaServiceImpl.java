@@ -141,11 +141,11 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public Hashtable<String, String> getJobResults(String jobId) throws XMLConvException {
+    public Hashtable<String, Object> getJobResults(String jobId) throws XMLConvException {
 
         XQueryService xqueryService = getXqueryService(); // new XQueryService();
-        Hashtable<String, String> results = xqueryService.getResult(jobId);
-        int resultCode = Integer.parseInt(results.get(Constants.RESULT_CODE_PRM));
+        Hashtable<String, Object> results = xqueryService.getResult(jobId);
+        int resultCode = Integer.parseInt((String) results.get(Constants.RESULT_CODE_PRM));
         String executionStatusName = "";
         switch (resultCode) {
 
@@ -199,7 +199,11 @@ public class QaServiceImpl implements QaService {
     @Override
     public XQueryService getXqueryService() {
         if (xQueryService == null) {
-            xQueryService = new XQueryService();
+            synchronized (QaServiceImpl.class){
+                if(xQueryService ==null){
+                    xQueryService = new XQueryService();
+                }
+            }
         }
         return xQueryService;
     }

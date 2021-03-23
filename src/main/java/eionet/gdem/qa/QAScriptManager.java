@@ -87,7 +87,13 @@ public class QAScriptManager {
                 qaScript.setUpperLimit((String) scriptData.get(QaScriptView.UPPER_LIMIT));
                 qaScript.setUrl((String) scriptData.get(QaScriptView.URL));
                 qaScript.setActive((String) scriptData.get(QaScriptView.IS_ACTIVE));
-
+                String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+                if(asynchronousExecution != null && asynchronousExecution.equals("1")){
+                    qaScript.setAsynchronousExecution(true);
+                }
+                else{
+                    qaScript.setAsynchronousExecution(false);
+                }
                 String queryFolder = Properties.queriesFolder;
 
                 if (!Utils.isNullStr(qaScript.getFileName())) {
@@ -144,10 +150,11 @@ public class QAScriptManager {
      * @param file FormFile uploaded through web interface.
      * @param upperLimit Maximum size of XML to be sent to ad-hoc QA.
      * @param url URL of the QA script file if maintained in web.
+     * @param asynchronousExeuction
      * @throws DCMException if DB or file operation fails.
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-                       String scriptType, String curFileName, MultipartFile file, String upperLimit, String url) throws DCMException {
+                       String scriptType, String curFileName, MultipartFile file, String upperLimit, String url, Boolean asynchronousExeuction) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -180,7 +187,7 @@ public class QAScriptManager {
 
                 storeQAScriptFile(file, curFileName);
             }
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExeuction);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -203,10 +210,11 @@ public class QAScriptManager {
      * @param curFileName QA script file name.
      * @param content File content
      * @param updateContent Update content
+     * @param asynchronousExecution
      * @throws DCMException If an error occurs.
      */
     public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-            String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent)
+            String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent, boolean asynchronousExecution)
             throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
@@ -240,7 +248,7 @@ public class QAScriptManager {
                 curFileName = StringUtils.substringAfterLast(url, "/");
             }
 
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExecution);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Error updating QA script", e);
@@ -394,7 +402,7 @@ public class QAScriptManager {
      * @throws DCMException If an error occurs.
      */
     public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
-                      String scriptType, MultipartFile scriptFile, String upperLimit, String url) throws DCMException {
+                      String scriptType, MultipartFile scriptFile, String upperLimit, String url, Boolean asynchronousExecution) throws DCMException {
 
         String scriptId = null;
         // If remote file URL and local file are specified use local file
@@ -442,7 +450,7 @@ public class QAScriptManager {
                 }
             }
             // XXX - make sure script database entry AND local file is added
-            scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit, url);
+            scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit, url, asynchronousExecution);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {

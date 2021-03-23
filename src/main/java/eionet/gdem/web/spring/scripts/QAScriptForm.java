@@ -19,6 +19,7 @@ public class QAScriptForm {
     private String upperLimit;
     private String url;
     private boolean active;
+    private boolean asynchronousExecution;
 
     public QAScriptForm() {
         upperLimit = "10";
@@ -154,5 +155,13 @@ public class QAScriptForm {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isAsynchronousExecution() {
+        return asynchronousExecution;
+    }
+
+    public void setAsynchronousExecution(boolean asynchronousExecution) {
+        this.asynchronousExecution = asynchronousExecution;
     }
 }

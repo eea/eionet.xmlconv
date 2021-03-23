@@ -39,4 +39,8 @@ public void setApplicationContext(ApplicationContext context) throws BeansExcept
   public static Object getBean(String beanName) {
     return CONTEXT.getBean(beanName);
   }
+
+  public static Object getBean(Class<?> beanType) {
+    return CONTEXT.getBean(beanType);
+  }
 }

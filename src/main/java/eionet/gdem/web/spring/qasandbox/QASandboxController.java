@@ -9,8 +9,10 @@ import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
@@ -52,6 +54,9 @@ public class QASandboxController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QASandboxController.class);
     private MessageService messageService;
+
+    /** Dao for getting query data. */
+    private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 
     @Autowired
     public QASandboxController(MessageService messageService) {
@@ -402,6 +407,23 @@ public class QASandboxController {
 
             if (qascript != null && qascript.getSchemaId() != null) {
                 xq.setSchema(schM.getSchema(qascript.getSchemaId()));
+            }
+
+            if (xq.getScriptType().equals(XQScript.SCRIPT_LANG_FME)){
+                //set asynchronousExecution field
+                Boolean asynchronousExecution = false;
+                try {
+                    asynchronousExecution = queryDao.getAsynchronousExecution(scriptId);
+                    if (asynchronousExecution != null){
+                        xq.setAsynchronousExecution(asynchronousExecution);
+                    }
+                    else{
+                        xq.setAsynchronousExecution(false);
+                    }
+                }
+                catch(Exception e){
+                    xq.setAsynchronousExecution(false);
+                }
             }
 
             OutputStream output = null;

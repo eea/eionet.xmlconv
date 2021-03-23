@@ -76,6 +76,18 @@
         </div>
       </div>
       <div class="row">
+        <div class="columns small-8">
+          <form:radiobutton path="asynchronousExecution" id="synchronousExecution" value="false" checked="checked"/>
+          <label for="synchronousExecution"><spring:message code="label.qascript.synchronous"/></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns small-8">
+          <form:radiobutton path="asynchronousExecution" id="asynchronousExecution" value="true"/>
+          <label for="asynchronousExecution"><spring:message code="label.qascript.asynchronous"/></label>
+        </div>
+      </div>
+      <div class="row">
         <div class="columns small-4">
           <label class="question" for="txtUpperLimit">
             <spring:message code="label.qascript.upperlimit"/>
