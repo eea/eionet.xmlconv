@@ -46,7 +46,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         String username = null;
         try {
             username = verifier.verify(parsedAuthenticationToken);
-        } catch (UnsupportedEncodingException | JWTVerificationException e) {
+        } catch (JWTVerificationException e) {
             throw new JWTException("Error during token verification");
         }
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
