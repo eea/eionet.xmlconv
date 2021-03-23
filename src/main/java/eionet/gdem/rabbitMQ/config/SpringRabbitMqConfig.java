@@ -49,6 +49,13 @@ public class SpringRabbitMqConfig {
         return new Queue(Properties.WORKER_HEART_BEAT_RESPONSE_QUEUE, true);
     }
 
+
+    //Queue where rejected messages go to
+    @Bean
+    Queue deadLetterQueue() {
+        return new Queue(Properties.WORKERS_DEAD_LETTER_QUEUE, true);
+    }
+
     //Exchange where converters sends message asking worker if it's executing a specific job
     @Bean
     FanoutExchange workersHeartBeatRequestExchange() {
