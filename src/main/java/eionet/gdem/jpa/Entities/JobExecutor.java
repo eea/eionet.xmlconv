@@ -36,11 +36,12 @@ public class JobExecutor {
         this.heartBeatQueue = heartBeatQueue;
     }
 
-    public JobExecutor(String name, String containerId, Integer status, Integer jobId) {
+    public JobExecutor(String name, Integer status, Integer jobId, String containerId, String heartBeatQueue) {
         this.name = name;
-        this.containerId = containerId;
         this.status = status;
         this.jobId = jobId;
+        this.containerId = containerId;
+        this.heartBeatQueue = heartBeatQueue;
     }
 
     public Integer getId() {

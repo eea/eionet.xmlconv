@@ -74,9 +74,9 @@ public class WorkerAndJobStatusControllerTest {
                 .session(session);
         JobEntry jobEntry = new JobEntry().setSrcFile("srcFile").setFile("file").setResultFile("resultFile").setJobType("ON DEMAND").setJobExecutorName("demoExecutor");
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
-        JobExecutor jobExecutor = new JobExecutor("demoExecutor", "containerId", SchedulingConstants.WORKER_FAILED, 335);
+        JobExecutor jobExecutor = new JobExecutor("demoExecutor", SchedulingConstants.WORKER_FAILED, 335, "containerId", "demoExecutor-queue");
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
-        doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString(), anyString());
+        doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString(), anyString(), anyString());
         doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
         doNothing().when(jobService).changeNStatus(anyInt(), anyInt());
         doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());

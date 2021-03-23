@@ -37,13 +37,13 @@ public class JobExecutorServiceImpl implements JobExecutorService {
 
     @Transactional
     @Override
-    public void updateJobExecutor(Integer status, Integer jobId, String name, String containerId) {
+    public void updateJobExecutor(Integer status, Integer jobId, String name, String containerId, String heartBeatQueue) {
         try {
             JobExecutor jobExec = jobExecutorRepository.findByName(name);
             if (jobExec!=null) {
                 jobExecutorRepository.updateStatusAndJobId(status, jobId, name);
             } else {
-                JobExecutor exec = new JobExecutor(name, containerId, status, jobId);
+                JobExecutor exec = new JobExecutor(name, status, jobId, containerId, heartBeatQueue);
                 jobExecutorRepository.save(exec);
             }
         } catch (Exception e) {
