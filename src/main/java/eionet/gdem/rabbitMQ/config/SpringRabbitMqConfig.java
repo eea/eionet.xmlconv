@@ -1,6 +1,7 @@
 package eionet.gdem.rabbitMQ.config;
 
 import eionet.gdem.Properties;
+import eionet.gdem.rabbitMQ.listeners.DeadLetterQueueMessageReceiver;
 import eionet.gdem.rabbitMQ.listeners.WorkerHeartBeatResponseReceiver;
 import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
 import eionet.gdem.rabbitMQ.listeners.WorkersStatusMessageReceiver;
@@ -24,7 +25,10 @@ public class SpringRabbitMqConfig {
     //Queue where converters sends script messages for workers to retrieve
     @Bean
     Queue workersJobsQueue() {
-        return new Queue(Properties.WORKERS_JOBS_QUEUE, true);
+        return QueueBuilder.durable(Properties.WORKERS_JOBS_QUEUE)
+                .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
+                .build();
     }
 
     //Queue where workers respond with results after executing a script
@@ -62,6 +66,11 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
+    DirectExchange deadLetterExchange() {
+        return new DirectExchange(Properties.WORKERS_DEAD_LETTER_EXCHANGE);
+    }
+
+    @Bean
     Binding xmlconvExchangeToXmlConvJobsQUeueBinding() {
         return BindingBuilder.bind(workersJobsQueue()).to(mainXmlconvJobsExchange()).with(Properties.JOBS_ROUTING_KEY);
     }
@@ -79,6 +88,11 @@ public class SpringRabbitMqConfig {
     @Bean
     Binding exchangeToWorkerHeartBeatResponseQueueBinding() {
         return BindingBuilder.bind(workerHeartBeatResponseQueue()).to(mainWorkersExchange()).with(Properties.WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding exchangeToDeadLetterQueueBinding() {
+        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with(Properties.WORKERS_DEAD_LETTER_ROUTING_KEY);
     }
 
     @Bean
@@ -133,6 +147,23 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
+    DeadLetterQueueMessageReceiver deadLetterQueueMessageReceiver() {
+        return new DeadLetterQueueMessageReceiver();
+    }
+    @Bean
+    MessageListenerAdapter deadLetterQueueListenerAdapter() {
+        return new MessageListenerAdapter(deadLetterQueueMessageReceiver(), jsonMessageConverter());
+    }
+    @Bean
+    SimpleMessageListenerContainer deadLetterQueueMessagesContainer(ConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(Properties.WORKERS_DEAD_LETTER_QUEUE);
+        container.setMessageListener(deadLetterQueueListenerAdapter());
+        return container;
+    }
+
+    @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
@@ -155,16 +186,20 @@ public class SpringRabbitMqConfig {
         admin.declareExchange(mainWorkersExchange());
         admin.declareExchange(mainXmlconvJobsExchange());
         admin.declareExchange(workersHeartBeatRequestExchange());
+        admin.declareExchange(deadLetterExchange());
 
         admin.declareQueue(workersJobsQueue());
         admin.declareQueue(workersJobsResultsQueue());
         admin.declareQueue(workersStatusQueue());
         admin.declareQueue(workerHeartBeatResponseQueue());
+        admin.declareQueue(deadLetterQueue());
 
         admin.declareBinding(workersExchangeToWorkersJobResultsQueueBinding());
         admin.declareBinding(xmlconvExchangeToXmlConvJobsQUeueBinding());
         admin.declareBinding(workersExchangeToWorkersStatusQueueBinding());
         admin.declareBinding(exchangeToWorkerHeartBeatResponseQueueBinding());
+        admin.declareBinding(exchangeToDeadLetterQueueBinding());
+
         return admin;
     }
 
@@ -174,4 +209,5 @@ public class SpringRabbitMqConfig {
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
     }
+
 }

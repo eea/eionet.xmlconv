@@ -234,12 +234,15 @@ public class Properties {
     public static String WORKERS_STATUS_QUEUE;
     public static String WORKER_HEART_BEAT_RESPONSE_QUEUE;
     public static String WORKER_HEART_BEAT_REQUEST_EXCHANGE;
+    public static String WORKERS_DEAD_LETTER_QUEUE;
+    public static String WORKERS_DEAD_LETTER_EXCHANGE;
     public static String MAIN_XMLCONV_JOBS_EXCHANGE;
     public static String MAIN_WORKERS_EXCHANGE;
     public static String JOBS_ROUTING_KEY;
     public static String JOBS_RESULTS_ROUTING_KEY;
     public static String WORKER_STATUS_ROUTING_KEY;
     public static String WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY;
+    public static String WORKERS_DEAD_LETTER_ROUTING_KEY;
 
     public static boolean enableQuartz;
 
@@ -397,6 +400,10 @@ public class Properties {
 
         jobsOnDemandLimitBeforeTimeout = getLongProperty("env.jobs.onDemand.limit.before.time.out");
         jobsOnDemandUITimeout = getLongProperty("env.jobs.onDemand.ui.time.out");
+
+        WORKERS_DEAD_LETTER_QUEUE = getStringProperty("env.rabbitmq.dead.letter.queue");
+        WORKERS_DEAD_LETTER_EXCHANGE = getStringProperty("env.rabbitmq.dead.letter.exchange");
+        WORKERS_DEAD_LETTER_ROUTING_KEY = getStringProperty("env.rabbitmq.dead.letter.routingKey");
     }
 
     /**
