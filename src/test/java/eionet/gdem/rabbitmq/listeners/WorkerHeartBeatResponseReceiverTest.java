@@ -61,7 +61,7 @@ public class WorkerHeartBeatResponseReceiverTest {
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12452");
 
-        WorkerHeartBeatMessageInfo response = new WorkerHeartBeatMessageInfo("demoJobExecutor", 12453).setJobStatus(Constants.JOB_NOT_FOUND);
+        WorkerHeartBeatMessageInfo response = new WorkerHeartBeatMessageInfo("demoJobExecutor", 12453).setJobStatus(Constants.JOB_NOT_FOUND_IN_WORKER);
         Message message = convertObjectToByteArray(response);
 
         doNothing().when(workerHeartBeatMsgService).updateEntry(any(WorkerHeartBeatMsgEntry.class));

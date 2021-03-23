@@ -48,7 +48,7 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
             workerHeartBeatMsgService.updateEntry(workerHeartBeatMsgEntry);
 
             JobEntry jobEntry = jobService.findById(response.getJobId());
-            if (jobEntry.getnStatus()==Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND)) {
+            if (jobEntry.getnStatus()==Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND_IN_WORKER)) {
                 jobService.changeNStatus(response.getJobId(), Constants.XQ_FATAL_ERR);
                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                 jobService.changeIntStatusAndJobExecutorName(internalStatus, response.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
