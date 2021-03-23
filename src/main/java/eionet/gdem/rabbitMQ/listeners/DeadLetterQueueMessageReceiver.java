@@ -22,7 +22,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 LOGGER.info("Received message in DEAD LETTER QUEUE: " + messageBody);
             }
         } catch (Exception e) {
-            LOGGER.info("Error during dead letter queue message processing: ", e.getMessage());
+            LOGGER.error("Error during dead letter queue message processing: ", e.getMessage());
         }
     }
 }
