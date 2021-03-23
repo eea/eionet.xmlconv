@@ -453,4 +453,155 @@
             <column name="MAX_EXECUTION_TIME" type="BIGINT"/>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-42">
+        <comment> Table for Storing internal scheduling statuses</comment>
+        <createTable tableName="INTERNAL_STATUS">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(50)"/>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-43">
+        <comment>
+            Added column INTERNAL_STATUS_ID to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="INTERNAL_STATUS_ID" type="INT">
+                <constraints foreignKeyName="FK_INTERNAL_STATUS"
+                             references="INTERNAL_STATUS(ID)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-44">
+        <sql>
+            INSERT INTO INTERNAL_STATUS VALUES (1,'RECEIVED','job has been inserted in jobs table');
+            INSERT INTO INTERNAL_STATUS VALUES (2,'QUEUED','job has been inserted in rabbitmq queue');
+            INSERT INTO INTERNAL_STATUS VALUES (3,'PROCESSING','job has been received by worker');
+        </sql>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-45">
+        <comment> Table for Storing worker info</comment>
+        <createTable tableName="JOB_EXECUTOR">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_ID" type="INT">
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-46">
+        <comment>
+            Added column JOB_EXECUTOR_NAME to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="JOB_EXECUTOR_NAME" type="VARCHAR(50)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-47">
+        <comment>
+            Added column INTERNAL_STATUS_ID to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="INTERNAL_STATUS_ID" type="INT">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-48">
+        <comment>
+            Added column JOB_EXECUTOR_NAME to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="JOB_EXECUTOR_NAME" type="VARCHAR(50)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-49">
+        <comment> Table for Storing worker info history</comment>
+        <createTable tableName="JOB_EXECUTOR_HISTORY">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_ID" type="INT">
+            </column>
+            <column name="DATE_ADDED" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-50">
+        <comment>
+            Added column CONTAINER_ID to JOB_EXECUTOR_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_EXECUTOR_HISTORY">
+            <column name="CONTAINER_ID" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-51">
+        <comment>
+            Added column CONTAINER_ID to JOB_EXECUTOR table
+        </comment>
+        <addColumn tableName="JOB_EXECUTOR">
+            <column name="CONTAINER_ID" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-52">
+        <comment>
+            Added column JOB_TYPE to Jobs table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="JOB_TYPE" type="VARCHAR(10)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-53">
+        <comment>
+            Added column JOB_TYPE to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="JOB_TYPE" type="VARCHAR(10)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-54">
+        <sql>
+            INSERT INTO INTERNAL_STATUS VALUES (4,'CANCELLED','job has been cancelled');
+        </sql>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-55">
+        <comment>
+            Added ASYNCHRONOUS_EXECUTION column in T_QUERY
+        </comment>
+        <addColumn tableName="T_QUERY">
+            <column name="ASYNCHRONOUS_EXECUTION" defaultValue="false" type="BOOLEAN">
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
