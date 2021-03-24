@@ -46,7 +46,6 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
 
             LOGGER.info("Received heart beat response from worker " + response.getJobExecutorName() + " for job job " + response.getJobId());
             WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(response.getJobId(), response.getJobExecutorName(), response.getRequestTimestamp(), new Timestamp(new Date().getTime()), response.getJobStatus());
-            LOGGER.info(workerHeartBeatMsgEntry.toString());
             workerHeartBeatMsgService.updateEntry(workerHeartBeatMsgEntry);
 
             JobEntry jobEntry = jobService.findById(response.getJobId());
