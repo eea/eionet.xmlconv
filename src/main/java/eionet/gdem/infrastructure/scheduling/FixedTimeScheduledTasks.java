@@ -268,7 +268,7 @@ public class FixedTimeScheduledTasks {
      * table WORKER_HEART_BEAT_MSG
      */
     @Transactional
-    @Scheduled(cron= "0 */5 * * * *")  //every 5 minutes
+    @Scheduled(cron= "0 */1 * * * *")  //every minute
     public void sendPeriodicHeartBeatMessages() {
        List<JobEntry> processingJobs = jobRepository.findProcessingJobs();
         for (JobEntry jobEntry : processingJobs) {
