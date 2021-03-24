@@ -60,5 +60,7 @@ public interface ContainersRancherApiOrchestrator {
      * @param containerName
      * @return
      */
-    ContainerData deleteContainer(String containerName) throws RancherApiException;
+    void deleteContainer(String containerName) throws RancherApiException;
+
+    void synchronizeRancherScaleAndActualContainers(String serviceId) throws RancherApiException;
 }

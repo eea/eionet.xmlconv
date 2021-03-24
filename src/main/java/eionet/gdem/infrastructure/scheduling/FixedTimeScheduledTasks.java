@@ -121,61 +121,74 @@ public class FixedTimeScheduledTasks {
      */
     @Transactional
     @Scheduled(cron= "0 */2 * * * *")  //every 2 minutes
-    public void scheduleWorkersOrchestration() throws RancherApiException {
+    public void scheduleWorkersOrchestration() {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
         String serviceId = Properties.rancherJobExecServiceId;
-        deleteFailedWorkers(serviceId);
+
+        try {
+            deleteFailedWorkers(serviceId);
+        } catch (RancherApiException e) {
+            e.printStackTrace();
+            return;
+        }
+
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         List<JobEntry> jobs = jobRepository.findByIntSchedulingStatus(internalStatus);
         List<JobExecutor> readyWorkers = jobExecutorRepository.findByStatus(SchedulingConstants.WORKER_READY);
-        try {
+      //  try {
             if (jobs.size()>readyWorkers.size()) {
                 Integer newWorkers = jobs.size() - readyWorkers.size();
                 try {
                     createWorkers(serviceId, newWorkers);
                 } catch (RancherApiException e) {
-                    LOGGER.info("JobExecutor scaling failed. Trying again.");
-                    createWorkers(serviceId, newWorkers);
+                    LOGGER.error("JobExecutor creation failed.");
+                    return;
                 }
-            } else {
-                List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+            }
+             else if(jobs.size() < readyWorkers.size()) {
+                List<String> instances = null;
+                try {
+                    instances = servicesOrchestrator.getContainerInstances(serviceId);
+                } catch (RancherApiException e) {
+                    LOGGER.error("Cannot Get Container Instances to proceed with scale down");
+                    return;
+                }
                 if (instances.size()==1) {
                     return;
                 }
                 Integer workersToDelete = readyWorkers.size() - jobs.size();
                 Integer count = 1;
+
+
                 for (JobExecutor worker : readyWorkers) {
                     if (count == workersToDelete) {
-                        instances = servicesOrchestrator.getContainerInstances(serviceId);
+                        try {
+                            instances = servicesOrchestrator.getContainerInstances(serviceId);
+                        } catch (RancherApiException e) {
+                            LOGGER.error("cannot get instances in order to delete them later");
+                            return ;
+                        }
                         if (instances.size()==1) {
                             return;
                         }
-                        deleteFromRancherAndDatabase(worker);
+                        try {
+                            deleteFromRancherAndDatabase(worker);
+                        } catch (RancherApiException e) {
+                            LOGGER.error("Error Deleting worker. ");
+                        }
                         return;
                     }
-                    deleteFromRancherAndDatabase(worker);
+                    try {
+                        deleteFromRancherAndDatabase(worker);
+                    } catch (RancherApiException e) {
+                        LOGGER.error("Error Deleting worker. ");
+                    }
                     count++;
                 }
             }
-        } catch (RancherApiException e) {
-            LOGGER.info("Error occurred during workers orchestration, " + e.getMessage());
-            ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
-            List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-            if (serviceInfo.getScale() < instances.size()) {
-                Integer newScale = instances.size() - serviceInfo.getScale();
-                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(serviceInfo.getScale() + newScale);
-                LOGGER.info("Scaling up again because of error");
-                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-            }
-        } finally {
-            ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
-            if (serviceInfo.getScale()==0 || serviceInfo.getInstanceIds()==null) {
-                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
-                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-            }
-        }
+
     }
 
     /**
@@ -206,7 +219,10 @@ public class FixedTimeScheduledTasks {
     synchronized void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException {
         containersOrchestrator.deleteContainer(worker.getName());
         jobExecutorRepository.deleteByName(worker.getName());
-        rabbitAdmin.deleteQueue(worker.getHeartBeatQueue());
+       boolean queueDeleted =  rabbitAdmin.deleteQueue(worker.getHeartBeatQueue());
+       if(!queueDeleted){
+           LOGGER.error("Worker Heartbeat queue  could not be deleted:"+worker.getHeartBeatQueue());
+       }
     }
 
     /**
