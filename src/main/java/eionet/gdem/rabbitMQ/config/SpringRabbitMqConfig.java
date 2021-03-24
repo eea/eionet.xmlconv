@@ -59,7 +59,7 @@ public class SpringRabbitMqConfig {
     //Exchange where converters sends message asking worker if it's executing a specific job
     @Bean
     FanoutExchange workersHeartBeatRequestExchange() {
-        return new FanoutExchange(Properties.WORKER_HEART_BEAT_REQUEST_EXCHANGE,true,false);
+        return new FanoutExchange(Properties.XMLCONV_HEART_BEAT_REQUEST_EXCHANGE,true,false);
     }
 
     @Bean
