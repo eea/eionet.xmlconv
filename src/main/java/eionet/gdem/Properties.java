@@ -233,7 +233,7 @@ public class Properties {
     public static String WORKERS_JOBS_RESULTS_QUEUE;
     public static String WORKERS_STATUS_QUEUE;
     public static String WORKER_HEART_BEAT_RESPONSE_QUEUE;
-    public static String WORKER_HEART_BEAT_REQUEST_EXCHANGE;
+    public static String XMLCONV_HEART_BEAT_REQUEST_EXCHANGE;
     public static String WORKERS_DEAD_LETTER_QUEUE;
     public static String WORKERS_DEAD_LETTER_EXCHANGE;
     public static String MAIN_XMLCONV_JOBS_EXCHANGE;
@@ -388,7 +388,7 @@ public class Properties {
         WORKERS_JOBS_RESULTS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.results.queue");
         WORKERS_STATUS_QUEUE = getStringProperty("env.rabbitmq.workers.status.queue");
         WORKER_HEART_BEAT_RESPONSE_QUEUE = getStringProperty("env.rabbitmq.worker.heartBeat.response.queue");
-        WORKER_HEART_BEAT_REQUEST_EXCHANGE = getStringProperty("env.rabbitmq.worker.heartBeat.request.exchange");
+        XMLCONV_HEART_BEAT_REQUEST_EXCHANGE = getStringProperty("env.rabbitmq.xmlconv.heartBeat.request.exchange");
         MAIN_XMLCONV_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.jobs.exchange");
         MAIN_WORKERS_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.exchange");
         JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.routingkey");
