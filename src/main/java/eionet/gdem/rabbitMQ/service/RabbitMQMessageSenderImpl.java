@@ -30,6 +30,6 @@ public class RabbitMQMessageSenderImpl implements RabbitMQMessageSender {
     @Override
     public void sendHeartBeatMessage(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo) {
         rabbitTemplate.convertAndSend(Properties.XMLCONV_HEART_BEAT_REQUEST_EXCHANGE, "", workerHeartBeatMessageInfo);
-        LOGGER.info("Heart beat message sent for job " + workerHeartBeatMessageInfo.getJobId());
+        LOGGER.info("Heart beat message sent for job " + workerHeartBeatMessageInfo.getJobId() + " and request timestamp " + workerHeartBeatMessageInfo.getRequestTimestamp());
     }
 }
