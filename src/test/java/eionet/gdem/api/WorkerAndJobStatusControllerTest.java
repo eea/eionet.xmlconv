@@ -72,7 +72,7 @@ public class WorkerAndJobStatusControllerTest {
     public void changeWorkerStatusToFailed() throws Exception {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/worker/fail")
                 .session(session);
-        JobEntry jobEntry = new JobEntry().setSrcFile("srcFile").setFile("file").setResultFile("resultFile").setJobType("ON DEMAND").setJobExecutorName("demoExecutor");
+        JobEntry jobEntry = new JobEntry().setId(335).setUrl("url").setSrcFile("srcFile").setFile("file").setResultFile("resultFile").setJobType("ON DEMAND").setJobExecutorName("demoExecutor");
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
         JobExecutor jobExecutor = new JobExecutor("demoExecutor", SchedulingConstants.WORKER_FAILED, 335, "containerId", "demoExecutor-queue");
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
