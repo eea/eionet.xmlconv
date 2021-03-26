@@ -21,16 +21,15 @@
 
 package eionet.gdem.web.spring.workqueue;
 
-import eionet.gdem.Constants;
+import eionet.gdem.*;
 import eionet.gdem.Properties;
-import eionet.gdem.SpringApplicationContext;
-import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.services.SchedulerService;
@@ -352,25 +351,32 @@ public class WorkqueueManager {
                         if ( "2".equals(jobData[3]) ) {
                             try {
 
-                                if (getQuartzScheduler().checkExists(qJob)) {
-                                    // try to interrupt running job
-                                    getQuartzScheduler().interrupt(qJob);
-                                }
-                                else if (getQuartzHeavyScheduler().checkExists(qJob)) {
-                                    // try to interrupt running job
-                                    getQuartzHeavyScheduler().interrupt(qJob);
-                                }
-                                if(cancelled){
-                                    List<JobHistoryEntry> entries = getJobHistoryRepository().findByJobName(jobId);
-                                    if(entries.size()==0){
-                                        LOGGER.info("Could not find job with id " + jobId + " in history table when cancelling it");
-                                    }
-                                    else{
-                                        JobHistoryEntry entry = entries.get(entries.size()-1);
-                                        getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_CANCELLED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
-                                        LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY as CANCELLED");
+                                if(Properties.enableQuartz) {
+                                    if (getQuartzScheduler().checkExists(qJob)) {
+                                        // try to interrupt running job
+                                        getQuartzScheduler().interrupt(qJob);
+                                    } else if (getQuartzHeavyScheduler().checkExists(qJob)) {
+                                        // try to interrupt running job
+                                        getQuartzHeavyScheduler().interrupt(qJob);
                                     }
                                 }
+                                else{
+
+                                    //TODO
+
+                                }
+
+
+                                List<JobHistoryEntry> entries = getJobHistoryRepository().findByJobName(jobId);
+                                if(entries.size()==0){
+                                    LOGGER.info("Could not find job with id " + jobId + " in history table when cancelling it");
+                                }
+                                else{
+                                    JobHistoryEntry entry = entries.get(entries.size()-1);
+                                    getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_CANCELLED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                                    LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY as CANCELLED");
+                                }
+
                             }catch (UnableToInterruptJobException e) {
 
                                 GDEMServices.getDaoService().getXQJobDao().markDeleted(jobId);

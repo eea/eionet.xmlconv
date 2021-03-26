@@ -6,7 +6,7 @@ public class WorkerJobRabbitMQRequest {
 
     private XQScript script;
     private String jobExecutorName;
-    private String errorMsg;
+    private Integer jobExecutionRetries;
 
     public WorkerJobRabbitMQRequest(XQScript script) {
         this.script = script;
@@ -30,11 +30,11 @@ public class WorkerJobRabbitMQRequest {
         return this;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
+    public Integer getJobExecutionRetries() {
+        return jobExecutionRetries;
     }
 
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+    public void setJobExecutionRetries(Integer jobExecutionRetries) {
+        this.jobExecutionRetries = jobExecutionRetries;
     }
 }

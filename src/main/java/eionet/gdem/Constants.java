@@ -45,6 +45,7 @@ public interface Constants {
 
     int CANCELLED_BY_USER = 9;
     int JOB_NOT_FOUND_IN_WORKER = 10;
+    int JOB_EXCEPTION_ERROR = 11;
 
     int JOB_VALIDATION = -1;
     int JOB_FROMSTRING = 0;
@@ -150,5 +151,7 @@ public interface Constants {
     String EXCEL2XML_CONV_PARAM = "excel2dd_xml";
 
     String HTML_FILE = ".html";
+
+    Integer MAX_SCRIPT_EXECUTION_RETRIES = 3;
 
 }
