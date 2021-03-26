@@ -4,6 +4,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.exceptions.JobNotFoundException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
@@ -44,21 +45,8 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQMessageFactoryImpl.class);
-    /** Script file name. */
-    private String scriptFile;
-    /** Result file name. */
-    private String resultFile;
-    /** Job ID to be executed. */
-    //private String jobId;
-    /** query ID to be executed. */
-    private String queryID;
-    /** Script type. */
-    private String scriptType;
-    /** Source url for XML. */
-    private String url;
     /** Service for getting schema data. */
     private SchemaManager schemaManager;
-
     private IQueryDao queryDao;
     private JobHistoryRepository jobHistoryRepository;
     private RabbitMQMessageSender rabbitMQMessageSender;
@@ -77,10 +65,18 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
     @Transactional(rollbackFor=Exception.class)
     public void createScriptAndSendMessageToRabbitMQ(String jobId) throws CreateRabbitMQMessageException {
+        JobEntry jobEntry;
         try {
             schemaManager = new SchemaManager();
-            init(jobId);
-            String srcFile = url;
+            jobEntry = getJobEntry(jobId);
+            if (jobEntry == null) {
+                throw new JobNotFoundException("Error during job entry retrieval from database for job " + jobId);
+            }
+            String srcFile = jobEntry.getUrl();
+            String scriptFile = jobEntry.getFile();
+            String resultFile = jobEntry.getResultFile();
+            String queryID = jobEntry.getQueryId().toString();
+            String scriptType = jobEntry.getScriptType();
 
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
@@ -111,7 +107,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     long stopTime = System.nanoTime();
                     LOGGER.info("### job with id: " + jobId + " has been Validated. Validation time in nanoseconds = " + (stopTime - startTime));
                 } catch (Exception e) {
-                    handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true,jobId);
+                    handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true,jobEntry, jobId);
                 }
             } else {
 
@@ -125,6 +121,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 if (query != null && query.containsKey(QaScriptView.CONTENT_TYPE)) {
                     contentType = (String) query.get(QaScriptView.CONTENT_TYPE);
                 }
+
                 // get script type if it comes from T_QUERY table
                 if (query != null && query.containsKey(QaScriptView.SCRIPT_TYPE)) {
                     scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
@@ -177,40 +174,38 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     LOGGER.info("** XQuery Job will be added in queue, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 }
 
+                processJob(jobEntry);
                 WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(xq);
                 rabbitMQMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
-                processJob(jobId);
             }
         } catch (Exception e) {
             throw new CreateRabbitMQMessageException(e.getMessage());
         }
     }
 
-    private void init(String jobId) {
+    private JobEntry getJobEntry(String jobId) {
         try {
             JobEntry jobEntry = jobRepository.findById(Integer.parseInt(jobId));
             if (jobEntry == null) {
-                handleError("No such job: " + jobId, true,jobId);
-                return;
+                handleError("No such job: " + jobId, true,null, jobId);
+                return null;
             }
-            url = jobEntry.getUrl();
-            scriptFile = jobEntry.getFile();
-            resultFile = jobEntry.getResultFile(); // just a file name, file is not created
-            queryID = jobEntry.getQueryId().toString();
-            scriptType = jobEntry.getScriptType();
+            return jobEntry;
         } catch (Exception e) {
-            handleError("Error getting WQ data from the DB: " + e.toString(), true,jobId);
+            handleError("Error getting WQ data from the DB: " + e.toString(), true,null, jobId);
+            return null;
         }
     }
 
-    void processJob(String jobId) {
+    void processJob(JobEntry jobEntry) {
         try {
-            Integer retryCounter = jobRepository.getRetryCounter(Integer.parseInt(jobId));
-            jobRepository.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, Integer.parseInt(jobId));
+            Integer jobId = jobEntry.getId();
+            Integer retryCounter = jobRepository.getRetryCounter(jobId);
+            jobRepository.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobId);
             InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobRepository.updateIntStatusAndJobExecutorName(intStatus, null, new Timestamp(new Date().getTime()), Integer.parseInt(jobId));
+            jobRepository.updateIntStatusAndJobExecutorName(intStatus, null, new Timestamp(new Date().getTime()), jobId);
             LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");
-            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), url, scriptFile, resultFile, scriptType);
+            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
             jobHistoryRepository.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
@@ -262,7 +257,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
      * @param error Error message.
      * @param fatal True if the error is fatal and there is no result.
      */
-    private void handleError(String error, boolean fatal,String jobId) {
+    private void handleError(String error, boolean fatal,JobEntry jobEntry, String jobId) {
         LOGGER.error("Error handling started: <<< " + error + " >>> ");
         try {
             int errStatus;
@@ -271,16 +266,20 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             } else {
                 errStatus = Constants.XQ_LIGHT_ERR;
             }
-            changeStatus(errStatus,jobId);
+            String resultFile = null;
+            if (jobEntry!=null) {
+                resultFile = jobEntry.getResultFile();
+            }
             // if result file already ok, store the error message in the file:
             if (resultFile == null) {
                 resultFile = Properties.tmpFolder + File.separatorChar + "gdem_error" + jobId + ".txt";
             }
             LOGGER.info("******* The error message is stored to: " + resultFile);
             if (error == null) {
-                error = "No error message for job=" + jobId;
+                error = "No error message for job=" + jobEntry.getId();
             }
             Utils.saveStrToFile(resultFile, "<error>" + error + "</error>", null);
+            changeStatus(errStatus,jobId);
         } catch (Exception e) {
             // what to do if exception occurs here...
             LOGGER.error(Markers.FATAL, "** Error occurred when handling XQ error: " + e.toString());
@@ -292,13 +291,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
      * @param status Job status to be stored in DB.
      * @throws Exception Unable to store data into DB.
      */
-     void changeStatus(int status,String jobId) throws Exception {
-         XQScript script = new XQScript();
-         script.setJobId(jobId);
-         script.setSrcFileUrl(url);
-         script.setScriptFileName(scriptFile);
-         script.setStrResultFile(resultFile);
-         script.setScriptType(scriptType);
+     void changeStatus(int status,String jobId) {
          jobService.changeNStatus(Integer.parseInt(jobId), status);
     }
 

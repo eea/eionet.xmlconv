@@ -10,6 +10,7 @@ import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +54,7 @@ public class WorkerAndJobStatusController {
                 jobService.changeNStatus(jobId, Constants.CANCELLED_BY_USER);
                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                 jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobId);
-                XQScript script = getScript(jobId, jobEntry);
+                XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
                 jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.CANCELLED_BY_USER, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
             } finally {
                 session.removeAttribute("jobId");
@@ -61,15 +62,6 @@ public class WorkerAndJobStatusController {
         }
     }
 
-    protected XQScript getScript(Integer jobId, JobEntry jobEntry) {
-        XQScript script = new XQScript();
-        script.setJobId(jobId.toString());
-        script.setSrcFileUrl(jobEntry.getUrl());
-        script.setScriptFileName(jobEntry.getFile());
-        script.setStrResultFile(jobEntry.getResultFile());
-        script.setScriptType(jobEntry.getScriptType());
-        return script;
-    }
 }
 
 

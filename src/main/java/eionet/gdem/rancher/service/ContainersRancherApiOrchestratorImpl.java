@@ -47,10 +47,10 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     public String getContainerId(String containerName) throws RancherApiException {
         try {
             LOGGER.info("Retrieving id for container with name: '" + containerName + "'");
-            return getContainerInfo(containerName).getData().get(0).getId();
-        }
-        catch(RancherApiException rae){
-            LOGGER.info("Error getting container id of container with name: " + containerName + ": " + rae.getMessage());
+            ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
+            return containerApiResponse.getData().get(0).getId();
+        } catch(RancherApiException rae){
+            LOGGER.info("Error getting container id of container with name: " + containerName + ", " + rae.getMessage());
             throw rae;
         }
     }
@@ -61,8 +61,11 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         ResponseEntity<ContainerApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + "?name={containerName}", HttpMethod.GET, entity, ContainerApiResponse.class, containerName);
+            if (result.getBody().getData().size()==0) {
+                throw new RancherApiException("Information not found for container " + containerName);
+            }
         } catch (Exception e) {
-            LOGGER.info("Error getting container information of container with name: " + containerName + ": " + e.getMessage());
+            LOGGER.info("Error getting container information of container with name: " + containerName + ", " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         }
         return result.getBody();
@@ -150,21 +153,26 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         ResponseEntity<ContainerData> newContainerReplacingTheJustDeletedOne = null;
         try {
             timer.start();
-            String containerId = getContainerId(containerName);
-            HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+            String containerId;
             List<String> instancesBeforeDelete;
-            ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
-            String serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
-            //Scale in rancher is 3 and we see 3 containers
-        //    instancesBeforeDelete = {container1,container2,container3}
-            instancesBeforeDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
+            HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+            ContainerApiResponse containerApiResponse;
+            String serviceId;
+            try {
+                containerId = getContainerId(containerName);
+                containerApiResponse = getContainerInfo(containerName);
+                serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
+                //instancesBeforeDelete is the number of container instances we have before we start deleting a container
+                instancesBeforeDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
+            } catch(RancherApiException e) {
+                LOGGER.error("Error getting information from rancher, " + e);
+                throw new RancherApiException(e);
+            }
+
             //After we delete a container, rancher will immediately replace it with a new one, which we have in the result.
             //THis happens because rancher has already in mind a scale number which we haven't yet touched, so it tries to replace what we delete.
-
             newContainerReplacingTheJustDeletedOne = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.DELETE, entity, ContainerData.class);
             String state = newContainerReplacingTheJustDeletedOne.getBody().getState();
-            //    instancesBeforeDelete = {container1,container2,newContainer5}
-
             LOGGER.info("Deleting container with id " + containerId + " for container with name " + containerName);
             while (!state.equals("running")) {
                 try {
@@ -173,8 +181,8 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
                         state = containerApiResponse.getData().get(0).getState();
                     }
                 } catch(RancherApiException e) {
-                    LOGGER.error(e.getMessage());
-                    throw new RancherApiException(e );
+                    LOGGER.error("Error getting information for container " + containerName + ", " + e);
+                    throw new RancherApiException(e);
                 }
                 if (timer.getTime()>TIME_LIMIT) {
                     throw new RancherApiTimoutException("Time exceeded for creating new container " + containerName);
@@ -184,22 +192,20 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             int maxRetries = 2;
             while(true) {
                 try {
-
                     // Scale down will do the needed scale down of the containers, and rancher will delete the last container created which is fine
                     //since the last one is the one created above.
                     scaleDownInstancesByOne(serviceId, instancesBeforeDelete);
+                    return;
                 } catch (ContainerScalingFailedException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Scaling down by 1 failed: " + e.getMessage());
                     if(++scaleDownCount == maxRetries);
                 }
-
             }
-        } catch (RancherApiTimoutException e) {
+        } catch (Exception e) {
             LOGGER.info("Error deleting container with name " + containerName + ": " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         } finally {
             timer.stop();
-
         }
     }
 
@@ -224,7 +230,6 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         } catch (RancherApiException e) {
             //We assume that the scale down failed here, and rancher has still the original number of containers
-
             LOGGER.error("Error during scaling down: " + e.getMessage());
             try {
                 this.synchronizeRancherScaleAndActualContainers(serviceId);
@@ -233,8 +238,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             }
             throw new ContainerScalingFailedException();
         }
-
-        //By now we should have 2 container.
+        //By now we should have the containers reduced by one
         //Below we check the case where the containers never actually scaled down by one.
         List<String> instancesAfterDelete = null;
         try {
@@ -249,12 +253,9 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             } catch (RancherApiException rancherApiException) {
                 LOGGER.error(rancherApiException.getMessage()) ;
             }
-
             throw new ContainerScalingFailedException("Failed to Scale down containers by 1");
-            // serviceApiRequestBody.setScale(instancesBeforeDelete.size()-1);
-            //servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         }
-        if (instancesAfterDelete.size() == instancesAfterDelete.size() - 1) {
+        if (instancesAfterDelete.size() == instancesBeforeDelete.size() - 1) {
             LOGGER.info("Scaled down Successfully.");
             return;
         }
