@@ -114,7 +114,7 @@ public class FixedTimeScheduledTasks {
     }
 
     /**
-     * The task runs every 2 minutes and checks how many jobs have internalScedulingStatus=2 (meaning the job has been added to rabbitmq queue and is waiting
+     * The task runs every minute and checks how many jobs have internalScedulingStatus=2 (meaning the job has been added to rabbitmq queue and is waiting
      * for a worker to grab it) and how many workers have status=1 (meaning they are ready to receive a job) and creates or deletes workers accordingly.
      *
      * @throws RancherApiException
@@ -269,7 +269,7 @@ public class FixedTimeScheduledTasks {
     }
 
     /**
-     * The task runs every 5 minutes, finds jobs that have n_status=2 (processing) and internal_status_id=3 (the job has been received by a worker)
+     * The task runs every minute, finds jobs that have n_status=2 (processing) and internal_status_id=3 (the job has been received by a worker)
      * and sends messages to workers asking whether they are executing a specific job. The task also saves a record with the message request in the
      * table WORKER_HEART_BEAT_MSG
      */
