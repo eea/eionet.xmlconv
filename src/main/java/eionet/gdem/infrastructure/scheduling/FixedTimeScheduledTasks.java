@@ -172,10 +172,10 @@ public class FixedTimeScheduledTasks {
                     }
                     try {
                         deleteFromRancherAndDatabase(worker);
+                        return;
                     } catch (RancherApiException e) {
                         LOGGER.error("Error Deleting worker " + worker.getName() + ", " + e);
                     }
-                    return;
                 }
                 try {
                     deleteFromRancherAndDatabase(worker);
