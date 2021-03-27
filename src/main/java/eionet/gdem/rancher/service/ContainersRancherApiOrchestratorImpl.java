@@ -151,15 +151,12 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         try {
             timer.start();
             String containerId;
-            List<String> instancesBeforeDelete;
             HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
-            ContainerApiResponse containerApiResponse;
-            String serviceId;
             containerId = getContainerId(containerName);
-            containerApiResponse = getContainerInfo(containerName);
-            serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
+            ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
+            String serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
             //instancesBeforeDelete is the number of container instances we have before we start deleting a container
-            instancesBeforeDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
+            List<String> instancesBeforeDelete = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
 
             //After we delete a container, rancher will immediately replace it with a new one, which we have in the result.
             //THis happens because rancher has already in mind a scale number which we haven't yet touched, so it tries to replace what we delete.
