@@ -2,94 +2,81 @@ package eionet.gdem.rabbitmq.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.Entities.JobExecutorHistory;
-import eionet.gdem.jpa.service.JobExecutorHistoryService;
-import eionet.gdem.jpa.service.JobExecutorService;
-import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
-import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.sql.Timestamp;
+import javax.sql.DataSource;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
 public class WorkersJobsResultsMessageReceiverTest {
 
-    @Mock
-    private JobService jobService;
+    @Autowired
+    private DataSource db;
 
-    @Mock
-    private JobExecutorService jobExecutorService;
+    @Qualifier("jobRepository")
+    @Autowired
+    JobRepository jobRepository;
 
-    @Mock
-    private JobHistoryService jobHistoryService;
-
-    @Mock
-    JobExecutorHistoryService jobExecutorHistoryService;
-
-    @Spy
-    @InjectMocks
+    @Autowired
     private WorkersJobsResultsMessageReceiver receiver;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
-        doNothing().when(jobService).changeNStatus(anyInt(),anyInt());
-        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyInt(), anyString(), anyString());
-        doNothing().when(jobExecutorService).updateJobExecutor(anyInt(), anyInt(), anyString(), anyString(), anyString());
-        doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
-        doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
+        TestUtils.setUpProperties(this);
+        DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QAJOBS_XML);
     }
 
     @Test
     public void testOnMessageReadyJob() throws JsonProcessingException {
-        String[] scriptParams = new String[0];
-        XQScript xqScript = new XQScript(null, scriptParams, "HTML");
-        xqScript.setJobId("12452");
+        XQScript xqScript = createXqScript();
 
         WorkerJobInfoRabbitMQResponse response = createRabbitMQResponse(xqScript, false);
         Message message = convertObjectToByteArray(response);
 
-        JobEntry jobEntry = new JobEntry().setId(12452);
-        when(jobService.findById(anyInt())).thenReturn(jobEntry);
         receiver.onMessage(message);
-        verify(jobService).changeNStatus(anyInt(),anyInt());
+        JobEntry jobEntry = jobRepository.findById(1);
+        assertTrue(jobEntry.getnStatus().equals(3));
     }
 
     @Test
     public void testOnMessageJobFailure() throws JsonProcessingException {
-        String[] scriptParams = new String[0];
-        XQScript xqScript = new XQScript(null, scriptParams, "HTML");
-        xqScript.setJobId("12453");
+        XQScript xqScript = createXqScript();
 
         WorkerJobInfoRabbitMQResponse response = createRabbitMQResponse(xqScript, true);
         Message message = convertObjectToByteArray(response);
 
-        JobEntry jobEntry = new JobEntry().setId(12453);
-        when(jobService.findById(anyInt())).thenReturn(jobEntry);
         receiver.onMessage(message);
-        verify(jobService).changeNStatus(anyInt(),anyInt());
+        JobEntry jobEntry = jobRepository.findById(1);
+        assertTrue(jobEntry.getnStatus().equals(4));
+    }
+
+    private XQScript createXqScript() {
+        XQScript xqScript = new XQScript();
+        xqScript.setJobId("1");
+        xqScript.setSrcFileUrl("http://test.dev/test.xml");
+        xqScript.setScriptFileName("test.xq");
+        xqScript.setStrResultFile("test.html");
+        xqScript.setScriptType("xquery 3.0+");
+        return xqScript;
     }
 
     private Message convertObjectToByteArray(WorkerJobInfoRabbitMQResponse response) throws JsonProcessingException {

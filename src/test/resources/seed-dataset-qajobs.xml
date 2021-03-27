@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <T_XQJOBS job_id="1" url="http://test.dev/test.xml" xq_file="test.xq" result_file="test.html" n_status="0" retry_counter="0" internal_status_id="1"/>
-  <T_XQJOBS job_id="2" url="http://test.dev/test.xml" xq_file="test.xq" result_file="test.html" n_status="0" retry_counter="0" internal_status_id="1"/>
+  <T_XQJOBS job_id="1" url="http://test.dev/test.xml" xq_file="test.xq" xq_type="xquery 3.0+" result_file="test.html" n_status="2" retry_counter="0" internal_status_id="3" job_executor_name="demoJobExecutor"/>
+  <T_XQJOBS job_id="2" url="http://test.dev/test.xml" xq_file="test.xq" xq_type="xquery 3.0+" result_file="test.html" n_status="0" retry_counter="0" internal_status_id="1" job_executor_name=""/>
 
-  <JOB_HISTORY ID="1" JOB_NAME="job2" STATUS="1" DATE_ADDED="2017-07-23 13:10:11"/>
-  <JOB_HISTORY ID="2" JOB_NAME="job1" STATUS="1" DATE_ADDED="2017-07-23 13:10:11"/>
-  <JOB_HISTORY ID="3" JOB_NAME="job2" STATUS="5" DATE_ADDED="2017-07-23 13:10:11"/>
-  <JOB_HISTORY ID="4" JOB_NAME="job2" STATUS="2" DATE_ADDED="2017-07-23 13:10:11"/>
+  <JOB_HISTORY ID="1" JOB_NAME="job2" STATUS="1" DATE_ADDED="2017-07-23 13:10:11" internal_status_id="3" job_executor_name="demoJobExecutor"/>
+  <JOB_HISTORY ID="2" JOB_NAME="job1" STATUS="1" DATE_ADDED="2017-07-23 13:10:11" internal_status_id="1" job_executor_name=""/>
+  <JOB_HISTORY ID="3" JOB_NAME="job2" STATUS="5" DATE_ADDED="2017-07-23 13:10:11" internal_status_id="3" job_executor_name="demoJobExecutor"/>
+  <JOB_HISTORY ID="4" JOB_NAME="job2" STATUS="2" DATE_ADDED="2017-07-23 13:10:11" internal_status_id="2" job_executor_name=""/>
 </dataset>
