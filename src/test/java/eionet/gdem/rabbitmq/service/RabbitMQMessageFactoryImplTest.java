@@ -64,7 +64,7 @@ public class RabbitMQMessageFactoryImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        createRabbitMQMessage.setJobId("627015");
+        //createRabbitMQMessage.setJobId("627015");
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(0);
         jobEntry = new JobEntry("xmlUrl", "xqFile", "resultFile",0,1246,new Timestamp(new Date().getTime()),"xquery 3.0+",intStatus)
             .setId(627015).setSrcFile("srcFile");

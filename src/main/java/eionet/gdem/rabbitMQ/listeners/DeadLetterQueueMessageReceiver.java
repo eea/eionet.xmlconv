@@ -56,7 +56,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
         String messageBody = new String(message.getBody());
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
-            WorkerJobInfoRabbitMQResponse deadLetterMessage = mapper.readValue(messageBody, WorkerJobInfoRabbitMQResponse.class);
+            WorkerJobRabbitMQRequest deadLetterMessage = mapper.readValue(messageBody, WorkerJobRabbitMQRequest.class);
 
             LOGGER.info("Received error message in DEAD LETTER QUEUE: " + deadLetterMessage.getErrorMessage());
             XQScript script = deadLetterMessage.getScript();
@@ -83,9 +83,8 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
                 Integer retriesCnt = deadLetterMessage.getJobExecutionRetries();
                 if(retriesCnt < Constants.MAX_SCRIPT_EXECUTION_RETRIES){
-                    WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(script);
-                    workerJobRabbitMQRequest.setJobExecutionRetries(retriesCnt + 1);
-                    jobMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
+                    deadLetterMessage.setJobExecutionRetries(retriesCnt + 1);
+                    jobMessageSender.sendJobInfoToRabbitMQ(deadLetterMessage);
                 }
                 else{
                     //message will be discarded
@@ -99,14 +98,14 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
         }
     }
 
-    void updateJobAndJobExecTables(Integer nStatus, Integer internalStatus, WorkerJobInfoRabbitMQResponse response, String containerId, JobEntry jobEntry) {
-        XQScript script = response.getScript();
+    void updateJobAndJobExecTables(Integer nStatus, Integer internalStatus, WorkerJobRabbitMQRequest request, String containerId, JobEntry jobEntry) {
+        XQScript script = request.getScript();
         jobService.changeNStatus(Integer.parseInt(script.getJobId()), nStatus);
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(internalStatus);
-        jobService.changeIntStatusAndJobExecutorName(intStatus, response.getJobExecutorName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
-        jobHistoryService.updateStatusesAndJobExecutorName(script, nStatus, internalStatus, response.getJobExecutorName(), jobEntry.getJobType());
-        jobExecutorService.updateJobExecutor(response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), response.getJobExecutorName(), containerId, response.getHeartBeatQueue());
-        JobExecutorHistory entry = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
+        jobService.changeIntStatusAndJobExecutorName(intStatus, request.getJobExecutorName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
+        jobHistoryService.updateStatusesAndJobExecutorName(script, nStatus, internalStatus, request.getJobExecutorName(), jobEntry.getJobType());
+        jobExecutorService.updateJobExecutor(request.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), request.getJobExecutorName(), containerId, request.getHeartBeatQueue());
+        JobExecutorHistory entry = new JobExecutorHistory(request.getJobExecutorName(), containerId, request.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), request.getHeartBeatQueue());
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
     }
 }

@@ -23,7 +23,9 @@ public class RabbitMQMessageSenderImpl implements RabbitMQMessageSender {
 
     @Override
     public void sendJobInfoToRabbitMQ(WorkerJobRabbitMQRequest workerJobRequest) {
-        workerJobRequest.setJobExecutionRetries(0);
+        if(workerJobRequest.getJobExecutionRetries() == null) {
+            workerJobRequest.setJobExecutionRetries(0);
+        }
         rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, workerJobRequest);
         LOGGER.info("Job with id " + workerJobRequest.getScript().getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_QUEUE);
     }
