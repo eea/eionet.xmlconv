@@ -6,12 +6,10 @@ import eionet.gdem.security.errors.JWTException;
 import eionet.gdem.security.service.AuthTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 
 @Service
 public class AuthTokenServiceImpl implements AuthTokenService {
@@ -46,7 +44,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         String username = null;
         try {
             username = verifier.verify(parsedAuthenticationToken);
-        } catch (UnsupportedEncodingException | JWTVerificationException e) {
+        } catch (JWTVerificationException e) {
             throw new JWTException("Error during token verification");
         }
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);

@@ -40,6 +40,10 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     @Value("${jwt.header.schema}")
     private String authenticationTokenSchema;
 
+    @Autowired
+    @Qualifier("apiuserdetailsservice")
+    private UserDetailsService userDetailsService;
+
     private static final List<String> INTERCEPTED_URLS = Collections.unmodifiableList(Arrays.asList("/asynctasks/", "/qajobs", "dataflows", "/schemas", "/host/authentication"));
 
     @Autowired
