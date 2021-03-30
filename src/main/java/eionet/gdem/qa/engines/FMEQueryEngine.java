@@ -3,10 +3,12 @@ package eionet.gdem.qa.engines;
 import java.io.*;
 
 import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import eionet.gdem.SpringApplicationContext;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.services.fme.FmeJobStatus;
 import eionet.gdem.services.fme.FmeServerCommunicator;
 import eionet.gdem.services.fme.exceptions.*;
@@ -44,6 +46,8 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     private Integer retries = 0;
 
     private String randomStr = RandomStringUtils.randomAlphanumeric(5);
+
+    private String synchronousToken = null;
 
 
     /* Variables for eionet.gdem.Properties*/
@@ -92,7 +96,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         while (count < retries) {
             try {
                 java.net.URI uri = new URIBuilder(script.getScriptSource())
-                        .addParameter("token", getFmeTokenProperty())
+                        .addParameter("token", synchronousToken)
                         .addParameter("opt_showresult", "true")
                         .addParameter("opt_servicemode", "sync")
                         .addParameter("source_xml", script.getOrigFileUrl()) // XML file
@@ -204,6 +208,47 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         throw new RetryCountForGettingJobResultReachedException("Retry count reached with no result");
     }
 
+    /**
+     * Gets a user token from the FME server.
+     *
+     * @throws Exception If an error occurs.
+     */
+    private void getConnectionInfo() throws Exception {
+
+        HttpPost method = null;
+        CloseableHttpResponse response = null;
+
+        try {
+            // We must first generate a security token for authentication
+            // purposes
+            fmeUrl = "https://" + Properties.fmeHost + ":" + Properties.fmePort
+                    + "/fmetoken/generate";
+
+            java.net.URI uri = new URIBuilder(fmeUrl)
+                    .addParameter("user", Properties.fmeUser)
+                    .addParameter("password", Properties.fmePassword)
+                    .addParameter("expiration", Properties.fmeTokenExpiration)
+                    .addParameter("timeunit", Properties.fmeTokenTimeunit).build();
+            method = new HttpPost(uri);
+            response = client_.execute(method);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream stream = entity.getContent();
+                synchronousToken = new String(IOUtils.toByteArray(stream), StandardCharsets.UTF_8);
+                IOUtils.closeQuietly(stream);
+            } else {
+                LOGGER.error("FME authentication failed. Could not retrieve a Token");
+                throw new XMLConvException("FME authentication failed");
+            }
+        } catch (Exception e) {
+            throw new XMLConvException(e.toString(), e);
+        } finally {
+            if (method != null) {
+                method.releaseConnection();
+            }
+        }
+    }
+
     protected CloseableHttpClient getClient_() {
         return client_;
     }
@@ -263,4 +308,5 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
     public FmeServerCommunicator getFmeServerCommunicator(){
        return (FmeServerCommunicator) SpringApplicationContext.getBean(FmeServerCommunicator.class);
     }
+
 }
