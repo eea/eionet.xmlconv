@@ -146,5 +146,6 @@ public interface Constants {
     String EXCEL_CONVERSION_JSP = "excel2xml_conversion.jsp";
     String EXCEL2XML_CONV_PARAM = "excel2dd_xml";
 
+    String HTML_FILE = ".html";
 
 }

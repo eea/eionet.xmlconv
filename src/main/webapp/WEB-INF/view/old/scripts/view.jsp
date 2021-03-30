@@ -106,6 +106,13 @@
         ${form.scriptType}
       </td>
     </tr>
+    <th scope="row" class="scope-row">
+      <spring:message code="label.qascript.asynchronous"/>
+    </th>
+    <td>
+      ${form.asynchronousExecution}
+    </td>
+    </tr>
     <tr>
       <th scope="row" class="scope-row">
         <spring:message code="label.qascript.upperlimit"/>

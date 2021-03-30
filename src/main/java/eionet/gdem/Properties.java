@@ -123,13 +123,16 @@ public class Properties {
     public static String fmeUser = null;
     /** FME user password. */
     public static String fmePassword = null;
+    /** FME token. */
+    public static String fmeToken = null;
     /** FME token expiration. */
     public static String fmeTokenExpiration = null;
     /** FME token timeunit. */
     public static String fmeTokenTimeunit = null;
     /** FME timeout. */
     public static int fmeTimeout = 0;
-    public static int fmeRetryHours = 4;
+    public static int fmeRetryHours = 0;
+    /** FME url for polling job status by job id. */
     public static String fmePollingUrl = null;
     public static String fmeResultFolderUrl = null;
     public static String fmeResultFolder = null;
@@ -301,6 +304,7 @@ public class Properties {
         fmePort = getStringProperty("fme.port");
         fmeUser = getStringProperty("fme.user");
         fmePassword = getStringProperty("fme.password");
+        fmeToken = getStringProperty("fme.token");
         fmeTokenExpiration = getStringProperty("fme.token.expiration");
         fmeTokenTimeunit = getStringProperty("fme.token.timeunit");
         fmeTimeout = getIntProperty("fme.timeout");
@@ -323,6 +327,9 @@ public class Properties {
         PROP_UNS_LONG_RUNNING_JOBS_PREDICATE = getStringProperty("env.uns.long.running.jobs.predicate");
         PROP_UNS_EVENTTYPE_PREDICATE = getStringProperty("env.uns.eventtype.predicate");
         PROP_UNS_EVENTS_NAMESPACE = getStringProperty("env.uns.events-namespace");
+
+        jwtHeader = getStringProperty("jwt.header");
+        jwtHeaderSchema = getStringProperty("jwt.header.schema");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
 

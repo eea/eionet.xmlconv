@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -215,8 +216,14 @@ public class XQueryService extends RemoteService {
      * @param content_type Content type
      * @return Extension
      */
-    private String getExtension(Vector outputTypes, String content_type) {
-        String ret = "html";
+    private String getExtension(Vector outputTypes, String content_type,String scriptType, Boolean asynchronousExecution) {
+        String ret = null;
+        if(scriptType.equals( XQScript.SCRIPT_LANG_FME) && asynchronousExecution == true){
+            ret ="zip";
+        }else{
+            ret = "html";
+        }
+
         if (outputTypes == null) {
             return ret;
         }
@@ -332,6 +339,12 @@ public class XQueryService extends RemoteService {
             }
             LOGGER.info("result: " + result);
         }
+        if(jobData[8]!=null ){
+            if(jobData[8].equals("fme")){
+                String[] fmeUrls = {Properties.gdemURL.concat("/restapi/download/zip/"+Paths.get(jobData[2]).getFileName())};
+                ret.put("REMOTE_FILES",fmeUrls);
+            }
+        }
         return ret;
     }
 
@@ -386,7 +399,14 @@ public class XQueryService extends RemoteService {
                     script_title = (String) scriptData.get(QaScriptView.SHORT_NAME);
                 }
 
-                resultValue = Utils.readStrFromFile(jobData[2]);
+                if(jobData[8]!=null ){
+                    if(jobData[8].equals("fme")){
+                        resultValue = "";
+
+                    }
+                }else {
+                    resultValue = Utils.readStrFromFile(jobData[2]);
+                }
                 HashMap<String, String> feedbackResult = FeedbackAnalyzer.getFeedbackResultFromFile(jobData[2]);
 
                 feedbackStatus = feedbackResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
@@ -484,7 +504,15 @@ public class XQueryService extends RemoteService {
             String queryFile = (String) query.get(QaScriptView.QUERY);
             String contentType = (String) query.get(QaScriptView.CONTENT_TYPE_ID);
             String scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
-            String fileExtension = getExtension(outputTypes, contentType);
+            String asynchronousExecutionStr = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+            Boolean asynchronousExecution;
+            if(asynchronousExecutionStr != null && asynchronousExecutionStr.equals("1")){
+                asynchronousExecution = true;
+            }
+            else{
+                asynchronousExecution = false;
+            }
+            String fileExtension = getExtension(outputTypes, contentType,scriptType, asynchronousExecution);
             String resultFile =
                     Properties.tmpFolder + File.separatorChar + "gdem_q" + query_id + "_" + System.currentTimeMillis() + "."
                             + fileExtension;
