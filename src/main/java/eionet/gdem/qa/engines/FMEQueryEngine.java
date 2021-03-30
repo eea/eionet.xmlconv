@@ -69,6 +69,12 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
         requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setSocketTimeout(this.getFmeTimeoutProperty());
+
+        try {
+            getConnectionInfo();
+        } catch (IOException e) {
+            throw new XMLConvException(e.toString(), e);
+        }
     }
 
     @Override
@@ -227,8 +233,8 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             java.net.URI uri = new URIBuilder(fmeUrl)
                     .addParameter("user", Properties.fmeUser)
                     .addParameter("password", Properties.fmePassword)
-                    .addParameter("expiration", Properties.fmeTokenExpiration)
-                    .addParameter("timeunit", Properties.fmeTokenTimeunit).build();
+                    .addParameter("expiration", this.getFmeTokenExpirationProperty())
+                    .addParameter("timeunit", this.getFmeTokenTimeunitProperty()).build();
             method = new HttpPost(uri);
             response = client_.execute(method);
             if (response.getStatusLine().getStatusCode() == 200) {
