@@ -8,9 +8,7 @@ public interface JobExecutorService {
 
     JobExecutor findByName(String jobExecutorName);
 
-    void updateJobExecutor(Integer status, Integer jobId, String jobExecutorName, String containerId, String heartBeatQueue);
-
-    void saveJobExecutor(JobExecutor jobExecutor);
+    void saveOrUpdateJobExecutor(JobExecutor jobExecutor);
 
     List<JobExecutor> listJobExecutor();
 }

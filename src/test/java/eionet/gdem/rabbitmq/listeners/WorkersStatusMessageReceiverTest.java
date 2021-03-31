@@ -42,7 +42,7 @@ public class WorkersStatusMessageReceiverTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
+        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
         doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
     }
 
@@ -56,7 +56,7 @@ public class WorkersStatusMessageReceiverTest {
         Message message = convertObjectToByteArray(response);
 
         receiver.onMessage(message);
-        verify(jobExecutorService).saveJobExecutor(any(JobExecutor.class));
+        verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
     }
 
     private Message convertObjectToByteArray(WorkerStateRabbitMQResponse response) throws JsonProcessingException {

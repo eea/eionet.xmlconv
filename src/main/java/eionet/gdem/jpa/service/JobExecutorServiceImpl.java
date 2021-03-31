@@ -37,33 +37,16 @@ public class JobExecutorServiceImpl implements JobExecutorService {
 
     @Transactional
     @Override
-    public void updateJobExecutor(Integer status, Integer jobId, String name, String containerId, String heartBeatQueue) {
-        try {
-            JobExecutor jobExec = jobExecutorRepository.findByName(name);
-            if (jobExec!=null) {
-                jobExecutorRepository.updateStatusAndJobId(status, jobId, name);
-            } else {
-                JobExecutor exec = new JobExecutor(name, status, jobId, containerId, heartBeatQueue);
-                jobExecutorRepository.save(exec);
-            }
-        } catch (Exception e) {
-            LOGGER.error("Database exception when updating worker with name " + name + ", " + e.toString());
-            throw e;
-        }
-    }
-
-    @Transactional
-    @Override
-    public void saveJobExecutor(JobExecutor jobExecutor) {
+    public void saveOrUpdateJobExecutor(JobExecutor jobExecutor) {
         try {
             JobExecutor jobExec = jobExecutorRepository.findByName(jobExecutor.getName());
             if (jobExec!=null) {
-                jobExecutorRepository.updateStatusAndJobId(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getName());
+                jobExecutorRepository.updateStatusAndJobId(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExec.getName());
             } else {
                 jobExecutorRepository.save(jobExecutor);
             }
         } catch (Exception e) {
-            LOGGER.error("Database exception when saving worker with name " + jobExecutor.getName() + ", " + e.toString());
+            LOGGER.error("Database exception when updating worker with name " + jobExecutor.getName() + ", " + e.toString());
             throw e;
         }
     }

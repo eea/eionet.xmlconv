@@ -47,7 +47,8 @@ public class WorkerAndJobStatusController {
                 JobEntry jobEntry = jobService.findById(jobId);
                 if (jobEntry.getJobExecutorName()!=null) {
                     JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-                    jobExecutorService.updateJobExecutor(SchedulingConstants.WORKER_FAILED, jobId, jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), jobExecutor.getHeartBeatQueue());
+                    jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
+                    jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
                     JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
                     jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
                 }

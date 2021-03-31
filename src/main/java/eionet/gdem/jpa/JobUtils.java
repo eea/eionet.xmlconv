@@ -2,6 +2,7 @@ package eionet.gdem.jpa;
 
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
@@ -37,7 +38,8 @@ public class JobUtils {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(internalStatus);
         jobService.changeIntStatusAndJobExecutorName(intStatus, response.getJobExecutorName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
         jobHistoryService.updateStatusesAndJobExecutorName(script, nStatus, internalStatus, response.getJobExecutorName(), jobEntry.getJobType());
-        jobExecutorService.updateJobExecutor(response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), response.getJobExecutorName(), containerId, response.getHeartBeatQueue());
+        JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), containerId, response.getHeartBeatQueue());
+        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
         JobExecutorHistory entry = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
     }
