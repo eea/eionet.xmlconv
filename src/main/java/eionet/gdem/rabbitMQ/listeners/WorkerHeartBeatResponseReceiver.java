@@ -77,7 +77,7 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
                 jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
             }
         } catch (Exception e) {
-            LOGGER.info("Error during jobExecutor message processing for job with id " + response.getJobId() + " and entry with id " + response.getId(), e);
+            LOGGER.info("Error during jobExecutor message processing ", e);
             return;
         } finally {
             timer.stop();
