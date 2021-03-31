@@ -6,8 +6,8 @@ import eionet.gdem.Constants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
+import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkerHeartBeatResponseReceiver;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
@@ -26,6 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -41,7 +42,7 @@ public class WorkerHeartBeatResponseReceiverTest {
     private JobHistoryService jobHistoryService;
 
     @Mock
-    WorkerHeartBeatMsgService workerHeartBeatMsgService;
+    WorkerHeartBeatMsgRepository workerHeartBeatMsgRepository;
 
     @Spy
     @InjectMocks
@@ -64,7 +65,9 @@ public class WorkerHeartBeatResponseReceiverTest {
         WorkerHeartBeatMessageInfo response = new WorkerHeartBeatMessageInfo("demoJobExecutor", 12453).setJobStatus(Constants.JOB_NOT_FOUND_IN_WORKER);
         Message message = convertObjectToByteArray(response);
 
-        doNothing().when(workerHeartBeatMsgService).updateEntry(any(WorkerHeartBeatMsgEntry.class));
+        WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(response.getJobId(), response.getJobExecutorName(), new Timestamp(new Date().getTime()));
+        when(workerHeartBeatMsgRepository.findOne(anyInt())).thenReturn(workerHeartBeatMsgEntry);
+        when(workerHeartBeatMsgRepository.save(any(WorkerHeartBeatMsgEntry.class))).thenReturn(workerHeartBeatMsgEntry);
 
         JobEntry jobEntry = new JobEntry().setId(12452).setUrl("https://cdrtest.eionet.europa.eu/ro/colwkcutw/envxxyxia/REP_D-RO_ANPM_20170929_C-001.xml")
                 .setFile("/opt/xmlconv/tmp/gdem_1615903208066.xquery").setResultFile("/opt/xmlconv/eearun/xmlconv/tmp/gdem_1615903208071.html").setScriptType("xquery 3.0+")

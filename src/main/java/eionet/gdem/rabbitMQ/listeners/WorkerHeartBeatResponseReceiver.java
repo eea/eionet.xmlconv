@@ -13,6 +13,7 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.services.JobHistoryService;
+import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -37,10 +38,15 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerHeartBeatResponseReceiver.class);
+    /**
+     * time in milliseconds
+     */
+    private static final Integer TIME_LIMIT = 10000;
 
     @Override
     public void onMessage(Message message) {
         WorkerHeartBeatMessageInfo response = null;
+        StopWatch timer = new StopWatch();
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             response = mapper.readValue(message.getBody(), WorkerHeartBeatMessageInfo.class);
@@ -48,8 +54,18 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
             LOGGER.info("Received heart beat response from worker " + response.getJobExecutorName() + " for job " + response.getJobId());
 
             WorkerHeartBeatMsgEntry oldEntry =  workerHeartBeatMsgRepository.findOne(response.getId());
+            timer.start();
+            while (oldEntry==null) {
+                LOGGER.error("Could not retrieve heart beat message entry with id " + response.getId());
+                oldEntry = workerHeartBeatMsgRepository.findOne(response.getId());
+                if (timer.getTime()>TIME_LIMIT) {
+                    LOGGER.error("Could not update heart beat message entry with id " + response.getId());
+                    return;
+                }
+            }
             oldEntry.setResponseTimestamp(new Timestamp(new Date().getTime()));
             oldEntry.setJobStatus(response.getJobStatus());
+            LOGGER.info("Updating heart beat message entry with id " + response.getId());
             workerHeartBeatMsgRepository.save(oldEntry);
 
             JobEntry jobEntry = jobService.findById(response.getJobId());
@@ -63,6 +79,8 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing for job with id " + response.getJobId() + " and entry with id " + response.getId(), e);
             return;
+        } finally {
+            timer.stop();
         }
     }
 }
