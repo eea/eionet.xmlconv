@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -192,19 +193,30 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
-    public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
+    @ResponseBody
+    public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId,HttpServletResponse response) throws XMLConvException, JsonProcessingException {
 
-        Hashtable<String, String> results = qaService.getJobResults(jobId);
+        Hashtable<String, Object> results = qaService.getJobResults(jobId);
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
         LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
-        executionStatusView.put("statusId", results.get(Constants.RESULT_CODE_PRM));
-        executionStatusView.put("statusName",results.get("executionStatusName"));
+        executionStatusView.put("statusId", (String) results.get(Constants.RESULT_CODE_PRM));
+        executionStatusView.put("statusName",(String) results.get("executionStatusName"));
         jsonResults.put("scriptTitle",results.get(Constants.RESULT_SCRIPTTITLE_PRM));
         jsonResults.put("executionStatus",executionStatusView);
         jsonResults.put("feedbackStatus", results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
-        jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
+
+        if(results.get("REMOTE_FILES")!=null){
+            String[] fileUrls = (String[]) results.get("REMOTE_FILES");
+            if(fileUrls[0]!=null) {
+                jsonResults.put("feedbackContent", "");
+                jsonResults.put("REMOTE_FILES",fileUrls);
+
+            }
+        }else{
+            jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
+        }
         return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.OK);
     }
 

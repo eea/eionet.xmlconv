@@ -101,7 +101,7 @@ public class QaServiceTest {
         Hashtable<String, String> results = new Hashtable<String, String>();
         results.put(Constants.RESULT_CODE_PRM, "0");
         when(xqueryServiceMock.getResult(jobId)).thenReturn(results);
-        Hashtable<String, String> realResults = this.qaService.getJobResults(jobId);
+        Hashtable<String, Object> realResults = this.qaService.getJobResults(jobId);
         verify(xqueryServiceMock, times(1)).getResult(jobId);
         Assert.assertEquals(results, realResults);
     }

@@ -55,6 +55,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     public static final String QUERY_URL_FLD    = "URL";
     public static final String ACTIVE_FLD = "ACTIVE";
     public static final String JOB_RETRY_COUNTER = "RETRY_COUNTER";
+    public static final String ASYNCHRONOUS_EXECUTION_FLD = "ASYNCHRONOUS_EXECUTION";
 
     private static final String qListQueries = "SELECT " + QUERY_TABLE + "." + QUERY_ID_FLD + ", " + SHORT_NAME_FLD + ", "
             + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + ","
@@ -77,7 +78,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qQueryInfo = "SELECT " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + QUERY_FILE_FLD + ", "
             + QUERY_TABLE + "." + DESCR_FLD + "," + SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ","
             + QUERY_TABLE + "." + RESULT_TYPE_FLD + ", " + CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + "," + QUERY_TABLE + "."
-            + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD + "," + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD
+            + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD + "," + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD + ","+ QUERY_TABLE + "." + ASYNCHRONOUS_EXECUTION_FLD
             + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN "
             + SCHEMA_TABLE + " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD
             + " LEFT OUTER JOIN " + CONVTYPE_TABLE + " ON " + QUERY_TABLE + "." + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "."
@@ -91,12 +92,12 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qRemoveQuery = "DELETE FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=?";
     private static final String qUpdateQuery = "UPDATE  " + QUERY_TABLE + " SET " + QUERY_FILE_FLD + "=?" + ", " + SHORT_NAME_FLD
             + "=?" + ", " + DESCR_FLD + "=?" + ", " + XSL_SCHEMA_ID_FLD + "=?" + ", " + RESULT_TYPE_FLD + "=?" + ", "
-            + QUERY_SCRIPT_TYPE + "=?" + ", " + UPPER_LIMIT_FLD + "=?" + ", " + QUERY_URL_FLD + "=?" + " WHERE "
+            + QUERY_SCRIPT_TYPE + "=?" + ", " + UPPER_LIMIT_FLD + "=?" + ", " + QUERY_URL_FLD + "=?" + ", " + ASYNCHRONOUS_EXECUTION_FLD + "=?" + " WHERE "
             + QUERY_ID_FLD + "=?";
 
     private static final String qInsertQuery = "INSERT INTO " + QUERY_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + SHORT_NAME_FLD
             + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ", " + RESULT_TYPE_FLD + ", " + QUERY_SCRIPT_TYPE + ", "
-            + UPPER_LIMIT_FLD + "," + QUERY_URL_FLD + ") " + " VALUES (?,?,?,?,?,?,?,?)";
+            + UPPER_LIMIT_FLD + "," + QUERY_URL_FLD + "," + ASYNCHRONOUS_EXECUTION_FLD + ") " + " VALUES (?,?,?,?,?,?,?,?,?)";
 
     private static final String qQueryByFileName = "SELECT " + QUERY_ID_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD
             + "=?";
@@ -104,7 +105,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qCheckQueryFileByName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD + "=?";
 
     private static final String qCheckQueryFileByIdAndName = "SELECT COUNT(*) FROM " + QUERY_TABLE + " WHERE " + QUERY_FILE_FLD
-            + "=?" + " and " + QUERY_ID_FLD + "=?";;
+            + "=?" + " and " + QUERY_ID_FLD + "=?";
+
+    private static final String qGetAsynchronousExecution = "SELECT " + ASYNCHRONOUS_EXECUTION_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=?";
 
 
     /**
@@ -117,12 +120,13 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
      * @param script_type Script type
      * @param upperLimit Upper limit
      * @param url URL
+     * @param asynchronousExecution
      * @return Result
      * @throws SQLException
      */
     @Override
     public String addQuery(String xmlSchemaID, String shortName, String queryFileName, String description, String content_type,
-            String script_type, String upperLimit, String url) throws SQLException {
+            String script_type, String upperLimit, String url, Boolean asynchronousExecution) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -145,6 +149,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             pstmt.setString(6, script_type);
             pstmt.setInt(7, Integer.parseInt(upperLimit));
             pstmt.setString(8, url);
+            pstmt.setBoolean(9, asynchronousExecution);
 
             pstmt.executeUpdate();
 
@@ -178,11 +183,12 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
      * @param script_type - xquery, xsl, xgawk
      * @param upperLimit - result upper limit in MB
      * @param url - original url of the XQ file
+     * @param asynchronousExecution
      * @throws SQLException If an error occurs.
      */
     @Override
     public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName,
-            String content_type, String script_type, String upperLimit, String url) throws SQLException {
+            String content_type, String script_type, String upperLimit, String url, Boolean asynchronousExecution) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -204,8 +210,10 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             pstmt.setString(6, script_type);
             pstmt.setInt(7, Integer.parseInt(upperLimit));
             pstmt.setString(8, url);
+            pstmt.setBoolean(9, asynchronousExecution);
 
-            pstmt.setInt(9, Integer.parseInt(query_id));
+            pstmt.setInt(10, Integer.parseInt(query_id));
+
 
             pstmt.executeUpdate();
         } finally {
@@ -281,6 +289,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                 h.put(QaScriptView.UPPER_LIMIT, r[0][8]);
                 h.put(QaScriptView.URL, r[0][9]);
                 h.put(QaScriptView.IS_ACTIVE, r[0][10]);
+                h.put(QaScriptView.ASYNCHRONOUS_EXECUTION, r[0][11]);
             }
 
         } finally {
@@ -582,6 +591,42 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             pstmt.setString(2, query_id);
             pstmt.executeUpdate();
         } finally {
+            closeAllResources(rs, pstmt, conn);
+        }
+    }
+
+    @Override
+    public Boolean getAsynchronousExecution(String queryId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Boolean result = null;
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qGetAsynchronousExecution);
+        }
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qGetAsynchronousExecution);
+
+            pstmt.setString(1, queryId);
+            rs = pstmt.executeQuery();
+
+            String[][] r = getResults(rs);
+            if (r.length == 0) {
+                return null;
+            }
+            if(r[0][0] != null && r[0][0].equals("1")){
+                return true;
+            }
+            return false;
+        } catch (Exception e ){
+            LOGGER.error ("Error while retrieving asynchronous execution field for script " + queryId + " : " + e.getMessage() );
+            return null;
+        }
+
+        finally {
             closeAllResources(rs, pstmt, conn);
         }
     }
