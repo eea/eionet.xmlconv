@@ -453,7 +453,7 @@
             <column name="MAX_EXECUTION_TIME" type="BIGINT"/>
         </addColumn>
     </changeSet>
-    <changeSet author="anthaant" id="rev-37">
+    <changeSet author="anthaant" id="rev-42">
         <comment>
             Added ASYNCHRONOUS_EXECUTION column in T_QUERY
         </comment>
