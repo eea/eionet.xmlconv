@@ -280,9 +280,10 @@ public class FixedTimeScheduledTasks {
         for (JobEntry jobEntry : processingJobs) {
             try {
                 WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
-                rabbitMQMessageSender.sendHeartBeatMessage(heartBeatMsgInfo);
                 WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
-                workerHeartBeatMsgRepository.save(workerHeartBeatMsgEntry);
+                workerHeartBeatMsgEntry = workerHeartBeatMsgRepository.save(workerHeartBeatMsgEntry);
+                heartBeatMsgInfo.setId(workerHeartBeatMsgEntry.getId());
+                rabbitMQMessageSender.sendHeartBeatMessage(heartBeatMsgInfo);
             } catch (Exception e) {
                 LOGGER.info("Error while setting heart beat message for job with id " + jobEntry.getId() + ", " + e.getMessage());
             }

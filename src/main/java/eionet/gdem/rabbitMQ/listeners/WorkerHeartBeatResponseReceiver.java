@@ -7,8 +7,8 @@ import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
+import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
@@ -33,22 +33,24 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
     JobHistoryService jobHistoryService;
 
     @Autowired
-    WorkerHeartBeatMsgService workerHeartBeatMsgService;
+    WorkerHeartBeatMsgRepository workerHeartBeatMsgRepository;
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerHeartBeatResponseReceiver.class);
 
     @Override
     public void onMessage(Message message) {
+        WorkerHeartBeatMessageInfo response = null;
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            WorkerHeartBeatMessageInfo response = mapper.readValue(message.getBody(), WorkerHeartBeatMessageInfo.class);
+            response = mapper.readValue(message.getBody(), WorkerHeartBeatMessageInfo.class);
 
             LOGGER.info("Received heart beat response from worker " + response.getJobExecutorName() + " for job " + response.getJobId());
-            WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(response.getJobId(), response.getJobExecutorName(), response.getRequestTimestamp(), new Timestamp(new Date().getTime()), response.getJobStatus());
-            LOGGER.info("request: " + workerHeartBeatMsgEntry.getRequestTimestamp() + ", response: " + workerHeartBeatMsgEntry.getResponseTimestamp());
-            LOGGER.info("jobId: " + workerHeartBeatMsgEntry.getId() + ", worker: " + workerHeartBeatMsgEntry.getJobExecutorName() + ", jobStatus: " + workerHeartBeatMsgEntry.getJobStatus());
-            workerHeartBeatMsgService.updateEntry(workerHeartBeatMsgEntry);
+
+            WorkerHeartBeatMsgEntry oldEntry =  workerHeartBeatMsgRepository.findOne(response.getId());
+            oldEntry.setResponseTimestamp(new Timestamp(new Date().getTime()));
+            oldEntry.setJobStatus(response.getJobStatus());
+            workerHeartBeatMsgRepository.save(oldEntry);
 
             JobEntry jobEntry = jobService.findById(response.getJobId());
             if (jobEntry.getnStatus()==Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND_IN_WORKER)) {
@@ -59,7 +61,7 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
                 jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
             }
         } catch (Exception e) {
-            LOGGER.info("Error during jobExecutor message processing: ", e.getMessage());
+            LOGGER.info("Error during jobExecutor message processing for job with id " + response.getJobId() + " and entry with id " + response.getId(), e);
             return;
         }
     }
