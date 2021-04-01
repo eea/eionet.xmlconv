@@ -155,12 +155,12 @@ public class FixedTimeScheduledTasks {
             }
             if (instances.size() == 1) {
                 return;
-            }
+            }                         // 3
             Integer workersToDelete = readyWorkers.size() - jobs.size();
             Integer count = 1;
-
+            Integer workersDeleted =1;
             for (JobExecutor worker : readyWorkers) {
-                if (count == workersToDelete) {
+                while(workersDeleted<=workersToDelete){
                     try {
                         instances = servicesOrchestrator.getContainerInstances(serviceId);
                     } catch (RancherApiException e) {
@@ -168,6 +168,7 @@ public class FixedTimeScheduledTasks {
                         return;
                     }
                     if (instances.size() == 1) {
+                        LOGGER.info("Only one worker instance found. No deletion required. Task Exiting.");
                         return;
                     }
                     try {
@@ -176,13 +177,10 @@ public class FixedTimeScheduledTasks {
                     } catch (RancherApiException e) {
                         LOGGER.error("Error Deleting worker " + worker.getName() + ", " + e);
                     }
+                    workersDeleted++;
+
                 }
-                try {
-                    deleteFromRancherAndDatabase(worker);
-                } catch (RancherApiException e) {
-                    LOGGER.error("Error Deleting worker " + worker.getName() + ", " + e);
-                }
-                count++;
+
             }
         }
 
@@ -238,31 +236,18 @@ public class FixedTimeScheduledTasks {
 
     @Transactional
     @Scheduled(cron = "0 */2 * * * *") //Every 2 minutes
-    public void checkWorkersStatusInRancherAndUpdateDB() throws RancherApiException {
+    public void synchronizeRancherContainersAndDbEntriesByExistenceAndStatus() throws RancherApiException {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
         try {
             //Retrieve jobExecutor instances names from Rancher
             List<String> instances = servicesOrchestrator.getContainerInstances(Properties.rancherJobExecServiceId);
-            for (String containerId : instances) {
-                //for each instance find status
-                ContainerData data = containersOrchestrator.getContainerInfoById(containerId);
-                String healthState = data.getHealthState();
-                if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue())) {
-                    //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
-                    String containerName = data.getName();
-                    JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, "");
-                    jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
-                    jobExecutor = jobExecutorService.findByName(containerName);
-                    String heartBeatQueue = "";
-                    if (jobExecutor != null && jobExecutor.getHeartBeatQueue() != null) {
-                        heartBeatQueue = jobExecutor.getHeartBeatQueue();
-                    }
-                    JobExecutorHistory entry = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
-                    jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
-                }
-            }
+            this.updateDbContainersHealthStatusFromRancher(instances);
+
+            List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
+            this.synchronizeRancherContainersWithDbEntries(jobExecutors, instances);
+
         } catch (RancherApiException rae) {
             LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
             throw rae;
@@ -309,6 +294,41 @@ public class FixedTimeScheduledTasks {
                 jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
                 XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
                 jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+            }
+        }
+    }
+
+
+    protected void updateDbContainersHealthStatusFromRancher(List<String> instances) throws RancherApiException {
+        //
+        for (String containerId : instances) {
+            //for each instance find status
+            ContainerData data = containersOrchestrator.getContainerInfoById(containerId);
+            String healthState = data.getHealthState();
+            if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue())) {
+                //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
+                String containerName = data.getName();
+                JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, "");
+                jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
+                jobExecutor = jobExecutorService.findByName(containerName);
+                String heartBeatQueue = "";
+                if (jobExecutor != null && jobExecutor.getHeartBeatQueue() != null) {
+                    heartBeatQueue = jobExecutor.getHeartBeatQueue();
+                }
+                JobExecutorHistory entry = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
+                jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
+            }
+        }
+    }
+
+
+    protected void synchronizeRancherContainersWithDbEntries(List<JobExecutor> jobExecutors, List<String> instances) {
+        for (JobExecutor jobExecutor :
+                jobExecutors) {
+            if (!instances.contains(jobExecutor.getContainerId())) {
+                LOGGER.info("Container retrieved form Database  with ID:" + jobExecutor.getContainerId() + " and name:" + jobExecutor.getName() +
+                        " doesn't exist on rancher.Proceeding with deletion from Database");
+                jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
             }
         }
     }

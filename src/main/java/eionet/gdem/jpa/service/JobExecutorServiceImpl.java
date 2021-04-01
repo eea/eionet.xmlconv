@@ -61,6 +61,11 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             throw e;
         }
     }
+
+    @Override
+    public void deleteByContainerId(String containerId) {
+        this.jobExecutorRepository.deleteByContainerId(containerId);
+    }
 }
 
 

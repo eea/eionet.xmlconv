@@ -11,4 +11,6 @@ public interface JobExecutorService {
     void saveOrUpdateJobExecutor(JobExecutor jobExecutor);
 
     List<JobExecutor> listJobExecutor();
+
+    void deleteByContainerId(String containerId);
 }
