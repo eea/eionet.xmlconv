@@ -6,6 +6,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
@@ -57,7 +58,7 @@ public class WorkerHeartBeatResponseReceiverTest {
     }
 
     @Test
-    public void testOnMessage() throws JsonProcessingException {
+    public void testOnMessage() throws JsonProcessingException, DatabaseException {
         String[] scriptParams = new String[0];
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12452");

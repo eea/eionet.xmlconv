@@ -3,6 +3,7 @@ package eionet.gdem.services.impl;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.JobHistoryService;
@@ -78,7 +79,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
     }
 
     @Override
-    public void updateStatusesAndJobExecutorName(XQScript script, Integer nStatus, Integer internalStatus, String jobExecutorName, String jobType) {
+    public void updateStatusesAndJobExecutorName(XQScript script, Integer nStatus, Integer internalStatus, String jobExecutorName, String jobType) throws DatabaseException {
         try {
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(script.getJobId(), nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(internalStatus);
@@ -88,7 +89,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
             LOGGER.info("Job with id=" + script.getJobId() + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing status of job with id " + script.getJobId() + ", " + e.toString());
-            throw e;
+            throw new DatabaseException(e.getMessage());
         }
     }
 }

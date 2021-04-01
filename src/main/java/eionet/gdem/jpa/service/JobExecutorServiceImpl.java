@@ -1,6 +1,7 @@
 package eionet.gdem.jpa.service;
 
 import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,20 +25,20 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     }
 
     @Override
-    public JobExecutor findByName(String jobExecutorName) {
+    public JobExecutor findByName(String jobExecutorName) throws DatabaseException {
         JobExecutor jobExecutor = null;
         try {
             jobExecutor = jobExecutorRepository.findByName(jobExecutorName);
         } catch (Exception e) {
             LOGGER.info("Database exception during retrieval of jobExecutor with name " + jobExecutorName);
-            throw e;
+            throw new DatabaseException(e.getMessage());
         }
         return jobExecutor;
     }
 
     @Transactional
     @Override
-    public void saveOrUpdateJobExecutor(JobExecutor jobExecutor) {
+    public void saveOrUpdateJobExecutor(JobExecutor jobExecutor) throws DatabaseException {
         try {
             JobExecutor jobExec = jobExecutorRepository.findByName(jobExecutor.getName());
             if (jobExec!=null) {
@@ -47,24 +48,44 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             }
         } catch (Exception e) {
             LOGGER.error("Database exception when updating worker with name " + jobExecutor.getName() + ", " + e.toString());
-            throw e;
+            throw new DatabaseException(e.getMessage());
         }
     }
 
     @Transactional
     @Override
-    public List<JobExecutor> listJobExecutor() {
+    public List<JobExecutor> listJobExecutor() throws DatabaseException {
         try {
             return jobExecutorRepository.findAll();
         } catch (Exception e) {
             LOGGER.error("Database exception when retrieving entries from JOB_EXECUTOR table");
-            throw e;
+            throw new DatabaseException(e.getMessage());
         }
     }
 
     @Override
-    public void deleteByContainerId(String containerId) {
-        this.jobExecutorRepository.deleteByContainerId(containerId);
+    public void deleteByContainerId(String containerId) throws DatabaseException {
+        try {
+            this.jobExecutorRepository.deleteByContainerId(containerId);
+        } catch (Exception e) {
+            LOGGER.error("Database exception when deleting jobExecutor with id " + containerId);
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<JobExecutor> findByStatus(Integer status) {
+        return jobExecutorRepository.findByStatus(status);
+    }
+
+    @Override
+    public void deleteByName(String name) throws DatabaseException {
+        try {
+           jobExecutorRepository.deleteByName(name);
+        } catch (Exception e) {
+            LOGGER.error("Database exception while trying to delete jobExecutor with name " + name);
+            throw new DatabaseException(e.getMessage());
+        }
     }
 }
 

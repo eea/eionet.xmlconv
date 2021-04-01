@@ -4,6 +4,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -30,7 +32,7 @@ public class JobServiceImpl implements JobService {
 
     @Transactional
     @Override
-    public void changeNStatus(Integer jobId, Integer status) {
+    public void changeNStatus(Integer jobId, Integer status) throws DatabaseException {
         try {
             jobRepository.updateJobNStatus(status, Properties.getHostname(), new Timestamp(new Date().getTime()), jobId);
             if (status == 3)
@@ -43,18 +45,18 @@ public class JobServiceImpl implements JobService {
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_FATAL_ERR + ".");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing status of job with id " + jobId + ", " + e.toString());
-            throw e;
+            throw new DatabaseException(e.getMessage());
         }
     }
 
     @Transactional
     @Override
-    public void changeIntStatusAndJobExecutorName(InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, Integer jobId) {
+    public void changeIntStatusAndJobExecutorName(InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, Integer jobId) throws DatabaseException {
         try {
             jobRepository.updateIntStatusAndJobExecutorName(intStatus, jobExecutorName, timestamp, jobId);
         } catch (Exception e) {
             LOGGER.error("Database exception when changing internal status of job with id " + jobId + ", " + e.toString());
-            throw e;
+            throw new DatabaseException(e.getMessage());
         }
     }
 
@@ -68,6 +70,16 @@ public class JobServiceImpl implements JobService {
             throw e;
         }
         return jobEntry;
+    }
+
+    @Override
+    public List<JobEntry> findByIntSchedulingStatus(InternalSchedulingStatus intSchedulingStatus) {
+        return jobRepository.findByIntSchedulingStatus(intSchedulingStatus);
+    }
+
+    @Override
+    public List<JobEntry> findProcessingJobs() {
+        return jobRepository.findProcessingJobs();
     }
 }
 

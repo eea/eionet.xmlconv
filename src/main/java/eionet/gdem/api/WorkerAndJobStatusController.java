@@ -6,6 +6,7 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
@@ -40,7 +41,7 @@ public class WorkerAndJobStatusController {
     }
 
     @PostMapping("/fail")
-    public void changeJobAndWorkerStatusToFailed(HttpSession session) {
+    public void changeJobAndWorkerStatusToFailed(HttpSession session) throws DatabaseException {
         Integer jobId = (Integer) session.getAttribute("jobId");
         if (jobId!=null) {
             try {

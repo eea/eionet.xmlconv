@@ -4,6 +4,7 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.jpa.service.JobService;
@@ -88,7 +89,7 @@ public class RabbitMQMessageFactoryImplTest {
     }
 
     @Test
-    public void createScriptAndSendMessageToRabbitMQTest() throws SQLException, CreateRabbitMQMessageException {
+    public void createScriptAndSendMessageToRabbitMQTest() throws SQLException, CreateRabbitMQMessageException, DatabaseException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, "627015", 1, new Timestamp(new Date().getTime()),null, null, null , null);
         when(jobRepository.findById(anyInt())).thenReturn(jobEntry);
         doNothing().when(jobService).changeNStatus(anyInt(), anyInt());

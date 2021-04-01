@@ -8,6 +8,7 @@ import eionet.gdem.exceptions.JobNotFoundException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.jpa.service.JobService;
@@ -291,7 +292,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
      * @param status Job status to be stored in DB.
      * @throws Exception Unable to store data into DB.
      */
-     void changeStatus(int status,String jobId) {
+     void changeStatus(int status,String jobId) throws DatabaseException {
          jobService.changeNStatus(Integer.parseInt(jobId), status);
     }
 

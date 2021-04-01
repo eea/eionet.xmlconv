@@ -4,6 +4,7 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
@@ -32,7 +33,7 @@ public class JobUtils {
         this.jobHistoryService = jobHistoryService;
     }
 
-    public static void updateJobAndJobExecTables(Integer nStatus, Integer internalStatus, WorkerJobInfoRabbitMQResponse response, String containerId, JobEntry jobEntry) {
+    public static void updateJobAndJobExecTables(Integer nStatus, Integer internalStatus, WorkerJobInfoRabbitMQResponse response, String containerId, JobEntry jobEntry) throws DatabaseException {
         XQScript script = response.getScript();
         jobService.changeNStatus(Integer.parseInt(script.getJobId()), nStatus);
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(internalStatus);

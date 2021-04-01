@@ -1,7 +1,7 @@
 package eionet.gdem.jpa.service;
 
-import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobExecutorHistoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,23 +25,23 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
 
     @Transactional
     @Override
-    public void saveJobExecutorHistoryEntry(JobExecutorHistory entry) {
+    public void saveJobExecutorHistoryEntry(JobExecutorHistory entry) throws DatabaseException {
         try {
             repository.save(entry);
         } catch (Exception e) {
             LOGGER.error("Database exception when saving into JOB_EXECUTOR_HISTORY table worker with name " + entry.getName());
-            throw e;
+            throw new DatabaseException(e.getMessage());
         }
     }
 
     @Transactional
     @Override
-    public List<JobExecutorHistory> getJobExecutorHistoryEntriesById(String containerId){
+    public List<JobExecutorHistory> getJobExecutorHistoryEntriesById(String containerId) throws DatabaseException {
         try {
             return repository.findByContainerId(containerId);
         } catch (Exception e) {
             LOGGER.error("Database exception when retrieving history for container with id " + containerId);
-            throw e;
+            throw new DatabaseException(e.getMessage());
         }
     }
 }
