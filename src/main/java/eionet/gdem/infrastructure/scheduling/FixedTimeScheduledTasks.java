@@ -3,6 +3,7 @@ package eionet.gdem.infrastructure.scheduling;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
+import eionet.gdem.infrastructure.scheduling.services.HeartBeatMsgHandlerService;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
@@ -64,6 +65,8 @@ public class FixedTimeScheduledTasks {
     private JobHistoryService jobHistoryService;
     @Autowired
     private RabbitAdmin rabbitAdmin;
+    @Autowired
+    HeartBeatMsgHandlerService heartBeatMsgHandlerService;
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
 
@@ -260,21 +263,10 @@ public class FixedTimeScheduledTasks {
     public void sendPeriodicHeartBeatMessages() {
         List<JobEntry> processingJobs = jobService.findProcessingJobs();
         for (JobEntry jobEntry : processingJobs) {
-            try {
-                WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
-                WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
-                this.saveHeartBeatMessageAndSendToRabbitmq(heartBeatMsgInfo, workerHeartBeatMsgEntry);
-            } catch (Exception e) {
-                LOGGER.info("Error while setting heart beat message for job with id " + jobEntry.getId() + ", " + e.getMessage());
-            }
+            WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
+            WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
+            heartBeatMsgHandlerService.saveMsgAndSendToRabbitMQ(heartBeatMsgInfo, workerHeartBeatMsgEntry);
         }
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    protected void saveHeartBeatMessageAndSendToRabbitmq(WorkerHeartBeatMessageInfo heartBeatMsgInfo, WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry) {
-        workerHeartBeatMsgEntry = workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
-        heartBeatMsgInfo.setId(workerHeartBeatMsgEntry.getId());
-        rabbitMQMessageSender.sendHeartBeatMessage(heartBeatMsgInfo);
     }
 
     /**
