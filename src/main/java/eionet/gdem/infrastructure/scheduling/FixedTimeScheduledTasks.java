@@ -284,16 +284,20 @@ public class FixedTimeScheduledTasks {
      */
     @Transactional
     @Scheduled(cron = "0 */5 * * * *")  //every 5 minutes
-    public void checkHeartBeatMessagesForProcessingJobs() throws DatabaseException {
+    public void checkHeartBeatMessagesForProcessingJobs() {
         List<JobEntry> processingJobs = jobService.findProcessingJobs();
         for (JobEntry jobEntry : processingJobs) {
-            List<WorkerHeartBeatMsgEntry> heartBeatMsgList = workerHeartBeatMsgService.findUnAnsweredHeartBeatMessages(jobEntry.getId());
-            if (heartBeatMsgList.size() >= MIN_UNANSWERED_REQUESTS) {
-                jobService.changeNStatus(jobEntry.getId(), Constants.XQ_FATAL_ERR);
-                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
-                XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
-                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+            try {
+                List<WorkerHeartBeatMsgEntry> heartBeatMsgList = workerHeartBeatMsgService.findUnAnsweredHeartBeatMessages(jobEntry.getId());
+                if (heartBeatMsgList.size() >= MIN_UNANSWERED_REQUESTS) {
+                    jobService.changeNStatus(jobEntry.getId(), Constants.XQ_FATAL_ERR);
+                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                    jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
+                    XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
+                    jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+                }
+            } catch (DatabaseException e) {
+                LOGGER.error("Error while checking heart beat messages for job with id " + jobEntry.getId());
             }
         }
     }
