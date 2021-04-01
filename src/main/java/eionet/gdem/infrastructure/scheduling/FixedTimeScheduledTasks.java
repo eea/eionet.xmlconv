@@ -274,7 +274,7 @@ public class FixedTimeScheduledTasks {
      * and sends messages to workers asking whether they are executing a specific job. The task also saves a record with the message request in the
      * table WORKER_HEART_BEAT_MSG
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Scheduled(cron = "0 */1 * * * *")  //every minute
     public void sendPeriodicHeartBeatMessages() {
         List<JobEntry> processingJobs = jobRepository.findProcessingJobs();
@@ -287,6 +287,7 @@ public class FixedTimeScheduledTasks {
                 rabbitMQMessageSender.sendHeartBeatMessage(heartBeatMsgInfo);
             } catch (Exception e) {
                 LOGGER.info("Error while setting heart beat message for job with id " + jobEntry.getId() + ", " + e.getMessage());
+                throw e;
             }
         }
     }
