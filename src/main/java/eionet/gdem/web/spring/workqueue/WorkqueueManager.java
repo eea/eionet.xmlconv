@@ -28,9 +28,13 @@ import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.jpa.service.JobExecutorHistoryService;
+import eionet.gdem.jpa.service.JobExecutorService;
+import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.QueryService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.services.SchedulerService;
 import eionet.gdem.utils.SecurityUtil;
@@ -39,6 +43,7 @@ import org.quartz.JobKey;
 import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -351,6 +356,16 @@ public class WorkqueueManager {
                         if ( "2".equals(jobData[3]) ) {
                             try {
 
+                                List<JobHistoryEntry> entries = getJobHistoryRepository().findByJobName(jobId);
+                                if(entries.size()==0){
+                                    LOGGER.info("Could not find job with id " + jobId + " in history table when cancelling it");
+                                }
+                                else{
+                                    JobHistoryEntry entry = entries.get(entries.size()-1);
+                                    getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.DELETED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                                    LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY as CANCELLED");
+                                }
+
                                 if(Properties.enableQuartz) {
                                     if (getQuartzScheduler().checkExists(qJob)) {
                                         // try to interrupt running job
@@ -361,20 +376,27 @@ public class WorkqueueManager {
                                     }
                                 }
                                 else{
-
-                                    //TODO
-
-                                }
-
-
-                                List<JobHistoryEntry> entries = getJobHistoryRepository().findByJobName(jobId);
-                                if(entries.size()==0){
-                                    LOGGER.info("Could not find job with id " + jobId + " in history table when cancelling it");
-                                }
-                                else{
-                                    JobHistoryEntry entry = entries.get(entries.size()-1);
-                                    getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_CANCELLED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
-                                    LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY as CANCELLED");
+                                    //make job_executor status failed
+                                    Integer jobIdInt = Integer.parseInt(jobId);
+                                    if (jobIdInt!=null) {
+                                        JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
+                                        if (jobEntry.getJobExecutorName()!=null) {
+                                            JobExecutor jobExecutor = getJobExecutorServiceBean().findByName(jobEntry.getJobExecutorName());
+                                            getJobExecutorServiceBean().updateJobExecutor(SchedulingConstants.WORKER_FAILED, jobIdInt, jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), jobExecutor.getHeartBeatQueue());
+                                            JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                                            getJobExecutorHistoryServiceBean().saveJobExecutorHistoryEntry(entry);
+                                        }
+                                        getJobServiceBean().changeNStatus(jobIdInt, Constants.DELETED);
+                                        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                                        getJobServiceBean().changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobIdInt);
+                                        XQScript script = new XQScript();
+                                        script.setJobId(jobId.toString());
+                                        script.setSrcFileUrl(jobEntry.getUrl());
+                                        script.setScriptFileName(jobEntry.getFile());
+                                        script.setStrResultFile(jobEntry.getResultFile());
+                                        script.setScriptType(jobEntry.getScriptType());
+                                        getJobHistoryServiceBean().updateStatusesAndJobExecutorName(script, Constants.DELETED, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+                                    }
                                 }
 
                             }catch (UnableToInterruptJobException e) {
@@ -385,34 +407,39 @@ public class WorkqueueManager {
                                 continue;
                             }
                         }
-
-                        jobsToDelete.add(jobId);
-                        // delete also result files from file system tmp folder
-                        String resultFile = jobData[2];
-                        try {
-                            Utils.deleteFile(resultFile);
-                        } catch (Exception e) {
-                            LOGGER.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
-                        }
-                        // delete xquery files, if they are stored in tmp folder
-                        String xqFile = jobData[1];
-                        try {
-                            // Important!!!: delete only, when the file is stored in tmp folder
-                            if (xqFile.startsWith(Properties.tmpFolder)) {
-                                Utils.deleteFile(xqFile);
+                        else{
+                            jobsToDelete.add(jobId);
+                            // delete also result files from file system tmp folder
+                            String resultFile = jobData[2];
+                            try {
+                                Utils.deleteFile(resultFile);
+                            } catch (Exception e) {
+                                LOGGER.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
                             }
-                        } catch (Exception e) {
-                            LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
+                            // delete xquery files, if they are stored in tmp folder
+                            String xqFile = jobData[1];
+                            try {
+                                // Important!!!: delete only, when the file is stored in tmp folder
+                                if (xqFile.startsWith(Properties.tmpFolder)) {
+                                    Utils.deleteFile(xqFile);
+                                }
+                            } catch (Exception e) {
+                                LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
+                            }
                         }
+                        if(!Properties.enableQuartz && "2".equals(jobData[3]) ) {
+                            GDEMServices.getDaoService().getXQJobDao().changeJobStatus(jobId, Constants.DELETED);
+                        }
+                        else{
+                            GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
+                        }
+                        LOGGER.info("Deleted job " + jobId);
+
                     }
                 }
                 catch (Exception e) {
                     LOGGER.error("Could not delete job result files!" + e.getMessage());
                 }
-                jobIds = new String[ jobsToDelete.size() ];
-                jobsToDelete.toArray(jobIds );
-                GDEMServices.getDaoService().getXQJobDao().endXQJobs(jobIds);
-                LOGGER.info("Jobs deleted: " + Utils.stringArray2String(jobIds, "," ));
             }
 
         } catch (Exception e) {
@@ -460,5 +487,21 @@ public class WorkqueueManager {
 
     private static SchedulerService getSchedulerServiceBean() {
         return (SchedulerService) SpringApplicationContext.getBean("schedulerService");
+    }
+
+    private static JobService getJobServiceBean() {
+        return (JobService) SpringApplicationContext.getBean("jobService");
+    }
+
+    private static JobExecutorService getJobExecutorServiceBean() {
+        return (JobExecutorService) SpringApplicationContext.getBean("jobExecutorService");
+    }
+
+    private static JobHistoryService getJobHistoryServiceBean() {
+        return (JobHistoryService) SpringApplicationContext.getBean("jobHistoryService");
+    }
+
+    private static JobExecutorHistoryService getJobExecutorHistoryServiceBean() {
+        return (JobExecutorHistoryService) SpringApplicationContext.getBean("jobExecutorHistoryService");
     }
 }

@@ -16,7 +16,9 @@ import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
+import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -75,8 +77,28 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 //TODO maybe other status
                 updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, deadLetterMessage, containerId, jobEntry);
             }
-            else if(deadLetterMessage.getErrorStatus() == Constants.XQ_CANCELLED){
-                //TODO update db
+            else if(deadLetterMessage.getErrorStatus() == Constants.DELETED){
+                //delete temp files and entry from T_XQJOBS table
+                String jobId = script.getJobId();
+                // delete also result files from file system tmp folder
+                try {
+                    Utils.deleteFile(script.getStrResultFile());
+                } catch (Exception e) {
+                    LOGGER.error("Could not delete job result file: " + script.getStrResultFile() + "." + e.getMessage());
+                }
+                // delete xquery files, if they are stored in tmp folder
+                String xqFile = script.getOrigFileUrl();
+                try {
+                    // Important!!!: delete only, when the file is stored in tmp folder
+                    if (xqFile.startsWith(Properties.tmpFolder)) {
+                        Utils.deleteFile(xqFile);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
+                }
+
+                GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
+                LOGGER.info("Deleted job: " + jobId + " from the database");
             }
             else{
                 LOGGER.info("Received message in DEAD LETTER QUEUE with unknown status: " + deadLetterMessage.getErrorStatus());

@@ -1,6 +1,5 @@
 package eionet.gdem.jpa.service;
 
-import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.repositories.JobExecutorHistoryRepository;
 import org.slf4j.Logger;
@@ -11,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Service("jobExecutorHistoryService")
 public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobExecutorServiceImpl.class);

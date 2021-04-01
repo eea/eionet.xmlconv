@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Service("jobExecutorService")
 public class JobExecutorServiceImpl implements JobExecutorService {
 
     private JobExecutorRepository jobExecutorRepository;

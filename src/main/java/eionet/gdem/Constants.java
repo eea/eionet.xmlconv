@@ -39,7 +39,7 @@ public interface Constants {
     int XQ_LIGHT_ERR = 5; // error, can be tried again
     int XQ_JOBNOTFOUND_ERR = 6; // job not found or result has been downloadad
 
-    int XQ_CANCELLED = 8; // cancelled by cdr/bdr
+    int DELETED = 8; // cancelled and deleted by cdr/bdr
 
     int XQ_INTERRUPTED = 7; // job interrupted
 
