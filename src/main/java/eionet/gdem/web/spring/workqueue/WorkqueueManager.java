@@ -382,7 +382,8 @@ public class WorkqueueManager {
                                         JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
                                         if (jobEntry.getJobExecutorName()!=null) {
                                             JobExecutor jobExecutor = getJobExecutorServiceBean().findByName(jobEntry.getJobExecutorName());
-                                            getJobExecutorServiceBean().updateJobExecutor(SchedulingConstants.WORKER_FAILED, jobIdInt, jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), jobExecutor.getHeartBeatQueue());
+                                            jobExecutor.setJobId(jobIdInt).setStatus(SchedulingConstants.WORKER_FAILED).setName(jobEntry.getJobExecutorName());
+                                            getJobExecutorServiceBean().saveOrUpdateJobExecutor(jobExecutor);
                                             JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
                                             getJobExecutorHistoryServiceBean().saveJobExecutorHistoryEntry(entry);
                                         }

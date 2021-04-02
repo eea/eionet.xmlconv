@@ -7,7 +7,9 @@ import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
@@ -120,13 +122,14 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
         }
     }
 
-    void updateJobAndJobExecTables(Integer nStatus, Integer internalStatus, WorkerJobRabbitMQRequest request, String containerId, JobEntry jobEntry) {
+    void updateJobAndJobExecTables(Integer nStatus, Integer internalStatus, WorkerJobRabbitMQRequest request, String containerId, JobEntry jobEntry) throws DatabaseException {
         XQScript script = request.getScript();
         jobService.changeNStatus(Integer.parseInt(script.getJobId()), nStatus);
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(internalStatus);
         jobService.changeIntStatusAndJobExecutorName(intStatus, request.getJobExecutorName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
         jobHistoryService.updateStatusesAndJobExecutorName(script, nStatus, internalStatus, request.getJobExecutorName(), jobEntry.getJobType());
-        jobExecutorService.updateJobExecutor(request.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), request.getJobExecutorName(), containerId, request.getHeartBeatQueue());
+        JobExecutor jobExecutor = new JobExecutor(request.getJobExecutorName(), request.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), containerId, request.getHeartBeatQueue());
+        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
         JobExecutorHistory entry = new JobExecutorHistory(request.getJobExecutorName(), containerId, request.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), request.getHeartBeatQueue());
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
     }
