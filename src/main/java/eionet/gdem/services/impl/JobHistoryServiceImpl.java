@@ -67,6 +67,9 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                 case 7:
                     entry.setFullStatusName("JOB INTERRUPTED");
                     break;
+                case 8:
+                    entry.setFullStatusName("DELETED");
+                    break;
                 case 9:
                     entry.setFullStatusName("CANCELLED BY USER");
                     break;
