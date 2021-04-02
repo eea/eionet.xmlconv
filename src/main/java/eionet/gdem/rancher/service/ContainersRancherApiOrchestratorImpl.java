@@ -150,9 +150,8 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         ResponseEntity<ContainerData> newContainerReplacingTheJustDeletedOne = null;
         try {
             timer.start();
-            String containerId;
             HttpEntity<ContainerData> entity = new HttpEntity<>(TemplateConfig.getHeaders());
-            containerId = getContainerId(containerName);
+            String containerId = getContainerId(containerName);
             ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
             String serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);
             //instancesBeforeDelete is the number of container instances we have before we start deleting a container
@@ -203,7 +202,13 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         LOGGER.info("Attempting to synchronize Rancher Scale number and actual containers ");
         ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
         List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        if (serviceInfo.getScale() < instances.size()) {
+        int instancesSize;
+        if (instances == null) {
+            instancesSize = 0;
+        } else {
+            instancesSize = instances.size();
+        }
+        if (serviceInfo.getScale() < instancesSize) {
             Integer newScale = instances.size() - serviceInfo.getScale();
             ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(serviceInfo.getScale() + newScale);
             LOGGER.info("Scaling up again because of error");
@@ -237,7 +242,13 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         } catch (RancherApiException ex) {
             throw new ContainerScalingFailedException("Failed to Scale down containers by 1");
         }
-        if (instancesAfterDelete.size() == instancesBeforeDelete.size()) {
+        int instancesSizeAfterDelete;
+        if (instancesAfterDelete == null) {
+            instancesSizeAfterDelete = 0;
+        } else {
+            instancesSizeAfterDelete = instancesAfterDelete.size();
+        }
+        if (instancesSizeAfterDelete == instancesBeforeDelete.size()) {
             LOGGER.info("Scale Down Failed.");
             try {
                 this.synchronizeRancherScaleAndActualContainers(serviceId);
@@ -246,7 +257,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             }
             throw new ContainerScalingFailedException("Failed to Scale down containers by 1");
         }
-        if (instancesAfterDelete.size() == instancesBeforeDelete.size() - 1) {
+        if (instancesSizeAfterDelete == instancesBeforeDelete.size() - 1) {
             LOGGER.info("Scaled down Successfully.");
             return;
         }

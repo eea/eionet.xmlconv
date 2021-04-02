@@ -218,12 +218,18 @@ public class FixedTimeScheduledTasks {
         List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
         Integer maxJobExecutorsAllowed = Properties.maxJobExecutorContainersAllowed;
         Integer scale = newWorkers;
-        if (instances.size() == maxJobExecutorsAllowed) {
-            return;
-        } else if (instances.size() + newWorkers > maxJobExecutorsAllowed) {
-            scale = maxJobExecutorsAllowed - instances.size();
+        int instancesSize;
+        if (instances == null) {
+            instancesSize = 0;
+        } else {
+            instancesSize = instances.size();
         }
-        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size() + scale);
+        if (instancesSize == maxJobExecutorsAllowed) {
+            return;
+        } else if (instancesSize + newWorkers > maxJobExecutorsAllowed) {
+            scale = maxJobExecutorsAllowed - instancesSize;
+        }
+        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instancesSize + scale);
         servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         LOGGER.info("Created " + scale + " new worker(s)");
     }
@@ -244,6 +250,9 @@ public class FixedTimeScheduledTasks {
         try {
             //Retrieve jobExecutor instances names from Rancher
             List<String> instances = servicesOrchestrator.getContainerInstances(Properties.rancherJobExecServiceId);
+            if (instances==null) {
+                return;
+            }
             this.updateDbContainersHealthStatusFromRancher(instances);
 
             List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
@@ -302,14 +311,10 @@ public class FixedTimeScheduledTasks {
             if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue())) {
                 //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
                 String containerName = data.getName();
-                JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, "");
+                String heartBeatQueue = containerName + "-queue";
+                JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, heartBeatQueue);
                 try {
                     jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
-                    jobExecutor = jobExecutorService.findByName(containerName);
-                    String heartBeatQueue = "";
-                    if (jobExecutor != null && jobExecutor.getHeartBeatQueue() != null) {
-                        heartBeatQueue = jobExecutor.getHeartBeatQueue();
-                    }
                     JobExecutorHistory entry = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
                     jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
                 } catch (DatabaseException e) {
@@ -326,6 +331,10 @@ public class FixedTimeScheduledTasks {
                         " doesn't exist on rancher.Proceeding with deletion from Database");
                 try {
                     jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
+                    boolean queueDeleted = rabbitAdmin.deleteQueue(jobExecutor.getHeartBeatQueue());
+                    if (!queueDeleted) {
+                        LOGGER.error("Worker Heartbeat queue  could not be deleted:" + jobExecutor.getHeartBeatQueue());
+                    }
                 } catch (DatabaseException e) {
                     LOGGER.error("Task failed for jobExecutor with name " + jobExecutor.getName());
                 }
