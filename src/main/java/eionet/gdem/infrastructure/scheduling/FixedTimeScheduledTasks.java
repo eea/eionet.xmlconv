@@ -56,8 +56,6 @@ public class FixedTimeScheduledTasks {
     @Autowired
     private JobExecutorHistoryService jobExecutorHistoryService;
     @Autowired
-    private RabbitMQMessageSender rabbitMQMessageSender;
-    @Autowired
     private WorkerHeartBeatMsgService workerHeartBeatMsgService;
     @Autowired
     private JobService jobService;
@@ -218,18 +216,12 @@ public class FixedTimeScheduledTasks {
         List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
         Integer maxJobExecutorsAllowed = Properties.maxJobExecutorContainersAllowed;
         Integer scale = newWorkers;
-        int instancesSize;
-        if (instances == null) {
-            instancesSize = 0;
-        } else {
-            instancesSize = instances.size();
-        }
-        if (instancesSize == maxJobExecutorsAllowed) {
+        if (instances.size() == maxJobExecutorsAllowed) {
             return;
-        } else if (instancesSize + newWorkers > maxJobExecutorsAllowed) {
-            scale = maxJobExecutorsAllowed - instancesSize;
+        } else if (instances.size() + newWorkers > maxJobExecutorsAllowed) {
+            scale = maxJobExecutorsAllowed - instances.size();
         }
-        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instancesSize + scale);
+        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size() + scale);
         servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         LOGGER.info("Created " + scale + " new worker(s)");
     }
@@ -250,9 +242,6 @@ public class FixedTimeScheduledTasks {
         try {
             //Retrieve jobExecutor instances names from Rancher
             List<String> instances = servicesOrchestrator.getContainerInstances(Properties.rancherJobExecServiceId);
-            if (instances==null) {
-                return;
-            }
             this.updateDbContainersHealthStatusFromRancher(instances);
 
             List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
@@ -342,20 +331,3 @@ public class FixedTimeScheduledTasks {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
