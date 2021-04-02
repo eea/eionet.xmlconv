@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-@Service
+@Service("jobService")
 public class JobServiceImpl implements JobService {
 
     JobRepository jobRepository;
@@ -37,10 +37,12 @@ public class JobServiceImpl implements JobService {
             jobRepository.updateJobNStatus(status, Properties.getHostname(), new Timestamp(new Date().getTime()), jobId);
             if (status == 3)
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.JOB_READY + ".");
-            else if (status == 7)
+            else if (status == Constants.XQ_INTERRUPTED)
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_INTERRUPTED + ".");
-            else if (status == 9)
+            else if (status == Constants.CANCELLED_BY_USER)
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.CANCELLED_BY_USER + ".");
+            else if (status == Constants.DELETED)
+                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.DELETED + ".");
             else
                 LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_FATAL_ERR + ".");
         } catch (Exception e) {

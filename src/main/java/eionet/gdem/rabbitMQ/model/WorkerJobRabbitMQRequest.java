@@ -6,7 +6,14 @@ public class WorkerJobRabbitMQRequest {
 
     private XQScript script;
     private String jobExecutorName;
-    private String errorMsg;
+    private Integer jobExecutionRetries;
+    private String errorMessage;
+    private Integer errorStatus;
+    private Integer jobExecutorStatus;
+    private String heartBeatQueue;
+
+    public WorkerJobRabbitMQRequest(){
+    }
 
     public WorkerJobRabbitMQRequest(XQScript script) {
         this.script = script;
@@ -30,11 +37,43 @@ public class WorkerJobRabbitMQRequest {
         return this;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
+    public Integer getJobExecutionRetries() {
+        return jobExecutionRetries;
     }
 
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+    public void setJobExecutionRetries(Integer jobExecutionRetries) {
+        this.jobExecutionRetries = jobExecutionRetries;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public Integer getErrorStatus() {
+        return errorStatus;
+    }
+
+    public void setErrorStatus(Integer errorStatus) {
+        this.errorStatus = errorStatus;
+    }
+
+    public Integer getJobExecutorStatus() {
+        return jobExecutorStatus;
+    }
+
+    public void setJobExecutorStatus(Integer jobExecutorStatus) {
+        this.jobExecutorStatus = jobExecutorStatus;
+    }
+
+    public String getHeartBeatQueue() {
+        return heartBeatQueue;
+    }
+
+    public void setHeartBeatQueue(String heartBeatQueue) {
+        this.heartBeatQueue = heartBeatQueue;
     }
 }

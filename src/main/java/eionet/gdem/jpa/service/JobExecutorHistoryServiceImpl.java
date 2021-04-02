@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Service("jobExecutorHistoryService")
 public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobExecutorServiceImpl.class);

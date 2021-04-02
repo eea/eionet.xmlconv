@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Service
+@Service("jobHistoryService")
 public class JobHistoryServiceImpl implements JobHistoryService {
 
     @Qualifier("jobHistoryRepository")

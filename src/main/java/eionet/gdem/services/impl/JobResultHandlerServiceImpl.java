@@ -113,6 +113,9 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
         } else if (status == Constants.CANCELLED_BY_USER) {
             resultCode = Constants.CANCELLED_BY_USER;
             resultValue = "*** Not ready ***";
+        }
+        else if (status == Constants.DELETED) {
+            resultCode = Constants.DELETED;
         } else if (status == Constants.XQ_JOBNOTFOUND_ERR) {
             resultCode = Constants.JOB_LIGHT_ERROR;
             resultValue = "*** No such job or the job result has been already downloaded. ***";

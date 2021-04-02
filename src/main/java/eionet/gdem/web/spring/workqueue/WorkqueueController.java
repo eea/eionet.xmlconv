@@ -141,7 +141,7 @@ public class WorkqueueController {
 
 
             if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING ||
-                    status == Constants.XQ_INTERRUPTED || status == Constants.CANCELLED_BY_USER)
+                    status == Constants.XQ_INTERRUPTED || status == Constants.CANCELLED_BY_USER || status == Constants.DELETED)
                 resultFile = null;
             job.setResultFile(resultFile);
 
@@ -164,6 +164,8 @@ public class WorkqueueController {
                 statusName = "INTERRUPTED";
             if (status == Constants.CANCELLED_BY_USER)
                 statusName = "CANCELLED BY USER";
+            if (status == Constants.DELETED)
+                statusName = "DELETED";
 
             job.setStatusName(statusName);
             if (url.indexOf(Constants.GETSOURCE_URL) > 0 && url.indexOf(Constants.SOURCE_URL_PARAM) > 0) {

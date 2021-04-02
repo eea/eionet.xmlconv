@@ -73,4 +73,5 @@ public class WorkerJobInfoRabbitMQResponse {
     public void setHeartBeatQueue(String heartBeatQueue) {
         this.heartBeatQueue = heartBeatQueue;
     }
+
 }

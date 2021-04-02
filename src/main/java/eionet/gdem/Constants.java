@@ -39,12 +39,13 @@ public interface Constants {
     int XQ_LIGHT_ERR = 5; // error, can be tried again
     int XQ_JOBNOTFOUND_ERR = 6; // job not found or result has been downloadad
 
-    int XQ_CANCELLED = 8; // cancelled by cdr/bdr
+    int DELETED = 8; // cancelled and deleted by cdr/bdr
 
     int XQ_INTERRUPTED = 7; // job interrupted
 
     int CANCELLED_BY_USER = 9;
     int JOB_NOT_FOUND_IN_WORKER = 10;
+    int JOB_EXCEPTION_ERROR = 11;
 
     int JOB_VALIDATION = -1;
     int JOB_FROMSTRING = 0;
@@ -150,5 +151,7 @@ public interface Constants {
     String EXCEL2XML_CONV_PARAM = "excel2dd_xml";
 
     String HTML_FILE = ".html";
+
+    Integer MAX_SCRIPT_EXECUTION_RETRIES = 3;
 
 }
