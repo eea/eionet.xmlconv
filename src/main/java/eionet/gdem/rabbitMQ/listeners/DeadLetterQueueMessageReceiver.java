@@ -76,7 +76,6 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 LOGGER.info("Job was cancelled by user");
             }
             else if(deadLetterMessage.getErrorStatus() == Constants.JOB_EXCEPTION_ERROR){
-                //TODO maybe other status
                 updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, deadLetterMessage, containerId, jobEntry);
             }
             else if(deadLetterMessage.getErrorStatus() == Constants.DELETED){
@@ -113,7 +112,6 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 else{
                     //message will be discarded
                     LOGGER.info("Reached maximum retries of job execution for job: " + script.getJobId());
-                    //TODO maybe other status
                     updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, deadLetterMessage, containerId, jobEntry);
                 }
             }
