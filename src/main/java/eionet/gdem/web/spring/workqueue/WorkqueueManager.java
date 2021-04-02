@@ -356,16 +356,6 @@ public class WorkqueueManager {
                         if ( "2".equals(jobData[3]) ) {
                             try {
 
-                                List<JobHistoryEntry> entries = getJobHistoryRepository().findByJobName(jobId);
-                                if(entries.size()==0){
-                                    LOGGER.info("Could not find job with id " + jobId + " in history table when cancelling it");
-                                }
-                                else{
-                                    JobHistoryEntry entry = entries.get(entries.size()-1);
-                                    getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.DELETED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
-                                    LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY as CANCELLED");
-                                }
-
                                 if(Properties.enableQuartz) {
                                     if (getQuartzScheduler().checkExists(qJob)) {
                                         // try to interrupt running job
@@ -373,6 +363,15 @@ public class WorkqueueManager {
                                     } else if (getQuartzHeavyScheduler().checkExists(qJob)) {
                                         // try to interrupt running job
                                         getQuartzHeavyScheduler().interrupt(qJob);
+                                    }
+                                    List<JobHistoryEntry> entries = getJobHistoryRepository().findByJobName(jobId);
+                                    if(entries.size()==0){
+                                        LOGGER.info("Could not find job with id " + jobId + " in history table when cancelling it");
+                                    }
+                                    else{
+                                        JobHistoryEntry entry = entries.get(entries.size()-1);
+                                        getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.DELETED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                                        LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY as CANCELLED");
                                     }
                                 }
                                 else{
