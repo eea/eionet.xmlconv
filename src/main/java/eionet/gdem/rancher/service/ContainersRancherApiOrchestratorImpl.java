@@ -209,7 +209,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             instancesSize = instances.size();
         }
         if (serviceInfo.getScale() < instancesSize) {
-            Integer newScale = instances.size() - serviceInfo.getScale();
+            Integer newScale = instancesSize - serviceInfo.getScale();
             ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(serviceInfo.getScale() + newScale);
             LOGGER.info("Scaling up again because of error");
             servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
