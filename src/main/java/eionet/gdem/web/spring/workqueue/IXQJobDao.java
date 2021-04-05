@@ -190,10 +190,11 @@ public interface IXQJobDao {
     /**
      *Get a map with job id as key and timestamp as value by status
      * @param status
+     * @param internalStatusId
      * @return the hashmap
      * @throws SQLException
      */
-    Map<String, Timestamp> getJobsWithTimestamps(int status) throws SQLException;
+    Map<String, Timestamp> getJobsWithTimestamps(int status, Integer internalStatusId) throws SQLException;
 
     /**
      *Update duration of jobs
@@ -206,9 +207,10 @@ public interface IXQJobDao {
      * Get long running jobs
      *  @param duration the duration threshold
      *  @param status
+     *  @param internalStatus
      * @throws SQLException
      */
-    String[] getLongRunningJobs(Long duration, Integer status) throws SQLException;
+    String[] getLongRunningJobs(Long duration, Integer status, Integer internalStatus) throws SQLException;
 
     /**
      * Get usernname from T_API_USER

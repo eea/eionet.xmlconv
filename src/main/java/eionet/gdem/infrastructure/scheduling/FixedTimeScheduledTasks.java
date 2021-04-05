@@ -75,8 +75,8 @@ public class FixedTimeScheduledTasks {
     @Transactional
     @Scheduled(cron = "0 */5 * * * *") //Every 5 minutes
     public void schedulePeriodicUpdateOfDurationOfJobsInProcessingStatus() throws SQLException, GeneralSecurityException {
-        //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2)
-        Map<String, Timestamp> jobsInfo = xqJobDao.getJobsWithTimestamps(Constants.XQ_PROCESSING);
+        //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2,  INTERNAL_STATUS_ID=3)
+        Map<String, Timestamp> jobsInfo = xqJobDao.getJobsWithTimestamps(Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING);
         //Create new map with the duration for each job
         Map<String, Long> jobDurations = new HashMap<>();
         for (Map.Entry<String, Timestamp> entry : jobsInfo.entrySet()) {
@@ -84,7 +84,7 @@ public class FixedTimeScheduledTasks {
             long diffInMs = Math.abs(currentMs - entry.getValue().getTime());
             jobDurations.put(entry.getKey(), diffInMs);
             //Update time spent in status in table JOB_HISTORY
-            repository.setDurationForJobHistory(diffInMs, entry.getKey(), Constants.XQ_PROCESSING);
+            repository.setDurationForJobHistory(diffInMs, entry.getKey(), Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING);
         }
         //Update time spent in status in table T_XQJOBS
         xqJobDao.updateXQJobsDuration(jobDurations);
@@ -94,8 +94,8 @@ public class FixedTimeScheduledTasks {
     @Transactional
     @Scheduled(cron = "0 0 */4 * * *") //Every 4 hours
     public void schedulePeriodicNotificationsForLongRunningJobs() throws SQLException, GeneralSecurityException {
-        //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2) and duration more than Properties.LONG_RUNNING_JOBS_EVENT
-        String[] jobsIds = xqJobDao.getLongRunningJobs(Properties.longRunningJobThreshold, Constants.XQ_PROCESSING);
+        //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2, INTERNAL_STATUS_ID=3) and duration more than Properties.LONG_RUNNING_JOBS_EVENT
+        String[] jobsIds = xqJobDao.getLongRunningJobs(Properties.longRunningJobThreshold, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING);
         if (jobsIds == null || jobsIds.length == 0) {
             return;
         }

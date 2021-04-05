@@ -44,6 +44,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     public static final String JOB_TYPE = "JOB_TYPE";
     public static final String API_USERNAME = "USERNAME";
     public static final String API_TABLE = "T_API_USER";
+    public static final String INTERNAL_STATUS_ID_FLD = "INTERNAL_STATUS_ID";
 
     /**
      * Table for XQuery Workqueue.
@@ -109,11 +110,11 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     
     private static final String qJobsByInstanceAndStatus = "SELECT INSTANCE, N_STATUS, COUNT(*) as JOBS_SUM FROM T_XQJOBS GROUP BY INSTANCE, N_STATUS";
 
-    private static final String qJobsObject = "SELECT *" + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "= ?";
+    private static final String qJobsObject = "SELECT *" + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "= ?" + " AND " + INTERNAL_STATUS_ID_FLD + " = ?";
 
     private static final String qJobsUpdateDuration = "UPDATE " + WQ_TABLE + " SET " + DURATION_FLD + "= ?" + " WHERE " + JOB_ID_FLD + " = ?  ";
 
-    private static final String qJobsLongRunning = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + " = ?" + " AND " + DURATION_FLD + ">=?  ";
+    private static final String qJobsLongRunning = "SELECT " + JOB_ID_FLD + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + " = ?" + " AND " + INTERNAL_STATUS_ID_FLD + " = ?" + " AND " + DURATION_FLD + ">=?  ";
 
     private static final String qApiUsername = "SELECT " + API_USERNAME + " FROM " + API_TABLE + " LIMIT 1 ";
 
@@ -545,7 +546,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     }
 
     @Override
-    public Map<String, Timestamp> getJobsWithTimestamps(int status) throws SQLException {
+    public Map<String, Timestamp> getJobsWithTimestamps(int status, Integer internalStatusId) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -559,6 +560,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             conn = getConnection();
             pstmt = conn.prepareStatement(qJobsObject);
             pstmt.setInt(1, status);
+            pstmt.setInt(2, internalStatusId);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 jobIdTimeStampMap.put(rs.getString("JOB_ID"), rs.getTimestamp("TIME_STAMP"));
@@ -590,7 +592,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     }
 
     @Override
-    public String[] getLongRunningJobs(Long duration, Integer status) throws SQLException {
+    public String[] getLongRunningJobs(Long duration, Integer status, Integer internalStatus) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -603,7 +605,8 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
             conn = getConnection();
             pstmt = conn.prepareStatement(qJobsLongRunning);
             pstmt.setInt(1, status);
-            pstmt.setLong(2, duration);
+            pstmt.setInt(2, internalStatus);
+            pstmt.setLong(3, duration);
             rs = pstmt.executeQuery();
             String[][] r = getResults(rs);
             if (r.length == 0) {
