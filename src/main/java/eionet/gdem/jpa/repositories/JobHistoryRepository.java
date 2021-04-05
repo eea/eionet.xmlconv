@@ -22,7 +22,7 @@ public interface JobHistoryRepository extends JpaRepository<JobHistoryEntry, Lon
     List<JobHistoryEntry> findByJobName(String jobName);
 
     @Modifying
-    @Query(value = "update JOB_HISTORY set DURATION = :duration where JOB_NAME = :jobName and STATUS = :status ORDER BY ID DESC LIMIT 1", nativeQuery=true)
-    void setDurationForJobHistory(@Param("duration") Long duration, @Param("jobName") String jobName, @Param("status") Integer status);
+    @Query(value = "update JOB_HISTORY set DURATION = :duration where JOB_NAME = :jobName and STATUS = :status and INTERNAL_STATUS_ID = :internalStatusId ORDER BY ID DESC LIMIT 1", nativeQuery=true)
+    void setDurationForJobHistory(@Param("duration") Long duration, @Param("jobName") String jobName, @Param("status") Integer status, @Param("internalStatusId") Integer internalStatusId);
 
 }
