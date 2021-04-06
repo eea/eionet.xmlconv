@@ -113,6 +113,9 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
         } else if (status == Constants.CANCELLED_BY_USER) {
             resultCode = Constants.CANCELLED_BY_USER;
             resultValue = "*** Not ready ***";
+        } else if (status == Constants.XQ_INTERRUPTED) {
+            resultCode = Constants.XQ_INTERRUPTED;
+            resultValue = "*** Not ready ***";
         }
         else if (status == Constants.DELETED) {
             resultCode = Constants.DELETED;
