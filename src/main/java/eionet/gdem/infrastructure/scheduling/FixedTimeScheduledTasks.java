@@ -341,7 +341,6 @@ public class FixedTimeScheduledTasks {
      */
     @Scheduled(cron = "0 */30 * * * *")  //every 30 minutes
     public void interruptLongRunningJobs() {
-        LOGGER.debug("RUN InterruptLongRunningJobsTask.");
         SchemaManager schemaManager = new SchemaManager();
         List<JobEntry> jobEntries = null;
         try {
