@@ -172,6 +172,10 @@ public class QaServiceImpl implements QaService {
                 executionStatusName = "Cancelled by user";
                 break;
 
+            case Constants.XQ_INTERRUPTED:
+                executionStatusName = "Interrupted";
+                break;
+
             case Constants.DELETED:
                 executionStatusName = "Deleted";
                 break;
