@@ -336,8 +336,9 @@ public class FixedTimeScheduledTasks {
     }
 
     /**
-     * The task runs every 30 minutes, finds all jobs with status processing, interrupts a job if its duration is longer than corresponding schema's
-     * maxExecutionTime and changes job's status to interrupted.
+     * The task runs every 30 minutes, finds all jobs with n_status=2 and internal_status=3 and interrupts a job if its duration is longer than
+     * corresponding schema's maxExecutionTime, meaning the task sets job's n_status=7 (status for interrupted) and internal_status=4 (cancelled).
+     * The task also changes worker's status to 2 (failed), so that the worker gets deleted and the job stops executing.
      */
     @Scheduled(cron = "0 */30 * * * *")  //every 30 minutes
     public void interruptLongRunningJobs() {
