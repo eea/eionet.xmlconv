@@ -74,6 +74,8 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
             if(deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){
                 LOGGER.info("Job was cancelled by user");
+            } else if (deadLetterMessage.getErrorStatus() == Constants.XQ_INTERRUPTED) {
+                LOGGER.info("Job was interrupted by interruptLongRunningJobs task because duration exceed schema's maxExecution time");
             }
             else if(deadLetterMessage.getErrorStatus() == Constants.JOB_EXCEPTION_ERROR){
                 updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, deadLetterMessage, containerId, jobEntry);

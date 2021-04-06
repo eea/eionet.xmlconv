@@ -79,7 +79,7 @@
               </c:if>
             </td>
             <td>
-                ${schema.maxExecutionTime}
+                ${schema.maxExecutionTimeUI}
             </td>
           </tr>
         </c:forEach>

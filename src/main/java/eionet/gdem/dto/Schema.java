@@ -77,6 +77,7 @@ public class Schema implements Serializable {
     private String stylesheetSchemaId;
     /** Max execution time of jobs related to this schema*/
     private Long maxExecutionTime;
+    private String maxExecutionTimeUI;
 
     public Date getExpireDate() {
         return expireDate;
@@ -373,5 +374,13 @@ public class Schema implements Serializable {
      */
     public void setMaxExecutionTime(Long maxExecutionTime) {
         this.maxExecutionTime = maxExecutionTime;
+    }
+
+    public String getMaxExecutionTimeUI() {
+        return maxExecutionTimeUI;
+    }
+
+    public void setMaxExecutionTimeUI(String maxExecutionTimeUI) {
+        this.maxExecutionTimeUI = maxExecutionTimeUI;
     }
 }
