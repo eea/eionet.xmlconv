@@ -30,9 +30,9 @@
 
     <T_HOST HOST_ID="1" HOST_NAME="http://cdr.eionet.europa.eu" USER="test" PWD="test"/>
 
-    <T_XQJOBS JOB_ID="1288" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="4" QUERY_ID="0" SRC_FILE=""/>
-    <T_XQJOBS JOB_ID="1289" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="3" QUERY_ID="0" SRC_FILE=""/>
-    <T_XQJOBS JOB_ID="1290" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="2" QUERY_ID="0" SRC_FILE=""/>
+    <T_XQJOBS JOB_ID="1288" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="4" QUERY_ID="0" SRC_FILE="" XQ_TYPE="xquery 3.0+"/>
+    <T_XQJOBS JOB_ID="1289" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="3" QUERY_ID="0" SRC_FILE="" XQ_TYPE="xquery 3.0+"/>
+    <T_XQJOBS JOB_ID="1290" URL="http://cdrtest.eionet.europa.eu/ee/eu/art17/envrzqn7q/gr-general-report.xml" XQ_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.xql" RESULT_FILE="C:/projects/xmlconv/public/tmp/gdem_1199370613921.html" TIME_STAMP="2008-01-03 16:53:52.0" N_STATUS="2" QUERY_ID="0" SRC_FILE="" XQ_TYPE="xquery 3.0+"/>
     <T_CONVTYPE CONV_TYPE="HTML" CONTENT_TYPE="text/html;charset=UTF-8" FILE_EXT="html" DESCRIPTION="HTML files"/>
     <T_CONVTYPE CONV_TYPE="XML" CONTENT_TYPE="text/xml;charset=UTF-8" FILE_EXT="xml" DESCRIPTION=""/>
     <T_CONVTYPE CONV_TYPE="EXCEL" CONTENT_TYPE="application/vnd.ms-excel" FILE_EXT="xls" DESCRIPTION=""/>
