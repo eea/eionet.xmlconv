@@ -4,7 +4,6 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.infrastructure.scheduling.services.HeartBeatMsgHandlerService;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
