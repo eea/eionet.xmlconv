@@ -341,7 +341,10 @@ public class WorkqueueManager {
                     script.setStrResultFile(jobEntry.getResultFile());
                     script.setScriptType(jobEntry.getScriptType());
                     getJobHistoryServiceBean().updateStatusesAndJobExecutorName(script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
-                    getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
+                    //if the status is processing, the job will already have been sent to the queue
+                    if ( !"2".equals(jobData[3]) ) {
+                        getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
+                    }
                     LOGGER.info("### Job with id=" + jobId + " has been re-sent to the queue.");
 
                     jobsToRestart.add(jobId);
