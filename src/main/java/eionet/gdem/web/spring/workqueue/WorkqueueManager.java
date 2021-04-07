@@ -332,15 +332,15 @@ public class WorkqueueManager {
                         }
                     }
                     getJobServiceBean().changeNStatus(jobIdInt, Constants.XQ_RECEIVED);
-                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
                     getJobServiceBean().changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobIdInt);
                     XQScript script = new XQScript();
-                    script.setJobId(jobId.toString());
+                    script.setJobId(jobId);
                     script.setSrcFileUrl(jobEntry.getUrl());
                     script.setScriptFileName(jobEntry.getFile());
                     script.setStrResultFile(jobEntry.getResultFile());
                     script.setScriptType(jobEntry.getScriptType());
-                    getJobHistoryServiceBean().updateStatusesAndJobExecutorName(script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+                    getJobHistoryServiceBean().updateStatusesAndJobExecutorName(script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_QUEUED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
                     //if the status is processing, the job will already have been sent to the queue
                     if ( !"2".equals(jobData[3]) ) {
                         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
