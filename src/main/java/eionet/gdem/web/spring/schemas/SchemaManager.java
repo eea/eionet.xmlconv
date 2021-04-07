@@ -477,7 +477,8 @@ public class SchemaManager {
                 boolean blocker =
                         (!Utils.isNullStr((String) schemaHash.get("blocker")) && ((String) schemaHash.get("blocker")).equals("1"));
                 schema.setBlocker(blocker);
-                schema.setMaxExecutionTime(Long.parseLong((String) schemaHash.get("max_execution_time")));
+                String maxExecTime = (String) schemaHash.get("max_execution_time");
+                schema.setMaxExecutionTime(maxExecTime!=null ? Long.parseLong(maxExecTime) : Properties.maxSchemaExecutionTime);
 
                 // get uploaded schema information
                 HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);

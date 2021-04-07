@@ -3,6 +3,7 @@ package eionet.gdem.infrastructure.scheduling;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.infrastructure.scheduling.services.HeartBeatMsgHandlerService;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
@@ -15,13 +16,14 @@ import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
-import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.validation.InputAnalyser;
+import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -330,4 +333,94 @@ public class FixedTimeScheduledTasks {
             }
         }
     }
+
+    /**
+     * The task runs every 30 minutes, finds all jobs with n_status=2 and internal_status=3 and interrupts a job if its duration is longer than
+     * corresponding schema's maxExecutionTime, meaning the task sets job's n_status=7 (status for interrupted) and internal_status=4 (cancelled).
+     * The task also changes worker's status to 2 (failed).
+     * Actual Job Interruption happens in 2 ways:
+     * - If a jobExecutor as already picked a job that should be interrupted, we mark this JobExecutor-worker as 'Failed',
+     * So as to be deleted by converters.
+     * - If a jobExecutor picks a job whose status has changed to interrupted, before executing this job, the jobExecutor will ask converters
+     * and learn about this INterrupted status, and will then gradually reject the rabbitmq message for this job, so no other jobExecutors
+     * pick it.
+     */
+    @Scheduled(cron = "0 */30 * * * *")  //every 30 minutes
+    public void interruptLongRunningJobs() {
+        SchemaManager schemaManager = new SchemaManager();
+        List<JobEntry> jobEntries = null;
+        try {
+            jobEntries = jobService.findProcessingJobs();
+        } catch (Exception e) {
+            LOGGER.error("Error while fetching long running jobs.");
+            return;
+        }
+        if (jobEntries != null && jobEntries.size() > 0) {
+            for (JobEntry jobEntry : jobEntries) {
+                if (jobEntry.getDuration() == null) {
+                    continue;
+                }
+                String schemaUrl = null;
+                try {
+                    schemaUrl = findSchemaFromXml(jobEntry.getUrl());
+                    Long schemaMaxExecTime = schemaManager.getSchemaMaxExecutionTime(schemaUrl);
+                    if (jobEntry.getDuration().compareTo(BigInteger.valueOf(schemaMaxExecTime)) > 0) {
+                        jobService.changeNStatus(jobEntry.getId(), Constants.XQ_INTERRUPTED);
+                        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                        jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
+                        XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
+                        jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_INTERRUPTED, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+
+                        JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
+                        jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
+                        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
+                        JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                        jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Error while running interruptLongRunningJobsTask for job with id " + jobEntry.getId() + ", " + e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Finds schema from XML
+     *
+     * @param xml XML
+     * @return Result
+     */
+    String findSchemaFromXml(String xml) throws XMLConvException {
+        InputAnalyser analyser = new InputAnalyser();
+        try {
+            analyser.parseXML(xml);
+            String schemaOrDTD = analyser.getSchemaOrDTD();
+            return schemaOrDTD;
+        } catch (Exception e) {
+            throw new XMLConvException("Could not extract schema");
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

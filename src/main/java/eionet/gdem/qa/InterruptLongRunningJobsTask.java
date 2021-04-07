@@ -30,37 +30,37 @@ public class InterruptLongRunningJobsTask implements Job {
 
     @Override
     public void execute(JobExecutionContext paramJobExecutionContext) {
-        LOGGER.debug("RUN InterruptLongRunningJobsTask.");
-        try {
-            List<WorkqueueJob> jobs = jobsManager.getRunningJobs();
-
-            if (jobs != null && jobs.size() > 0) {
-                for (WorkqueueJob job : jobs) {
-                    if (job.getDuration()==0) {
-                        continue;
-                    }
-                    String schemaUrl = findSchemaFromXml(job.getUrl());
-                    if (job.getDuration() > schemaManager.getSchemaMaxExecutionTime(schemaUrl)) {
-                        JobKey qJob = new JobKey(job.getJobId(), "XQueryJob");
-                        try {
-                            if (getScheduler().checkExists(qJob)) {
-                                // try to interrupt running job
-                                getScheduler().interrupt(qJob);
-                            }
-                            else if (getHeavyScheduler().checkExists(qJob)) {
-                                // try to interrupt running job
-                                getHeavyScheduler().interrupt(qJob);
-                            }
-                        } catch (SchedulerException e) {
-                            LOGGER.info("error trying to interrupt job with id: " + job.getJobId());
-                            continue;
-                        }
-                    }
-                }
-            }
-        } catch (DCMException | XMLConvException e) {
-            LOGGER.error("Error when running InterruptLongRunningJobsTask: ", e);
-        }
+//        LOGGER.debug("RUN InterruptLongRunningJobsTask.");
+//        try {
+//            List<WorkqueueJob> jobs = jobsManager.getRunningJobs();
+//
+//            if (jobs != null && jobs.size() > 0) {
+//                for (WorkqueueJob job : jobs) {
+//                    if (job.getDuration()==0) {
+//                        continue;
+//                    }
+//                    String schemaUrl = findSchemaFromXml(job.getUrl());
+//                    if (job.getDuration() > schemaManager.getSchemaMaxExecutionTime(schemaUrl)) {
+//                        JobKey qJob = new JobKey(job.getJobId(), "XQueryJob");
+//                        try {
+//                            if (getScheduler().checkExists(qJob)) {
+//                                // try to interrupt running job
+//                                getScheduler().interrupt(qJob);
+//                            }
+//                            else if (getHeavyScheduler().checkExists(qJob)) {
+//                                // try to interrupt running job
+//                                getHeavyScheduler().interrupt(qJob);
+//                            }
+//                        } catch (SchedulerException e) {
+//                            LOGGER.info("error trying to interrupt job with id: " + job.getJobId());
+//                            continue;
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (DCMException | XMLConvException e) {
+//            LOGGER.error("Error when running InterruptLongRunningJobsTask: ", e);
+//        }
     }
 
     Scheduler getScheduler() throws SchedulerException {

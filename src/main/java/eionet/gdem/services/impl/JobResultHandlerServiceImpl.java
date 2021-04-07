@@ -77,7 +77,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
             LOGGER.info("result: " + result);
         }
 
-        if(jobData[8].equals("fme")) {
+        if(jobData!=null && jobData[8].equals("fme")) {
             String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
             if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
                 String[] fmeUrls = {Properties.gdemURL.concat("/restapi/download/zip/" + Paths.get(jobData[2]).getFileName())};
@@ -112,6 +112,9 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
             resultValue = "*** Not ready ***";
         } else if (status == Constants.CANCELLED_BY_USER) {
             resultCode = Constants.CANCELLED_BY_USER;
+            resultValue = "*** Not ready ***";
+        } else if (status == Constants.XQ_INTERRUPTED) {
+            resultCode = Constants.XQ_INTERRUPTED;
             resultValue = "*** Not ready ***";
         }
         else if (status == Constants.DELETED) {
