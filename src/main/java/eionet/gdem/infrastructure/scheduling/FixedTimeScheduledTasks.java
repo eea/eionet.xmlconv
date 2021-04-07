@@ -359,18 +359,17 @@ public class FixedTimeScheduledTasks {
                     schemaUrl = findSchemaFromXml(jobEntry.getUrl());
                     Long schemaMaxExecTime = schemaManager.getSchemaMaxExecutionTime(schemaUrl);
                     if (jobEntry.getDuration().compareTo(BigInteger.valueOf(schemaMaxExecTime)) > 0) {
-                        if (jobEntry.getJobExecutorName() != null) {
-                            JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-                            jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
-                            jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
-                            JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-                            jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
-                        }
                         jobService.changeNStatus(jobEntry.getId(), Constants.XQ_INTERRUPTED);
                         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                         jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
                         XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
                         jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_INTERRUPTED, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+
+                        JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
+                        jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
+                        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
+                        JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                        jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
                     }
                 } catch (Exception e) {
                     LOGGER.error("Error while running interruptLongRunningJobsTask for job with id " + jobEntry.getId() + ", " + e);
