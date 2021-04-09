@@ -339,7 +339,7 @@ public class XQueryService extends RemoteService {
             }
             LOGGER.info("result: " + result);
         }
-        if(jobData[8]!=null ){
+        if(jobData != null && jobData[8]!=null ){
             if(jobData[8].equals("fme")){
                 String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
                 if(asynchronousExecution != null && asynchronousExecution.equals("1")){
