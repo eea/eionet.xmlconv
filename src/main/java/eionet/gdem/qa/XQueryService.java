@@ -403,12 +403,16 @@ public class XQueryService extends RemoteService {
                     script_title = (String) scriptData.get(QaScriptView.SHORT_NAME);
                 }
 
-                if(jobData[8]!=null ){
-                    if(jobData[8].equals("fme")){
+                if(jobData[8]!=null && jobData[8].equals("fme")) {
+                    String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+                    if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
+                        //the result is a zip folder
                         resultValue = "";
-
+                    } else {
+                        resultValue = Utils.readStrFromFile(jobData[2]);
                     }
-                }else {
+                }
+                else{
                     resultValue = Utils.readStrFromFile(jobData[2]);
                 }
                 HashMap<String, String> feedbackResult = FeedbackAnalyzer.getFeedbackResultFromFile(jobData[2]);
