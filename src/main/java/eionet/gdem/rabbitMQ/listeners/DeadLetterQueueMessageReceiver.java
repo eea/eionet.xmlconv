@@ -86,7 +86,6 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 LOGGER.info("Deleted job: " + jobId + " from the database");
             } else{
                 LOGGER.info("Reached maximum retries of job execution for job: " + jobEntry.getId());
-                jobService.updateWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES, new Timestamp(new Date().getTime()), jobEntry.getId());
                 JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), jobEntry.getnStatus(), new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType())
                     .setIntSchedulingStatus(jobEntry.getIntSchedulingStatus().getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setJobType(jobEntry.getJobType()).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES);
                 JobExecutor jobExecutor = new JobExecutor(jobEntry.getJobExecutorName(), SchedulingConstants.WORKER_READY, jobEntry.getId());
