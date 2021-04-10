@@ -3,6 +3,7 @@ package eionet.gdem.infrastructure.scheduling.services;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerServiceImpl;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;

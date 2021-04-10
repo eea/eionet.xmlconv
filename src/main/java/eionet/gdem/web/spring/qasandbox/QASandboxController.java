@@ -475,10 +475,6 @@ public class QASandboxController {
 
                 timer.start();
                 while (jobEntry.getnStatus() != Constants.XQ_READY) {
-                    jobEntry = jobRepository.findById(jobEntry.getId());
-                    if (jobEntry.getnStatus() == Constants.XQ_READY) {
-                        break;
-                    }
                     if (jobEntry.getnStatus() == Constants.XQ_FATAL_ERR) {
                         LOGGER.info("Error retrieving job with id " + jobEntry.getId());
                         throw new XMLConvException("Job with id " + jobEntry.getId() + " failed");
@@ -487,6 +483,10 @@ public class QASandboxController {
                         throw new XMLConvException("Time exceeded for getting status of job with id " + jobEntry.getId());
                     }
                     Thread.sleep(TIME_INTERVAL_FOR_JOB_STATUS);
+                    jobEntry = jobRepository.findById(jobEntry.getId());
+                    if (jobEntry==null) {
+                        throw new XMLConvException("Error getting data from DB");
+                    }
                 }
                 String jobResult = jobEntry.getResultFile();
                 File file = new File(jobResult);

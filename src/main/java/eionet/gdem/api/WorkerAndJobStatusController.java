@@ -7,12 +7,9 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.qa.XQScript;
-import eionet.gdem.qa.utils.ScriptUtils;
-import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,16 +25,14 @@ public class WorkerAndJobStatusController {
 
     private JobService jobService;
     private JobExecutorService jobExecutorService;
-    private JobHistoryService jobHistoryService;
-    private JobExecutorHistoryService jobExecutorHistoryService;
+    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
 
     @Autowired
-    public WorkerAndJobStatusController(JobService jobService, JobExecutorService jobExecutorService, JobHistoryService jobHistoryService,
-                                        JobExecutorHistoryService jobExecutorHistoryService) {
+    public WorkerAndJobStatusController(JobService jobService, JobExecutorService jobExecutorService,
+                                        WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService) {
         this.jobService = jobService;
         this.jobExecutorService = jobExecutorService;
-        this.jobHistoryService = jobHistoryService;
-        this.jobExecutorHistoryService = jobExecutorHistoryService;
+        this.workerAndJobStatusHandlerService = workerAndJobStatusHandlerService;
     }
 
     @PostMapping("/fail")
@@ -49,15 +44,11 @@ public class WorkerAndJobStatusController {
                 if (jobEntry.getJobExecutorName()!=null) {
                     JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
                     jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
-                    jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
-                    JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-                    jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
+                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                    workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 }
-                jobService.changeNStatus(jobId, Constants.CANCELLED_BY_USER);
-                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobId);
-                XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
-                jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.CANCELLED_BY_USER, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                workerAndJobStatusHandlerService.saveOrUpdateJob(Constants.CANCELLED_BY_USER, internalStatus, jobEntry);
             } finally {
                 session.removeAttribute("jobId");
             }

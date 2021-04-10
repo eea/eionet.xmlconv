@@ -21,21 +21,19 @@
 
 package eionet.gdem.web.spring.workqueue;
 
-import eionet.gdem.*;
 import eionet.gdem.Properties;
+import eionet.gdem.*;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.QueryService;
-import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.services.SchedulerService;
 import eionet.gdem.utils.SecurityUtil;
@@ -44,7 +42,6 @@ import org.quartz.JobKey;
 import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -325,22 +322,13 @@ public class WorkqueueManager {
                             if (jobEntry.getJobExecutorName()!=null) {
                                 JobExecutor jobExecutor = getJobExecutorServiceBean().findByName(jobEntry.getJobExecutorName());
                                 jobExecutor.setJobId(jobIdInt).setStatus(SchedulingConstants.WORKER_FAILED).setName(jobEntry.getJobExecutorName());
-                                getJobExecutorServiceBean().saveOrUpdateJobExecutor(jobExecutor);
-                                JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-                                getJobExecutorHistoryServiceBean().saveJobExecutorHistoryEntry(entry);
+                                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                                getWorkerAndJobStatusHandlerService().saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                             }
                         }
                     }
-                    getJobServiceBean().changeNStatus(jobIdInt, Constants.XQ_RECEIVED);
-                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-                    getJobServiceBean().changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobIdInt);
-                    XQScript script = new XQScript();
-                    script.setJobId(jobId);
-                    script.setSrcFileUrl(jobEntry.getUrl());
-                    script.setScriptFileName(jobEntry.getFile());
-                    script.setStrResultFile(jobEntry.getResultFile());
-                    script.setScriptType(jobEntry.getScriptType());
-                    getJobHistoryServiceBean().updateStatusesAndJobExecutorName(script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_QUEUED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
+                    getWorkerAndJobStatusHandlerService().saveOrUpdateJob(Constants.XQ_RECEIVED, internalStatus, jobEntry);
                     //if the status is processing, the job will already have been sent to the queue
                     if ( !"2".equals(jobData[3]) ) {
                         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
@@ -415,20 +403,11 @@ public class WorkqueueManager {
                                         if (jobEntry.getJobExecutorName()!=null) {
                                             JobExecutor jobExecutor = getJobExecutorServiceBean().findByName(jobEntry.getJobExecutorName());
                                             jobExecutor.setJobId(jobIdInt).setStatus(SchedulingConstants.WORKER_FAILED).setName(jobEntry.getJobExecutorName());
-                                            getJobExecutorServiceBean().saveOrUpdateJobExecutor(jobExecutor);
-                                            JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-                                            getJobExecutorHistoryServiceBean().saveJobExecutorHistoryEntry(entry);
+                                            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                                            getWorkerAndJobStatusHandlerService().saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                                         }
-                                        getJobServiceBean().changeNStatus(jobIdInt, Constants.DELETED);
-                                        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                                        getJobServiceBean().changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobIdInt);
-                                        XQScript script = new XQScript();
-                                        script.setJobId(jobId.toString());
-                                        script.setSrcFileUrl(jobEntry.getUrl());
-                                        script.setScriptFileName(jobEntry.getFile());
-                                        script.setStrResultFile(jobEntry.getResultFile());
-                                        script.setScriptType(jobEntry.getScriptType());
-                                        getJobHistoryServiceBean().updateStatusesAndJobExecutorName(script, Constants.DELETED, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+                                        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                                        getWorkerAndJobStatusHandlerService().saveOrUpdateJob(Constants.DELETED, internalStatus, jobEntry);
                                     }
                                 }
 
@@ -530,15 +509,11 @@ public class WorkqueueManager {
         return (JobExecutorService) SpringApplicationContext.getBean("jobExecutorService");
     }
 
-    private static JobHistoryService getJobHistoryServiceBean() {
-        return (JobHistoryService) SpringApplicationContext.getBean("jobHistoryService");
-    }
-
-    private static JobExecutorHistoryService getJobExecutorHistoryServiceBean() {
-        return (JobExecutorHistoryService) SpringApplicationContext.getBean("jobExecutorHistoryService");
-    }
-
     private static RabbitMQMessageFactory getRabbitMQMessageFactory() {
         return (RabbitMQMessageFactory) SpringApplicationContext.getBean("rabbitMQMessageFactory");
+    }
+
+    private static WorkerAndJobStatusHandlerService getWorkerAndJobStatusHandlerService() {
+        return (WorkerAndJobStatusHandlerService) SpringApplicationContext.getBean("workerAndJobStatusHandlerService");
     }
 }

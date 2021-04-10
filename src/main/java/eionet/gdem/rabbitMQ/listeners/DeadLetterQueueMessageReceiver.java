@@ -5,21 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
-import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.jpa.service.JobExecutorHistoryService;
-import eionet.gdem.jpa.service.JobExecutorService;
+import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
-import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,19 +32,10 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeadLetterQueueMessageReceiver.class);
 
     @Autowired
-    private RabbitMQMessageSender jobMessageSender;
-
-    @Autowired
     JobService jobService;
 
     @Autowired
-    JobExecutorService jobExecutorService;
-
-    @Autowired
-    JobExecutorHistoryService jobExecutorHistoryService;
-
-    @Autowired
-    JobHistoryService jobHistoryService;
+    WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
 
     @Autowired
     private ContainersRancherApiOrchestrator containersOrchestrator;
@@ -72,15 +58,11 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
             JobEntry jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
 
-            if(deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){
+            if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){
                 LOGGER.info("Job was cancelled by user");
-            } else if (deadLetterMessage.getErrorStatus() == Constants.XQ_INTERRUPTED) {
+            } else if (deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_INTERRUPTED) {
                 LOGGER.info("Job was interrupted by interruptLongRunningJobs task because duration exceed schema's maxExecution time");
-            }
-            else if(deadLetterMessage.getErrorStatus() == Constants.JOB_EXCEPTION_ERROR){
-                updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, deadLetterMessage, containerId, jobEntry);
-            }
-            else if(deadLetterMessage.getErrorStatus() == Constants.DELETED){
+            } else if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.DELETED){
                 //delete temp files and entry from T_XQJOBS table
                 String jobId = script.getJobId();
                 // delete also result files from file system tmp folder
@@ -102,35 +84,34 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
                 GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
                 LOGGER.info("Deleted job: " + jobId + " from the database");
-            }
-            else{
-                LOGGER.info("Received message in DEAD LETTER QUEUE with unknown status: " + deadLetterMessage.getErrorStatus());
-
-                Integer retriesCnt = deadLetterMessage.getJobExecutionRetries();
-                if(retriesCnt < Constants.MAX_SCRIPT_EXECUTION_RETRIES){
-                    deadLetterMessage.setJobExecutionRetries(retriesCnt + 1);
-                    jobMessageSender.sendJobInfoToRabbitMQ(deadLetterMessage);
-                }
-                else{
-                    //message will be discarded
-                    LOGGER.info("Reached maximum retries of job execution for job: " + script.getJobId());
-                    updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, deadLetterMessage, containerId, jobEntry);
-                }
+            } else{
+                LOGGER.info("Reached maximum retries of job execution for job: " + jobEntry.getId());
+                jobService.updateWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES, new Timestamp(new Date().getTime()), jobEntry.getId());
+                JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), jobEntry.getnStatus(), new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType())
+                    .setIntSchedulingStatus(jobEntry.getIntSchedulingStatus().getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setJobType(jobEntry.getJobType()).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES);
+                JobExecutor jobExecutor = new JobExecutor(jobEntry.getJobExecutorName(), SchedulingConstants.WORKER_READY, jobEntry.getId());
+                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, jobEntry.getId(), new Timestamp(new Date().getTime()), jobEntry.getJobExecutorName()+"-queue");
+                workerAndJobStatusHandlerService.updateWorkerRetriesAndWorkerStatus(Constants.MAX_SCRIPT_EXECUTION_RETRIES, jobHistoryEntry, jobExecutor, jobExecutorHistory);
             }
         } catch (Exception e) {
             LOGGER.error("Error during dead letter queue message processing: ", e.getMessage());
         }
     }
-
-    void updateJobAndJobExecTables(Integer nStatus, Integer internalStatus, WorkerJobRabbitMQRequest request, String containerId, JobEntry jobEntry) throws DatabaseException {
-        XQScript script = request.getScript();
-        jobService.changeNStatus(Integer.parseInt(script.getJobId()), nStatus);
-        InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(internalStatus);
-        jobService.changeIntStatusAndJobExecutorName(intStatus, request.getJobExecutorName(), new Timestamp(new Date().getTime()), Integer.parseInt(script.getJobId()));
-        jobHistoryService.updateStatusesAndJobExecutorName(script, nStatus, internalStatus, request.getJobExecutorName(), jobEntry.getJobType());
-        JobExecutor jobExecutor = new JobExecutor(request.getJobExecutorName(), request.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), containerId, request.getHeartBeatQueue());
-        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
-        JobExecutorHistory entry = new JobExecutorHistory(request.getJobExecutorName(), containerId, request.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), request.getHeartBeatQueue());
-        jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

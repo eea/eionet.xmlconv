@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.JobUtils;
+import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,9 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Service
 public class WorkersJobsResultsMessageReceiver implements MessageListener {
@@ -29,6 +35,9 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
     @Autowired
     private ContainersRancherApiOrchestrator containersOrchestrator;
+
+    @Autowired
+    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
 
     @Override
     public void onMessage(Message message) {
@@ -46,19 +55,22 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             script = response.getScript();
             JobEntry jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
 
+            JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), containerId, response.getHeartBeatQueue());
+            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
+            InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
+            jobEntry.setJobExecutorName(response.getJobExecutorName());
             if (response.isErrorExists()) {
                 LOGGER.info("Job with id " + script.getJobId() + " failed with error: " + response.getErrorMessage());
-                JobUtils.updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response, containerId, jobEntry);
+                workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getJobExecutorName());
-                JobUtils.updateJobAndJobExecTables(Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response, containerId, jobEntry);
+                workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_PROCESSING, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_READY) {
                 LOGGER.info("### Job with id=" + script.getJobId() + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
-                JobUtils.updateJobAndJobExecTables(Constants.XQ_READY, SchedulingConstants.INTERNAL_STATUS_PROCESSING, response, containerId, jobEntry);
+                workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_READY, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
             }
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing: ", e.getMessage());
-            return;
         }
     }
 

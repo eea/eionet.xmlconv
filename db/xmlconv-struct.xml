@@ -642,4 +642,20 @@
             <column name="HEART_BEAT_QUEUE" type="VARCHAR(50)"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-59">
+        <comment>
+            Added column WORKER_RETRIES to T_XQJOBS table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="WORKER_RETRIES" type="INT"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-60">
+        <comment>
+            Added column WORKER_RETRIES to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="WORKER_RETRIES" type="INT"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

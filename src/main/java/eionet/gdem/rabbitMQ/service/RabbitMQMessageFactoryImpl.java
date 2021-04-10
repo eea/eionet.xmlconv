@@ -9,8 +9,6 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.logging.Markers;
 import eionet.gdem.qa.IQueryDao;
@@ -18,6 +16,7 @@ import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
@@ -29,7 +28,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,18 +47,16 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     /** Service for getting schema data. */
     private SchemaManager schemaManager;
     private IQueryDao queryDao;
-    private JobHistoryRepository jobHistoryRepository;
+    private JobHistoryService jobHistoryService;
     private RabbitMQMessageSender rabbitMQMessageSender;
-    private JobRepository jobRepository;
     private JobService jobService;
 
     @Autowired
-    public RabbitMQMessageFactoryImpl(IQueryDao queryDao, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
-                                      RabbitMQMessageSender rabbitMQMessageSender, @Qualifier("jobRepository") JobRepository jobRepository, JobService jobService) {
+    public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
+                                      RabbitMQMessageSender rabbitMQMessageSender, JobService jobService) {
         this.queryDao = queryDao;
-        this.jobHistoryRepository = jobHistoryRepository;
+        this.jobHistoryService = jobHistoryService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
-        this.jobRepository = jobRepository;
         this.jobService = jobService;
     }
 
@@ -186,7 +182,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
     private JobEntry getJobEntry(String jobId) {
         try {
-            JobEntry jobEntry = jobRepository.findById(Integer.parseInt(jobId));
+            JobEntry jobEntry = jobService.findById(Integer.parseInt(jobId));
             if (jobEntry == null) {
                 handleError("No such job: " + jobId, true,null, jobId);
                 return null;
@@ -198,17 +194,17 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         }
     }
 
-    void processJob(JobEntry jobEntry) {
+    void processJob(JobEntry jobEntry) throws DatabaseException {
         try {
             Integer jobId = jobEntry.getId();
-            Integer retryCounter = jobRepository.getRetryCounter(jobId);
-            jobRepository.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobId);
+            Integer retryCounter = jobService.getRetryCounter(jobId);
+            jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobId);
             InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobRepository.updateIntStatusAndJobExecutorName(intStatus, null, new Timestamp(new Date().getTime()), jobId);
+            jobService.changeStatusesAndJobExecutorName(Constants.XQ_PROCESSING, intStatus, null, new Timestamp(new Date().getTime()), jobId);
             LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobHistoryRepository.save(jobHistoryEntry);
+            jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());

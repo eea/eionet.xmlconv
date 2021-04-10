@@ -60,6 +60,9 @@ public class JobEntry implements Serializable {
     @Column(name = "JOB_TYPE")
     private String jobType;
 
+    @Column(name = "WORKER_RETRIES")
+    private Integer workerRetries;
+
     public JobEntry() {
     }
 
@@ -215,6 +218,15 @@ public class JobEntry implements Serializable {
 
     public JobEntry setJobType(String jobType) {
         this.jobType = jobType;
+        return this;
+    }
+
+    public Integer getWorkerRetries() {
+        return workerRetries;
+    }
+
+    public JobEntry setWorkerRetries(Integer workerRetries) {
+        this.workerRetries = workerRetries;
         return this;
     }
 }

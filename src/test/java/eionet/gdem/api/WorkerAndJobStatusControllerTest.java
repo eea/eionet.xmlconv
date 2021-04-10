@@ -78,9 +78,8 @@ public class WorkerAndJobStatusControllerTest {
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
         doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
         doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
-        doNothing().when(jobService).changeNStatus(anyInt(), anyInt());
-        doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
-        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyInt(), anyString(), anyString());
+        doNothing().when(jobService).changeStatusesAndJobExecutorName(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
+        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(anyInt(), anyInt(), any(JobEntry.class));
         mockMvc.perform(builder)
                 .andExpect(status().isOk());
     }

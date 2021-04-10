@@ -23,6 +23,7 @@ import java.util.Date;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
@@ -63,7 +64,7 @@ public class JobRepositoryTestIT {
     @Transactional
     public void testUpdateInternalStatus() {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(2);
-        jobRepository.updateIntStatusAndJobExecutorName(intStatus, null, new Timestamp(new Date().getTime()), 1);
+        jobRepository.updateStatusesAndJobExecutorName(anyInt(), intStatus, null, new Timestamp(new Date().getTime()), 1);
         JobEntry jobEntry = jobRepository.findById(1);
         assertThat(jobEntry.getIntSchedulingStatus().getId(), is(2));
     }

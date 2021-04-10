@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,7 +35,6 @@ public class JobExecutorServiceImpl implements JobExecutorService {
         return jobExecutor;
     }
 
-    @Transactional
     @Override
     public void saveOrUpdateJobExecutor(JobExecutor jobExecutor) throws DatabaseException {
         try {
@@ -52,7 +50,6 @@ public class JobExecutorServiceImpl implements JobExecutorService {
         }
     }
 
-    @Transactional
     @Override
     public List<JobExecutor> listJobExecutor() throws DatabaseException {
         try {

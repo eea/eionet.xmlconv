@@ -5,14 +5,13 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactoryImpl;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,16 +40,13 @@ import static org.mockito.Mockito.*;
 public class RabbitMQMessageFactoryImplTest {
 
     @Mock
-    JobRepository jobRepository;
-
-    @Mock
     JobService jobService;
 
     @Mock
-    IQueryDao queryDao;
+    JobHistoryService jobHistoryService;
 
     @Mock
-    JobHistoryRepository jobHistoryRepository;
+    IQueryDao queryDao;
 
     @Mock
     RabbitMQMessageSender rabbitMQMessageSender;
@@ -91,12 +87,11 @@ public class RabbitMQMessageFactoryImplTest {
     @Test
     public void createScriptAndSendMessageToRabbitMQTest() throws SQLException, CreateRabbitMQMessageException, DatabaseException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, "627015", 1, new Timestamp(new Date().getTime()),null, null, null , null);
-        when(jobRepository.findById(anyInt())).thenReturn(jobEntry);
-        doNothing().when(jobService).changeNStatus(anyInt(), anyInt());
-        when(jobRepository.getRetryCounter(anyInt())).thenReturn(0);
-        doNothing().when(jobRepository).updateJobInfo(anyInt(), anyString(), any(Timestamp.class), anyInt(), anyInt());
-        doNothing().when(jobRepository).updateIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
-        when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
+        when(jobService.findById(anyInt())).thenReturn(jobEntry);
+        when(jobService.getRetryCounter(anyInt())).thenReturn(0);
+        doNothing().when(jobService).updateJobInfo(anyInt(), anyString(), any(Timestamp.class), anyInt(), anyInt());
+        doNothing().when(jobService).changeStatusesAndJobExecutorName(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
+        when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryDao.getQueryInfo(anyString())).thenReturn(queryMap);
         doNothing().when(rabbitMQMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
         createRabbitMQMessage.createScriptAndSendMessageToRabbitMQ("627015");

@@ -7,16 +7,15 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.JobOnDemandHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +25,8 @@ import java.util.Date;
 @Service("jobOnDemandHandlerService")
 public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService {
 
-    private JobRepository jobRepository;
-    private JobHistoryRepository jobHistoryRepository;
+    private JobService jobService;
+    private JobHistoryService jobHistoryService;
     private RabbitMQMessageSender jobMessageSender;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobOnDemandHandlerServiceImpl.class);
@@ -35,10 +34,10 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
     private static final String ON_DEMAND_TYPE = "ON DEMAND";
 
     @Autowired
-    public JobOnDemandHandlerServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository, @Qualifier("jobHistoryRepository") JobHistoryRepository jobHistoryRepository,
+    public JobOnDemandHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService,
                                          RabbitMQMessageSender jobMessageSender) {
-        this.jobRepository = jobRepository;
-        this.jobHistoryRepository = jobHistoryRepository;
+        this.jobService = jobService;
+        this.jobHistoryService = jobHistoryService;
         this.jobMessageSender = jobMessageSender;
     }
 
@@ -50,7 +49,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus)
                     .setRetryCounter(0).setJobType(ON_DEMAND_TYPE);
-            jobEntry = jobRepository.save(jobEntry);
+            jobEntry = jobService.save(jobEntry);
             LOGGER.info("Job with id " + jobEntry.getId() + " has been inserted in table T_XQJOBS");
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             script.setJobId(jobEntry.getId().toString());
@@ -58,10 +57,10 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(script);
             jobMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
 
-            Integer retryCounter = jobRepository.getRetryCounter(jobEntry.getId());
-            jobRepository.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());
+            Integer retryCounter = jobService.getRetryCounter(jobEntry.getId());
+            jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());
             internalSchedulingStatus.setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobRepository.updateIntStatusAndJobExecutorName(internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry.getId());
+            jobService.changeStatusesAndJobExecutorName(Constants.XQ_PROCESSING, internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry.getId());
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_QUEUED);
         } catch (Exception e) {
             throw new XMLConvException(e.getMessage());
@@ -73,7 +72,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
         jobHistoryEntry.setIntSchedulingStatus(internalStatus);
         jobHistoryEntry.setJobType(ON_DEMAND_TYPE);
-        jobHistoryRepository.save(jobHistoryEntry);
+        jobHistoryService.save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
     }
 }

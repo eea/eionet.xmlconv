@@ -21,6 +21,10 @@ public class InternalSchedulingStatus implements Serializable {
     public InternalSchedulingStatus() {
     }
 
+    public InternalSchedulingStatus(Integer id) {
+        this.id = id;
+    }
+
     public InternalSchedulingStatus(Integer id, String name, String description) {
         this.id = id;
         this.name = name;

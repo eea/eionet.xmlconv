@@ -196,6 +196,9 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                             }
                             Thread.sleep(TIME_INTERVAL_FOR_JOB_STATUS);
                             jobEntry = getJobRepository().findById(jobEntry.getId());
+                            if (jobEntry==null) {
+                                throw new XMLConvException("Error getting data from DB");
+                            }
                         }
                         String jobResult = jobEntry.getResultFile();
                         File file = new File(jobResult);
