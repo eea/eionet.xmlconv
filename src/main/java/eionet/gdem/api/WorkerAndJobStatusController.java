@@ -48,7 +48,7 @@ public class WorkerAndJobStatusController {
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 }
                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                workerAndJobStatusHandlerService.saveOrUpdateJob(Constants.CANCELLED_BY_USER, internalStatus, jobEntry);
+                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.CANCELLED_BY_USER, internalStatus, jobEntry);
             } finally {
                 session.removeAttribute("jobId");
             }

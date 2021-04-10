@@ -231,7 +231,6 @@ public class FixedTimeScheduledTasks {
      * @throws RancherApiException
      * @throws DatabaseException
      */
-    @Transactional
     @Scheduled(cron = "0 */2 * * * *") //Every 2 minutes
     public void synchronizeRancherContainersAndDbEntriesByExistenceAndStatus() throws RancherApiException, DatabaseException {
         if (!Properties.enableJobExecRancherScheduledTask) {
@@ -282,7 +281,7 @@ public class FixedTimeScheduledTasks {
                 List<WorkerHeartBeatMsgEntry> heartBeatMsgList = workerHeartBeatMsgService.findUnAnsweredHeartBeatMessages(jobEntry.getId());
                 if (heartBeatMsgList.size() >= MIN_UNANSWERED_REQUESTS) {
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                    workerAndJobStatusHandlerService.saveOrUpdateJob(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
+                    workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
                 }
             } catch (Exception e) {
                 LOGGER.error("Error while checking heart beat messages for job with id " + jobEntry.getId());

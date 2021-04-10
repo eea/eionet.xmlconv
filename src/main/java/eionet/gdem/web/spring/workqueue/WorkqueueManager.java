@@ -328,7 +328,7 @@ public class WorkqueueManager {
                         }
                     }
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-                    getWorkerAndJobStatusHandlerService().saveOrUpdateJob(Constants.XQ_RECEIVED, internalStatus, jobEntry);
+                    getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(Constants.XQ_RECEIVED, internalStatus, jobEntry);
                     //if the status is processing, the job will already have been sent to the queue
                     if ( !"2".equals(jobData[3]) ) {
                         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
@@ -407,7 +407,7 @@ public class WorkqueueManager {
                                             getWorkerAndJobStatusHandlerService().saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                                         }
                                         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                                        getWorkerAndJobStatusHandlerService().saveOrUpdateJob(Constants.DELETED, internalStatus, jobEntry);
+                                        getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(Constants.DELETED, internalStatus, jobEntry);
                                     }
                                 }
 
