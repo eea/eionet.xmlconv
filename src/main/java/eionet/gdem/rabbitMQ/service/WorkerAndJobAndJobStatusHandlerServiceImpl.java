@@ -31,7 +31,7 @@ public class WorkerAndJobAndJobStatusHandlerServiceImpl implements WorkerAndJobS
         this.jobExecutorHistoryService = jobExecutorHistoryService;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateJobAndJobHistoryEntries(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException {
         updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
