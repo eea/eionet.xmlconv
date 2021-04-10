@@ -41,14 +41,7 @@ public class WorkerAndJobStatusController {
         if (jobId!=null) {
             try {
                 JobEntry jobEntry = jobService.findById(jobId);
-                if (jobEntry.getJobExecutorName()!=null) {
-                    JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-                    jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
-                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobId, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-                    workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-                }
-                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.CANCELLED_BY_USER, internalStatus, jobEntry);
+                workerAndJobStatusHandlerService.handleCancelledJob(jobEntry);
             } finally {
                 session.removeAttribute("jobId");
             }
