@@ -1,6 +1,5 @@
 package eionet.gdem.rabbitMQ.service;
 
-import eionet.gdem.Constants;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
@@ -81,15 +80,14 @@ public class WorkerAndJobAndJobStatusHandlerServiceImpl implements WorkerAndJobS
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void handleCancelledJob(JobEntry jobEntry) throws DatabaseException {
+    public void handleCancelledJob(JobEntry jobEntry, Integer workerStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
         if (jobEntry.getJobExecutorName()!=null) {
             JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-            jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
-            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+            jobExecutor.setStatus(workerStatus);
+            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), workerStatus, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
             this.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
         }
-        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-        this.updateJobAndJobHistoryEntries(Constants.CANCELLED_BY_USER, internalStatus, jobEntry);
+        this.updateJobAndJobHistoryEntries(nStatus, internalStatus, jobEntry);
     }
 }
 

@@ -400,14 +400,8 @@ public class WorkqueueManager {
                                     Integer jobIdInt = Integer.parseInt(jobId);
                                     if (jobIdInt!=null) {
                                         JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
-                                        if (jobEntry.getJobExecutorName()!=null) {
-                                            JobExecutor jobExecutor = getJobExecutorServiceBean().findByName(jobEntry.getJobExecutorName());
-                                            jobExecutor.setJobId(jobIdInt).setStatus(SchedulingConstants.WORKER_FAILED).setName(jobEntry.getJobExecutorName());
-                                            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-                                            getWorkerAndJobStatusHandlerService().saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-                                        }
                                         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                                        getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(Constants.DELETED, internalStatus, jobEntry);
+                                        getWorkerAndJobStatusHandlerService().handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.DELETED, internalStatus);
                                     }
                                 }
 
@@ -438,11 +432,6 @@ public class WorkqueueManager {
                             } catch (Exception e) {
                                 LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
                             }
-                        }
-                        if(!Properties.enableQuartz && "2".equals(jobData[3]) ) {
-                            GDEMServices.getDaoService().getXQJobDao().changeJobStatus(jobId, Constants.DELETED);
-                        }
-                        else{
                             GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
                         }
                         LOGGER.info("Deleted job " + jobId);

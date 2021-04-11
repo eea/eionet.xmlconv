@@ -1,5 +1,8 @@
 package eionet.gdem.api;
 
+import eionet.gdem.Constants;
+import eionet.gdem.SchedulingConstants;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
@@ -30,7 +33,8 @@ public class WorkerAndJobStatusController {
         if (jobId!=null) {
             try {
                 JobEntry jobEntry = jobService.findById(jobId);
-                workerAndJobStatusHandlerService.handleCancelledJob(jobEntry);
+                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.CANCELLED_BY_USER, internalStatus);
             } finally {
                 session.removeAttribute("jobId");
             }

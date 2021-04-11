@@ -72,7 +72,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     LOGGER.error("Could not delete job result file: " + script.getStrResultFile() + "." + e.getMessage());
                 }
                 // delete xquery files, if they are stored in tmp folder
-                String xqFile = script.getOrigFileUrl();
+                String xqFile = script.getScriptFileName();
                 try {
                     // Important!!!: delete only, when the file is stored in tmp folder
                     if (xqFile.startsWith(Properties.tmpFolder)) {

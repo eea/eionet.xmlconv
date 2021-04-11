@@ -1,5 +1,6 @@
 package eionet.gdem.api;
 
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
@@ -60,7 +61,7 @@ public class WorkerAndJobStatusControllerTest {
                 .session(session);
         JobEntry jobEntry = new JobEntry().setId(335).setUrl("url").setSrcFile("srcFile").setFile("file").setResultFile("resultFile").setJobType("ON DEMAND").setJobExecutorName("demoExecutor");
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
-        doNothing().when(workerAndJobStatusHandlerService).handleCancelledJob(any(JobEntry.class));
+        doNothing().when(workerAndJobStatusHandlerService).handleCancelledJob(any(JobEntry.class), anyInt(), anyInt(), any(InternalSchedulingStatus.class));
         mockMvc.perform(builder)
                 .andExpect(status().isOk());
     }

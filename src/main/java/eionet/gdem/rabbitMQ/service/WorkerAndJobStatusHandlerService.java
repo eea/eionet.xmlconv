@@ -15,5 +15,5 @@ public interface WorkerAndJobStatusHandlerService {
 
     void changeStatusForInterruptedJobs(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException;
 
-    void handleCancelledJob(JobEntry jobEntry) throws DatabaseException;
+    void handleCancelledJob(JobEntry jobEntry, Integer workerStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException;
 }
