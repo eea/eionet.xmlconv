@@ -6,11 +6,10 @@ import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.jpa.service.JobExecutorHistoryService;
-import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkersStatusMessageReceiver;
 import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponse;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,10 +31,7 @@ import static org.mockito.Mockito.verify;
 public class WorkersStatusMessageReceiverTest {
 
     @Mock
-    private JobExecutorService jobExecutorService;
-
-    @Mock
-    JobExecutorHistoryService jobExecutorHistoryService;
+    WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
 
     @InjectMocks
     private WorkersStatusMessageReceiver receiver;
@@ -43,8 +39,7 @@ public class WorkersStatusMessageReceiverTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
-        doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
+        doNothing().when(workerAndJobStatusHandlerService).saveOrUpdateJobExecutor(any(JobExecutor.class), any(JobExecutorHistory.class));
     }
 
     @Test
@@ -57,7 +52,7 @@ public class WorkersStatusMessageReceiverTest {
         Message message = convertObjectToByteArray(response);
 
         receiver.onMessage(message);
-        verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
+        verify(workerAndJobStatusHandlerService).saveOrUpdateJobExecutor(any(JobExecutor.class), any(JobExecutorHistory.class));
     }
 
     private Message convertObjectToByteArray(WorkerStateRabbitMQResponse response) throws JsonProcessingException {

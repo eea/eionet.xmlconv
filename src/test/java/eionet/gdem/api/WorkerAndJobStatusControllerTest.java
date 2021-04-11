@@ -1,15 +1,8 @@
 package eionet.gdem.api;
 
-import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.Entities.JobExecutorHistory;
-import eionet.gdem.jpa.service.JobExecutorHistoryService;
-import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +19,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.sql.Timestamp;
-
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,16 +30,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class WorkerAndJobStatusControllerTest {
 
     @Mock
-    private JobService jobService;
+    JobService jobService;
 
     @Mock
-    private JobExecutorService jobExecutorService;
-
-    @Mock
-    private JobHistoryService jobHistoryService;
-
-    @Mock
-    private JobExecutorHistoryService jobExecutorHistoryService;
+    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
 
     @Spy
     @InjectMocks
@@ -74,12 +60,7 @@ public class WorkerAndJobStatusControllerTest {
                 .session(session);
         JobEntry jobEntry = new JobEntry().setId(335).setUrl("url").setSrcFile("srcFile").setFile("file").setResultFile("resultFile").setJobType("ON DEMAND").setJobExecutorName("demoExecutor");
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
-        JobExecutor jobExecutor = new JobExecutor("demoExecutor", SchedulingConstants.WORKER_FAILED, 335, "containerId", "demoExecutor-queue");
-        when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
-        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
-        doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
-        doNothing().when(jobService).changeStatusesAndJobExecutorName(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
-        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(anyInt(), anyInt(), any(JobEntry.class));
+        doNothing().when(workerAndJobStatusHandlerService).handleCancelledJob(any(JobEntry.class));
         mockMvc.perform(builder)
                 .andExpect(status().isOk());
     }

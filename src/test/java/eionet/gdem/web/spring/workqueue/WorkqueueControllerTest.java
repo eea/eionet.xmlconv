@@ -63,6 +63,7 @@ public class WorkqueueControllerTest {
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_QAJOBS_XML);
+        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_JOB_EXECUTOR_XML);
     }
 
     @Test
