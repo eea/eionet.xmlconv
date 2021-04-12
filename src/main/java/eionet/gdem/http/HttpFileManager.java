@@ -1,6 +1,7 @@
 package eionet.gdem.http;
 
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.web.spring.hosts.IHostDao;
@@ -132,7 +133,12 @@ public class HttpFileManager {
              * XXX: the purpose of the next line is to bypass any load balancer. Load balancers can have small timeouts which
              * can result in broken http transfers. We obviously need a better solution.
              */
-                url.append("http://localhost:8080");
+                if(!Utils.isNullStr(Properties.HTTP_TRANSFER_LOADBALANCER)){
+                    url.append(Properties.HTTP_TRANSFER_LOADBALANCER);
+                }
+                else{
+                    url.append(Properties.gdemURL);
+                }
                 url.append(Constants.GETSOURCE_URL);
                 url.append("?");
                 url.append(Constants.TICKET_PARAM);
