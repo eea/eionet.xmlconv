@@ -32,7 +32,7 @@ pipeline {
     }
 
 
-/**
+
 stage ('Unit Tests and Sonarqube') {
       when {
         not { buildingTag() }
@@ -51,7 +51,7 @@ stage ('Unit Tests and Sonarqube') {
       }
     }
 
-    **/
+
 
         stage ('Docker build and push') {
       when {
