@@ -583,8 +583,9 @@
             <dependency>
                 <groupId>com.sun</groupId>
                 <artifactId>tools</artifactId>
-                <version>1.8.0</version>
+                <version>1.6.0</version>
                 <scope>system</scope>
+                <systemPath>/var/jenkins_home/worker/tools/hudson.model.JDK/Java11/openlogic-openjdk-11.0.9.1+1-linux-x64/lib/tools.jar</systemPath>
             </dependency>
             <!--<dependency>
                 <groupId>commons-codec</groupId>
