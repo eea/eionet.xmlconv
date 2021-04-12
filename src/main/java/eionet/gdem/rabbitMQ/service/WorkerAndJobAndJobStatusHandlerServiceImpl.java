@@ -1,12 +1,15 @@
 package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.*;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,14 +68,6 @@ public class WorkerAndJobAndJobStatusHandlerServiceImpl implements WorkerAndJobS
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void changeStatusesForWorkerRetries(Integer workerRetries, JobHistoryEntry jobHistoryEntry, WorkerJobInfoRabbitMQResponse response) {
-        jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), Integer.parseInt(jobHistoryEntry.getJobName()));
-        jobHistoryService.save(jobHistoryEntry);
-        rabbitMQMessageSender.sendJobResponse(response);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
     public void changeStatusForInterruptedJobs(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException {
         this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
         JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
@@ -91,6 +86,14 @@ public class WorkerAndJobAndJobStatusHandlerServiceImpl implements WorkerAndJobS
             this.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
         }
         this.updateJobAndJobHistoryEntries(nStatus, internalStatus, jobEntry);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequest workerJobRabbitMQRequest) throws DatabaseException {
+        jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), jobEntry.getId());
+        this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
+        rabbitMQMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
     }
 }
 

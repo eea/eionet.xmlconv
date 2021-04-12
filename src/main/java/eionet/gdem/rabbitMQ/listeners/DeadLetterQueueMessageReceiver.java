@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.services.GDEMServices;
@@ -39,6 +41,13 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
     @Autowired
     private ContainersRancherApiOrchestrator containersOrchestrator;
 
+    @Autowired
+    RabbitMQMessageSender rabbitMQMessageSender;
+
+    /**
+     * time in milliseconds
+     */
+    private static final Integer RETRY_DELAY = 20000;
 
     @Override
     public void onMessage(Message message) {
@@ -84,12 +93,26 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
                 LOGGER.info("Deleted job: " + jobId + " from the database");
             } else{
-                LOGGER.info("Reached maximum retries of job execution for job: " + jobEntry.getId());
-                JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), jobEntry.getnStatus(), new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType())
-                    .setIntSchedulingStatus(jobEntry.getIntSchedulingStatus().getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setJobType(jobEntry.getJobType()).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES);
-                WorkerJobInfoRabbitMQResponse response = new WorkerJobInfoRabbitMQResponse().setScript(deadLetterMessage.getScript()).setErrorExists(true).setErrorMessage("Job reached maximum retries!")
-                        .setJobExecutorStatus(SchedulingConstants.WORKER_READY).setJobExecutorName(jobEntry.getJobExecutorName()).setHeartBeatQueue(jobEntry.getJobExecutorName()+"-queue");
-                workerAndJobStatusHandlerService.changeStatusesForWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES, jobHistoryEntry, response);
+                LOGGER.info("Received message in DEAD LETTER QUEUE with unknown status: " + deadLetterMessage.getErrorStatus());
+
+                Integer retriesCnt = deadLetterMessage.getJobExecutionRetries();
+                if(retriesCnt < Constants.MAX_SCRIPT_EXECUTION_RETRIES){
+                    deadLetterMessage.setJobExecutionRetries(retriesCnt + 1);
+                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
+                    jobEntry.setWorkerRetries(retriesCnt+1);
+                    Thread.sleep(RETRY_DELAY);
+                    workerAndJobStatusHandlerService.resendMessageToWorker(retriesCnt+1, Constants.XQ_RECEIVED, internalStatus, jobEntry, deadLetterMessage);
+                }
+                else{
+                    //message will be discarded
+                    LOGGER.info("Reached maximum retries of job execution for job: " + script.getJobId());
+                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
+                    jobEntry.setJobExecutorName(deadLetterMessage.getJobExecutorName()).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES);
+                    JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), containerId, deadLetterMessage.getHeartBeatQueue());
+                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
+                    Thread.sleep(RETRY_DELAY);
+                    workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
+                }
             }
         } catch (Exception e) {
             LOGGER.error("Error during dead letter queue message processing: ", e.getMessage());

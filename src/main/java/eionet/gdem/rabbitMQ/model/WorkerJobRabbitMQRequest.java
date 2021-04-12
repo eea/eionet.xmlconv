@@ -6,6 +6,7 @@ public class WorkerJobRabbitMQRequest {
 
     private XQScript script;
     private String jobExecutorName;
+    private Integer jobExecutionRetries;
     private String errorMessage;
     private Integer errorStatus;
     private Integer jobExecutorStatus;
@@ -34,6 +35,14 @@ public class WorkerJobRabbitMQRequest {
     public WorkerJobRabbitMQRequest setJobExecutorName(String jobExecutorName) {
         this.jobExecutorName = jobExecutorName;
         return this;
+    }
+
+    public Integer getJobExecutionRetries() {
+        return jobExecutionRetries;
+    }
+
+    public void setJobExecutionRetries(Integer jobExecutionRetries) {
+        this.jobExecutionRetries = jobExecutionRetries;
     }
 
     public String getErrorMessage() {
