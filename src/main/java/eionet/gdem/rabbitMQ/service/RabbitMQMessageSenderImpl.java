@@ -2,6 +2,7 @@ package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.Properties;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,5 +32,11 @@ public class RabbitMQMessageSenderImpl implements RabbitMQMessageSender {
     public void sendHeartBeatMessage(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo) {
         rabbitTemplate.convertAndSend(Properties.XMLCONV_HEART_BEAT_REQUEST_EXCHANGE, "", workerHeartBeatMessageInfo);
         LOGGER.info("Heart beat message sent for job " + workerHeartBeatMessageInfo.getJobId() + " and request timestamp " + workerHeartBeatMessageInfo.getRequestTimestamp());
+    }
+
+    @Override
+    public void sendJobResponse(WorkerJobInfoRabbitMQResponse workerJobInfoRabbitMQResponse) {
+        rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_RESULTS_QUEUE, workerJobInfoRabbitMQResponse);
+        LOGGER.info("Job with id " + workerJobInfoRabbitMQResponse.getScript().getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_RESULTS_QUEUE);
     }
 }

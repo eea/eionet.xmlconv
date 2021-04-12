@@ -6,11 +6,10 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
@@ -88,9 +87,9 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 LOGGER.info("Reached maximum retries of job execution for job: " + jobEntry.getId());
                 JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), jobEntry.getnStatus(), new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType())
                     .setIntSchedulingStatus(jobEntry.getIntSchedulingStatus().getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setJobType(jobEntry.getJobType()).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES);
-                JobExecutor jobExecutor = new JobExecutor(jobEntry.getJobExecutorName(), SchedulingConstants.WORKER_READY, jobEntry.getId());
-                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, jobEntry.getId(), new Timestamp(new Date().getTime()), jobEntry.getJobExecutorName()+"-queue");
-                workerAndJobStatusHandlerService.updateWorkerRetriesAndWorkerStatus(Constants.MAX_SCRIPT_EXECUTION_RETRIES, jobHistoryEntry, jobExecutor, jobExecutorHistory);
+                WorkerJobInfoRabbitMQResponse response = new WorkerJobInfoRabbitMQResponse().setScript(deadLetterMessage.getScript()).setErrorExists(true).setErrorMessage("Job reached maximum retries!")
+                        .setJobExecutorStatus(SchedulingConstants.WORKER_READY).setJobExecutorName(jobEntry.getJobExecutorName()).setHeartBeatQueue(jobEntry.getJobExecutorName()+"-queue");
+                workerAndJobStatusHandlerService.changeStatusesForWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES, jobHistoryEntry, response);
             }
         } catch (Exception e) {
             LOGGER.error("Error during dead letter queue message processing: ", e.getMessage());

@@ -2,6 +2,7 @@ package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
+import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 
 public interface WorkerAndJobStatusHandlerService {
 
@@ -11,7 +12,7 @@ public interface WorkerAndJobStatusHandlerService {
 
     void updateJobAndJobExecTables(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException;
 
-    void updateWorkerRetriesAndWorkerStatus(Integer workerRetries, JobHistoryEntry jobHistoryEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException;
+    void changeStatusesForWorkerRetries(Integer workerRetries, JobHistoryEntry jobHistoryEntry, WorkerJobInfoRabbitMQResponse response);
 
     void changeStatusForInterruptedJobs(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException;
 

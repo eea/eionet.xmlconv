@@ -6,6 +6,7 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,14 +22,16 @@ public class WorkerAndJobAndJobStatusHandlerServiceImpl implements WorkerAndJobS
     JobHistoryService jobHistoryService;
     JobExecutorService jobExecutorService;
     JobExecutorHistoryService jobExecutorHistoryService;
+    RabbitMQMessageSender rabbitMQMessageSender;
 
     @Autowired
     public WorkerAndJobAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService,
-                                                      JobExecutorHistoryService jobExecutorHistoryService) {
+                                                      JobExecutorHistoryService jobExecutorHistoryService, RabbitMQMessageSender rabbitMQMessageSender) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobExecutorService = jobExecutorService;
         this.jobExecutorHistoryService = jobExecutorHistoryService;
+        this.rabbitMQMessageSender = rabbitMQMessageSender;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -62,10 +65,10 @@ public class WorkerAndJobAndJobStatusHandlerServiceImpl implements WorkerAndJobS
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateWorkerRetriesAndWorkerStatus(Integer workerRetries, JobHistoryEntry jobHistoryEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
+    public void changeStatusesForWorkerRetries(Integer workerRetries, JobHistoryEntry jobHistoryEntry, WorkerJobInfoRabbitMQResponse response) {
         jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), Integer.parseInt(jobHistoryEntry.getJobName()));
         jobHistoryService.save(jobHistoryEntry);
-        this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
+        rabbitMQMessageSender.sendJobResponse(response);
     }
 
     @Transactional(rollbackFor = Exception.class)

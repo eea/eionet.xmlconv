@@ -22,56 +22,63 @@ public class WorkerJobInfoRabbitMQResponse {
         return script;
     }
 
-    public void setScript(XQScript script) {
+    public WorkerJobInfoRabbitMQResponse setScript(XQScript script) {
         this.script = script;
+        return this;
     }
 
     public boolean isErrorExists() {
         return errorExists;
     }
 
-    public void setErrorExists(boolean errorExists) {
+    public WorkerJobInfoRabbitMQResponse setErrorExists(boolean errorExists) {
         this.errorExists = errorExists;
+        return this;
     }
 
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    public WorkerJobInfoRabbitMQResponse setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+        return this;
     }
 
     public String getJobExecutorName() {
         return jobExecutorName;
     }
 
-    public void setJobExecutorName(String jobExecutorName) {
+    public WorkerJobInfoRabbitMQResponse setJobExecutorName(String jobExecutorName) {
         this.jobExecutorName = jobExecutorName;
+        return this;
     }
 
     public String getExecutionTime() {
         return executionTime;
     }
 
-    public void setExecutionTime(String executionTime) {
+    public WorkerJobInfoRabbitMQResponse setExecutionTime(String executionTime) {
         this.executionTime = executionTime;
+        return this;
     }
 
     public Integer getJobExecutorStatus() {
         return jobExecutorStatus;
     }
 
-    public void setJobExecutorStatus(Integer jobExecutorStatus) {
+    public WorkerJobInfoRabbitMQResponse setJobExecutorStatus(Integer jobExecutorStatus) {
         this.jobExecutorStatus = jobExecutorStatus;
+        return this;
     }
 
     public String getHeartBeatQueue() {
         return heartBeatQueue;
     }
 
-    public void setHeartBeatQueue(String heartBeatQueue) {
+    public WorkerJobInfoRabbitMQResponse setHeartBeatQueue(String heartBeatQueue) {
         this.heartBeatQueue = heartBeatQueue;
+        return this;
     }
 
 }
