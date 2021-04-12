@@ -135,16 +135,7 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <formats>
-                        <format>xml</format>
-                    </formats>
-                </configuration>
-            </plugin>
+
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
@@ -580,13 +571,13 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.4</version>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>com.sun</groupId>
                 <artifactId>tools</artifactId>
                 <version>1.6.0</version>
                 <scope>system</scope>
                 <systemPath>/var/jenkins_home/worker/tools/hudson.model.JDK/Java11/openlogic-openjdk-11.0.9.1+1-linux-x64/lib/tools.jar</systemPath>
-            </dependency>
+            </dependency-->
             <!--<dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
