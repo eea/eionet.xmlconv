@@ -1,4 +1,4 @@
-package eionet.gdem.infrastructure.scheduling.services;
+package eionet.gdem.rabbitmq.service;
 
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
