@@ -12,7 +12,7 @@ import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
-import eionet.gdem.rabbitMQ.service.WorkerAndJobAndJobStatusHandlerServiceImpl;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerServiceImpl;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     @Mock
     RabbitMQMessageSender rabbitMQMessageSender;
     @InjectMocks
-    WorkerAndJobAndJobStatusHandlerServiceImpl workerAndJobAndJobStatusHandlerServiceImpl;
+    WorkerAndJobStatusHandlerServiceImpl workerAndJobStatusHandlerServiceImpl;
     InternalSchedulingStatus internalStatus;
     JobEntry jobEntry;
     JobExecutor jobExecutor;
@@ -65,19 +65,19 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
 
     @Test
     public void testUpdateJobAndJobHistoryEntries() throws DatabaseException {
-        workerAndJobAndJobStatusHandlerServiceImpl.updateJobAndJobHistoryEntries(Constants.XQ_PROCESSING, internalStatus, jobEntry);
+        workerAndJobStatusHandlerServiceImpl.updateJobAndJobHistoryEntries(Constants.XQ_PROCESSING, internalStatus, jobEntry);
         verify(jobHistoryService).updateStatusesAndJobExecutorName(anyInt(), anyInt(), any(JobEntry.class));
     }
 
     @Test
     public void testSaveOrUpdateJobExecutor() throws DatabaseException {
-        workerAndJobAndJobStatusHandlerServiceImpl.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+        workerAndJobStatusHandlerServiceImpl.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
         verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
     }
 
     @Test
     public void testUpdateJobAndJobExecTables() throws DatabaseException {
-        workerAndJobAndJobStatusHandlerServiceImpl.updateJobAndJobExecTables(Constants.XQ_PROCESSING, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
+        workerAndJobStatusHandlerServiceImpl.updateJobAndJobExecTables(Constants.XQ_PROCESSING, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
         verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
     }
 
@@ -85,7 +85,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     public void testChangeStatusForInterruptedJobs() throws DatabaseException {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
-        workerAndJobAndJobStatusHandlerServiceImpl.changeStatusForInterruptedJobs(Constants.XQ_INTERRUPTED, intStatus, jobEntry);
+        workerAndJobStatusHandlerServiceImpl.changeStatusForInterruptedJobs(Constants.XQ_INTERRUPTED, intStatus, jobEntry);
         verify(jobExecutorService).findByName(anyString());
     }
 
@@ -93,7 +93,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     public void testHandleCancelledJob() throws DatabaseException {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
-        workerAndJobAndJobStatusHandlerServiceImpl.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_READY, Constants.XQ_FATAL_ERR, intStatus);
+        workerAndJobStatusHandlerServiceImpl.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_READY, Constants.XQ_FATAL_ERR, intStatus);
         verify(jobExecutorService).findByName(anyString());
     }
 
@@ -103,7 +103,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest();
         doNothing().when(jobService).updateWorkerRetries(anyInt(), any(Timestamp.class), anyInt());
         doNothing().when(rabbitMQMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
-        workerAndJobAndJobStatusHandlerServiceImpl.resendMessageToWorker(Constants.MAX_SCRIPT_EXECUTION_RETRIES, Constants.XQ_FATAL_ERR, intStatus, jobEntry, workerJobRabbitMQRequest);
+        workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(Constants.MAX_SCRIPT_EXECUTION_RETRIES, Constants.XQ_FATAL_ERR, intStatus, jobEntry, workerJobRabbitMQRequest);
     }
 }
 

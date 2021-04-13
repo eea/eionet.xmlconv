@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Service("workerAndJobStatusHandlerService")
-public class WorkerAndJobAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusHandlerService {
+public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusHandlerService {
 
     JobService jobService;
     JobHistoryService jobHistoryService;
@@ -28,8 +28,8 @@ public class WorkerAndJobAndJobStatusHandlerServiceImpl implements WorkerAndJobS
     RabbitMQMessageSender rabbitMQMessageSender;
 
     @Autowired
-    public WorkerAndJobAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService,
-                                                      JobExecutorHistoryService jobExecutorHistoryService, RabbitMQMessageSender rabbitMQMessageSender) {
+    public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService,
+                                                JobExecutorHistoryService jobExecutorHistoryService, RabbitMQMessageSender rabbitMQMessageSender) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobExecutorService = jobExecutorService;
