@@ -47,7 +47,7 @@ stage ('Unit Tests and Sonarqube') {
       post {
         always {
             junit 'target/failsafe-reports/*.xml'
-            cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml'
+          /**  cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml' **/
         }
       }
     }
