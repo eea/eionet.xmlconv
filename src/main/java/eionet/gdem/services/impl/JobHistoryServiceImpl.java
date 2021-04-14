@@ -1,11 +1,9 @@
 package eionet.gdem.services.impl;
 
-import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.JobHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,18 +80,22 @@ public class JobHistoryServiceImpl implements JobHistoryService {
     }
 
     @Override
-    public void updateStatusesAndJobExecutorName(XQScript script, Integer nStatus, Integer internalStatus, String jobExecutorName, String jobType) throws DatabaseException {
+    public void updateStatusesAndJobExecutorName(Integer nStatus, Integer internalStatus, JobEntry jobEntry) throws DatabaseException {
         try {
-            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(script.getJobId(), nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
-            jobHistoryEntry.setIntSchedulingStatus(internalStatus);
-            jobHistoryEntry.setJobExecutorName(jobExecutorName);
-            jobHistoryEntry.setJobType(jobType);
+            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), nStatus, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
+            jobHistoryEntry.setIntSchedulingStatus(internalStatus).setJobExecutorName(jobEntry.getJobExecutorName()).setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setJobType(jobEntry.getJobType())
+            .setWorkerRetries(jobEntry.getWorkerRetries());
             repository.save(jobHistoryEntry);
-            LOGGER.info("Job with id=" + script.getJobId() + " has been inserted in table JOB_HISTORY ");
+            LOGGER.info("Job with id=" + jobEntry.getId() + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
-            LOGGER.error("Database exception when changing status of job with id " + script.getJobId() + ", " + e.toString());
+            LOGGER.error("Database exception when changing status of job with id " + jobEntry.getId() + ", " + e.toString());
             throw new DatabaseException(e.getMessage());
         }
+    }
+
+    @Override
+    public JobHistoryEntry save(JobHistoryEntry jobHistoryEntry) {
+        return repository.save(jobHistoryEntry);
     }
 }
 

@@ -4,15 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
-import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkerHeartBeatResponseReceiver;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
-import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +27,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,10 +36,7 @@ import static org.mockito.Mockito.*;
 public class WorkerHeartBeatResponseReceiverTest {
 
     @Mock
-    private JobService jobService;
-
-    @Mock
-    private JobHistoryService jobHistoryService;
+    HeartBeatMsgHandlerService heartBeatMsgHandlerService;
 
     @Mock
     WorkerHeartBeatMsgRepository workerHeartBeatMsgRepository;
@@ -52,9 +48,7 @@ public class WorkerHeartBeatResponseReceiverTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(jobService).changeNStatus(anyInt(),anyInt());
-        doNothing().when(jobService).changeIntStatusAndJobExecutorName(any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
-        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(any(XQScript.class), anyInt(), anyInt(), anyString(), anyString());
+        doNothing().when(heartBeatMsgHandlerService).updateHeartBeatAndJobTables(any(WorkerHeartBeatMsgEntry.class), anyInt(), anyInt(), anyInt(), any(InternalSchedulingStatus.class));
     }
 
     @Test
@@ -68,14 +62,8 @@ public class WorkerHeartBeatResponseReceiverTest {
 
         WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(response.getJobId(), response.getJobExecutorName(), new Timestamp(new Date().getTime()));
         when(workerHeartBeatMsgRepository.findOne(anyInt())).thenReturn(workerHeartBeatMsgEntry);
-        when(workerHeartBeatMsgRepository.save(any(WorkerHeartBeatMsgEntry.class))).thenReturn(workerHeartBeatMsgEntry);
-
-        JobEntry jobEntry = new JobEntry().setId(12452).setUrl("https://cdrtest.eionet.europa.eu/ro/colwkcutw/envxxyxia/REP_D-RO_ANPM_20170929_C-001.xml")
-                .setFile("/opt/xmlconv/tmp/gdem_1615903208066.xquery").setResultFile("/opt/xmlconv/eearun/xmlconv/tmp/gdem_1615903208071.html").setScriptType("xquery 3.0+")
-                .setnStatus(Constants.XQ_PROCESSING).setJobExecutorName("demoJobExecutor");
-        when(jobService.findById(anyInt())).thenReturn(jobEntry);
         receiver.onMessage(message);
-        verify(jobService).changeNStatus(anyInt(),anyInt());
+        verify(workerHeartBeatMsgRepository).findOne(anyInt());
     }
 
     private Message convertObjectToByteArray(WorkerHeartBeatMessageInfo response) throws JsonProcessingException {

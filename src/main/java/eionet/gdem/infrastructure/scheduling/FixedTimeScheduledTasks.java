@@ -4,24 +4,21 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.infrastructure.scheduling.services.HeartBeatMsgHandlerService;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.notifications.UNSEventSender;
-import eionet.gdem.qa.XQScript;
-import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
-import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
@@ -57,17 +54,15 @@ public class FixedTimeScheduledTasks {
     @Autowired
     private JobExecutorService jobExecutorService;
     @Autowired
-    private JobExecutorHistoryService jobExecutorHistoryService;
-    @Autowired
     private WorkerHeartBeatMsgService workerHeartBeatMsgService;
     @Autowired
     private JobService jobService;
     @Autowired
-    private JobHistoryService jobHistoryService;
-    @Autowired
     private RabbitAdmin rabbitAdmin;
     @Autowired
     HeartBeatMsgHandlerService heartBeatMsgHandlerService;
+    @Autowired
+    WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
 
@@ -236,7 +231,6 @@ public class FixedTimeScheduledTasks {
      * @throws RancherApiException
      * @throws DatabaseException
      */
-    @Transactional
     @Scheduled(cron = "0 */2 * * * *") //Every 2 minutes
     public void synchronizeRancherContainersAndDbEntriesByExistenceAndStatus() throws RancherApiException, DatabaseException {
         if (!Properties.enableJobExecRancherScheduledTask) {
@@ -264,9 +258,13 @@ public class FixedTimeScheduledTasks {
     public void sendPeriodicHeartBeatMessages() {
         List<JobEntry> processingJobs = jobService.findProcessingJobs();
         for (JobEntry jobEntry : processingJobs) {
-            WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
-            WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
-            heartBeatMsgHandlerService.saveMsgAndSendToRabbitMQ(heartBeatMsgInfo, workerHeartBeatMsgEntry);
+            try {
+                WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
+                WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
+                heartBeatMsgHandlerService.saveMsgAndSendToRabbitMQ(heartBeatMsgInfo, workerHeartBeatMsgEntry);
+            } catch (Exception e) {
+                LOGGER.error("Error while setting heart beat message for job with id " + jobEntry.getId());
+            }
         }
     }
 
@@ -275,7 +273,6 @@ public class FixedTimeScheduledTasks {
      * and checks whether there are unanswered heart beat messages in table WORKER_HEART_BEAT_MSG, meaning messages with null RESPONSE_TIMESTAMP.
      * If it finds at least 5 records for a job, then the job gets n_status=FATAL_ERROR and internal_status=cancelled.
      */
-    @Transactional
     @Scheduled(cron = "0 */5 * * * *")  //every 5 minutes
     public void checkHeartBeatMessagesForProcessingJobs() {
         List<JobEntry> processingJobs = jobService.findProcessingJobs();
@@ -283,13 +280,10 @@ public class FixedTimeScheduledTasks {
             try {
                 List<WorkerHeartBeatMsgEntry> heartBeatMsgList = workerHeartBeatMsgService.findUnAnsweredHeartBeatMessages(jobEntry.getId());
                 if (heartBeatMsgList.size() >= MIN_UNANSWERED_REQUESTS) {
-                    jobService.changeNStatus(jobEntry.getId(), Constants.XQ_FATAL_ERR);
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                    jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
-                    XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
-                    jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_FATAL_ERR, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
+                    workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
                 }
-            } catch (DatabaseException e) {
+            } catch (Exception e) {
                 LOGGER.error("Error while checking heart beat messages for job with id " + jobEntry.getId());
             }
         }
@@ -306,9 +300,8 @@ public class FixedTimeScheduledTasks {
                 String heartBeatQueue = containerName + "-queue";
                 JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, heartBeatQueue);
                 try {
-                    jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
-                    JobExecutorHistory entry = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
-                    jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
+                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
+                    workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 } catch (DatabaseException e) {
                     LOGGER.error("Task failed for jobExecutor with containerId " + containerId);
                 }
@@ -365,20 +358,11 @@ public class FixedTimeScheduledTasks {
                     schemaUrl = findSchemaFromXml(jobEntry.getUrl());
                     Long schemaMaxExecTime = schemaManager.getSchemaMaxExecutionTime(schemaUrl);
                     if (jobEntry.getDuration().compareTo(BigInteger.valueOf(schemaMaxExecTime)) > 0) {
-                        jobService.changeNStatus(jobEntry.getId(), Constants.XQ_INTERRUPTED);
                         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                        jobService.changeIntStatusAndJobExecutorName(internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
-                        XQScript script = ScriptUtils.createScriptFromJobEntry(jobEntry);
-                        jobHistoryService.updateStatusesAndJobExecutorName(script, Constants.XQ_INTERRUPTED, SchedulingConstants.INTERNAL_STATUS_CANCELLED, jobEntry.getJobExecutorName(), jobEntry.getJobType());
-
-                        JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-                        jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
-                        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
-                        JobExecutorHistory entry = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-                        jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
+                        workerAndJobStatusHandlerService.changeStatusForInterruptedJobs(Constants.XQ_INTERRUPTED, internalStatus, jobEntry);
                     }
                 } catch (Exception e) {
-                    LOGGER.error("Error while running interruptLongRunningJobsTask for job with id " + jobEntry.getId() + ", " + e);
+                    LOGGER.error("Error while running interruptLongRunningJobs task for job with id " + jobEntry.getId() + ", " + e);
                 }
             }
         }

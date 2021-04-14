@@ -36,7 +36,6 @@ public class JobExecutorServiceImpl implements JobExecutorService {
         return jobExecutor;
     }
 
-    @Transactional
     @Override
     public void saveOrUpdateJobExecutor(JobExecutor jobExecutor) throws DatabaseException {
         try {
@@ -52,7 +51,6 @@ public class JobExecutorServiceImpl implements JobExecutorService {
         }
     }
 
-    @Transactional
     @Override
     public List<JobExecutor> listJobExecutor() throws DatabaseException {
         try {
@@ -63,6 +61,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteByContainerId(String containerId) throws DatabaseException {
         try {

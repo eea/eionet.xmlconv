@@ -3,7 +3,7 @@ package eionet.gdem.rabbitmq.listeners;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,9 +31,8 @@ public class WorkersJobsResultsMessageReceiverTest {
     @Autowired
     private DataSource db;
 
-    @Qualifier("jobRepository")
     @Autowired
-    JobRepository jobRepository;
+    JobService jobService;
 
     @Autowired
     private WorkersJobsResultsMessageReceiver receiver;
@@ -53,7 +51,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         Message message = convertObjectToByteArray(response);
 
         receiver.onMessage(message);
-        JobEntry jobEntry = jobRepository.findById(1);
+        JobEntry jobEntry = jobService.findById(1);
         assertTrue(jobEntry.getnStatus().equals(3));
     }
 
@@ -65,7 +63,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         Message message = convertObjectToByteArray(response);
 
         receiver.onMessage(message);
-        JobEntry jobEntry = jobRepository.findById(1);
+        JobEntry jobEntry = jobService.findById(1);
         assertTrue(jobEntry.getnStatus().equals(4));
     }
 

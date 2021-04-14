@@ -1,5 +1,6 @@
 package eionet.gdem.services;
 
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.qa.XQScript;
@@ -10,5 +11,7 @@ public interface JobHistoryService {
 
     List<JobHistoryEntry> getAdditionalInfoOfJob(String jobId);
 
-    void updateStatusesAndJobExecutorName(XQScript script, Integer nStatus, Integer internalStatus, String jobExecutorName, String jobType) throws DatabaseException;
+    void updateStatusesAndJobExecutorName(Integer nStatus, Integer internalStatus, JobEntry jobEntry) throws DatabaseException;
+
+    JobHistoryEntry save(JobHistoryEntry jobHistoryEntry);
 }

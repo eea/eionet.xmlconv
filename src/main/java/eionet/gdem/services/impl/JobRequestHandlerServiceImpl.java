@@ -1,19 +1,20 @@
 package eionet.gdem.services.impl;
 
-import eionet.gdem.*;
 import eionet.gdem.Properties;
+import eionet.gdem.*;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.*;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.services.SchedulerService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
@@ -23,8 +24,6 @@ import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import eionet.gdem.services.JobRequestHandlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -231,17 +230,17 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
 
         String jobId = "-1";
         if(queryId == null) {
-            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
-            jobEntry = getJobRepository().save(jobEntry);
+            jobEntry = getJobService().save(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
 
         }
         else{
-            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
-            jobEntry = getJobRepository().save(jobEntry);
+            jobEntry = getJobService().save(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
         }
@@ -251,12 +250,12 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         if (Properties.enableQuartz) {
             schedulerService.scheduleJob(jobId, sourceSize, scriptType);
             LOGGER.info("### Job with id=" + jobId + " has been scheduled.");
-            getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
+            getJobHistoryService().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType));
             LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         } else {
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType);
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
-            getJobHistoryRepository().save(jobHistoryEntry);
+            getJobHistoryService().save(jobHistoryEntry);
             LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
             getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
             LOGGER.info("### Job with id=" + jobId + " has been send to the queue.");
@@ -325,12 +324,12 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
     private RabbitMQMessageFactory getRabbitMQMessageFactory() {
         return (RabbitMQMessageFactory) SpringApplicationContext.getBean("rabbitMQMessageFactory");
     }
-    private JobRepository getJobRepository() {
-        return (JobRepository) SpringApplicationContext.getBean("jobRepository");
+    private JobService getJobService() {
+        return (JobService) SpringApplicationContext.getBean("jobService");
     }
 
-    private JobHistoryRepository getJobHistoryRepository() {
-        return (JobHistoryRepository) SpringApplicationContext.getBean("jobHistoryRepository");
+    private JobHistoryService getJobHistoryService() {
+        return (JobHistoryService) SpringApplicationContext.getBean("jobHistoryService");
     }
 
 

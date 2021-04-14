@@ -8,6 +8,7 @@ import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponse;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public class WorkersStatusMessageReceiver implements MessageListener {
     @Autowired
     private ContainersRancherApiOrchestrator containersOrchestrator;
 
+    @Autowired
+    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
+
     @Override
     public void onMessage(Message message) {
         String messageBody = new String(message.getBody());
@@ -47,12 +51,10 @@ public class WorkersStatusMessageReceiver implements MessageListener {
             }
 
             JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), response.getHeartBeatQueue());
-            jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
-            JobExecutorHistory entry = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
-            jobExecutorHistoryService.saveJobExecutorHistoryEntry(entry);
+            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
+            workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
         } catch (Exception e) {
-            LOGGER.info("Error during jobExecutor message processing: ", e.getMessage());
-            return;
+            LOGGER.info("Error during jobExecutor message processing: ", e);
         }
     }
 

@@ -4,8 +4,7 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
@@ -34,10 +33,10 @@ import static org.mockito.Mockito.when;
 public class JobOnDemandHandlerServiceTest {
 
     @Mock
-    private JobRepository jobRepository;
+    private JobService jobService;
 
     @Mock
-    private JobHistoryRepository jobHistoryRepository;
+    private JobHistoryService jobHistoryService;
 
     @Mock
     private RabbitMQMessageSender jobMessageSender;
@@ -66,10 +65,10 @@ public class JobOnDemandHandlerServiceTest {
 
     @Test
     public void testCreateJobAndSendToRabbitMQ() throws XMLConvException {
-        when(jobRepository.save(any(JobEntry.class))).thenReturn(jobEntry);
-        when(jobHistoryRepository.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
+        when(jobService.save(any(JobEntry.class))).thenReturn(jobEntry);
+        when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         doNothing().when(jobMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
-        when(jobRepository.getRetryCounter(anyInt())).thenReturn(0);
+        when(jobService.getRetryCounter(anyInt())).thenReturn(0);
         JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0);
         Assert.assertEquals(jobEntry.getId(), jobEntryResult.getId());
     }

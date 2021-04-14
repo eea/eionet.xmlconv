@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -30,7 +29,6 @@ public class JobServiceImpl implements JobService {
         this.jobRepository = jobRepository;
     }
 
-    @Transactional
     @Override
     public void changeNStatus(Integer jobId, Integer status) throws DatabaseException {
         try {
@@ -51,11 +49,10 @@ public class JobServiceImpl implements JobService {
         }
     }
 
-    @Transactional
     @Override
-    public void changeIntStatusAndJobExecutorName(InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, Integer jobId) throws DatabaseException {
+    public void changeStatusesAndJobExecutorName(Integer nStatus, InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, Integer jobId) throws DatabaseException {
         try {
-            jobRepository.updateIntStatusAndJobExecutorName(intStatus, jobExecutorName, timestamp, jobId);
+            jobRepository.updateStatusesAndJobExecutorName(nStatus, intStatus, jobExecutorName, timestamp, jobId);
         } catch (Exception e) {
             LOGGER.error("Database exception when changing internal status of job with id " + jobId + ", " + e.toString());
             throw new DatabaseException(e.getMessage());
@@ -82,6 +79,26 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<JobEntry> findProcessingJobs() {
         return jobRepository.findProcessingJobs();
+    }
+
+    @Override
+    public void updateWorkerRetries(Integer workerRetries, Timestamp timestamp, Integer jobId) {
+        jobRepository.updateWorkerRetries(workerRetries, timestamp, jobId);
+    }
+
+    @Override
+    public JobEntry save(JobEntry jobEntry) {
+        return jobRepository.save(jobEntry);
+    }
+
+    @Override
+    public Integer getRetryCounter(Integer jobId) {
+        return jobRepository.getRetryCounter(jobId);
+    }
+
+    @Override
+    public void updateJobInfo(Integer nStatus, String instance, Timestamp timestamp, Integer retryCounter, Integer jobId) {
+        jobRepository.updateJobInfo(nStatus, instance, timestamp, retryCounter, jobId);
     }
 }
 

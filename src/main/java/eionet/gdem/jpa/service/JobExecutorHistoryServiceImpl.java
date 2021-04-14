@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,7 +22,6 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
         this.repository = repository;
     }
 
-    @Transactional
     @Override
     public void saveJobExecutorHistoryEntry(JobExecutorHistory entry) throws DatabaseException {
         try {
@@ -34,7 +32,6 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
         }
     }
 
-    @Transactional
     @Override
     public List<JobExecutorHistory> getJobExecutorHistoryEntriesById(String containerId) throws DatabaseException {
         try {

@@ -49,6 +49,9 @@ public class JobHistoryEntry implements Serializable {
     @Column(name = "JOB_TYPE")
     private String jobType;
 
+    @Column(name = "WORKER_RETRIES")
+    private Integer workerRetries;
+
     public JobHistoryEntry() {
     }
 
@@ -77,8 +80,9 @@ public class JobHistoryEntry implements Serializable {
         return id;
     }
 
-    public void setId(Integer id) {
+    public JobHistoryEntry setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getJobName() {
@@ -89,8 +93,9 @@ public class JobHistoryEntry implements Serializable {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public JobHistoryEntry setStatus(Integer status) {
         this.status = status;
+        return this;
     }
 
     public Timestamp getDateAdded() {
@@ -101,8 +106,9 @@ public class JobHistoryEntry implements Serializable {
         return url;
     }
 
-    public void setUrl(String url) {
+    public JobHistoryEntry setUrl(String url) {
         this.url = url;
+        return this;
     }
 
     public String getXqFile() {
@@ -117,8 +123,9 @@ public class JobHistoryEntry implements Serializable {
         return xqType;
     }
 
-    public void setFullStatusName(String fullStatusName) {
+    public JobHistoryEntry setFullStatusName(String fullStatusName) {
         this.fullStatusName = fullStatusName;
+        return this;
     }
 
     public String getFullStatusName() {
@@ -129,27 +136,44 @@ public class JobHistoryEntry implements Serializable {
         return duration;
     }
 
+    public JobHistoryEntry setDuration(Long duration) {
+        this.duration = duration;
+        return this;
+    }
+
     public Integer getIntSchedulingStatus() {
         return intSchedulingStatus;
     }
 
-    public void setIntSchedulingStatus(Integer intSchedulingStatus) {
+    public JobHistoryEntry setIntSchedulingStatus(Integer intSchedulingStatus) {
         this.intSchedulingStatus = intSchedulingStatus;
+        return this;
     }
 
     public String getJobExecutorName() {
         return jobExecutorName;
     }
 
-    public void setJobExecutorName(String jobExecutorName) {
+    public JobHistoryEntry setJobExecutorName(String jobExecutorName) {
         this.jobExecutorName = jobExecutorName;
+        return this;
     }
 
     public String getJobType() {
         return jobType;
     }
 
-    public void setJobType(String jobType) {
+    public JobHistoryEntry setJobType(String jobType) {
         this.jobType = jobType;
+        return this;
+    }
+
+    public Integer getWorkerRetries() {
+        return workerRetries;
+    }
+
+    public JobHistoryEntry setWorkerRetries(Integer workerRetries) {
+        this.workerRetries = workerRetries;
+        return this;
     }
 }

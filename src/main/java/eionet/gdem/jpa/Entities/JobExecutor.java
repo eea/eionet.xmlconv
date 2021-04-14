@@ -29,6 +29,12 @@ public class JobExecutor {
     public JobExecutor() {
     }
 
+    public JobExecutor(String name, Integer status, Integer jobId) {
+        this.name = name;
+        this.status = status;
+        this.jobId = jobId;
+    }
+
     public JobExecutor(String name, String containerId, Integer status, String heartBeatQueue) {
         this.name = name;
         this.containerId = containerId;
