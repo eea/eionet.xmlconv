@@ -327,6 +327,7 @@ public class WorkqueueManager {
                             }
                         }
                     }
+                    jobEntry.setJobExecutorName(null);
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
                     getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(Constants.XQ_RECEIVED, internalStatus, jobEntry);
                     //if the status is processing, the job will already have been sent to the queue
