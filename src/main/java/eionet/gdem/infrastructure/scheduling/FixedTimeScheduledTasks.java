@@ -359,7 +359,7 @@ public class FixedTimeScheduledTasks {
                     Long schemaMaxExecTime = schemaManager.getSchemaMaxExecutionTime(schemaUrl);
                     if (jobEntry.getDuration().compareTo(BigInteger.valueOf(schemaMaxExecTime)) > 0) {
                         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                        workerAndJobStatusHandlerService.changeStatusForInterruptedJobs(Constants.XQ_INTERRUPTED, internalStatus, jobEntry);
+                        workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.XQ_INTERRUPTED, internalStatus);
                     }
                 } catch (Exception e) {
                     LOGGER.error("Error while running interruptLongRunningJobs task for job with id " + jobEntry.getId() + ", " + e);

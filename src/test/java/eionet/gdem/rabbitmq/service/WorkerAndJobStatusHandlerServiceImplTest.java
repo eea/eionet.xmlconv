@@ -82,14 +82,6 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     }
 
     @Test
-    public void testChangeStatusForInterruptedJobs() throws DatabaseException {
-        InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-        when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
-        workerAndJobStatusHandlerServiceImpl.changeStatusForInterruptedJobs(Constants.XQ_INTERRUPTED, intStatus, jobEntry);
-        verify(jobExecutorService).findByName(anyString());
-    }
-
-    @Test
     public void testHandleCancelledJob() throws DatabaseException {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);

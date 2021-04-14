@@ -1,6 +1,5 @@
 package eionet.gdem.rabbitMQ.service;
 
-import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
@@ -68,24 +67,14 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void changeStatusForInterruptedJobs(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException {
-        this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
-        JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-        jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
-        JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-        this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
     public void handleCancelledJob(JobEntry jobEntry, Integer workerStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
         if (jobEntry.getJobExecutorName()!=null) {
             JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
             jobExecutor.setStatus(workerStatus);
             JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), workerStatus, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-            this.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+            this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
         }
-        this.updateJobAndJobHistoryEntries(nStatus, internalStatus, jobEntry);
+        this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
     }
 
     @Transactional(rollbackFor = Exception.class)
