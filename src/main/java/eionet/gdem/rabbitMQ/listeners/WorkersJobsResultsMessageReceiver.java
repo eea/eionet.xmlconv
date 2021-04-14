@@ -70,7 +70,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_READY, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
             }
         } catch (Exception e) {
-            LOGGER.info("Error during jobExecutor message processing: ", e.getMessage());
+            LOGGER.info("Error during jobExecutor message processing: ", e);
         }
     }
 

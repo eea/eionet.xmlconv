@@ -115,7 +115,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error during dead letter queue message processing: ", e.getMessage());
+            LOGGER.error("Error during dead letter queue message processing: ", e);
         }
     }
 }
