@@ -90,9 +90,11 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequest workerJobRabbitMQRequest) throws DatabaseException {
+    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequest workerJobRabbitMQRequest,
+                                      JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), jobEntry.getId());
         this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
+        this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
         rabbitMQMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
     }
 }

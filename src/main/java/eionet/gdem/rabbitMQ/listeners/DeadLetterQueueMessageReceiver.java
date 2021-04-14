@@ -100,8 +100,10 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     deadLetterMessage.setJobExecutionRetries(retriesCnt + 1);
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
                     jobEntry.setJobExecutorName(null).setWorkerRetries(retriesCnt+1);
+                    JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), containerId, deadLetterMessage.getHeartBeatQueue());
+                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
                     Thread.sleep(RETRY_DELAY);
-                    workerAndJobStatusHandlerService.resendMessageToWorker(retriesCnt+1, Constants.XQ_RECEIVED, internalStatus, jobEntry, deadLetterMessage);
+                    workerAndJobStatusHandlerService.resendMessageToWorker(retriesCnt+1, Constants.XQ_RECEIVED, internalStatus, jobEntry, deadLetterMessage, jobExecutor, jobExecutorHistory);
                 }
                 else{
                     //message will be discarded
