@@ -121,7 +121,7 @@ public class FixedTimeScheduledTasks {
         String serviceId = Properties.rancherJobExecServiceId;
 
         try {
-            deleteFailedWorkers();
+            deleteFailedWorkers(serviceId);
         } catch (RancherApiException | DatabaseException e) {
             LOGGER.error("Error during deletion of failed workers");
             return;
@@ -181,8 +181,14 @@ public class FixedTimeScheduledTasks {
      *
      * @throws RancherApiException
      */
-    void deleteFailedWorkers() throws RancherApiException, DatabaseException {
+    void deleteFailedWorkers(String serviceId) throws RancherApiException, DatabaseException {
         List<JobExecutor> failedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
+        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+        if (failedWorkers.size()==1 && instances.size()==1) {
+            LOGGER.info("Restarting failed worker because found only one worker instance.");
+            containersOrchestrator.restartContainer(failedWorkers.get(0).getName());
+            return;
+        }
         for (JobExecutor worker : failedWorkers) {
             deleteFromRancherAndDatabase(worker);
         }

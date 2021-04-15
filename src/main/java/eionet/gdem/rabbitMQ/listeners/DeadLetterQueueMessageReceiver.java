@@ -67,9 +67,9 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
             JobEntry jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
 
             if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){
-                LOGGER.info("Job was cancelled by user");
+                LOGGER.info("Job " + script.getJobId() + " was cancelled by user");
             } else if (deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_INTERRUPTED) {
-                LOGGER.info("Job was interrupted by interruptLongRunningJobs task because duration exceed schema's maxExecution time");
+                LOGGER.info("Job " + script.getJobId() + " was interrupted by interruptLongRunningJobs task because duration exceed schema's maxExecution time");
             } else if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.DELETED){
                 //delete temp files and entry from T_XQJOBS table
                 String jobId = script.getJobId();
