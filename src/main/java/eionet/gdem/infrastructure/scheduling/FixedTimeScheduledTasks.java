@@ -364,6 +364,7 @@ public class FixedTimeScheduledTasks {
                     schemaUrl = findSchemaFromXml(jobEntry.getUrl());
                     Long schemaMaxExecTime = schemaManager.getSchemaMaxExecutionTime(schemaUrl);
                     if (jobEntry.getDuration().compareTo(BigInteger.valueOf(schemaMaxExecTime)) > 0) {
+                        LOGGER.info("Interrupting job " + jobEntry.getId() + " because exceeded schema's max execution time.");
                         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                         workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.XQ_INTERRUPTED, internalStatus);
                     }
