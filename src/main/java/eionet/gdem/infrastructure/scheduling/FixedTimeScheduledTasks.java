@@ -4,6 +4,8 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.dto.WorkqueueJob;
+import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
@@ -22,6 +24,7 @@ import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
+import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -63,6 +66,9 @@ public class FixedTimeScheduledTasks {
     HeartBeatMsgHandlerService heartBeatMsgHandlerService;
     @Autowired
     WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
+
+    /** Dao for getting job data. */
+    private WorkqueueManager jobsManager = new WorkqueueManager();
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
 
@@ -383,6 +389,49 @@ public class FixedTimeScheduledTasks {
         } catch (Exception e) {
             throw new XMLConvException("Could not extract schema");
         }
+    }
+
+    /**
+     * Deletes expired finished jobs from workqueue
+     **/
+    @Scheduled(cron = "0 0 */3 * * *") //Every 3 hours
+    public void schedulePeriodicCleanupOfFinishedWorkqueueJobs(){
+        LOGGER.debug("Cleanup of finished workqueue jobs.");
+        try {
+            List<WorkqueueJob> jobs = jobsManager.getFinishedJobs();
+
+            if (jobs != null) {
+                for (WorkqueueJob job : jobs) {
+                    if (canDeleteJob(job)) {
+                        jobsManager.endXQJob(job);
+                    }
+                }
+            }
+        } catch (DCMException e) {
+            LOGGER.error("Error when running work-queue clearner job: ", e);
+        }
+    }
+
+    /**
+     * Check the job's age and return true if it is possible to delete it.
+     *
+     * @param job
+     *            Workqueue job object
+     * @return true if job can be deleted.
+     */
+    public static boolean canDeleteJob(WorkqueueJob job) {
+        boolean canDelete = false;
+        if (job != null && job.getJobTimestamp() != null && job.getStatus() >= Constants.XQ_READY) {
+            Calendar now = Calendar.getInstance();
+            int maxAge = Properties.wqJobMaxAge == 0 ? -1 : -Properties.wqJobMaxAge;
+            now.add(Calendar.HOUR, maxAge);
+            Calendar jobCal = Calendar.getInstance();
+            jobCal.setTime(job.getJobTimestamp());
+            if (now.after(jobCal)) {
+                canDelete = true;
+            }
+        }
+        return canDelete;
     }
 
 }
