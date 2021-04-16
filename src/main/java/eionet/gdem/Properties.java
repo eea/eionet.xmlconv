@@ -121,8 +121,6 @@ public class Properties {
     /** url for rancher metadata queries. */
     public static String rancherMetadataUrl;
 
-    /** Implementation class for QA queries. Saxon is the default value, not hard-coded. */
-    public static String engineClass = "eionet.gdem.qa.engines.SaxonImpl";
     /** XGawk program executable command. */
     public static String xgawkCommand = null;
     /** timeout for running external QA program in command line in milliseconds, default 120sec. */
@@ -267,8 +265,6 @@ public class Properties {
         // settings for incoming services from Content Registry
         crSparqlEndpoint = getStringProperty("cr.sparql.endpoint");
 
-        // QA Service properties
-        engineClass = getStringProperty("xq.engine.implementator");
         // period in milliseconds
         wqCheckInterval = getIntProperty("wq.check.interval");
         // period in seconds
