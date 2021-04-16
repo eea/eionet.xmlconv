@@ -50,7 +50,6 @@ public class Json2xmlController {
             return "/converter/json2xml";
         }
 
-        //TODO update JSON library.
         String xml = Json.jsonString2xml(content);
 
         model.addAttribute("xml", xml);

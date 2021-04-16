@@ -244,8 +244,6 @@ public class Properties {
     public static String WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY;
     public static String WORKERS_DEAD_LETTER_ROUTING_KEY;
 
-    public static boolean enableQuartz;
-
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
 
@@ -395,8 +393,6 @@ public class Properties {
         JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
         WORKER_STATUS_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.status.routingkey");
         WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.heartBeat.response.routingKey");
-
-        enableQuartz = Boolean.parseBoolean(getStringProperty("env.enable.quartz"));
 
         jobsOnDemandLimitBeforeTimeout = getLongProperty("env.jobs.onDemand.limit.before.time.out");
         jobsOnDemandUITimeout = getLongProperty("env.jobs.onDemand.ui.time.out");

@@ -117,61 +117,6 @@ public class XQScript {
     }
 
     /**
-     * Result of the XQsrcipt
-     * geJobId() is not null when script comes from a scheduled job
-     * @throws XMLConvException If an error occurs.
-     */
-    public String getResult() throws XMLConvException {
-        if (!Properties.enableQuartz && getJobId()!=null) {
-            return "";
-        }
-        initEngine();
-        return engine.getResult(this);
-    }
-
-    /**
-     * Gets XQ result
-     * @param out Output Stream
-     * geJobId() is not null when script comes from a scheduled job
-     * @throws XMLConvException If an error occurs.
-     */
-    public void getResult(OutputStream out) throws XMLConvException {
-        if (!Properties.enableQuartz && getJobId()!=null) {
-            return;
-        }
-        initEngine();
-        engine.getResult(this, out);
-    }
-
-    /**
-     * Initializes QA engine
-     * @throws XMLConvException If an error occurs.
-     */
-    private void initEngine() throws XMLConvException {
-
-        if (engine == null) {
-            try {
-                if (XQScript.SCRIPT_LANG_XSL.equals(scriptType)) {
-                    engine = new XslEngineImpl();
-                } else if (XQScript.SCRIPT_LANG_XGAWK.equals(scriptType)) {
-                    engine = new XGawkQueryEngine();
-                } else if (XQScript.SCRIPT_LANG_FME.equals(scriptType)) {
-                    engine = new FMEQueryEngine();
-                } else if (XQScript.SCRIPT_LANG_XQUERY3.equals(scriptType)) {
-                    // XQUERY 3.0+
-                    // TODO find out if possible to make this external
-                    engine = new BaseXLocalImpl();
-                } else {
-                    // LEGACY XQUERY 1.0
-                    engine = new SaxonImpl();
-                }
-            } catch (Exception e) {
-                throw new XMLConvException("Error initializing engine  " + e.toString());
-            }
-        }
-    }
-
-    /**
      * Returns original file URL.
      * @return File URL
      */

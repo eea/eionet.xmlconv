@@ -145,7 +145,6 @@ public class WorkqueueController {
                 resultFile = null;
             job.setResultFile(resultFile);
 
-            //TODO Status name, maybe better to move to some Java common class
             String statusName = "-- Unknown --";
 
             if (status == Constants.XQ_RECEIVED)

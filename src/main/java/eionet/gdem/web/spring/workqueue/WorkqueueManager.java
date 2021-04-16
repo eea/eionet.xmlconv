@@ -35,11 +35,8 @@ import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobRequestHandlerService;
-import eionet.gdem.services.SchedulerService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
-import org.quartz.JobKey;
-import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +45,6 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.*;
 
-import static eionet.gdem.web.listeners.JobScheduler.getQuartzHeavyScheduler;
-import static eionet.gdem.web.listeners.JobScheduler.getQuartzScheduler;
 
 /**
  * Work Queue Manager.
@@ -296,60 +291,27 @@ public class WorkqueueManager {
                     }
 
                     JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
-
-                    // check if job is running
-                    JobKey qJob = new JobKey(jobId, "XQueryJob");
-                    if ( "2".equals(jobData[3]) ) {
-                        if(Properties.enableQuartz) {
-                            if (getQuartzScheduler().checkExists(qJob)) {
-                                try {
-                                    if (getQuartzScheduler().checkExists(qJob))
-                                        // try to interrupt running job
-                                        getQuartzScheduler().interrupt(qJob);
-                                    else if (getQuartzHeavyScheduler().checkExists(qJob))
-                                        // try to interrupt running job
-                                        getQuartzHeavyScheduler().interrupt(qJob);
-                                } catch (UnableToInterruptJobException e) {
-                                    LOGGER.info("Job with ID: " + jobId + " is running and cannot be interrupted and thus cannot be restarted");
-                                    continue;
-                                }
-                            } else {
-                                continue;
-                            }
-                        }
-                        else{
-                            //make job_executor status failed
-                            if (jobEntry.getJobExecutorName()!=null) {
-                                JobExecutor jobExecutor = getJobExecutorServiceBean().findByName(jobEntry.getJobExecutorName());
-                                jobExecutor.setJobId(jobIdInt).setStatus(SchedulingConstants.WORKER_FAILED).setName(jobEntry.getJobExecutorName());
-                                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-                                getWorkerAndJobStatusHandlerService().saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-                            }
-                        }
-                    }
                     jobEntry.setJobExecutorName(null);
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
                     getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(Constants.XQ_RECEIVED, internalStatus, jobEntry);
-                    //if the status is processing, the job will already have been sent to the queue
-                    if ( !"2".equals(jobData[3]) ) {
+
+                    String status = jobData[3];
+                    if(status.equals(String.valueOf(Constants.XQ_PROCESSING))){
+                        //make job_executor status failed
+                        if (jobEntry.getJobExecutorName()!=null) {
+                            JobExecutor jobExecutor = getJobExecutorServiceBean().findByName(jobEntry.getJobExecutorName());
+                            jobExecutor.setJobId(jobIdInt).setStatus(SchedulingConstants.WORKER_FAILED).setName(jobEntry.getJobExecutorName());
+                            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                            getWorkerAndJobStatusHandlerService().saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+                        }
+                    }
+                    else{
+                        //if the status is not processing, the job should be sent to the queue
                         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
                     }
                     LOGGER.info("### Job with id=" + jobId + " has been re-sent to the queue.");
 
                     jobsToRestart.add(jobId);
-                }
-                if(Properties.enableQuartz) {
-                    jobIds = new String[jobsToRestart.size()];
-                    jobsToRestart.toArray(jobIds);
-                    // Change the jobs' status
-                    GDEMServices.getDaoService().getXQJobDao().changeXQJobsStatuses(jobIds, Constants.XQ_RECEIVED);
-                    LOGGER.info("Jobs restarted: " + Utils.stringArray2String(jobIds, ","));
-                    for (String jobId : jobIds) {
-                        // and reschedule each job
-                        getSchedulerServiceBean().rescheduleJob(jobId);
-                        getJobHistoryRepository().save(new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), null, null, null, null));
-                        LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
-                    }
                 }
             }
         }
@@ -374,44 +336,14 @@ public class WorkqueueManager {
                             continue;
                         }
 
-                        JobKey qJob = new JobKey(jobId, "XQueryJob");
-                        if ( "2".equals(jobData[3]) ) {
-                            try {
-
-                                if(Properties.enableQuartz) {
-                                    if (getQuartzScheduler().checkExists(qJob)) {
-                                        // try to interrupt running job
-                                        getQuartzScheduler().interrupt(qJob);
-                                    } else if (getQuartzHeavyScheduler().checkExists(qJob)) {
-                                        // try to interrupt running job
-                                        getQuartzHeavyScheduler().interrupt(qJob);
-                                    }
-                                    List<JobHistoryEntry> entries = getJobHistoryRepository().findByJobName(jobId);
-                                    if(entries.size()==0){
-                                        LOGGER.info("Could not find job with id " + jobId + " in history table when cancelling it");
-                                    }
-                                    else{
-                                        JobHistoryEntry entry = entries.get(entries.size()-1);
-                                        getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.DELETED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
-                                        LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY as CANCELLED");
-                                    }
-                                }
-                                else{
-                                    //make job_executor status failed
-                                    Integer jobIdInt = Integer.parseInt(jobId);
-                                    if (jobIdInt!=null) {
-                                        JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
-                                        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                                        getWorkerAndJobStatusHandlerService().handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.DELETED, internalStatus);
-                                    }
-                                }
-
-                            }catch (UnableToInterruptJobException e) {
-
-                                GDEMServices.getDaoService().getXQJobDao().markDeleted(jobId);
-
-                                LOGGER.info("Job with ID: " + jobId + " is running and cannot be interrupted and thus cannot be deleted");
-                                continue;
+                        String status = jobData[3];
+                        if(status.equals(String.valueOf(Constants.XQ_PROCESSING))){
+                            //make job_executor status failed
+                            Integer jobIdInt = Integer.parseInt(jobId);
+                            if (jobIdInt!=null) {
+                                JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
+                                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                                getWorkerAndJobStatusHandlerService().handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.DELETED, internalStatus);
                             }
                         }
                         else{
@@ -485,10 +417,6 @@ public class WorkqueueManager {
 
     private static JobRequestHandlerService getJobRequestHandlerServiceBean() {
         return (JobRequestHandlerService) SpringApplicationContext.getBean("jobRequestHandlerService");
-    }
-
-    private static SchedulerService getSchedulerServiceBean() {
-        return (SchedulerService) SpringApplicationContext.getBean("schedulerService");
     }
 
     private static JobService getJobServiceBean() {

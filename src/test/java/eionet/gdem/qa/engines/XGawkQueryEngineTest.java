@@ -51,7 +51,7 @@ public class XGawkQueryEngineTest {
 
     }
 
-    //TODO(refactor): HashMap.get, Iterators does not gurantee that the objects will fetched in the same order the were inserted
+    //TODO (refactor): HashMap.get, Iterators does not gurantee that the objects will fetched in the same order the were inserted
     @Test
     public void testGetShellCommandWithParams() throws Exception {
         String dataFile = "data.xml";

@@ -148,7 +148,18 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
                     script_title = (String) scriptData.get(QaScriptView.SHORT_NAME);
                 }
 
-                resultValue = Utils.readStrFromFile(jobData[2]);
+                if(jobData[8]!=null && jobData[8].equals("fme")) {
+                    String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+                    if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
+                        //the result is a zip folder
+                        resultValue = "";
+                    } else {
+                        resultValue = Utils.readStrFromFile(jobData[2]);
+                    }
+                }
+                else{
+                    resultValue = Utils.readStrFromFile(jobData[2]);
+                }
                 HashMap<String, String> feedbackResult = FeedbackAnalyzer.getFeedbackResultFromFile(jobData[2]);
 
                 feedbackStatus = feedbackResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM);

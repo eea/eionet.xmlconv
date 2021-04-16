@@ -36,28 +36,4 @@ public class XQScriptTest {
         new XQScript("1 + 3", new String[]{}, "html");
     }
 
-    @Test
-    public void testInvalidScript() throws XMLConvException {
-        exception.expect(XMLConvException.class);
-        XQScript xq = new XQScript("xs:date(12+12+12)", new String[]{});
-        xq.getResult();
-    }
-
-    @Test
-    public void testValidScript1() throws XMLConvException {
-        XQScript xq = new XQScript("1 + 3", new String[]{});
-        xq.getResult();
-    }
-
-    @Test
-    public void testValidScript2() throws XMLConvException {
-        OutputStream baos = null;
-        try {
-            baos = new ByteArrayOutputStream();
-            XQScript xq = new XQScript("1 + 3", new String[]{}, "xml");
-            xq.getResult(baos);
-        } finally {
-            IOUtils.closeQuietly(baos);
-        }
-    }
 }

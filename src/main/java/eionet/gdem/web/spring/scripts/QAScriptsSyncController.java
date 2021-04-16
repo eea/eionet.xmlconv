@@ -65,14 +65,10 @@ public class QAScriptsSyncController {
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
         if (bindingResult.hasErrors()) {
-            //todo fix
             return "/scripts/edit";
         }
 
         try {
-//            scriptFile = Properties.queriesFolder + File.separator + scriptFile;
-//            SchemaManager sm = new SchemaManager();
-//            byte[] remoteScript = sm.downloadRemoteSchema(scriptUrl);
             byte[] remoteScript = Utils.downloadRemoteFile(scriptUrl);
 
             String result = Utils.diffRemoteFile(remoteScript, Properties.queriesFolder + File.separator + scriptFile);

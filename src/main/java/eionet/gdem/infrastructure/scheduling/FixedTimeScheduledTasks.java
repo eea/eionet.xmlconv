@@ -4,6 +4,9 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.cache.CacheManagerUtil;
+import eionet.gdem.datadict.DDServiceClient;
+import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.*;
@@ -403,7 +406,7 @@ public class FixedTimeScheduledTasks {
      **/
     @Scheduled(cron = "0 0 */3 * * *") //Every 3 hours
     public void schedulePeriodicCleanupOfFinishedWorkqueueJobs(){
-        LOGGER.debug("Cleanup of finished workqueue jobs.");
+        LOGGER.info("Cleanup of finished workqueue jobs.");
         try {
             List<WorkqueueJob> jobs = jobsManager.getFinishedJobs();
 
@@ -439,6 +442,22 @@ public class FixedTimeScheduledTasks {
             }
         }
         return canDelete;
+    }
+
+    /**
+     * Updates Data Dictionary tables cache.
+     **/
+    @Scheduled(cron = "0 0 */1 * * *") //Every 1 hour
+    public void schedulePeriodicDDTablesCacheUpdate(){
+        LOGGER.info("Updating DD tables chache.");
+        try {
+            List<DDDatasetTable> ddTables = DDServiceClient.getDDTablesFromDD();
+
+            CacheManagerUtil.updateDDTablesCache(ddTables);
+            LOGGER.info("DD tables cache updated");
+        } catch (Exception e) {
+            LOGGER.error("Error when updating DD tables cache: ", e);
+        }
     }
 
 }

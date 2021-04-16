@@ -768,13 +768,6 @@
             </dependency>
 
             <!-- Web App dependencies -->
-
-            <!-- CRON jobs -->
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>2.3.2</version>
-            </dependency>
             <!-- Caching -->
             <dependency>
                 <groupId>net.sf.ehcache</groupId>

@@ -108,7 +108,6 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             String outputFileName = null;
             InputStream sourceStream = null;
             try {
-                //TODO: Split method for local and remote files.
                 if (Utils.isURL(sourceURL)) {
                     sourceStream = fileManager.getFileInputStream(sourceURL, getTicket(), isTrustedMode());
                 } else {
