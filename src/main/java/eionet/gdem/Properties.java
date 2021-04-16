@@ -114,29 +114,6 @@ public class Properties {
     /** Content Registry SPARQL endpoint URL. */
     public static String crSparqlEndpoint = null;
 
-    /** FME host. */
-    public static String fmeHost = null;
-    /** FME port. */
-    public static String fmePort = null;
-    /** FME user login. */
-    public static String fmeUser = null;
-    /** FME user password. */
-    public static String fmePassword = null;
-    /** FME token. */
-    public static String fmeToken = null;
-    /** FME token expiration. */
-    public static String fmeTokenExpiration = null;
-    /** FME token timeunit. */
-    public static String fmeTokenTimeunit = null;
-    /** FME timeout. */
-    public static int fmeTimeout = 0;
-    public static int fmeRetryHours = 0;
-    /** FME url for polling job status by job id. */
-    public static String fmePollingUrl = null;
-    public static String fmeResultFolderUrl = null;
-    public static String fmeResultFolder = null;
-    public static String fmeDeleteFolderUrl = null;
-
     /** Hostname. */
     public static String hostname = null;
     /** Is Rancher Boolean. */
@@ -318,20 +295,7 @@ public class Properties {
         isRancher = getIntProperty("config.isRancher");
         rancherMetadataUrl = getStringProperty("rancher.metadata.url");
 
-        fmeHost = getStringProperty("fme.host");
-        fmePort = getStringProperty("fme.port");
-        fmeUser = getStringProperty("fme.user");
-        fmePassword = getStringProperty("fme.password");
-        fmeToken = getStringProperty("fme.token");
-        fmeTokenExpiration = getStringProperty("fme.token.expiration");
-        fmeTokenTimeunit = getStringProperty("fme.token.timeunit");
-        fmeTimeout = getIntProperty("fme.timeout");
-        fmeRetryHours = getIntProperty("fme.retry.hours");
         heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
-        fmePollingUrl = getStringProperty("fme.polling.url");
-        fmeResultFolderUrl = getStringProperty("fme.result.folder.url");
-        fmeResultFolder = getStringProperty("fme.result.folder");
-        fmeDeleteFolderUrl = getStringProperty("fme.delete.folder.url");
         longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
 
         PROP_UNS_XMLRPC_SERVER_URL = getStringProperty("env.uns.xml.rpc.server.url");
