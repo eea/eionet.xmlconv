@@ -15,7 +15,6 @@
                 <value>acl.properties</value>
                 <value>gdem.properties</value>
                 <value>CatalogManager.properties</value>
-                <value>fme.properties</value>
                 <value>messages.properties</value>
                 <value>cache.properties</value>
                 <value>http.properties</value>
