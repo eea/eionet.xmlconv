@@ -289,12 +289,7 @@ public class WorkqueueManager {
                     if (jobData == null || jobData.length < 3) {
                         continue;
                     }
-
                     JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
-                    jobEntry.setJobExecutorName(null);
-                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-                    getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(Constants.XQ_RECEIVED, internalStatus, jobEntry);
-
                     String status = jobData[3];
                     if(status.equals(String.valueOf(Constants.XQ_PROCESSING))){
                         //make job_executor status failed
@@ -309,6 +304,9 @@ public class WorkqueueManager {
                         //if the status is not processing, the job should be sent to the queue
                         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);
                     }
+                    jobEntry.setJobExecutorName(null);
+                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
+                    getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(Constants.XQ_RECEIVED, internalStatus, jobEntry);
                     LOGGER.info("### Job with id=" + jobId + " has been re-sent to the queue.");
 
                     jobsToRestart.add(jobId);
