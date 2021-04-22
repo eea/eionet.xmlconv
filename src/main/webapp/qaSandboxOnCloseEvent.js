@@ -1,8 +1,8 @@
-$(window).on("beforeunload", function() {
-    var origin = window.location.origin;
-    $.ajax({
-        async: false,
-        type: "POST",
-        url: origin + '/restapi/worker/fail'
-    });
-});
+(function() {
+    $(window).on("beforeunload", function (event) {
+        $.ajax({
+            type: "POST",
+            url: '/restapi/worker/fail'
+        });
+    })
+})();

@@ -138,7 +138,7 @@
         addRemoveLinks: "false",
         previewsContainer: "#dropzone-previews",
         previewTemplate: document.getElementById("mypreview").innerHTML,
-        init: function () {
+        init55: function () {
           $.getJSON(ctx + "/qaSandbox/action?command=getFiles", function (data) {
             if (data.Data.length != 0) {
               $.each(data.Data, function (index, val) {
@@ -451,6 +451,7 @@
 </fieldset>
 
 <script src="../../../../qaSandboxOnCloseEvent.js" type="text/javascript"></script>
+<script src="../../../../qaSandboxOnChangeTabEvent.js" type="text/javascript"></script>
 
 
 
