@@ -40,8 +40,8 @@ public class UNSEventSenderTest{
         unsEventSender.longRunningJobsNotifications(jobIds, Properties.LONG_RUNNING_JOBS_EVENT);
 
         HashSet<String> expectedPredicates = new HashSet<String>();
-        expectedPredicates.add("http://localhost:/jobs#event_type");
-        expectedPredicates.add("http://localhost:/jobs#long_running_jobs");
+        expectedPredicates.add("http://localhost:8080/jobs#event_type");
+        expectedPredicates.add("http://localhost:8080/jobs#long_running_jobs");
 
         HashSet<String> unexpectedPredicates = new HashSet<String>();
         unexpectedPredicates.add("unexpected");
