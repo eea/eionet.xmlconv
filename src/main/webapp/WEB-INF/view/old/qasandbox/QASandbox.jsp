@@ -453,7 +453,6 @@
 <script type="text/javascript">
   document.addEventListener("visibilitychange", event => {
     $.ajax({
-      async: false,
       type: "POST",
       url: '/restapi/worker/fail'
     });
