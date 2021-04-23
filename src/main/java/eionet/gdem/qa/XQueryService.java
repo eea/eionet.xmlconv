@@ -403,7 +403,7 @@ public class XQueryService extends RemoteService {
                     script_title = (String) scriptData.get(QaScriptView.SHORT_NAME);
                 }
 
-                if(jobData[8]!=null && jobData[8].equals("fme")) {
+                if(jobData.length > 8 && jobData[8]!=null && jobData[8].equals("fme")) {
                     String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
                     if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
                         //the result is a zip folder
