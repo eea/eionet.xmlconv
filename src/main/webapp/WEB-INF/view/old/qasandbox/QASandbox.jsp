@@ -450,8 +450,25 @@
 </form:form>
 </fieldset>
 
-<script src="../../../../qaSandboxOnCloseEvent.js" type="text/javascript"></script>
-<script src="../../../../qaSandboxOnChangeTabEvent.js" type="text/javascript"></script>
+<script type="text/javascript">
+  document.addEventListener("visibilitychange", event => {
+    $.ajax({
+      async: false,
+      type: "POST",
+      url: '/restapi/worker/fail'
+    });
+  });
+</script>
+<script type="text/javascript">
+  (function() {
+    $(window).on("beforeunload", function (event) {
+      $.ajax({
+        type: "POST",
+        url: '/restapi/worker/fail'
+      });
+    })
+  })();
+</script>
 
 
 
