@@ -62,7 +62,7 @@ import java.util.List;
  * @author Enriko Käsper, TripleDev
  * @author George Sofianos
  */
-//TODO: Not used any more, check if possible to remove it, or make it an implementation of ValidationService.
+//TODO Not used any more, check if possible to remove it, or make it an implementation of ValidationService.
 public class SaxValidationService {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(SaxValidationService.class);

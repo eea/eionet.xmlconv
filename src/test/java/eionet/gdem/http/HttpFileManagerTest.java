@@ -85,9 +85,8 @@ public class HttpFileManagerTest {
         assertEquals(url, HttpFileManager.getSourceUrlWithTicket(null, url, false));
     }
 
-    @Test
+    @Test(expected = URISyntaxException.class)
     public void testFileProxyUrl() throws IOException, URISyntaxException, XMLConvException {
-        exception.expect(URISyntaxException.class);
         String fileUrl = "http://trustedurl.com";
         String url = Properties.gdemURL + Constants.GETSOURCE_URL + "&source_url=" + fileUrl;
         manager.getFileInputStream(url, null, true);

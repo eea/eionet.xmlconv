@@ -140,7 +140,6 @@ public class EditStylesheetFormAction extends Action {
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(e.getErrorCode()));
             saveErrors(httpServletRequest, errors);
         }
-        //TODO why is it needed to update session attribute in each request
         httpServletRequest.getSession().setAttribute("stylesheet.outputtype", ctHolder);
 
         return actionMapping.findForward("success");

@@ -70,7 +70,7 @@ public class SchemasScriptsControllerTest {
 
     @Test
     public void scriptsNoPermissions() throws Exception {
-        //TODO: check that a non-logged in user has no permissions to see "Add QA script" and "Run QA service" links in view.
+        //TODO check that a non-logged in user has no permissions to see "Add QA script" and "Run QA service" links in view.
     }
 
     @Test

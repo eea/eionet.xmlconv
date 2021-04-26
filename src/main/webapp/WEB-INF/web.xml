@@ -62,10 +62,6 @@
         <filter-name>encodingFilter</filter-name>
         <url-pattern>*</url-pattern>
     </filter-mapping>
-
-    <listener>
-        <listener-class>eionet.gdem.web.listeners.JobScheduler</listener-class>
-    </listener>
     <!-- Spring MVC Dispatcher Servlet-->
     <servlet>
         <servlet-name>restServlet</servlet-name>
