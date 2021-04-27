@@ -450,17 +450,10 @@
 </form:form>
 </fieldset>
 
-<script type="text/javascript">
-  document.addEventListener("visibilitychange", event => {
-    $.ajax({
-      type: "POST",
-      url: '/restapi/worker/fail'
-    });
-  });
-</script>
+
 <script type="text/javascript">
   (function() {
-    $(window).on("beforeunload", function (event) {
+    $(window).on("beforeunload", function (e) {
       $.ajax({
         type: "POST",
         url: '/restapi/worker/fail'
