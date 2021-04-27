@@ -52,6 +52,10 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     @Autowired
     private AuthTokenService authTokenService;
 
+    @Autowired
+    @Qualifier("apiuserdetailsservice")
+    private UserDetailsService userDetailsService;
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 

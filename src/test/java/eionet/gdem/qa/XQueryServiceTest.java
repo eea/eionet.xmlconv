@@ -163,21 +163,21 @@ public class XQueryServiceTest {
     @Test
     public void testJobFatalError() throws Exception {
         XQueryService xq = new XQueryService();
-        Hashtable table = xq.result(Constants.XQ_FATAL_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = xq.result(Constants.XQ_FATAL_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1","","",""}, new HashMap(), "-1");
         assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test
     public void testJobLightError() throws Exception {
         XQueryService xq = new XQueryService();
-        Hashtable table = xq.result(Constants.XQ_LIGHT_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = xq.result(Constants.XQ_LIGHT_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1","","",""}, new HashMap(), "-1");
         assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test
     public void testJobReady() throws Exception {
         XQueryService xq = new XQueryService();
-        Hashtable table = xq.result(Constants.XQ_READY, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = xq.result(Constants.XQ_READY, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1","","",""}, new HashMap(), "-1");
         assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
     }
 
@@ -191,7 +191,7 @@ public class XQueryServiceTest {
     @Test
     public void testJobDownloading() throws Exception {
         XQueryService xq = new XQueryService();
-        Hashtable table = xq.result(Constants.XQ_DOWNLOADING_SRC, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
+        Hashtable table = xq.result(Constants.XQ_DOWNLOADING_SRC, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1","",""}, new HashMap(), "-1");
         assertEquals("Wrong result code", "1", table.get(Constants.RESULT_CODE_PRM));
     }
 

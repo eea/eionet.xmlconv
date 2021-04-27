@@ -31,6 +31,29 @@ pipeline {
       }
     }
 
+
+
+stage ('Unit Tests and Sonarqube') {
+      when {
+        not { buildingTag() }
+      }
+      steps {
+                withSonarQubeEnv('Sonarqube') {
+                    sh '''mvn clean -B -V -P docker verify  '''
+             /**       sh '''try=2; while [ \$try -gt 0 ]; do curl -s -XPOST -u "${SONAR_AUTH_TOKEN}:" "${SONAR_HOST_URL}api/project_tags/set?project=${GIT_NAME}-${BRANCH_NAME}&tags=${SONARQUBE_TAGS},${BRANCH_NAME}" > set_tags_result; if [ \$(grep -ic error set_tags_result ) -eq 0 ]; then try=0; else cat set_tags_result; echo "... Will retry"; sleep 60; try=\$(( \$try - 1 )); fi; done'''
+               **/
+                }
+      }
+      post {
+        always {
+            junit 'target/failsafe-reports/*.xml'
+          /**  cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml' **/
+        }
+      }
+    }
+
+
+
         stage ('Docker build and push') {
       when {
           environment name: 'CHANGE_ID', value: ''

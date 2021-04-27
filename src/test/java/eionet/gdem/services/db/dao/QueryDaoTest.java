@@ -112,7 +112,7 @@ public class QueryDaoTest {
         assertEquals(query.get(QaScriptView.UPPER_LIMIT), upperLimit);
         assertEquals(query.get(QaScriptView.URL), url);
         assertEquals(query.get(QaScriptView.IS_ACTIVE), "1");
-        assertEquals(query.get(QaScriptView.ASYNCHRONOUS_EXECUTION), false);
+        assertEquals(query.get(QaScriptView.ASYNCHRONOUS_EXECUTION), "0");
         // check boolean methods
         assertTrue(queryDao.checkQueryFile(queryFileName));
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));

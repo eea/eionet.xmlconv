@@ -453,6 +453,7 @@
             <column name="MAX_EXECUTION_TIME" type="BIGINT"/>
         </addColumn>
     </changeSet>
+<<<<<<< HEAD
     <changeSet author="favvmary" id="rev-42">
         <comment> Table for Storing internal scheduling statuses</comment>
         <createTable tableName="INTERNAL_STATUS">
@@ -595,6 +596,9 @@
         </sql>
     </changeSet>
     <changeSet author="anthaant" id="rev-55">
+=======
+    <changeSet author="anthaant" id="rev-42">
+>>>>>>> master
         <comment>
             Added ASYNCHRONOUS_EXECUTION column in T_QUERY
         </comment>
