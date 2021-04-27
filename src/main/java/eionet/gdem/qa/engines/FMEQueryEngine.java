@@ -13,6 +13,7 @@ import eionet.gdem.services.fme.FmeJobStatus;
 import eionet.gdem.services.fme.FmeServerCommunicator;
 import eionet.gdem.services.fme.exceptions.*;
 import eionet.gdem.services.fme.request.SynchronousSubmitJobRequest;
+import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.http.HttpEntity;
@@ -167,15 +168,34 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         } catch (FmeAuthorizationException | FmeCommunicationException | GenericFMEexception | FMEBadRequestException |RetryCountForGettingJobResultReachedException | InterruptedException e) {
             String message = "Generic Exception handling. FME request error: " + e.getMessage();
             LOGGER.error(message);
-            String resultString ="<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. The id in the FME server is #" + jobId + ". Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. The id in the FME server is #" + jobId + ".  Please try again. If the issue persists please contact the dataflow helpdesk.</div>";
+
+            String resultStr = createErrorMessage(jobId, script.getScriptSource(), script.getOrigFileUrl(), e.getMessage());
+
             ZipOutputStream out = new ZipOutputStream(result);
             ZipEntry entry = new ZipEntry("output.html");
             out.putNextEntry(entry);
-            byte[] data = resultString.getBytes();
+            byte[] data = resultStr.getBytes();
             out.write(data, 0, data.length);
             out.closeEntry();
             out.close();
         }
+    }
+
+    private String createErrorMessage (String fmeJobId, String scriptUrl, String sourceUrl, String exception){
+        String resultStringHtml = "<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">";
+        String resultStringMsg ="The QC process failed. ";
+        String resultStringSpecificMsg;
+        if (Utils.isNullStr(fmeJobId)){
+            resultStringSpecificMsg = "Job submission for script: " + scriptUrl + " and xml url " + sourceUrl + " failed. ";
+        }
+        else{
+            resultStringSpecificMsg = "The id in the FME server is #" + fmeJobId + ". ";
+        }
+        String fullResultString = resultStringHtml + resultStringMsg + resultStringSpecificMsg;
+        String resultStringMsgCont = "Please try again. If the issue persists please contact the dataflow helpdesk. ";
+        String exceptionMsg = "Exception message is: " + exception;
+        fullResultString += resultStringMsgCont + exceptionMsg +  "</span>" + resultStringMsg + resultStringSpecificMsg + resultStringMsgCont + exceptionMsg + "</div>";
+        return fullResultString;
     }
 
 
