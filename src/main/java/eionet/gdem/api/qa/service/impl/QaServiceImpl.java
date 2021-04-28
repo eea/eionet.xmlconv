@@ -103,7 +103,7 @@ public class QaServiceImpl implements QaService {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 if (key != "" && value != "") {
-                    if(table.contains(value)){  //schema already exists in the table
+                    if(table.containsKey(value)){  //schema already exists in the table
                         Vector files = (Vector)table.get(value);
                         files.add(key);
                     }
