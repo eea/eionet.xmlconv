@@ -15,7 +15,7 @@ import java.net.URLDecoder;
 /**
  *
  */
-@WebServlet(value = {"/queries/*", "/schema/*", "/tmp/*", "/tmpfile/*", "/xsl/*"})
+@WebServlet(value = {"/queries/*", "/tmp/*", "/tmpfile/*"})
 public class FileDownloadServlet extends FileServlet {
     @Override
     protected File getFile(HttpServletRequest request) throws IllegalArgumentException, SignOnException {

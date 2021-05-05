@@ -12,8 +12,8 @@ import java.net.URLDecoder;
 /**
  *
  */
-@WebServlet(value = {"/xmlfile/*"})
-public class XmlFileDownloadServlet extends FileServlet {
+@WebServlet(value = {"/xmlfile/*", "/xsl/*", "/schema/*"})
+public class FileDownloadServletWithoutAuthorization extends FileServlet {
     @Override
     protected File getFile(HttpServletRequest request) throws IllegalArgumentException {
         String urlPath = null;
