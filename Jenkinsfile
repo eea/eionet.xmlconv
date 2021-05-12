@@ -112,10 +112,10 @@ post {
           color = '#FF0000'
         }
 
-        echo "Recipients is ${recipients}"
+        echo "Recipients are mf@eworx.gr,nta@eworx.gr,vs@eworx.gr,sp@eworx.gr"
 
         emailext(
-        to: 'mf@eworx.gr;nta@eworx.gr;vs@eworx.gr',
+        to: 'mf@eworx.gr;nta@eworx.gr;vs@eworx.gr;sp@eworx.gr',
         subject: '$DEFAULT_SUBJECT',
         body: details,
         attachLog: true,
