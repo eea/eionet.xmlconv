@@ -55,7 +55,7 @@ pipeline {
                allowMissing: false,
                alwaysLinkToLastBuild: false,
                keepAll: true,
-               reportDir: 'coverage',
+               reportDir: 'target/site/jacoco',
                reportFiles: 'index.html',
                reportName: "Cov Report"
             ]
