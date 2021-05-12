@@ -31,9 +31,7 @@ pipeline {
       }
     }
 
-
-
-stage ('Unit Tests and Sonarqube') {
+    stage ('Unit Tests and Sonarqube') {
       when {
         not { buildingTag() }
       }
@@ -47,14 +45,18 @@ stage ('Unit Tests and Sonarqube') {
       post {
         always {
             junit 'target/failsafe-reports/*.xml'
+            step([$class: 'JacocoPublisher',
+                execPattern: 'target/*.exec',
+                classPattern: 'target/classes',
+                sourcePattern: 'src/main/java',
+                exclusionPattern: 'src/test*'
+            ])
           /**  cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml' **/
         }
       }
     }
 
-
-
-        stage ('Docker build and push') {
+    stage ('Docker build and push') {
       when {
           environment name: 'CHANGE_ID', value: ''
       }
@@ -76,15 +78,47 @@ stage ('Unit Tests and Sonarqube') {
       }
       post {
         always {
-                           sh "docker rmi $registry:$tagName | docker images $registry:$tagName"
+            sh "docker rmi $registry:$tagName | docker images $registry:$tagName"
         }
-
-        }
+      }
     }
-
-
-
   }
 
+post {
+    always {
+      cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, deleteDirs: true)
+
+      script {
+
+        def url = "${env.BUILD_URL}/display/redirect"
+        def status = currentBuild.currentResult
+        def subject = "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+        def summary = "${subject} (${url})"
+        def details = """<h1>${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${status}</h1>
+                         <p>Check console output at <a href="${url}">${env.JOB_BASE_NAME} - #${env.BUILD_NUMBER}</a></p>
+                      """
+
+        def color = '#FFFF00'
+        if (status == 'SUCCESS') {
+          color = '#00FF00'
+        } else if (status == 'FAILURE') {
+          color = '#FF0000'
+        }
+
+        def recipients = emailextrecipients([ [$class: 'DevelopersRecipientProvider'], [$class: 'CulpritsRecipientProvider']])
+
+        echo "Recipients is ${recipients}"
+
+        emailext(
+        subject: '$DEFAULT_SUBJECT',
+        body: details,
+        attachLog: true,
+        compressLog: true,
+        recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'CulpritsRecipientProvider']]
+        )
+
+      }
+    }
+  }
   
 }
