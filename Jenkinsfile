@@ -45,13 +45,20 @@ pipeline {
       post {
         always {
             junit 'target/failsafe-reports/*.xml'
-            step([$class: 'JacocoPublisher',
+            jacoco(
                 execPattern: 'target/*.exec',
                 classPattern: 'target/classes',
                 sourcePattern: 'src/main/java',
                 exclusionPattern: 'src/test*'
-            ])
-          /**  cobertura coberturaReportFile: 'target/site/cobertura/coverage.xml' **/
+            )
+            publishHTML target:[
+               allowMissing: false,
+               alwaysLinkToLastBuild: false,
+               keepAll: true,
+               reportDir: 'coverage',
+               reportFiles: 'index.html',
+               reportName: "Cov Report"
+            ]
         }
       }
     }
