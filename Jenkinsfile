@@ -112,16 +112,14 @@ post {
           color = '#FF0000'
         }
 
-        def recipients = emailextrecipients([ [$class: 'DevelopersRecipientProvider'], [$class: 'CulpritsRecipientProvider']])
-
         echo "Recipients is ${recipients}"
 
         emailext(
+        to: 'mf@eworx.gr;nta@eworx.gr;vs@eworx.gr',
         subject: '$DEFAULT_SUBJECT',
         body: details,
         attachLog: true,
         compressLog: true,
-        recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'CulpritsRecipientProvider']]
         )
 
       }
