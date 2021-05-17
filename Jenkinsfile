@@ -94,9 +94,6 @@ pipeline {
     }
 
         stage('Release') {
-          when {
-            buildingTag()
-          }
           steps{
             node(label: 'docker') {
               withCredentials([string(credentialsId: 'eea-jenkins-token', variable: 'GITHUB_TOKEN'),  usernamePassword(credentialsId: 'jekinsdockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
