@@ -7,6 +7,9 @@ pipeline {
     GIT_NAME = "eionet.xmlconv"
     SONARQUBE_TAGS = "converters.eionet.europa.eu"
     registry = "eeacms/xmlconv"
+    convertersTemplate = "templates/converters"
+    convertersbdrTemplate = "templates/convertersbdr"
+    converterstestTemplate = "templates/converterstest"
     availableport = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
     availableport2 = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
     availableport3 = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
@@ -89,6 +92,19 @@ pipeline {
         }
       }
     }
+
+        stage('Release') {
+          when {
+            buildingTag()
+          }
+          steps{
+            node(label: 'docker') {
+              withCredentials([string(credentialsId: 'eea-jenkins-token', variable: 'GITHUB_TOKEN'),  usernamePassword(credentialsId: 'jekinsdockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+               sh '''docker pull eeacms/gitflow; docker run -i --rm --name="$BUILD_TAG-release"  -e GIT_BRANCH="$BRANCH_NAME" -e GIT_NAME="$GIT_NAME" -e DOCKERHUB_REPO="$registry" -e GIT_TOKEN="$GITHUB_TOKEN" -e DOCKERHUB_USER="$DOCKERHUB_USER" -e DOCKERHUB_PASS="$DOCKERHUB_PASS"  -e RANCHER_CATALOG_PATHS="$convertersTemplate" -e GITFLOW_BEHAVIOR="RUN_ON_TAG" eeacms/gitflow'''
+             }
+            }
+          }
+        }
   }
 
 post {
