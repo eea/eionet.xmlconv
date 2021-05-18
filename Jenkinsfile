@@ -128,16 +128,18 @@ post {
         } else if (status == 'FAILURE') {
           color = '#FF0000'
         }
+        
+        
+        withCredentials([string(credentialsId: 'eworx-email-list', variable: 'EMAIL_LIST')]) {
+                  emailext(
+                  to: "$EMAIL_LIST",
+                  subject: '$DEFAULT_SUBJECT',
+                  body: details,
+                  attachLog: true,
+                  compressLog: true,
+                  )
+        }
 
-        echo "Recipients are mf@eworx.gr,nta@eworx.gr,vs@eworx.gr,sp@eworx.gr"
-
-        emailext(
-        to: 'mf@eworx.gr;nta@eworx.gr;vs@eworx.gr;sp@eworx.gr',
-        subject: '$DEFAULT_SUBJECT',
-        body: details,
-        attachLog: true,
-        compressLog: true,
-        )
 
       }
     }
