@@ -7,6 +7,8 @@ pipeline {
     GIT_NAME = "eionet.xmlconv"
     SONARQUBE_TAGS = "converters.eionet.europa.eu"
     registry = "eeacms/xmlconv"
+    dockerImage = ''
+    tagName = ''
     convertersTemplate = "templates/converters"
     convertersbdrTemplate = "templates/convertersbdr"
     converterstestTemplate = "templates/converterstest"
@@ -94,6 +96,9 @@ pipeline {
     }
 
         stage('Release') {
+          when {
+            buildingTag()
+          }
           steps{
             node(label: 'docker') {
               withCredentials([string(credentialsId: 'eea-jenkins-token', variable: 'GITHUB_TOKEN'),  usernamePassword(credentialsId: 'jekinsdockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
