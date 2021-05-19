@@ -9,6 +9,11 @@
 <script type="text/javascript" src="<c:url value='/static/js/DataTables/media/js/jquery.dataTables.min.js'/>"></script>
 <script type="text/javascript" src="<c:url value='/static/js/workqueue.js'/>"></script>
 
+<script type="text/javascript" src="http://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" src="http://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="http://cdn.datatables.net/buttons/1.2.4/js/buttons.colVis.min.js"></script>
+
 
 <script type="text/javascript">
   // <![CDATA[
@@ -76,7 +81,7 @@
 <div id="main_table">
   <form:form id="jobs" servletRelativeAction="/workqueue" method="post" modelAttribute="form">
     <form:errors path="*" cssClass="error-msg" element="div"/>
-    <table id="workqueue_table" class="datatable results" width="100%">
+    <table id="workqueue_table" class="datatable results" width="100%" export="true">
       <col style="width:30px; text-align:right;"/>
       <col style="width:50px; text-align:right;"/>
       <col/>
