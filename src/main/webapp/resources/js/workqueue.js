@@ -77,11 +77,35 @@ $(document).ready(function() {
 
     // initialize the Datatable
     var table = $('#workqueue_table').DataTable( {
+        dom: 'Bfrtip',
         paging:   false,
         ordering: true,
         info:     true,
         searching: true,
-
+        export: true,
+        buttons: [
+            {
+                extend: 'csv',
+                text: 'Export to CSV',
+                customize: function (csv) {
+                    var csvRows = csv.split('\n');
+                    var csvColumns = csv.split(';');
+                    csvColumns[0] = 'Job ID';
+                    csvColumns[1] = 'Document URL';
+                    csvColumns[2] = 'XQuery script';
+                    csvColumns[3] = 'Job Result';
+                    csvColumns[4] = 'Status';
+                    csvColumns[5] = 'Started at';
+                    csvColumns[6] = 'Instance';
+                    csvColumns[7] = 'Duration';
+                    csvRows[0] = csvColumns.join(';');
+                    return csvRows.join('\n');
+                },
+                exportOptions: {
+                    columns: ':gt(0)'
+                }
+            }
+        ],
         bAutoWidth: false,
         "order": [[ 1, "asc" ]],
         "oLanguage": {
