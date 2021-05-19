@@ -9,10 +9,10 @@
 <script type="text/javascript" src="<c:url value='/static/js/DataTables/media/js/jquery.dataTables.min.js'/>"></script>
 <script type="text/javascript" src="<c:url value='/static/js/workqueue.js'/>"></script>
 
-<script type="text/javascript" src="http://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-<script type="text/javascript" src="http://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
-<script type="text/javascript" src="http://cdn.datatables.net/buttons/1.2.4/js/buttons.colVis.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.colVis.min.js"></script>
 
 
 <script type="text/javascript">
