@@ -436,12 +436,6 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.9.0.2155</version>
-                <!-- no default executions -->
-                <configuration>
-                    <sonar.exclusions>
-                        **/test/*
-                    </sonar.exclusions>
-                </configuration>
             </plugin>
         </plugins>
 
