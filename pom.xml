@@ -431,6 +431,18 @@
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>4.2.3</version>
             </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.0.2155</version>
+                <!-- no default executions -->
+                <configuration>
+                    <sonar.exclusions>
+                        **/test/*
+                    </sonar.exclusions>
+                </configuration>
+            </plugin>
         </plugins>
 
         <!-- filtering corrupts the xsl files -->
@@ -1130,12 +1142,12 @@
                 <version>20190722</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.6.0.1398</version>
-                <scope>test</scope>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.sonarsource.scanner.maven</groupId>-->
+<!--                <artifactId>sonar-maven-plugin</artifactId>-->
+<!--                <version>3.6.0.1398</version>-->
+<!--                <scope>test</scope>-->
+<!--            </dependency>-->
 
 
         </dependencies>
