@@ -84,23 +84,6 @@
                 <valid.images>none</valid.images>
             </properties>
         </profile>
-        <!--profile>
-            <id>cobertura</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>cobertura-maven-plugin</artifactId>
-                        <version>2.7</version>
-                        <configuration>
-                            <formats>
-                                <format>xml</format>
-                            </formats>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile-->
     </profiles>
 
     <build>
@@ -441,6 +424,12 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.2.3</version>
             </plugin>
         </plugins>
 
@@ -1191,17 +1180,6 @@
                     </execution>
                 </executions>-->
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <formats>
-                        <format>xml</format>
-                    </formats>
-                </configuration>
-            </plugin>
-
         </plugins>
     </reporting>
 
