@@ -18,8 +18,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
         <thymeleaf-layout-dialect.version>2.1.1</thymeleaf-layout-dialect.version>
-        <sonar.exclusions>src/test</sonar.exclusions>
-        <sonar.coverage.exclusions>src/test</sonar.coverage.exclusions>
     </properties>
 
     <version>2.1-SNAPSHOT</version>
@@ -1137,14 +1135,6 @@
                 <artifactId>json</artifactId>
                 <version>20190722</version>
             </dependency>
-
-<!--            <dependency>-->
-<!--                <groupId>org.sonarsource.scanner.maven</groupId>-->
-<!--                <artifactId>sonar-maven-plugin</artifactId>-->
-<!--                <version>3.6.0.1398</version>-->
-<!--                <scope>test</scope>-->
-<!--            </dependency>-->
-
 
         </dependencies>
 
