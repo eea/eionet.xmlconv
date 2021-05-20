@@ -139,7 +139,7 @@
                 <form:checkbox path="jobs" id="job_${job.jobId}" value="${job.jobId}"/>
               </td>
               <td class="details-control" id="selectableJobId">
-                <label for="job_${job.jobId}">${job.jobId}</label>
+                  <label for="job_${job.jobId}" style="cursor:pointer">${job.jobId}</label>
               </td>
             </c:when>
             <c:otherwise>
