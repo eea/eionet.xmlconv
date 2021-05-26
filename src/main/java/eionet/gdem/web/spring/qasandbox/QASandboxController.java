@@ -12,6 +12,9 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.security.TokenVerifier;
+import eionet.gdem.security.errors.JWTException;
+import eionet.gdem.security.service.AuthTokenService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
@@ -29,7 +32,14 @@ import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,8 +68,24 @@ public class QASandboxController {
     /** Dao for getting query data. */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
 
+    private AuthTokenService authTokenService;
+
+    @Value("${jwt.header}")
+    private String tokenHeader;
+    @Value("${jwt.header.schema}")
+    private String authenticationTokenSchema;
+
+    private TokenVerifier verifier;
+
+
+    private UserDetailsService userDetailsService;
+
     @Autowired
-    public QASandboxController(MessageService messageService) {
+    public QASandboxController(MessageService messageService,AuthTokenService authTokenService,TokenVerifier verifier,
+                               @Qualifier("apiuserdetailsservice") UserDetailsService userDetailsService) {
+        this.authTokenService = authTokenService;
+        this.verifier = verifier;
+        this.userDetailsService = userDetailsService;
         this.messageService = messageService;
     }
 
@@ -153,7 +179,7 @@ public class QASandboxController {
     }
 
     @PostMapping(params = {"addToWorkqueue"})
-    public String addToWorkQueue(@ModelAttribute("form") QASandboxForm cForm, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String addToWorkQueue(HttpServletRequest request,@ModelAttribute("form") QASandboxForm cForm, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
 
         SpringMessages messages = new SpringMessages();
         SpringMessages errors = new SpringMessages();
@@ -164,6 +190,23 @@ public class QASandboxController {
         String schemaUrl = cForm.getSchemaUrl();
 
         String userName = (String) session.getAttribute("user");
+
+        String rawAuthenticationToken = request.getHeader(this.tokenHeader);
+        try {
+            String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
+            if (parsedAuthenticationToken != null) {
+                String username = verifier.verify(parsedAuthenticationToken);
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
+                    userName = username;
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                //    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
+        } catch (JWTException e) {
+            e.printStackTrace();
+        }
 
         new QASandboxValidator().validateWorkQueue(cForm, bindingResult);
         if (bindingResult.hasErrors()) {
