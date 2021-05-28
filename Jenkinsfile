@@ -10,8 +10,6 @@ pipeline {
     dockerImage = ''
     tagName = ''
     convertersTemplate = "templates/converters"
-    convertersbdrTemplate = "templates/convertersbdr"
-    converterstestTemplate = "templates/converterstest"
     availableport = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
     availableport2 = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
     availableport3 = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
@@ -26,9 +24,6 @@ pipeline {
 
   stages {
     stage('Project Build') {
-      when {
-         branch 'master'
-      }
       steps {
           sh 'mvn clean -B -V verify  -Dmaven.test.skip=true'
       }
@@ -41,7 +36,6 @@ pipeline {
 
     stage ('Unit Tests and Sonarqube') {
       when {
-        branch 'master'
         not { buildingTag() }
       }
       steps {
@@ -73,7 +67,6 @@ pipeline {
 
     stage ('Docker build and push') {
       when {
-          branch 'master'
           environment name: 'CHANGE_ID', value: ''
       }
       steps {
@@ -118,8 +111,6 @@ post {
       cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, deleteDirs: true)
 
       script {
-
-        if (env.BRANCH_NAME == 'master') {
                 def url = "${env.BUILD_URL}/display/redirect"
                 def status = currentBuild.currentResult
                 def subject = "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
@@ -145,7 +136,6 @@ post {
                           compressLog: true,
                           )
                 }
-        }
       }
     }
   }
