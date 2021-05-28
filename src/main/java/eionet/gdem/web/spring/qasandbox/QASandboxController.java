@@ -70,10 +70,8 @@ public class QASandboxController {
 
     private AuthTokenService authTokenService;
 
-    @Value("${jwt.header}")
-    private String tokenHeader;
-    @Value("${jwt.header.schema}")
-    private String authenticationTokenSchema;
+    private String tokenHeader = Properties.jwtHeaderProperty;
+    private String authenticationTokenSchema = Properties.jwtHeaderSchemaProperty;
 
     private TokenVerifier verifier;
 
@@ -191,21 +189,25 @@ public class QASandboxController {
 
         String userName = (String) session.getAttribute("user");
 
+        Boolean usedToken = false;
+
         String rawAuthenticationToken = request.getHeader(this.tokenHeader);
-        try {
-            String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
-            if (parsedAuthenticationToken != null) {
-                String username = verifier.verify(parsedAuthenticationToken);
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
-                    userName = username;
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                //    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+        if(!Utils.isNullStr(rawAuthenticationToken)) {
+            try {
+                String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
+                if (parsedAuthenticationToken != null) {
+                    String username = verifier.verify(parsedAuthenticationToken);
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                    if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
+                        userName = username;
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        usedToken = true;
+                    }
                 }
+            } catch (JWTException e) {
+                LOGGER.error(e.getMessage());
             }
-        } catch (JWTException e) {
-            e.printStackTrace();
         }
 
         new QASandboxValidator().validateWorkQueue(cForm, bindingResult);
@@ -216,11 +218,11 @@ public class QASandboxController {
         try {
             WorkqueueManager workqueueManager = new WorkqueueManager();
             if (cForm.isShowScripts()) {
-                List<String> jobIds = workqueueManager.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl);
+                List<String> jobIds = workqueueManager.addSchemaScriptsToWorkqueue(userName, sourceUrl, schemaUrl, usedToken);
                 LOGGER.info("QA Sandbox: " + messageService.getMessage("message.qasandbox.jobsAdded", jobIds.toString())+ ".");
                 messages.add(messageService.getMessage("message.qasandbox.jobsAdded", jobIds.toString()));
             } else {
-                String jobId = workqueueManager.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType);
+                String jobId = workqueueManager.addQAScriptToWorkqueue(userName, sourceUrl, content, scriptType, usedToken);
                 LOGGER.info("QA Sandbox: " + messageService.getMessage("message.qasandbox.jobAdded", jobId)+ ".");
                 messages.add(messageService.getMessage("message.qasandbox.jobAdded", jobId));
             }
@@ -372,14 +374,38 @@ public class QASandboxController {
         boolean showScripts = cForm.isShowScripts();
         String userName = (String) session.getAttribute("user");
 
+        Boolean usedToken = false;
+        String rawAuthenticationToken = request.getHeader(this.tokenHeader);
+        if (!Utils.isNullStr(rawAuthenticationToken)) {
+
+        try {
+                String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
+                if (parsedAuthenticationToken != null) {
+                    String username = verifier.verify(parsedAuthenticationToken);
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                    if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
+                        userName = username;
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        usedToken = true;
+                    }
+                }
+            } catch (JWTException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+
+
         new QASandboxValidator().validateRunScript(cForm, bindingResult);
         if (bindingResult.hasErrors()) {
             return "/qaSandbox/view";
         }
 
         try {
-            if (!Utils.isNullStr(scriptContent) && !SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QASANDBOX_PATH, "i")) {
-                throw new AccessDeniedException(messageService.getMessage("label.autorization.qasandbox.execute"));
+            if(!usedToken) {
+                if (!Utils.isNullStr(scriptContent) && !SecurityUtil.hasPerm(userName, "/" + Constants.ACL_QASANDBOX_PATH, "i")) {
+                    throw new AccessDeniedException(messageService.getMessage("label.autorization.qasandbox.execute"));
+                }
             }
             String result = null;
 

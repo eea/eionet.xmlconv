@@ -80,7 +80,7 @@ public class WorkqueueManagerTest {
 
         WorkqueueManager wqm = new WorkqueueManager();
 
-        String jobId = wqm.addQAScriptToWorkqueue(user, sourceUrl, scriptContent, scriptType);
+        String jobId = wqm.addQAScriptToWorkqueue(user, sourceUrl, scriptContent, scriptType, false);
         Thread.sleep(4000L);
         WorkqueueJob job = wqm.getWqJob(jobId);
         String contentFile = job.getScriptFile();
@@ -107,7 +107,7 @@ public class WorkqueueManagerTest {
 
         WorkqueueManager wqm = new WorkqueueManager();
 
-        List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(user, sourceUrl, schemaUrl);
+        List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(user, sourceUrl, schemaUrl, false);
         for (int i = 0; i < jobIds.size(); i++) {
             String jobId = jobIds.get(i);
             WorkqueueJob job = wqm.getWqJob(jobId);
