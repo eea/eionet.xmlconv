@@ -184,6 +184,8 @@ public class Properties {
     public static String PROP_UNS_EVENTTYPE_PREDICATE = null;
     public static String PROP_UNS_EVENTS_NAMESPACE = null;
     public static final String LONG_RUNNING_JOBS_EVENT = "Found long running jobs";
+    public static String PROP_UNS_URL = null;
+    public static String PROP_UNS_REST_SEND_NOTIFICATION = null;
 
 
     public static int heavyJobThreshhold;
@@ -361,6 +363,10 @@ public class Properties {
         MAIN_WORKERS_EXCHANGE = getStringProperty("env.rabbitmq.main.workers.exchange");
         JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.routingkey");
         JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
+
+        PROP_UNS_URL = getStringProperty("env.uns.url");
+        PROP_UNS_REST_SEND_NOTIFICATION = getStringProperty("uns.sendNotification.method");
+
     }
 
     /**

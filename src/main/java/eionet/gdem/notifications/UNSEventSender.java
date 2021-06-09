@@ -2,20 +2,28 @@ package eionet.gdem.notifications;
 
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.security.GeneralSecurityException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 public class UNSEventSender {
 
@@ -31,6 +39,8 @@ public class UNSEventSender {
     private String userNameProperty = null;
     private String passwordProperty = null;
     private String eventsNamespaceProperty = null;
+    private String unsUrl = null;
+    private String sendNotificationRest = null;
 
     public UNSEventSender() {
     }
@@ -99,13 +109,15 @@ public class UNSEventSender {
 
         Vector notificationTriples = prepareTriples(predicateObjects);
         logTriples(notificationTriples);
-        makeCall(notificationTriples);
+        ..makeCall(notificationTriples);
+        makeRestCall(notificationTriples);
     }
 
     /**
      *
      * @param rdfTriples
      */
+    //TODO this method will be removed
     protected void makeCall(Object rdfTriples) {
 
         if (isSendingDisabled()) {
@@ -133,6 +145,49 @@ public class UNSEventSender {
             XmlRpcCallThread.execute(client, functionName, params);
         } catch (IOException e) {
             LOGGER.error("Sending UNS notification failed: " + e.toString(), e);
+        }
+    }
+
+    protected void makeRestCall(Object rdfTriples) {
+        try {
+            if (isSendingDisabled()) {
+                return;
+            }
+
+            String channelName = getChannelNameProperty();
+            String userName = getUserNameProperty();
+            String password = getPasswordProperty();
+
+            String url = getUnsUrl() + getSendNotificationRest() + channelName;
+            HttpGet request = new HttpGet(url);
+
+            // serialize triples
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            new ObjectOutputStream(out).writeObject(rdfTriples);
+
+            // your string
+            String rdfTriplesStr = new String(Hex.encodeHex(out.toByteArray()));
+
+            URI uri = new URIBuilder(request.getURI())
+                    .addParameter("triples", rdfTriplesStr)
+                    .build();
+
+            ((HttpRequestBase) request).setURI(uri);
+
+            String usernamePassword = userName + ":" + password;
+            byte[] encoding = Base64.getEncoder().encode(usernamePassword.getBytes());
+            request.addHeader("Authorization", "Basic " + new String(encoding));
+
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            CloseableHttpResponse response = httpClient.execute(request);
+            if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
+                String errorMsg = "Received status code " + response.getStatusLine().getStatusCode();
+                throw new Exception(errorMsg);
+            }
+            httpClient.close();
+        }
+        catch(Exception e){
+            LOGGER.error("Could not send notification to uns: " + e.getMessage());
         }
     }
 
@@ -248,6 +303,14 @@ public class UNSEventSender {
         return eventsNamespaceProperty;
     }
 
+    public String getUnsUrl() {
+        return unsUrl;
+    }
+
+    public String getSendNotificationRest() {
+        return sendNotificationRest;
+    }
+
     protected void setupProperties (){
         eventTypePredicateProperty = Properties.PROP_UNS_EVENTTYPE_PREDICATE;
         longRunningJobsPredicateProperty = Properties.PROP_UNS_LONG_RUNNING_JOBS_PREDICATE;
@@ -258,5 +321,7 @@ public class UNSEventSender {
         userNameProperty = Properties.PROP_UNS_USERNAME;
         passwordProperty = Properties.PROP_UNS_PASSWORD;
         eventsNamespaceProperty = Properties.PROP_UNS_EVENTS_NAMESPACE;
+        unsUrl = Properties.PROP_UNS_URL;
+        sendNotificationRest = Properties.PROP_UNS_REST_SEND_NOTIFICATION;
     }
 }
