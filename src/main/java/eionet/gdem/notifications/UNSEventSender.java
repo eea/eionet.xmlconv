@@ -109,7 +109,7 @@ public class UNSEventSender {
 
         Vector notificationTriples = prepareTriples(predicateObjects);
         logTriples(notificationTriples);
-        ..makeCall(notificationTriples);
+        //makeCall(notificationTriples);
         makeRestCall(notificationTriples);
     }
 
