@@ -186,6 +186,8 @@ public class Properties {
     public static final String LONG_RUNNING_JOBS_EVENT = "Found long running jobs";
     public static String PROP_UNS_URL = null;
     public static String PROP_UNS_REST_SEND_NOTIFICATION = null;
+    public static String PROP_UNS_REST_USERNAME = null;
+    public static String PROP_UNS_REST_PASSWORD = null;
 
 
     public static int heavyJobThreshhold;
@@ -366,6 +368,8 @@ public class Properties {
 
         PROP_UNS_URL = getStringProperty("env.uns.url");
         PROP_UNS_REST_SEND_NOTIFICATION = getStringProperty("uns.sendNotification.method");
+        PROP_UNS_REST_USERNAME = getStringProperty("uns.rest.username");
+        PROP_UNS_REST_PASSWORD = getStringProperty("uns.rest.password");
 
     }
 

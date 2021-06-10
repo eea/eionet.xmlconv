@@ -41,6 +41,8 @@ public class UNSEventSender {
     private String eventsNamespaceProperty = null;
     private String unsUrl = null;
     private String sendNotificationRest = null;
+    private String restUserNameProperty = null;
+    private String restPasswordProperty = null;
 
     public UNSEventSender() {
     }
@@ -155,8 +157,8 @@ public class UNSEventSender {
             }
 
             String channelName = getChannelNameProperty();
-            String userName = getUserNameProperty();
-            String password = getPasswordProperty();
+            String userName = getRestUserNameProperty();
+            String password = getRestPasswordProperty();
 
             String url = getUnsUrl() + getSendNotificationRest() + channelName;
             HttpGet request = new HttpGet(url);
@@ -311,6 +313,14 @@ public class UNSEventSender {
         return sendNotificationRest;
     }
 
+    public String getRestUserNameProperty() {
+        return restUserNameProperty;
+    }
+
+    public String getRestPasswordProperty() {
+        return restPasswordProperty;
+    }
+
     protected void setupProperties (){
         eventTypePredicateProperty = Properties.PROP_UNS_EVENTTYPE_PREDICATE;
         longRunningJobsPredicateProperty = Properties.PROP_UNS_LONG_RUNNING_JOBS_PREDICATE;
@@ -323,5 +333,7 @@ public class UNSEventSender {
         eventsNamespaceProperty = Properties.PROP_UNS_EVENTS_NAMESPACE;
         unsUrl = Properties.PROP_UNS_URL;
         sendNotificationRest = Properties.PROP_UNS_REST_SEND_NOTIFICATION;
+        restUserNameProperty = Properties.PROP_UNS_REST_USERNAME;
+        restPasswordProperty = Properties.PROP_UNS_REST_PASSWORD;
     }
 }
