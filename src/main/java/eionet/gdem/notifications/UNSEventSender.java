@@ -180,13 +180,18 @@ public class UNSEventSender {
             byte[] encoding = Base64.getEncoder().encode(usernamePassword.getBytes());
             request.addHeader("Authorization", "Basic " + new String(encoding));
 
-            CloseableHttpClient httpClient = HttpClients.createDefault();
-            CloseableHttpResponse response = httpClient.execute(request);
-            if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
-                String errorMsg = "Received status code " + response.getStatusLine().getStatusCode();
-                throw new Exception(errorMsg);
+            try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                 CloseableHttpResponse response = httpClient.execute(request)) {
+
+                if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
+                    String errorMsg = "Received status code " + response.getStatusLine().getStatusCode();
+                    throw new Exception(errorMsg);
+                }
             }
-            httpClient.close();
+            catch (Exception e){
+                throw (e);
+            }
+
         }
         catch(Exception e){
             LOGGER.error("Could not send notification to uns: " + e.getMessage());
