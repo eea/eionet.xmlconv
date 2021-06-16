@@ -68,7 +68,7 @@ public class FixedTimeScheduledTasks {
             LOGGER.info("Found long running jobs with ids " + longRunningJobIds);
             //send notifications to users via UNS
             new UNSEventSender().longRunningJobsNotifications(longRunningJobIds, Properties.LONG_RUNNING_JOBS_EVENT);
-            LOGGER.info("Sent notifications for long running jobs");
+            LOGGER.info("Completed sending notification via UNS process.");
         }
     }
 }
