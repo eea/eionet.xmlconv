@@ -124,7 +124,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                     if (count + 1 == retries){
                         LOGGER.error(FMEQueryEngine.class.getName() +" Failed for last Retry  number :"+ count );
 
-                        IOUtils.copy(IOUtils.toInputStream("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</span>The QC process failed. Please try again. If the issue persists please contact the dataflow helpdesk.</div>", "UTF-8"), result);
+                        IOUtils.copy(IOUtils.toInputStream("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC Process failed, please allow some time and re-run the process. If the issue persists please contact the dataflow helpdesk.</span>The QC Process failed, please allow some time and re-run the process. Please try again. If the issue persists please contact the dataflow helpdesk.</div>", "UTF-8"), result);
                     } else {
 
                         LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString() + "-- #Retry: " + count);
@@ -183,18 +183,17 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
 
     private String createErrorMessage (String fmeJobId, String scriptUrl, String sourceUrl, String exception){
         String resultStringHtml = "<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">";
-        String resultStringMsg ="The QC process failed. ";
+        String resultStringMsg ="The QC Process failed, please allow some time and re-run the process. If the issue persists please contact the dataflow helpdesk. ";
         String resultStringSpecificMsg;
         if (Utils.isNullStr(fmeJobId)){
-            resultStringSpecificMsg = "Job submission for script: " + scriptUrl + " and xml url " + sourceUrl + " failed. ";
+            resultStringSpecificMsg = "Job submission for script: " + scriptUrl + " and xml url " + sourceUrl + " has failed. ";
         }
         else{
             resultStringSpecificMsg = "The id in the FME server is #" + fmeJobId + ". ";
         }
-        String fullResultString = resultStringHtml + resultStringMsg + resultStringSpecificMsg;
-        String resultStringMsgCont = "Please try again. If the issue persists please contact the dataflow helpdesk. ";
         String exceptionMsg = "Exception message is: " + exception;
-        fullResultString += resultStringMsgCont + exceptionMsg +  "</span>" + resultStringMsg + resultStringSpecificMsg + resultStringMsgCont + exceptionMsg + "</div>";
+        String fullResultString = resultStringHtml + resultStringMsg + resultStringSpecificMsg + exceptionMsg +  "</span>" ;
+        fullResultString += resultStringMsg + resultStringSpecificMsg + exceptionMsg + "</div>";
         return fullResultString;
     }
 

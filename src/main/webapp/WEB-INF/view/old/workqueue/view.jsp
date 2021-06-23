@@ -9,6 +9,12 @@
 <script type="text/javascript" src="<c:url value='/static/js/DataTables/media/js/jquery.dataTables.min.js'/>"></script>
 <script type="text/javascript" src="<c:url value='/static/js/workqueue.js'/>"></script>
 
+<!--export buttons-->
+<script type="text/javascript" src="<c:url value='/static/js/DataTables/media/js/exportButtons/dataTables.buttons.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/static/js/DataTables/media/js/exportButtons/jszip.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/static/js/DataTables/media/js/exportButtons/buttons.html5.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/static/js/DataTables/media/js/exportButtons/buttons.colVis.min.js'/>"></script>
+
 
 <script type="text/javascript">
   // <![CDATA[
@@ -76,7 +82,7 @@
 <div id="main_table">
   <form:form id="jobs" servletRelativeAction="/workqueue" method="post" modelAttribute="form">
     <form:errors path="*" cssClass="error-msg" element="div"/>
-    <table id="workqueue_table" class="datatable results" width="100%">
+    <table id="workqueue_table" class="datatable results" width="100%" export="true">
       <col style="width:30px; text-align:right;"/>
       <col style="width:50px; text-align:right;"/>
       <col/>
@@ -134,7 +140,7 @@
                 <form:checkbox path="jobs" id="job_${job.jobId}" value="${job.jobId}"/>
               </td>
               <td class="details-control" id="selectableJobId">
-                <label for="job_${job.jobId}">${job.jobId}</label>
+                  <label for="job_${job.jobId}" style="cursor:pointer">${job.jobId}</label>
               </td>
             </c:when>
             <c:otherwise>
