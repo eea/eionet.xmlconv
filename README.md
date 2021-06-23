@@ -71,9 +71,9 @@ very bad Sparql query. In a production environment redirection to mock applicati
 * config.enableXqueryCrCallsInterception=true
 
 #### parameters config for production
-* config.cr.host=
-* config.cr.mockCrUrl=
-* config.enableXqueryCrCallsInterception=false
+* config.cr.host=                             
+* config.cr.mockCrUrl=                        
+* config.enableXqueryCrCallsInterception=false             
 
 
 
