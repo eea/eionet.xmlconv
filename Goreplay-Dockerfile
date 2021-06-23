@@ -1,11 +1,3 @@
-#FROM alpine:3.12 as builder
-#ARG RELEASE_VERSION
-#RUN apk add --no-cache ca-certificates openssl
-#RUN wget https://github.com/buger/goreplay/releases/download/${RELEASE_VERSION}/gor_${RELEASE_VERSION}_x64.tar.gz -O gor.tar.gz
-#RUN tar xzf gor.tar.gz
-#FROM scratch
-#COPY --from=builder /gor .
-#ENTRYPOINT ["./gor" ,"--input-raw",":8080","--output-http=https://converters-staging.eionet.europa.eu"]
 FROM tomcat:9.0.24-jdk11-adoptopenjdk-hotspot
 RUN rm -rf /usr/local/tomcat/conf/logging.properties /usr/local/tomcat/webapps/*
 COPY target/xmlconv.war /usr/local/tomcat/webapps/ROOT.war
@@ -14,7 +6,6 @@ ADD gor /gor
 ADD start.sh /start.sh
 ADD goreplay.sh /goreplay.sh
 CMD bash -C '/start.sh';'bash'
-#RUN nohup bash -c "/start.sh &" && sleep 4
 
 
 #ENTRYPOINT ["./gor" ,"--input-raw",":8080","--output-http=https://converters-staging.eionet.europa.eu"]
