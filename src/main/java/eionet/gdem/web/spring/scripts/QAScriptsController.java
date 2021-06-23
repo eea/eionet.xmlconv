@@ -234,6 +234,8 @@ public class QAScriptsController {
 
         String user = (String) request.getSession().getAttribute("user");
 
+        LOGGER.info("User " + user + " uploading script file " + curFileName + " for script id " + scriptId);
+
         new QAScriptValidator().validateUpdate(form, bindingResult);
         if (bindingResult.hasErrors()) {
             return "/scripts/edit";
@@ -248,6 +250,7 @@ public class QAScriptsController {
             // clear qascript list in cache
             QAScriptListLoader.reloadList(request);
         } catch (DCMException e) {
+            LOGGER.info("Error during script file upload " + e.getMessage());
             throw new RuntimeException("Edit QA script error: " + messageService.getMessage(e.getErrorCode()));
         }
 

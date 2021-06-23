@@ -1,9 +1,6 @@
 package eionet.gdem.web.servlets;
 
-import eionet.acl.SignOnException;
-import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.annotation.WebServlet;
@@ -15,10 +12,10 @@ import java.net.URLDecoder;
 /**
  *
  */
-@WebServlet(value = {"/queries/*", "/tmp/*", "/tmpfile/*"})
-public class FileDownloadServlet extends FileServlet {
+@WebServlet(value = {"/xmlfile/*", "/xsl/*", "/schema/*"})
+public class FileDownloadServletWithoutAuthorization extends FileServlet {
     @Override
-    protected File getFile(HttpServletRequest request) throws IllegalArgumentException, SignOnException {
+    protected File getFile(HttpServletRequest request) throws IllegalArgumentException {
         String urlPath = null;
         String filePath = null;
         try {
@@ -27,19 +24,8 @@ public class FileDownloadServlet extends FileServlet {
             throw new IllegalArgumentException();
         }
 
-        String userName = getUser(request);
-        if (userHasPerm(userName)) {
-            filePath = getFilePath(request, urlPath);
-        }
+        filePath = getFilePath(request, urlPath);
         return new File(filePath);
-    }
-
-    protected String getUser(HttpServletRequest request) throws SignOnException {
-        String userName = (String) request.getSession().getAttribute("user");
-        if (userName == null) {
-            throw new SignOnException("Unauthorized. Must be logged in.");
-        }
-        return userName;
     }
 
     protected String getFilePath(HttpServletRequest request, String urlPath) {
@@ -50,10 +36,6 @@ public class FileDownloadServlet extends FileServlet {
             throw new IllegalArgumentException();
         }
         return filePath;
-    }
-
-    protected boolean userHasPerm(String userName) throws SignOnException {
-       return SecurityUtil.hasPerm(userName, "/" + Constants.ACL_WQ_PATH, "v");
     }
 
 }

@@ -111,7 +111,7 @@ public class HttpFileManagerTest {
         when(mockHttpConnection.getResponseCode()).thenReturn(301);
         when(mockHttpConnection.getHeaderField(any(String.class))).thenReturn("https://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
 
-         toTestUrl = httpFileManager.followUrlRedirectIfNeeded(toTestUrl);
+         toTestUrl = httpFileManager.followUrlRedirectIfNeeded(toTestUrl, null);
         assertThat(spyToTestUrl.toString(),equalTo(httpsUrl));
     }
 }

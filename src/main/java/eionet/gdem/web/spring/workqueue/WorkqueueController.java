@@ -175,7 +175,7 @@ public class WorkqueueController {
             job.setUrl(urlName);
 
             //Set duration of job id status is in PROCESSING
-            if (status == Constants.XQ_PROCESSING && durationMs != null) {
+            if (durationMs != null) {
                 Long duration = Long.parseLong(durationMs);
                 job.setDurationInProgress(Utils.createFormatForMs(duration));
             }

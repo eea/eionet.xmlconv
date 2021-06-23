@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import eionet.gdem.security.errors.JWTException;
 import eionet.gdem.security.service.AuthTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
@@ -43,6 +45,13 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
     @Autowired
     private AuthTokenService authTokenService;
 
+    @Autowired
+    private TokenVerifier verifier;
+
+    @Autowired
+    @Qualifier("apiuserdetailsservice")
+    private UserDetailsService userDetailsService;
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -58,11 +67,15 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             String rawAuthenticationToken = httpRequest.getHeader(this.tokenHeader);
             String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
 
-            if (authTokenService.verifyUser(parsedAuthenticationToken)) {
-                UserDetails userDetails = authTokenService.getUserDetails();
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (parsedAuthenticationToken != null) {
+                String username = verifier.verify(parsedAuthenticationToken);
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+
             }
             chain.doFilter(request, response);
         } catch (JWTException ex) {

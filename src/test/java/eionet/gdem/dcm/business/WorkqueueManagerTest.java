@@ -80,7 +80,8 @@ public class WorkqueueManagerTest {
 
         WorkqueueManager wqm = new WorkqueueManager();
 
-        String jobId = wqm.addQAScriptToWorkqueue(user, sourceUrl, scriptContent, scriptType);
+        String jobId = wqm.addQAScriptToWorkqueue(user, sourceUrl, scriptContent, scriptType, false);
+        Thread.sleep(4000L);
         WorkqueueJob job = wqm.getWqJob(jobId);
         String contentFile = job.getScriptFile();
         String content = Utils.readStrFromFile(contentFile);
@@ -89,7 +90,8 @@ public class WorkqueueManagerTest {
         assertEquals(2, job.getStatus());
         assertEquals("0", job.getScriptId());
         assertEquals(content, scriptContent);
-    }
+    }  //  WorkqueueManagerTest.testAddQAScriptToWorkqueue:89 expected:<2> but was:<0>
+
 
     /**
      * The method adds several jobs to workqueue
@@ -105,7 +107,7 @@ public class WorkqueueManagerTest {
 
         WorkqueueManager wqm = new WorkqueueManager();
 
-        List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(user, sourceUrl, schemaUrl);
+        List<String> jobIds = wqm.addSchemaScriptsToWorkqueue(user, sourceUrl, schemaUrl, false);
         for (int i = 0; i < jobIds.size(); i++) {
             String jobId = jobIds.get(i);
             WorkqueueJob job = wqm.getWqJob(jobId);

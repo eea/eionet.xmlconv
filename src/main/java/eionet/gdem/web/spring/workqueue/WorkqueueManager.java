@@ -92,23 +92,27 @@ public class WorkqueueManager {
      *            Script content to be stored in workqueue.
      * @param scriptType
      *            Script title.
+     * @param usedToken
+     *     true for mirrored requests
      * @return Job ID.
      * @throws DCMException If an error occurs.
      */
-    public String addQAScriptToWorkqueue(String user, String sourceUrl, String scriptContent, String scriptType)
+    public String addQAScriptToWorkqueue(String user, String sourceUrl, String scriptContent, String scriptType, Boolean usedToken)
     throws DCMException {
 
-        try {
-            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "i")) {
-                LOGGER.debug("You don't have permissions jobs into workqueue!");
-                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
-            }
+        if(!usedToken) {
+            try {
+                if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "i")) {
+                    LOGGER.debug("You don't have permissions jobs into workqueue!");
+                    throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
+                }
 
-        } catch (DCMException e) {
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("Error adding job to workqueue", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+            } catch (DCMException e) {
+                throw e;
+            } catch (Exception e) {
+                LOGGER.error("Error adding job to workqueue", e);
+                throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+            }
         }
         QueryService xqE = new QueryService();
         xqE.setTrustedMode(false);
@@ -131,23 +135,27 @@ public class WorkqueueManager {
      *            Source URL of XML file.
      * @param schemaUrl
      *            XML Schema URL.
+     * @param usedToken
+     *     true for mirrored requests
      * @return List of job IDs.
      * @throws DCMException If an error occurs.
      */
-    public List<String> addSchemaScriptsToWorkqueue(String user, String sourceUrl, String schemaUrl) throws DCMException {
+    public List<String> addSchemaScriptsToWorkqueue(String user, String sourceUrl, String schemaUrl, Boolean usedToken) throws DCMException {
 
         List<String> result = new ArrayList<String>();
-        try {
-            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "i")) {
-                LOGGER.debug("You don't have permissions jobs into workqueue!");
-                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
-            }
+        if(!usedToken) {
+            try {
+                if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "i")) {
+                    LOGGER.debug("You don't have permissions jobs into workqueue!");
+                    throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
+                }
 
-        } catch (DCMException e) {
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("Error adding job to workqueue", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+            } catch (DCMException e) {
+                throw e;
+            } catch (Exception e) {
+                LOGGER.error("Error adding job to workqueue", e);
+                throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
+            }
         }
         QueryService xqE = new QueryService();
         xqE.setTrustedMode(false);
