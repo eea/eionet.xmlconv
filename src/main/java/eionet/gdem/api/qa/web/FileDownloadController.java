@@ -36,7 +36,7 @@ public class FileDownloadController {
 
         String rawAuthenticationToken = authorization;
         String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, Properties.jwtHeaderSchemaProperty);
-        if (authTokenService.verifyUser(parsedAuthenticationToken)) {
+        if (authTokenService.verifyUser(parsedAuthenticationToken)!=null) {
            filePath = getFilePath(urlPath, fileName);
         }
 

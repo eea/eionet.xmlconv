@@ -40,7 +40,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     }
 
     @Override
-    public boolean verifyUser(String parsedAuthenticationToken) throws JWTException {
+    public String verifyUser(String parsedAuthenticationToken) throws JWTException {
         String username = null;
         try {
             username = verifier.verify(parsedAuthenticationToken);
@@ -48,12 +48,15 @@ public class AuthTokenServiceImpl implements AuthTokenService {
             throw new JWTException("Error during token verification");
         }
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-        setUserDetails(userDetails);
-        return userDetails.isEnabled() && userDetails.getUsername().equals(username);
+        if( userDetails.isEnabled() && userDetails.getUsername().equals(username)){
+            return username;
+        }else{
+            return null;
+        }
     }
 
-    public UserDetails getUserDetails() {
-        return userDetails;
+    public UserDetails getUserDetails(String username) {
+        return this.userDetailsService.loadUserByUsername(username);
     }
 
     public void setUserDetails(UserDetails userDetails) {

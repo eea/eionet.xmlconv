@@ -7,7 +7,7 @@ public interface AuthTokenService {
 
     String getParsedAuthenticationTokenFromSchema(String rawAuthenticationToken, String authenticationTokenSchema) throws JWTException;
 
-    boolean verifyUser(String parsedAuthenticationToken) throws JWTException;
+    String verifyUser(String parsedAuthenticationToken) throws JWTException;
 
-    UserDetails getUserDetails();
+    UserDetails getUserDetails(String username);
 }

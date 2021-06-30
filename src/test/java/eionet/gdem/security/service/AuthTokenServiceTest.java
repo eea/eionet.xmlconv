@@ -61,8 +61,8 @@ public class AuthTokenServiceTest {
         when(verifier.verify(Mockito.anyString())).thenReturn(USERNAME);
         when(userDetailsService.loadUserByUsername(Mockito.anyString())).thenReturn(userDetails);
         doNothing().when(authTokenService).setUserDetails(Mockito.any(UserDetails.class));
-        boolean result = authTokenService.verifyUser(TOKEN);
-        assertTrue(result);
+        String result = authTokenService.verifyUser(USERNAME);
+        assertEquals(USERNAME,result);
     }
 }
 

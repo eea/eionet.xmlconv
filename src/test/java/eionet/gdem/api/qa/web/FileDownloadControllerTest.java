@@ -37,7 +37,7 @@ public class FileDownloadControllerTest {
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(authTokenService.getParsedAuthenticationTokenFromSchema(Mockito.anyString(), Mockito.anyString())).thenReturn("Bearer jwtToken");
-        when(authTokenService.verifyUser(Mockito.anyString())).thenReturn(true);
+        when(authTokenService.verifyUser(Mockito.anyString())).thenReturn("admin");
         doReturn(FILEPATH).when(fileDownloadController).getFilePath(Mockito.anyString(), Mockito.anyString());
         doReturn(true).when(fileDownloadController).checkIfFileExists(Mockito.any(Path.class));
         doNothing().when(fileDownloadController).copyFIle(Mockito.any(HttpServletResponse.class), Mockito.any(Path.class));

@@ -131,7 +131,7 @@ post {
                 def color = '#FFFF00'
                 if (status == 'SUCCESS') {
                   color = '#00FF00'
-                } else if (status == 'FAILURE') {
+                } else if4 (status == 'FAILURE') {
                   color = '#FF0000'
                 }
 

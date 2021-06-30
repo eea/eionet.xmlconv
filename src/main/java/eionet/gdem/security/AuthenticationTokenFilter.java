@@ -68,14 +68,15 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
             String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
 
             if (parsedAuthenticationToken != null) {
-                String username = verifier.verify(parsedAuthenticationToken);
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (userDetails.isEnabled() && userDetails.getUsername().equals(username)) {
+                String username = this.authTokenService.verifyUser(parsedAuthenticationToken);
+                if(username!=null){
+                    UserDetails userDetails = this.authTokenService.getUserDetails(username);
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                }else{
+                    throw new JWTException("username not found in Database");
                 }
-
             }
             chain.doFilter(request, response);
         } catch (JWTException ex) {
