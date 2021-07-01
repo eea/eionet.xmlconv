@@ -2,7 +2,7 @@ FROM tomcat:9.0.24-jdk11-adoptopenjdk-hotspot
 RUN rm -rf /usr/local/tomcat/conf/logging.properties /usr/local/tomcat/webapps/*
 COPY target/xmlconv.war /usr/local/tomcat/webapps/ROOT.war
 COPY docker/server.xml  /usr/local/tomcat/conf/server.xml
-ADD gor_v1.2.0_x64_upd.tar.gz /gor_dir
+ADD https://github.com/buger/goreplay/releases/download/v1.2.0/gor_v1.2.0_x64.tar.gz /gor.tar.gz
 ADD start.sh /start.sh
 ADD goreplay.sh /goreplay.sh
 CMD bash -C '/start.sh';'bash'
