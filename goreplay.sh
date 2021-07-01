@@ -1,5 +1,4 @@
 #!/bin/bash
-
  cd /
  tar -xzf gor_v1.2.0_x64.tar.gz
  chmod +x gor
