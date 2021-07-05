@@ -71,7 +71,12 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
                 throw new IllegalArgumentException("XML file was not provided");
             }
         }
-        LOGGER.info("Began asynchronous job submission in FME for script " + script.getScriptSource());
+        String convertersJobId = script.getJobId();
+        String message = "Began asynchronous job submission in FME for script " + script.getScriptSource();
+        if (!Utils.isNullStr(convertersJobId)){
+            message += " Converters JobId is " + convertersJobId;
+        }
+        LOGGER.info(message);
         HttpPost postMethod = null;
         CloseableHttpResponse response = null;
         String jobId = null;
@@ -96,8 +101,11 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
                 throw new FmeCommunicationException("Some or all of the input parameters are invalid");
             } else {
                 if (statusCode != HttpStatus.SC_ACCEPTED) {
-                    String message = "Received status code " + statusCode + " for job submission request";
-                    throw new FmeCommunicationException(message);
+                    String errorMsg = "Received status code " + statusCode + " for job submission request.";
+                    if (!Utils.isNullStr(convertersJobId)){
+                        errorMsg += " Converters JobId is " + convertersJobId;
+                    }
+                    throw new FmeCommunicationException(errorMsg);
                 }
             }
 
@@ -106,7 +114,11 @@ public class FmeServerCommunicatorImpl implements FmeServerCommunicator {
             if (jobId == null || jobId.isEmpty() || jobId.equals("null")) {
                 throw new FmeCommunicationException("Valid status code but no job ID was retrieved");
             }
-            LOGGER.info(String.format("Job was submitted in FME for script %s with id %s", script.getScriptSource(), jobId));
+            String logMessage = "Job was submitted in FME for script " + script.getScriptSource() + " with FME job id " + jobId;
+            if (!Utils.isNullStr(convertersJobId)){
+                logMessage += " Converters JobId is " + convertersJobId;
+            }
+            LOGGER.info(logMessage);
 
         } catch (URISyntaxException | HttpRequestHeaderInitializationException |IOException e) {
             throw new FmeCommunicationException(e.getMessage());
