@@ -100,6 +100,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         int timeoutMilisecs = Properties.fmeTimeout;
         int retries = retryMilisecs / timeoutMilisecs;
         retries = (retries <= 0) ? 1 : retries;
+        String jobId = script.getJobId();
         while (count < retries) {
             try {
                 java.net.URI uri = new URIBuilder(script.getScriptSource())
@@ -117,26 +118,50 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 if (response.getStatusLine().getStatusCode() == 200) { // Valid Result: 200 HTTP status code
                     HttpEntity entity = response.getEntity();
                     // We get an InputStream and copy it to the 'result' OutputStream
-                    LOGGER.info(FMEQueryEngine.class.getName() +": Response 200 OK From FME SERVER in :"+ count +"retry");
+                    String logMessage = FMEQueryEngine.class.getName() + ": Synchronous job exeuction ";
+                    if (!Utils.isNullStr(jobId)){
+                        logMessage += " for job id " + jobId;
+                    }
+                    logMessage += " got response 200 OK From FME SERVER in :"+ count +"retry";
+                    LOGGER.info(logMessage);
                     IOUtils.copy(entity.getContent(), result);
                 } else { // NOT Valid Result
                     // If the last retry fails a BLOCKER predefined error is returned
                     if (count + 1 == retries){
-                        LOGGER.error(FMEQueryEngine.class.getName() +" Failed for last Retry  number :"+ count );
-
+                        String logMessage = FMEQueryEngine.class.getName() + ": Synchronous job exeuction ";
+                        if (!Utils.isNullStr(jobId)){
+                            logMessage += " for job id " + jobId;
+                        }
+                        logMessage += " failed with response code " + response.getStatusLine().getStatusCode() + " for last Retry  number :"+ count;
+                        LOGGER.error(logMessage);
                         IOUtils.copy(IOUtils.toInputStream("<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"BLOCKER\" style=\"display:none\">The QC Process failed, please allow some time and re-run the process. If the issue persists please contact the dataflow helpdesk.</span>The QC Process failed, please allow some time and re-run the process. Please try again. If the issue persists please contact the dataflow helpdesk.</div>", "UTF-8"), result);
                     } else {
 
-                        LOGGER.error("The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString() + "-- #Retry: " + count);
+                        String logMessage = FMEQueryEngine.class.getName() + ": Synchronous job exeuction ";
+                        if (!Utils.isNullStr(jobId)){
+                            logMessage += " for job id " + jobId;
+                        }
+                        logMessage += " failed with response code " + response.getStatusLine().getStatusCode() + ". The application has encountered an error. The FME QC process request failed. -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + response.toString() + "-- #Retry: " + count;
+                        LOGGER.error(logMessage);
                         Thread.sleep(timeoutMilisecs); // The thread is forced to wait 'timeoutMilisecs' before trying to retry the FME call
                         throw new Exception("The application has encountered an error. The FME QC process request failed.");
                     }
                 }
                 count = retries;
             } catch (SocketTimeoutException e) { // Timeout Exceeded
-                LOGGER.error("Retries = "+count+"\n The FME request has exceeded the allotted timeout of :"+Properties.fmeTimeout+" -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource());
+                String logMessage = FMEQueryEngine.class.getName() + ": Synchronous job exeuction ";
+                if (!Utils.isNullStr(jobId)){
+                    logMessage += " for job id " + jobId;
+                }
+                logMessage += " failed with SocketTimeoutException. Retries = "+count+"\n The FME request has exceeded the allotted timeout of :"+Properties.fmeTimeout+" -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource();
+                LOGGER.error(logMessage);
             } catch (Exception e) {
-                LOGGER.error("Generic Exception handling. FME request error: " + e.getMessage());
+                String logMessage = FMEQueryEngine.class.getName() + ": Synchronous job exeuction ";
+                if (!Utils.isNullStr(jobId)){
+                    logMessage += " for job id " + jobId;
+                }
+                logMessage += " failed. Generic Exception handling. . FME request error: " + e.getMessage();
+                LOGGER.error(logMessage);
             } finally {
                 if (runMethod != null) {
                     runMethod.releaseConnection();
@@ -154,6 +179,7 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         String fileName = fileNameSegments[0];
         String folderName = fileName + "_" +  getRandomStr();
         String jobId="";
+        String convertersJobId = script.getJobId();
         try {
 
 
@@ -166,7 +192,11 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
             fmeServerCommunicator.getResultFiles(folderName, result);
             fmeServerCommunicator.deleteFolder(folderName);
         } catch (FmeAuthorizationException | FmeCommunicationException | GenericFMEexception | FMEBadRequestException |RetryCountForGettingJobResultReachedException | InterruptedException e) {
-            String message = "Generic Exception handling. FME request error: " + e.getMessage();
+            String message = "Generic Exception handling ";
+            if (!Utils.isNullStr(convertersJobId)){
+                message += " for job id " + convertersJobId;
+            }
+            message += " FME request error: " + e.getMessage();
             LOGGER.error(message);
 
             String resultStr = createErrorMessage(jobId, script.getScriptSource(), script.getOrigFileUrl(), e.getMessage());
@@ -203,8 +233,13 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
         int retryMilisecs = this.getFmeRetryHoursProperty() * 60 * 60 * 1000;
         int timeoutMilisecs = this.getFmeTimeoutProperty();
         this.setRetries(retryMilisecs / timeoutMilisecs);
+        String convertersJobId = script.getJobId();
         while (count < this.getRetries()) {
-            LOGGER.info(String.format("Retry %d for polling for status of job #%s", count, jobId));
+            String logMessage = "Retry " + count + " for polling for status of FME job " + jobId;
+            if (!Utils.isNullStr(convertersJobId)){
+                logMessage += " Converters job id is " + convertersJobId;
+            }
+            LOGGER.info(logMessage);
             FmeJobStatus jobStatus = fmeServerCommunicator.getJobStatus(jobId,script);
             switch (jobStatus){
                 case SUBMITTED:
@@ -212,9 +247,16 @@ public class FMEQueryEngine extends QAScriptEngineStrategy {
                 case QUEUED: {
                     if (count + 1 == this.getRetries()) {
                         String message = "Failed for last Retry  number: " + count + ". Received status " + jobStatus.toString();
+                        if (!Utils.isNullStr(convertersJobId)){
+                            message += " Converters job id is " + convertersJobId;
+                        }
                         throw new RetryCountForGettingJobResultReachedException(message);
                     } else {
-                        LOGGER.error("Fme Request Process is still in progress for  -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + jobStatus.toString() + "-- #Retry: " + count);
+                        String message = "Fme Request Process is still in progress for  -- Source file: " + script.getOrigFileUrl() + " -- FME workspace: " + script.getScriptSource() + " -- Response: " + jobStatus.toString() + "-- #Retry: " + count;
+                        if (!Utils.isNullStr(convertersJobId)){
+                            message += " Converters job id is " + convertersJobId;
+                        }
+                        LOGGER.error(message);
                         Thread.sleep(timeoutMilisecs); // The thread is forced to wait 'timeoutMilisecs' before trying to retry the FME call
 
                     }
