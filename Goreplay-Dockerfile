@@ -8,6 +8,4 @@ ADD goreplay.sh /goreplay.sh
 CMD bash -C '/start.sh';'bash'
 
 
-#ENTRYPOINT ["./gor" ,"--input-raw",":8080","--output-http=https://converters-staging.eionet.europa.eu"]
-
 
