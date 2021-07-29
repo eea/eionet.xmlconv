@@ -295,6 +295,7 @@ public class FixedTimeScheduledTasks {
             try {
                 List<WorkerHeartBeatMsgEntry> heartBeatMsgList = workerHeartBeatMsgService.findUnAnsweredHeartBeatMessages(jobEntry.getId());
                 if (heartBeatMsgList.size() >= MIN_UNANSWERED_REQUESTS) {
+                    LOGGER.info("Setting the status of job " + jobEntry.getId() + " to " + Constants.XQ_FATAL_ERR + ", because of " + heartBeatMsgList.size() + " records with null response timestamp");
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
                 }

@@ -92,6 +92,8 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
                 GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
                 LOGGER.info("Deleted job: " + jobId + " from the database");
+            } else if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_READY) {
+                LOGGER.info("Job " + script.getJobId() + " has already been executed");
             } else{
                 LOGGER.info("Received message in DEAD LETTER QUEUE with unknown status: " + deadLetterMessage.getErrorStatus());
 

@@ -2,7 +2,7 @@ pipeline {
   agent {
             node { label "docker-host" }
   }
-  
+
   environment {
     GIT_NAME = "eionet.xmlconv"
     SONARQUBE_TAGS = "converters.eionet.europa.eu"
@@ -10,8 +10,6 @@ pipeline {
     dockerImage = ''
     tagName = ''
     convertersTemplate = "templates/converters"
-    convertersbdrTemplate = "templates/convertersbdr"
-    converterstestTemplate = "templates/converterstest"
     availableport = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
     availableport2 = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
     availableport3 = sh(script: 'echo $(python3 -c \'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1], end = ""); s.close()\');', returnStdout: true).trim();
@@ -26,9 +24,6 @@ pipeline {
 
   stages {
     stage('Project Build') {
-      when {
-         branch 'master'
-      }
       steps {
           sh 'mvn clean -B -V verify  -Dmaven.test.skip=true'
       }
@@ -41,12 +36,11 @@ pipeline {
 
     stage ('Unit Tests and Sonarqube') {
       when {
-        branch 'master'
         not { buildingTag() }
       }
       steps {
                 withSonarQubeEnv('Sonarqube') {
-                    sh '''mvn clean -B -V -P docker verify pmd:pmd pmd:cpd spotbugs:spotbugs checkstyle:checkstyle surefire-report:report sonar:sonar -Dsonar.sources=src/main/java/ -Dsonar.test.exclusions=**/src/test/** -Dsonar.coverage.exclusions=**/src/test/** -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml -Dsonar.java.spotbugs.reportPaths=target/spotbugsXml.xml -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_AUTH_TOKEN} -Dsonar.java.binaries=target/classes -Dsonar.projectKey=${GIT_NAME}-${GIT_BRANCH} -Dsonar.projectName=${GIT_NAME}-${GIT_BRANCH} '''
+                    sh '''mvn clean -B -V -P docker verify pmd:pmd pmd:cpd spotbugs:spotbugs checkstyle:checkstyle sonar:sonar -Dsonar.sources=src/main/java/ -Dsonar.test.exclusions=**/src/test/** -Dsonar.coverage.exclusions=**/src/test/** -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml -Dsonar.java.pmd.reportPaths=target/pmd.xml -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml -Dsonar.java.spotbugs.reportPaths=target/spotbugsXml.xml -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_AUTH_TOKEN} -Dsonar.java.binaries=target/classes -Dsonar.projectKey=${GIT_NAME}-${GIT_BRANCH} -Dsonar.projectName=${GIT_NAME}-${GIT_BRANCH} '''
                     sh '''try=2; while [ \$try -gt 0 ]; do curl -s -XPOST -u "${SONAR_AUTH_TOKEN}:" "${SONAR_HOST_URL}api/project_tags/set?project=${GIT_NAME}-${BRANCH_NAME}&tags=${SONARQUBE_TAGS},${BRANCH_NAME}" > set_tags_result; if [ \$(grep -ic error set_tags_result ) -eq 0 ]; then try=0; else cat set_tags_result; echo "... Will retry"; sleep 60; try=\$(( \$try - 1 )); fi; done'''
                 }
       }
@@ -73,7 +67,6 @@ pipeline {
 
     stage ('Docker build and push') {
       when {
-          branch 'master'
           environment name: 'CHANGE_ID', value: ''
       }
       steps {
@@ -118,8 +111,6 @@ post {
       cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, deleteDirs: true)
 
       script {
-
-        if (env.BRANCH_NAME == 'master') {
                 def url = "${env.BUILD_URL}/display/redirect"
                 def status = currentBuild.currentResult
                 def subject = "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
@@ -131,7 +122,7 @@ post {
                 def color = '#FFFF00'
                 if (status == 'SUCCESS') {
                   color = '#00FF00'
-                } else if4 (status == 'FAILURE') {
+                } else if (status == 'FAILURE') {
                   color = '#FF0000'
                 }
 
@@ -145,9 +136,8 @@ post {
                           compressLog: true,
                           )
                 }
-        }
       }
     }
   }
-  
+
 }
