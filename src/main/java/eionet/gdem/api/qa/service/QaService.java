@@ -6,11 +6,7 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.QueryService;
 import org.w3c.dom.Document;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  *
@@ -42,4 +38,6 @@ public interface QaService {
     public Document getXMLFromEnvelopeURL(String envelopeURL) throws XMLConvException ;
 
     Schema getSchemaBySchemaUrl(String schemaUrl) throws Exception;
+
+    Integer getJobExternalStatus(String jobId) throws XMLConvException;
 }

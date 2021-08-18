@@ -11,9 +11,9 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.services.JobResultHandlerService;
 import eionet.gdem.services.RunScriptAutomaticService;
-import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.hosts.IHostDao;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
+import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +51,8 @@ public class QaServiceImpl implements QaService {
     private JobResultHandlerService jobResultHandlerService;
 
     private RunScriptAutomaticService runScriptAutomaticService;
+
+    private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 
     public QaServiceImpl() {
     }
@@ -278,6 +280,20 @@ public class QaServiceImpl implements QaService {
             throw new Exception("Could not retrieve schema information for schema url " + schemaUrl);
         }
         return schema;
+    }
+
+    @Override
+    public Integer getJobExternalStatus(String jobId) throws XMLConvException {
+        String[] jobData = null;
+        try {
+            jobData = xqJobDao.getXQJobData(jobId);
+        } catch (SQLException e) {
+            throw new XMLConvException("Error getting XQJob data from DB: " + e.toString());
+        }
+        if (jobData!=null)
+            return Integer.parseInt(jobData[3]);
+        else
+            return Constants.XQ_JOBNOTFOUND_ERR;
     }
 
     public JobRequestHandlerService getJobRequestHandlerService() {

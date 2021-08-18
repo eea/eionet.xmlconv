@@ -14,7 +14,9 @@ import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobRequestHandlerService;
+import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -28,19 +30,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
 import static eionet.gdem.qa.ScriptStatus.getActiveStatusList;
-import java.io.File;
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -55,6 +56,7 @@ public class QaController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QaController.class);
     private static final List<String> ACTIVE_STATUS
             = getActiveStatusList();
+    private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 
     @Autowired
     public QaController(QaService qaService) {
@@ -378,6 +380,11 @@ public class QaController {
             LOGGER.info(e.getMessage());
             throw new RestApiException("Could not retrieve schema information for schema " + schemaUrl);
         }
+    }
+
+    @RequestMapping(value = "/asynctasks/qajobs/status/{jobId}", method = RequestMethod.GET)
+    public Integer getJobStatus(@PathVariable String jobId) throws XMLConvException {
+        return qaService.getJobExternalStatus(jobId);
     }
 
     private static JobRequestHandlerService getJobRequestHandlerServiceBean() {
