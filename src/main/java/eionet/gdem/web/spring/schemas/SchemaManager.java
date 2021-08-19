@@ -477,8 +477,10 @@ public class SchemaManager {
                 boolean blocker =
                         (!Utils.isNullStr((String) schemaHash.get("blocker")) && ((String) schemaHash.get("blocker")).equals("1"));
                 schema.setBlocker(blocker);
-                schema.setMaxExecutionTime(Long.parseLong((String) schemaHash.get("max_execution_time")));
 
+                if(schemaHash.get("max_execution_time")!=null) {
+                    schema.setMaxExecutionTime(Long.parseLong((String) schemaHash.get("max_execution_time")));
+                }
                 // get uploaded schema information
                 HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);
 
@@ -964,6 +966,9 @@ public class SchemaManager {
                 schema.setSchemaLang((String) sch.get("schema_lang"));
                 schema.setExpireDate(Utils.parseDate((String) sch.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
                 boolean blocker = (!Utils.isNullStr((String) sch.get("blocker")) && ((String) sch.get("blocker")).equals("1"));
+                boolean validation = (!Utils.isNullStr((String) sch.get("validate")) && ((String) sch.get("validate")).equals("1"));
+
+                schema.setDoValidation(validation);
                 schema.setBlocker(blocker);
             }
 

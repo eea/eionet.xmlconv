@@ -66,6 +66,17 @@ public interface ISchemaDao {
      */
     void updateSchemaValidate(String schemaId, boolean validate, boolean blocker) throws SQLException;
 
+
+
+    /**
+     * Updates a Schema validate properties in the database.
+     *
+     * @param schemaId - id from database, used as a constraint
+     * @param validate - validate property
+     * @throws SQLException in case of database error.
+     */
+    void updateSchemaValidate(String schemaId, boolean validate) throws SQLException;
+
     /**
      * Add XML Schema into database.
      * @param xmlSchema XML Schema url.
