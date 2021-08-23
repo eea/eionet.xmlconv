@@ -198,8 +198,24 @@ public class FixedTimeScheduledTasks {
             containersOrchestrator.restartContainer(failedWorkers.get(0).getName());
             return;
         }
-        for (JobExecutor worker : failedWorkers) {
-            deleteFromRancherAndDatabase(worker);
+        if (instances.size() == failedWorkers.size()) {
+            Integer workersDeleted = 1;
+            for (JobExecutor worker : failedWorkers) {
+                while (workersDeleted <= failedWorkers.size()) {
+                    instances = servicesOrchestrator.getContainerInstances(serviceId);
+                    if (instances.size() == 1) {
+                        containersOrchestrator.restartContainer(worker.getName());
+                        return;
+                    }
+                    deleteFromRancherAndDatabase(worker);
+                    workersDeleted++;
+                    break;
+                }
+            }
+        } else {
+            for (JobExecutor worker : failedWorkers) {
+                deleteFromRancherAndDatabase(worker);
+            }
         }
     }
 
