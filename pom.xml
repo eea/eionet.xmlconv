@@ -75,12 +75,14 @@
             </activation>
             <properties>
                 <valid.images>mysql, tomcat, httpd, rabbitmq</valid.images>
+                <tomcat.port>8080</tomcat.port>
             </properties>
         </profile>
         <profile>
             <id>local</id>
             <properties>
                 <docker.host.address>localhost</docker.host.address>
+                <tomcat.port>8080</tomcat.port>
                 <valid.images>none</valid.images>
             </properties>
         </profile>
