@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import eionet.gdem.test.ApplicationTestContext;
 import java.util.HashMap;
 
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -16,9 +18,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import javax.sql.DataSource;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -33,12 +41,16 @@ public class QaControllerTestIT {
     private MockMvc mockMvc;
 
     @Autowired
+    private DataSource dataSource;
+
+    @Autowired
     QaController qaController;
 
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(qaController).defaultRequest(get("/restapi/")).build();
+        DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_QAJOBS_XML);
     }
 
     @Test
@@ -160,6 +172,20 @@ public class QaControllerTestIT {
         mockMvc.perform(request).andExpect(status().isOk());
                 mockMvc.perform(request).andDo(print());
 
+    }
+
+    @Test
+    public void testGetJobStatusSuccess() throws Exception {
+        MockHttpServletRequestBuilder request = get("/asynctasks/qajobs/status/{jobId}", 1);
+        String result = mockMvc.perform(request).andReturn().getResponse().getContentAsString();
+        assertEquals("2", result);
+    }
+
+    @Test
+    public void testGetJobStatusJobNotFound() throws Exception {
+        MockHttpServletRequestBuilder request = get("/asynctasks/qajobs/status/{jobId}", 150);
+        String result = mockMvc.perform(request).andReturn().getResponse().getContentAsString();
+        assertEquals("6", result);
     }
 
 }
