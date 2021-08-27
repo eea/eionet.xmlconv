@@ -2,20 +2,28 @@ package eionet.gdem.notifications;
 
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.security.GeneralSecurityException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 public class UNSEventSender {
 
@@ -31,6 +39,10 @@ public class UNSEventSender {
     private String userNameProperty = null;
     private String passwordProperty = null;
     private String eventsNamespaceProperty = null;
+    private String unsUrl = null;
+    private String sendNotificationRest = null;
+    private String restUserNameProperty = null;
+    private String restPasswordProperty = null;
 
     public UNSEventSender() {
     }
@@ -99,7 +111,8 @@ public class UNSEventSender {
 
         Vector notificationTriples = prepareTriples(predicateObjects);
         logTriples(notificationTriples);
-        makeCall(notificationTriples);
+        //makeCall(notificationTriples);
+        makeRestCall(notificationTriples);
     }
 
     /**
@@ -136,12 +149,58 @@ public class UNSEventSender {
         }
     }
 
+    protected void makeRestCall(Object rdfTriples) {
+        try {
+            if (isSendingDisabled()) {
+                return;
+            }
+
+            String channelName = getChannelNameProperty();
+            String userName = getRestUserNameProperty();
+            String password = getRestPasswordProperty();
+
+            String url = getUnsUrl() + getSendNotificationRest() + channelName;
+            HttpGet request = new HttpGet(url);
+
+            // serialize triples
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            new ObjectOutputStream(out).writeObject(rdfTriples);
+
+            // your string
+            String rdfTriplesStr = new String(Hex.encodeHex(out.toByteArray()));
+
+            URI uri = new URIBuilder(request.getURI())
+                    .addParameter("triples", rdfTriplesStr)
+                    .build();
+
+            ((HttpRequestBase) request).setURI(uri);
+
+            String usernamePassword = userName + ":" + password;
+            byte[] encoding = Base64.getEncoder().encode(usernamePassword.getBytes());
+            request.addHeader("Authorization", "Basic " + new String(encoding));
+
+            try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                 CloseableHttpResponse response = httpClient.execute(request)) {
+
+                if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                    String errorMsg = "Received status code " + response.getStatusLine().getStatusCode();
+                    throw new Exception(errorMsg);
+                }
+            } catch (Exception e) {
+                throw (e);
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Could not send notification to uns: " + e.getMessage());
+        }
+    }
+
     /**
      *
      * @param predicateObjects
      * @return
      */
-    protected Vector prepareTriples(Hashtable predicateObjects) throws GeneralSecurityException {
+    protected Vector prepareTriples (Hashtable predicateObjects) throws GeneralSecurityException {
 
         Vector notificationTriples = new Vector();
         NotificationTriple triple = new NotificationTriple();
@@ -184,7 +243,7 @@ public class UNSEventSender {
      *
      * @param triples
      */
-    private void logTriples(Vector triples) {
+    private void logTriples (Vector triples){
 
         if (triples != null) {
 
@@ -212,43 +271,59 @@ public class UNSEventSender {
         }
     }
 
-    protected String getEventTypePredicateProperty() {
+    protected String getEventTypePredicateProperty () {
         return eventTypePredicateProperty;
     }
 
-    protected String getLongRunningJobsPredicateProperty() {
+    protected String getLongRunningJobsPredicateProperty () {
         return longRunningJobsPredicateProperty;
     }
 
-    protected String getUnsDisabledProperty() {
+    protected String getUnsDisabledProperty () {
         return unsDisabledProperty;
     }
 
-    protected String getXmlrpcServerUrlProperty() {
+    protected String getXmlrpcServerUrlProperty () {
         return xmlrpcServerUrlProperty;
     }
 
-    protected String getChannelNameProperty() {
+    protected String getChannelNameProperty () {
         return channelNameProperty;
     }
 
-    protected String getNotificationFunctionNameProperty() {
+    protected String getNotificationFunctionNameProperty () {
         return notificationFunctionNameProperty;
     }
 
-    protected String getUserNameProperty() {
+    protected String getUserNameProperty () {
         return userNameProperty;
     }
 
-    protected String getPasswordProperty() {
+    protected String getPasswordProperty () {
         return passwordProperty;
     }
 
-    protected String getEventsNamespaceProperty() {
+    protected String getEventsNamespaceProperty () {
         return eventsNamespaceProperty;
     }
 
-    protected void setupProperties (){
+    public String getUnsUrl () {
+        return unsUrl;
+    }
+
+    public String getSendNotificationRest () {
+        return sendNotificationRest;
+    }
+
+    public String getRestUserNameProperty () {
+        return restUserNameProperty;
+    }
+
+    public String getRestPasswordProperty () {
+        return restPasswordProperty;
+    }
+
+    protected void setupProperties () {
         eventTypePredicateProperty = Properties.PROP_UNS_EVENTTYPE_PREDICATE;
         longRunningJobsPredicateProperty = Properties.PROP_UNS_LONG_RUNNING_JOBS_PREDICATE;
         unsDisabledProperty = Properties.PROP_UNS_DISABLED;
@@ -258,5 +333,10 @@ public class UNSEventSender {
         userNameProperty = Properties.PROP_UNS_USERNAME;
         passwordProperty = Properties.PROP_UNS_PASSWORD;
         eventsNamespaceProperty = Properties.PROP_UNS_EVENTS_NAMESPACE;
+        unsUrl = Properties.PROP_UNS_URL;
+        sendNotificationRest = Properties.PROP_UNS_REST_SEND_NOTIFICATION;
+        restUserNameProperty = Properties.PROP_UNS_REST_USERNAME;
+        restPasswordProperty = Properties.PROP_UNS_REST_PASSWORD;
     }
+
 }

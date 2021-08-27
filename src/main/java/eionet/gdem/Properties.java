@@ -159,6 +159,10 @@ public class Properties {
     public static String PROP_UNS_EVENTTYPE_PREDICATE = null;
     public static String PROP_UNS_EVENTS_NAMESPACE = null;
     public static final String LONG_RUNNING_JOBS_EVENT = "Found long running jobs";
+    public static String PROP_UNS_URL = null;
+    public static String PROP_UNS_REST_SEND_NOTIFICATION = null;
+    public static String PROP_UNS_REST_USERNAME = null;
+    public static String PROP_UNS_REST_PASSWORD = null;
 
 
     public static int heavyJobThreshhold;
@@ -306,6 +310,10 @@ public class Properties {
         PROP_UNS_LONG_RUNNING_JOBS_PREDICATE = getStringProperty("env.uns.long.running.jobs.predicate");
         PROP_UNS_EVENTTYPE_PREDICATE = getStringProperty("env.uns.eventtype.predicate");
         PROP_UNS_EVENTS_NAMESPACE = getStringProperty("env.uns.events-namespace");
+        PROP_UNS_URL = getStringProperty("env.uns.url");
+        PROP_UNS_REST_SEND_NOTIFICATION = getStringProperty("uns.sendNotification.method");
+        PROP_UNS_REST_USERNAME = getStringProperty("uns.rest.username");
+        PROP_UNS_REST_PASSWORD = getStringProperty("uns.rest.password");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
 
@@ -324,7 +332,7 @@ public class Properties {
         crHost = getStringProperty("config.cr.host");
 
         mockCrUrl = getStringProperty("config.cr.mockCrUrl");
-       enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
+        enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
 
         rancherApiUrl = getStringProperty("env.rancher.api.url");
         rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");

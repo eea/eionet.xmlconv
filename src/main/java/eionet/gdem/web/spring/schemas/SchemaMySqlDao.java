@@ -108,6 +108,9 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
     private static final String qUpdateSchemaValidate = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_VALIDATE_FLD + "= ?, "
             + SCHEMA_BLOCKER_FLD + "= ? WHERE " + SCHEMA_ID_FLD + "= ? ";
 
+    private static final String qUpdateSchemaValidateWithoutBlocker = "UPDATE  " + SCHEMA_TABLE + " SET " + SCHEMA_VALIDATE_FLD + "= ? "
+            + " WHERE " + SCHEMA_ID_FLD + "= ? ";
+
     /** Get all XML schemas with uploaded schema file, count stylesheets and count QA scripts info.*/
     private static final String GET_LIST_OF_SCHEMAS_SQL =
             "select S.SCHEMA_ID, S.XML_SCHEMA, S.DESCRIPTION, S.MAX_EXECUTION_TIME, U.SCHEMA_ID, U.SCHEMA_NAME, "
@@ -202,6 +205,26 @@ public class SchemaMySqlDao extends MySqlBaseDao implements ISchemaDao {
             pstmt.setString(1, strValidate);
             pstmt.setString(2, strBlocker);
             pstmt.setInt(3, Integer.parseInt(schema_id));
+            pstmt.executeUpdate();
+        } finally {
+            closeAllResources(null, pstmt, conn);
+        }
+    }
+
+    @Override
+    public void updateSchemaValidate(String schema_id, boolean validate) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String strValidate = (validate) ? "1" : "0";
+
+        if (isDebugMode) {
+            LOGGER.debug("Query is " + qUpdateSchemaValidateWithoutBlocker);
+        }
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(qUpdateSchemaValidateWithoutBlocker);
+            pstmt.setString(1, strValidate);
+            pstmt.setInt(2, Integer.parseInt(schema_id));
             pstmt.executeUpdate();
         } finally {
             closeAllResources(null, pstmt, conn);

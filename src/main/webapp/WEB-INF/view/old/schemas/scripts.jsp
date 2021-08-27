@@ -37,7 +37,7 @@
   </c:forEach>
 
   <c:forEach varStatus="i" items="${scripts.qascripts}" var="schema">
-    <form:form servletRelativeAction="/schemas" method="post" modelAttribute="schemaForm">
+    <form:form servletRelativeAction="/schemas/scriptsUpdate" method="post" modelAttribute="schemaForm">
       <form:errors path="*" cssClass="error-msg" element="div"/>
       <fieldset class="fieldset">
         <legend><spring:message code="label.schema.qascripts"/>&nbsp;${schema.schema}</legend>
@@ -48,7 +48,12 @@
           <div class="columns small-6">
             <c:choose>
               <c:when test="${permissions.ssiPrm}">
-                <form:checkbox path="doValidation" id="validatefield"/>
+                <c:if test="${doValidation}">
+                  <form:checkbox path="doValidation" id="validatefield" checked="checked"/>
+                </c:if>
+                <c:if test="${not doValidation}">
+                  <form:checkbox path="doValidation" id="validatefield" />
+                </c:if>
               </c:when>
               <c:otherwise>
                 ${schema.doValidation}
@@ -62,6 +67,7 @@
               </button>
               <input type="hidden" name="schemaId" value="${schema.id}"/>
               <input type="hidden" name="schema" value="${schema.schema}"/>
+              <input type="hidden" name="schema" value="${schema.maxExecutionTime}"/>
             </c:if>
           </div>
         </div>

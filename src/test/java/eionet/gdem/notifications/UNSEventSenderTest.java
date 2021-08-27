@@ -5,6 +5,7 @@ import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -20,6 +21,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
+@Ignore
 public class UNSEventSenderTest{
 
     UNSEventSenderMock unsEventSender;

@@ -480,6 +480,10 @@ public class SchemaManager {
                 String maxExecTime = (String) schemaHash.get("max_execution_time");
                 schema.setMaxExecutionTime(maxExecTime!=null ? Long.parseLong(maxExecTime) : Properties.maxSchemaExecutionTime);
 
+                if(schemaHash.get("max_execution_time")!=null) {
+                    schema.setMaxExecutionTime(Long.parseLong((String) schemaHash.get("max_execution_time")));
+                }
+
                 // get uploaded schema information
                 HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);
 
@@ -966,6 +970,9 @@ public class SchemaManager {
                 schema.setExpireDate(Utils.parseDate((String) sch.get("expire_date"), "yyyy-MM-dd HH:mm:ss"));
                 boolean blocker = (!Utils.isNullStr((String) sch.get("blocker")) && ((String) sch.get("blocker")).equals("1"));
                 schema.setBlocker(blocker);
+                boolean validation = (!Utils.isNullStr((String) sch.get("validate")) && ((String) sch.get("validate")).equals("1"));
+
+                schema.setDoValidation(validation);
             }
 
         } catch (Exception e) {

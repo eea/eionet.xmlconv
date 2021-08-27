@@ -116,9 +116,15 @@ public class QaServiceImpl implements QaService {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 if (key != "" && value != "") {
-                    List<String> files = new ArrayList<>();
-                    files.add(key);
-                    map.put(value, files);
+                    if(map.containsKey(value)){  //schema already exists in the table
+                        List<String> files = (List<String>) map.get(value);
+                        files.add(key);
+                    }
+                    else{
+                        List<String> files = new ArrayList<>();
+                        files.add(key);
+                        map.put(value, files);
+                    }
                 }
             }
 
