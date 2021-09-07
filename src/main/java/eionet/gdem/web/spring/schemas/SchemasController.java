@@ -240,7 +240,7 @@ public class SchemasController {
     }
 
     @PostMapping(params = {"update"})
-    public String editSubmit(@ModelAttribute("form") SchemaForm form, HttpServletRequest httpServletRequest,
+    public String editSubmit(@ModelAttribute("form") SchemaForm form, HttpServletRequest httpServletRequest,Model model,
                              BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
 
@@ -255,6 +255,8 @@ public class SchemasController {
         Long maxExecutionTime = form.getMaxExecutionTime();
 
         new SchemaFormValidator().validate(form, bindingResult);
+        model.addAttribute("schemaId", schemaId);
+
         if (bindingResult.hasErrors()) {
             return "/schemas/edit";
         }
