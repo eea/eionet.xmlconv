@@ -70,6 +70,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     private static final String qListQueriesByActive = qListQueries + " WHERE " + QUERY_TABLE + "." + ACTIVE_FLD + "= ?";
 
+    private static final String qListQueriesBySchemaAndActive = qListQueries + " WHERE " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + "= ?" + " AND " + QUERY_TABLE + "." + ACTIVE_FLD + "= ?";
+
     private static final String qQueryTextByFileName = "SELECT " + QUERY_FILE_FLD + " FROM " + QUERY_TABLE + " WHERE "
             + QUERY_FILE_FLD + "= ?";
     private static final String qQueryTextByID = "SELECT " + QUERY_FILE_FLD + " FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD
@@ -459,7 +461,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         ResultSet rs = null;
         boolean forSchema = xmlSchema != null;
         Vector v = null;
-        String query = (forSchema) ? qListQueriesBySchema : qListQueriesByActive;
+        String query = (forSchema) ? qListQueriesBySchemaAndActive : qListQueriesByActive;
 
         if (isDebugMode) {
             LOGGER.debug("XMLSchema is " + xmlSchema);
@@ -470,8 +472,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             pstmt = conn.prepareStatement(query);
             if (forSchema) {
                 pstmt.setString(1, xmlSchema);
-            }
-            if (!forSchema) {
+                pstmt.setString(2, (active) ? "1" : "0");
+            } else {
                 pstmt.setString(1, (active) ? "1" : "0");
             }
 
