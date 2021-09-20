@@ -26,8 +26,20 @@ public class RabbitMQMessageSenderImpl implements RabbitMQMessageSender {
         if(workerJobRequest.getJobExecutionRetries() == null) {
             workerJobRequest.setJobExecutionRetries(0);
         }
-        rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, workerJobRequest);
-        LOGGER.info("Job with id " + workerJobRequest.getScript().getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_QUEUE);
+
+        //change condition to  if(!job_is_heavy){
+        if(Integer.parseInt(workerJobRequest.getScript().getJobId()) % 2 ==0){
+            //send job to light worker
+            rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, workerJobRequest);
+            LOGGER.info("Job with id " + workerJobRequest.getScript().getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_QUEUE);
+        }
+        else{
+            //send job to heavy worker
+            rabbitTemplate.convertAndSend(Properties.HEAVY_WORKERS_JOBS_QUEUE, workerJobRequest);
+            LOGGER.info("Heavy job with id " + workerJobRequest.getScript().getJobId() + " added in rabbitmq queue " + Properties.HEAVY_WORKERS_JOBS_QUEUE);
+        }
+
+
     }
 
     @Override
