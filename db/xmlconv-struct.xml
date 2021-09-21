@@ -658,4 +658,49 @@
             <column name="WORKER_RETRIES" type="INT"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-61">
+        <comment>Table for storing script info</comment>
+        <createTable tableName="QUERY_METADATA">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="SCRIPT_FILENAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="T_QUERY_ID" type="INT">
+                <constraints foreignKeyName="FK_QUERY_METADATA"
+                             references="T_QUERY(QUERY_ID)"/>
+            </column>
+            <column name="SCRIPT_TYPE" type="VARCHAR(50)"/>
+            <column name="AVERAGE_DURATION" type="BIGINT"/>
+            <column name="NUMBER_OF_EXECUTIONS" type="INT"/>
+            <column name="MARKED_HEAVY" defaultValue="false" type="BOOLEAN"/>
+            <column name="VERSION" type="INT"/>
+        </createTable>
+        <createIndex indexName="QUERY_METADATA_FILENAME" tableName="QUERY_METADATA" unique="false">
+            <column name="SCRIPT_FILENAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-62">
+        <comment>Table for storing script info history</comment>
+        <createTable tableName="QUERY_METADATA_HISTORY">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="SCRIPT_FILENAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="T_QUERY_ID" type="INT">
+                <constraints foreignKeyName="FK_QUERY_METADATA"
+                             references="T_QUERY(QUERY_ID)"/>
+            </column>
+            <column name="SCRIPT_TYPE" type="VARCHAR(50)"/>
+            <column name="DURATION" type="BIGINT"/>
+            <column name="MARKED_HEAVY" defaultValue="false" type="BOOLEAN"/>
+            <column name="VERSION" type="INT"/>
+        </createTable>
+        <createIndex indexName="QUERY_METADATA_HISTORY_FILENAME" tableName="QUERY_METADATA_HISTORY" unique="false">
+            <column name="SCRIPT_FILENAME"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
