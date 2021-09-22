@@ -12,6 +12,7 @@ import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
@@ -44,6 +45,9 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
     @Autowired
     RabbitMQMessageSender rabbitMQMessageSender;
 
+    @Autowired
+    HandleHeavyJobsService handleHeavyJobsService;
+
     /**
      * time in milliseconds
      */
@@ -66,7 +70,10 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
             JobEntry jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
 
-            if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){
+            if (deadLetterMessage.getErrorStatus()==null) {
+                LOGGER.info("Job " + jobEntry.getId() + " was detected as heavy");
+                handleHeavyJobsService.handle(deadLetterMessage);
+            } else if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){
                 LOGGER.info("Job " + script.getJobId() + " was cancelled by user");
             } else if (deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_INTERRUPTED) {
                 LOGGER.info("Job " + script.getJobId() + " was interrupted by interruptLongRunningJobs task because duration exceed schema's maxExecution time");

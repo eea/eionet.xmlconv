@@ -1,7 +1,6 @@
 package eionet.gdem.jpa.Entities;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Entity
@@ -29,6 +28,9 @@ public class JobExecutorHistory {
 
     @Column(name = "HEART_BEAT_QUEUE")
     private String heartBeatQueue;
+
+//    @Column(name = "TYPE")
+//    private JobExecutorType type;
 
     public JobExecutorHistory() {
     }
@@ -105,4 +107,12 @@ public class JobExecutorHistory {
     public void setHeartBeatQueue(String heartBeatQueue) {
         this.heartBeatQueue = heartBeatQueue;
     }
+
+//    public JobExecutorType getType() {
+//        return type;
+//    }
+//
+//    public void setType(JobExecutorType jobExecutorType) {
+//        this.type = jobExecutorType;
+//    }
 }

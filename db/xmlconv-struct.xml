@@ -658,4 +658,20 @@
             <column name="WORKER_RETRIES" type="INT"></column>
         </addColumn>
     </changeSet>
+<!--    <changeSet author="favvmary" id="rev-61">-->
+<!--        <comment>-->
+<!--            Added column HEART_BEAT_QUEUE to JOB_EXECUTOR table-->
+<!--        </comment>-->
+<!--        <addColumn tableName="JOB_EXECUTOR">-->
+<!--            <column name="TYPE" type="INT"></column>-->
+<!--        </addColumn>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="favvmary" id="rev-62">-->
+<!--        <comment>-->
+<!--            Added column HEART_BEAT_QUEUE to JOB_EXECUTOR table-->
+<!--        </comment>-->
+<!--        <addColumn tableName="JOB_EXECUTOR_HISTORY">-->
+<!--            <column name="TYPE" type="INT"></column>-->
+<!--        </addColumn>-->
+<!--    </changeSet>-->
 </databaseChangeLog>

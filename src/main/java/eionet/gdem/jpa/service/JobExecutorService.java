@@ -18,4 +18,6 @@ public interface JobExecutorService {
     List<JobExecutor> findByStatus(Integer status);
 
     void deleteByName(String name) throws DatabaseException;
+
+    List<JobExecutor> findExecutorsByJobId(Integer jobId) throws DatabaseException;
 }

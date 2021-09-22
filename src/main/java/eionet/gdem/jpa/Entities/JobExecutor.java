@@ -26,6 +26,9 @@ public class JobExecutor {
     @Column(name = "HEART_BEAT_QUEUE")
     private String heartBeatQueue;
 
+//    @Column(name = "TYPE")
+//    private JobExecutorType type;
+
     public JobExecutor() {
     }
 
@@ -103,4 +106,13 @@ public class JobExecutor {
         this.heartBeatQueue = heartBeatQueue;
         return this;
     }
+
+//    public JobExecutorType getType() {
+//        return type;
+//    }
+//
+//    public JobExecutor setType(JobExecutorType jobExecutorType) {
+//        this.type = jobExecutorType;
+//        return this;
+//    }
 }

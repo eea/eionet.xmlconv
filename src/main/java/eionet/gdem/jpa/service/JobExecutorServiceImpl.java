@@ -86,6 +86,16 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             throw new DatabaseException(e.getMessage());
         }
     }
+
+    @Override
+    public List<JobExecutor> findExecutorsByJobId(Integer jobId) throws DatabaseException {
+        try {
+            return jobExecutorRepository.findJobExecutorsByJobId(jobId);
+        } catch (Exception e) {
+            LOGGER.error("Database exception while trying to retrieve JOB_EXECUTOR entry for job with id " + jobId);
+            throw new DatabaseException(e.getMessage());
+        }
+    }
 }
 
 
