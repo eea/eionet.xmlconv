@@ -20,7 +20,7 @@ public class QueryMetadataEntry implements Serializable {
     private Integer queryId;
 
     @Column(name = "AVERAGE_DURATION")
-    private BigInteger averageDuration;
+    private Long averageDuration;
 
     @Column(name = "SCRIPT_TYPE")
     private String scriptType;
@@ -37,7 +37,7 @@ public class QueryMetadataEntry implements Serializable {
     public QueryMetadataEntry() {
     }
 
-    public QueryMetadataEntry(Integer id, String scriptFilename, Integer queryId, BigInteger averageDuration, String scriptType, Integer numberOfExecutions, Boolean markedHeavy, Integer version) {
+    public QueryMetadataEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long averageDuration, Integer numberOfExecutions, Boolean markedHeavy, Integer version) {
         this.id = id;
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
@@ -48,7 +48,7 @@ public class QueryMetadataEntry implements Serializable {
         this.version = version;
     }
 
-    public QueryMetadataEntry(String scriptFilename, Integer queryId, BigInteger averageDuration, String scriptType, Integer numberOfExecutions, Boolean markedHeavy, Integer version) {
+    public QueryMetadataEntry(String scriptFilename, Integer queryId, String scriptType, Long averageDuration, Integer numberOfExecutions, Boolean markedHeavy, Integer version) {
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
         this.averageDuration = averageDuration;
@@ -82,11 +82,11 @@ public class QueryMetadataEntry implements Serializable {
         this.queryId = queryId;
     }
 
-    public BigInteger getAverageDuration() {
+    public Long getAverageDuration() {
         return averageDuration;
     }
 
-    public void setAverageDuration(BigInteger averageDuration) {
+    public void setAverageDuration(Long averageDuration) {
         this.averageDuration = averageDuration;
     }
 

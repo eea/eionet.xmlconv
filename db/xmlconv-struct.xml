@@ -697,6 +697,7 @@
             <column name="SCRIPT_TYPE" type="VARCHAR(50)"/>
             <column name="DURATION" type="BIGINT"/>
             <column name="MARKED_HEAVY" defaultValue="false" type="BOOLEAN"/>
+            <column name="JOB_STATUS" type="INT"/>
             <column name="VERSION" type="INT"/>
         </createTable>
         <createIndex indexName="QUERY_METADATA_HISTORY_FILENAME" tableName="QUERY_METADATA_HISTORY" unique="false">

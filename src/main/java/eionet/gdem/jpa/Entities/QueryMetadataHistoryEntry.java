@@ -23,10 +23,13 @@ public class QueryMetadataHistoryEntry implements Serializable {
     private String scriptType;
 
     @Column(name = "DURATION")
-    private BigInteger duration;
+    private Long duration;
 
     @Column(name = "MARKED_HEAVY")
     private Boolean markedHeavy;
+
+    @Column(name = "JOB_STATUS")
+    private Integer jobStatus;
 
     @Column(name = "VERSION")
     private Integer version;
@@ -34,22 +37,24 @@ public class QueryMetadataHistoryEntry implements Serializable {
     public QueryMetadataHistoryEntry() {
     }
 
-    public QueryMetadataHistoryEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, BigInteger duration, Boolean markedHeavy, Integer version) {
+    public QueryMetadataHistoryEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version) {
         this.id = id;
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
         this.scriptType = scriptType;
         this.duration = duration;
         this.markedHeavy = markedHeavy;
+        this.jobStatus = jobStatus;
         this.version = version;
     }
 
-    public QueryMetadataHistoryEntry(String scriptFilename, Integer queryId, String scriptType, BigInteger duration, Boolean markedHeavy, Integer version) {
+    public QueryMetadataHistoryEntry(String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version) {
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
         this.scriptType = scriptType;
         this.duration = duration;
         this.markedHeavy = markedHeavy;
+        this.jobStatus = jobStatus;
         this.version = version;
     }
 
@@ -85,11 +90,11 @@ public class QueryMetadataHistoryEntry implements Serializable {
         this.scriptType = scriptType;
     }
 
-    public BigInteger getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(BigInteger duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 
@@ -107,5 +112,13 @@ public class QueryMetadataHistoryEntry implements Serializable {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Integer getJobStatus() {
+        return jobStatus;
+    }
+
+    public void setJobStatus(Integer jobStatus) {
+        this.jobStatus = jobStatus;
     }
 }

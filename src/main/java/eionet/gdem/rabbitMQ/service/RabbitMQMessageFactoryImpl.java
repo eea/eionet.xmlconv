@@ -5,13 +5,8 @@ import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.JobNotFoundException;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.Entities.QueryMetadataEntry;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.jpa.repositories.QueryMetadataHistoryRepository;
-import eionet.gdem.jpa.repositories.QueryMetadataRepository;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.logging.Markers;
 import eionet.gdem.qa.IQueryDao;
@@ -20,6 +15,7 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.services.impl.QueryMetadataServiceImpl;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
@@ -55,10 +51,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     private JobService jobService;
 
     @Autowired
-    QueryMetadataRepository queryMetadataRepository;
-
-    @Autowired
-    QueryMetadataHistoryRepository queryMetadataHistoryRepository;
+    QueryMetadataServiceImpl queryMetadataService;
 
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
@@ -86,9 +79,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
+                long startTime = System.nanoTime();
+                Integer jobStatus = null;
                 try {
-                    long startTime = System.nanoTime();
-
                     // validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
@@ -109,22 +102,21 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     String result = vs.validateSchema(srcFile, scriptFile);
                     LOGGER.debug("Validation proceeded, now store to the result file");
                     Utils.saveStrToFile(resultFile, result, null);
-                    //TODO insert and update to query_metadata
-                    QueryMetadataEntry queryMetadataOldEntry = queryMetadataRepository.findByQueryId();
-                    if (queryMetadataOldEntry != null){
-                        update()
-                    }
-                    else{
-                        insert()
-                    }
-                    //String scriptFilename, Integer queryId, BigInteger averageDuration, String scriptType, Integer numberOfExecutions, Boolean markedHeavy, Integer version
-
-                    LOGGER.info("Updated tables QUERY_METADATA and QUERY_METADATA_HISTORY for script: " + scriptFile);
-                    changeStatus(Constants.XQ_READY,jobId);
                     long stopTime = System.nanoTime();
+
+                    changeStatus(Constants.XQ_READY,jobId);
+                    jobStatus = Constants.XQ_READY;
                     LOGGER.info("### job with id: " + jobId + " has been Validated. Validation time in nanoseconds = " + (stopTime - startTime));
                 } catch (Exception e) {
+                    jobStatus = Constants.XQ_FATAL_ERR;
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true,jobEntry, jobId);
+                }
+                finally{
+                    long stopTime = System.nanoTime();
+                    Long durationOfJob = stopTime - startTime;
+                    //Store script information
+                    queryMetadataService.storeScriptInformation(Integer.valueOf(queryID), scriptFile, scriptType, durationOfJob, jobStatus);
+                    LOGGER.info("Updated tables QUERY_METADATA and QUERY_METADATA_HISTORY for script: " + scriptFile);
                 }
             } else {
 
