@@ -41,7 +41,7 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
     void checkWorkerStatus(Integer jobId) throws DatabaseException {
         List<JobExecutor> jobExecutors = jobExecutorService.findExecutorsByJobId(jobId);
         try {
-            if (jobExecutors.size()==0) Thread.sleep(20000);
+            if (jobExecutors.size()==0) Thread.sleep(60000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
