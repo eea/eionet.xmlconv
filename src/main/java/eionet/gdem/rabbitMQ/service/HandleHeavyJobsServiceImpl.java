@@ -41,6 +41,7 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
     void checkWorkerStatus(Integer jobId) throws DatabaseException {
         List<JobExecutor> jobExecutors = jobExecutorService.findExecutorsByJobId(jobId);
         jobExecutors.get(0).setStatus(SchedulingConstants.WORKER_FAILED);
+        LOGGER.info("Setting jobExecutor with name " + jobExecutors.get(0).getName() + " to failed");
         jobExecutorService.saveOrUpdateJobExecutor(jobExecutors.get(0));
 
 

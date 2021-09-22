@@ -66,6 +66,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
             if (deadLetterMessage.getErrorStatus()==null) {
                 LOGGER.info("Job " + script.getJobId() + " was detected as heavy");
                 handleHeavyJobsService.handle(deadLetterMessage);
+                return;
             }
 
             String containerId="";
