@@ -40,6 +40,12 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
 
     void checkWorkerStatus(Integer jobId) throws DatabaseException {
         List<JobExecutor> jobExecutors = jobExecutorService.findExecutorsByJobId(jobId);
+        try {
+            if (jobExecutors.size()==0) Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        jobExecutors = jobExecutorService.findExecutorsByJobId(jobId);
         System.out.println("found jobexecutors: " + jobExecutors);
         jobExecutors.stream().forEach(jobExecutor -> System.out.println(jobExecutor));
         jobExecutors.get(0).setStatus(SchedulingConstants.WORKER_FAILED);
