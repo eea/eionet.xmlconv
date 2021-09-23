@@ -691,7 +691,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="T_QUERY_ID" type="INT">
-                <constraints foreignKeyName="FK_QUERY_METADATA"
+                <constraints foreignKeyName="FK_QUERY_METADATA_HISTORY"
                              references="T_QUERY(QUERY_ID)"/>
             </column>
             <column name="SCRIPT_TYPE" type="VARCHAR(50)"/>

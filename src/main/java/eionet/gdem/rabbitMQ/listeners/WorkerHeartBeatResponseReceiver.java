@@ -9,6 +9,7 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.services.QueryMetadataService;
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
             LOGGER.info("Updating heart beat message entry with id " + response.getId());
 
             InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-            heartBeatMsgHandlerService.updateHeartBeatAndJobTables(oldEntry, response.getJobId(), response.getJobStatus(), Constants.XQ_FATAL_ERR, internalStatus);
+            heartBeatMsgHandlerService.updateHeartBeatJobAndQueryTables(oldEntry, response.getJobId(), response.getJobStatus(), Constants.XQ_FATAL_ERR, internalStatus);
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing ", e);
         } finally {

@@ -10,6 +10,7 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.services.QueryMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,10 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
     private RabbitMQMessageSender rabbitMQMessageSender;
     private JobService jobService;
     private JobHistoryService jobHistoryService;
+
+
+    @Autowired
+    QueryMetadataService queryMetadataService;
 
     @Autowired
     public HeartBeatMsgHandlerServiceImpl(WorkerHeartBeatMsgService workerHeartBeatMsgService, RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, JobHistoryService jobHistoryService) {
@@ -43,7 +48,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
 
     @Transactional
     @Override
-    public void updateHeartBeatAndJobTables(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry, Integer jobId, Integer jobStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
+    public void updateHeartBeatJobAndQueryTables(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry, Integer jobId, Integer jobStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
         workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
 
         JobEntry jobEntry = jobService.findById(jobId);
@@ -53,6 +58,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
                     .setIntSchedulingStatus(internalStatus.getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setWorkerRetries(jobEntry.getWorkerRetries()).setJobType(jobEntry.getJobType())
                     .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null);
             jobHistoryService.save(jobHistoryEntry);
+            queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), jobEntry.getDuration().longValue(), Constants.XQ_FATAL_ERR);
         }
     }
 }
