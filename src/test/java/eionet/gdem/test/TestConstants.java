@@ -26,6 +26,7 @@ public class TestConstants {
     public static final String SEED_DATASET_INTERNAL_STATUS_XML = "seed-dataset-internalStatus.xml";
     public static final String SEED_DATASET_JOB_EXECUTOR_XML = "seed-dataset-jobExecutor.xml";
     public static final String SEED_DATASET_WORKER_HEART_BEAT_XML = "seed-dataset-worker-heart-beat.xml";
+    public static final String SEED_DATASET_QUERY_METADATA_XML = "seed-dataset-query-metadata.xml";
 
     // SEED FILES for conversions
     public static final String SEED_READER_XLS = "seed-reader.xls";

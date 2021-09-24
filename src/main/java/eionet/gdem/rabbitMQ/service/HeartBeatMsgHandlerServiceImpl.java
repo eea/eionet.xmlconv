@@ -58,7 +58,9 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
                     .setIntSchedulingStatus(internalStatus.getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setWorkerRetries(jobEntry.getWorkerRetries()).setJobType(jobEntry.getJobType())
                     .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null);
             jobHistoryService.save(jobHistoryEntry);
-            queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), jobEntry.getDuration().longValue(), Constants.XQ_FATAL_ERR);
+            Long currentMs = new Timestamp(new Date().getTime()).getTime();
+            Long durationOfJob = Math.abs(currentMs - jobEntry.getTimestamp().getTime());
+            queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR);
         }
     }
 }
