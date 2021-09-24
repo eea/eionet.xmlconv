@@ -51,7 +51,9 @@ public class WorkersStatusMessageReceiver implements MessageListener {
             }
 
             JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), response.getHeartBeatQueue());
+            jobExecutor.setJobExecutorType(response.getJobExecutorType());
             JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
+            jobExecutorHistory.setJobExecutorType(response.getJobExecutorType());
             workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing: ", e);

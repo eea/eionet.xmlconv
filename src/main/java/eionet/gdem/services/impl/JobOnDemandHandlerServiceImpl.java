@@ -16,6 +16,7 @@ import eionet.gdem.services.JobOnDemandHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     @Autowired
     public JobOnDemandHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService,
-                                         RabbitMQMessageSender jobMessageSender) {
+                                         @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageSender) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobMessageSender = jobMessageSender;
@@ -55,12 +56,12 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             script.setJobId(jobEntry.getId().toString());
 
             WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(script);
-            jobMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
+            jobMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequest);
 
             Integer retryCounter = jobService.getRetryCounter(jobEntry.getId());
             jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());
             internalSchedulingStatus.setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobService.changeStatusesAndJobExecutorName(Constants.XQ_PROCESSING, internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry.getId());
+            jobService.updateJob(Constants.XQ_PROCESSING, internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry);
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_QUEUED);
         } catch (Exception e) {
             throw new XMLConvException(e.getMessage());

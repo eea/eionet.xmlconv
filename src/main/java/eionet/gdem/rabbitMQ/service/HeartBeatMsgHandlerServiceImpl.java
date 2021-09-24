@@ -11,6 +11,7 @@ import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
     private JobHistoryService jobHistoryService;
 
     @Autowired
-    public HeartBeatMsgHandlerServiceImpl(WorkerHeartBeatMsgService workerHeartBeatMsgService, RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, JobHistoryService jobHistoryService) {
+    public HeartBeatMsgHandlerServiceImpl(WorkerHeartBeatMsgService workerHeartBeatMsgService, @Qualifier("heartBeatRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, JobHistoryService jobHistoryService) {
         this.workerHeartBeatMsgService = workerHeartBeatMsgService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
         this.jobService = jobService;
@@ -38,7 +39,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
     public void saveMsgAndSendToRabbitMQ(WorkerHeartBeatMessageInfo heartBeatMsgInfo, WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry) {
         workerHeartBeatMsgEntry = workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
         heartBeatMsgInfo.setId(workerHeartBeatMsgEntry.getId());
-        rabbitMQMessageSender.sendHeartBeatMessage(heartBeatMsgInfo);
+        rabbitMQMessageSender.sendMessageToRabbitMQ(heartBeatMsgInfo);
     }
 
     @Transactional
@@ -48,7 +49,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
 
         JobEntry jobEntry = jobService.findById(jobId);
         if (jobEntry.getnStatus()== Constants.XQ_PROCESSING && jobStatus.equals(Constants.JOB_NOT_FOUND_IN_WORKER)) {
-            jobService.changeStatusesAndJobExecutorName(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
+            jobService.updateJob(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), nStatus, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType())
                     .setIntSchedulingStatus(internalStatus.getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setWorkerRetries(jobEntry.getWorkerRetries()).setJobType(jobEntry.getJobType())
                     .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null);

@@ -1,6 +1,7 @@
 package eionet.gdem.jpa.repositories;
 
 import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -51,7 +52,7 @@ public class JobExecutorRepositoryTestIT {
     @Transactional
     @Test
     public void testUpdateStatusAndJobId() {
-        jobExecutorRepository.updateStatusAndJobId(0, 47, "jobExecutor3");
+        jobExecutorRepository.updateJobExecutor(0, 47, JobExecutorType.Light.getId(),"jobExecutor3");
         JobExecutor jobExecutor = jobExecutorRepository.findByName("jobExecutor3");
         assertThat(jobExecutor.getStatus(), is(0));
     }

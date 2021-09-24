@@ -1,11 +1,14 @@
 package eionet.gdem.rabbitMQ.model;
 
+import eionet.gdem.jpa.utils.JobExecutorType;
+
 public class WorkerStateRabbitMQResponse {
 
     private String jobExecutorName;
     private Integer jobExecutorStatus;
     private String healthState;
     private String heartBeatQueue;
+    private JobExecutorType jobExecutorType;
 
     public WorkerStateRabbitMQResponse() {
     }
@@ -48,6 +51,15 @@ public class WorkerStateRabbitMQResponse {
 
     public WorkerStateRabbitMQResponse setHeartBeatQueue(String heartBeatQueue) {
         this.heartBeatQueue = heartBeatQueue;
+        return this;
+    }
+
+    public JobExecutorType getJobExecutorType() {
+        return jobExecutorType;
+    }
+
+    public WorkerStateRabbitMQResponse setJobExecutorType(JobExecutorType jobExecutorType) {
+        this.jobExecutorType = jobExecutorType;
         return this;
     }
 }

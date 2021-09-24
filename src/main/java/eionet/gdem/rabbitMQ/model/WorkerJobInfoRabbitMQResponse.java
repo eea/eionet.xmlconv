@@ -1,5 +1,6 @@
 package eionet.gdem.rabbitMQ.model;
 
+import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 
 public class WorkerJobInfoRabbitMQResponse {
@@ -17,6 +18,8 @@ public class WorkerJobInfoRabbitMQResponse {
     private Integer jobExecutorStatus;
 
     private String heartBeatQueue;
+
+    private JobExecutorType jobExecutorType;
 
     public XQScript getScript() {
         return script;
@@ -81,4 +84,12 @@ public class WorkerJobInfoRabbitMQResponse {
         return this;
     }
 
+    public JobExecutorType getJobExecutorType() {
+        return jobExecutorType;
+    }
+
+    public WorkerJobInfoRabbitMQResponse setJobExecutorType(JobExecutorType jobExecutorType) {
+        this.jobExecutorType = jobExecutorType;
+        return this;
+    }
 }

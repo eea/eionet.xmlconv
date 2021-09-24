@@ -326,12 +326,14 @@ public class FixedTimeScheduledTasks {
             //for each instance find status
             ContainerData data = containersOrchestrator.getContainerInfoById(containerId);
             String healthState = data.getHealthState();
-            if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue())) {
+            String state = data.getState();
+            if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue()) || state.equals(SchedulingConstants.CONTAINER_STATE_ENUM.STOPPED.getValue())) {
                 //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
                 String containerName = data.getName();
                 String heartBeatQueue = containerName + "-queue";
                 JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, heartBeatQueue);
                 try {
+                    LOGGER.info("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus: setting status of container with name " + containerName + " to WORKER_FAILED");
                     JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 } catch (DatabaseException e) {

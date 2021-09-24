@@ -9,7 +9,7 @@ public interface JobExecutorService {
 
     JobExecutor findByName(String jobExecutorName) throws DatabaseException;
 
-    void saveOrUpdateJobExecutor(JobExecutor jobExecutor) throws DatabaseException;
+    void saveOrUpdateJobExecutor(boolean update, JobExecutor jobExecutor) throws DatabaseException;
 
     List<JobExecutor> listJobExecutor() throws DatabaseException;
 

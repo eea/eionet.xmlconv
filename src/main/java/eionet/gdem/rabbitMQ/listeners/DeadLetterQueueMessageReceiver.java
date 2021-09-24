@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -43,6 +44,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
     private ContainersRancherApiOrchestrator containersOrchestrator;
 
     @Autowired
+    @Qualifier("heartBeatRabbitMessageSenderImpl")
     RabbitMQMessageSender rabbitMQMessageSender;
 
     @Autowired

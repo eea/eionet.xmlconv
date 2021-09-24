@@ -41,7 +41,7 @@ public class HeartBeatMsgHandlerServiceImplTest {
         WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry();
         workerHeartBeatMsgEntry.setId(1);
         when(workerHeartBeatMsgService.save(any(WorkerHeartBeatMsgEntry.class))).thenReturn(workerHeartBeatMsgEntry);
-        doNothing().when(rabbitMQMessageSender).sendHeartBeatMessage(any(WorkerHeartBeatMessageInfo.class));
+        doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerHeartBeatMessageInfo.class));
         WorkerHeartBeatMessageInfo heartBeatMessageInfo = new WorkerHeartBeatMessageInfo();
         heartBeatMsgHandlerService.saveMsgAndSendToRabbitMQ(heartBeatMessageInfo, workerHeartBeatMsgEntry);
         verify(workerHeartBeatMsgService).save(any(WorkerHeartBeatMsgEntry.class));

@@ -67,7 +67,7 @@ public class JobOnDemandHandlerServiceTest {
     public void testCreateJobAndSendToRabbitMQ() throws XMLConvException {
         when(jobService.save(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
-        doNothing().when(jobMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
+        doNothing().when(jobMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
         when(jobService.getRetryCounter(anyInt())).thenReturn(0);
         JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0);
         Assert.assertEquals(jobEntry.getId(), jobEntryResult.getId());

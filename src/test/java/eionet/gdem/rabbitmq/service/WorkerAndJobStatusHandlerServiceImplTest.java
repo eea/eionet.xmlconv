@@ -57,28 +57,28 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         jobEntry = new JobEntry().setId(100).setJobExecutorName("demoJobExecutor");;
         jobExecutor = new JobExecutor().setContainerId("123456").setHeartBeatQueue("demoJobExecutor-queue");;
         jobExecutorHistory = new JobExecutorHistory();
-        doNothing().when(jobService).changeStatusesAndJobExecutorName(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
-        doNothing().when(jobHistoryService).updateStatusesAndJobExecutorName(anyInt(), anyInt(), any(JobEntry.class));
-        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
+        doNothing().when(jobService).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), any(JobEntry.class));
+        doNothing().when(jobHistoryService).updateJobHistory(anyInt(), anyInt(), any(JobEntry.class));
+        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(anyBoolean(), any(JobExecutor.class));
         doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
     }
 
     @Test
     public void testUpdateJobAndJobHistoryEntries() throws DatabaseException {
         workerAndJobStatusHandlerServiceImpl.updateJobAndJobHistoryEntries(Constants.XQ_PROCESSING, internalStatus, jobEntry);
-        verify(jobHistoryService).updateStatusesAndJobExecutorName(anyInt(), anyInt(), any(JobEntry.class));
+        verify(jobHistoryService).updateJobHistory(anyInt(), anyInt(), any(JobEntry.class));
     }
 
     @Test
     public void testSaveOrUpdateJobExecutor() throws DatabaseException {
         workerAndJobStatusHandlerServiceImpl.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-        verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
+        verify(jobExecutorService).saveOrUpdateJobExecutor(anyBoolean(), any(JobExecutor.class));
     }
 
     @Test
     public void testUpdateJobAndJobExecTables() throws DatabaseException {
         workerAndJobStatusHandlerServiceImpl.updateJobAndJobExecTables(Constants.XQ_PROCESSING, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
-        verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
+        verify(jobExecutorService).saveOrUpdateJobExecutor(anyBoolean(), any(JobExecutor.class));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
         WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest();
         doNothing().when(jobService).updateWorkerRetries(anyInt(), any(Timestamp.class), anyInt());
-        doNothing().when(rabbitMQMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
+        doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
         workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(Constants.MAX_SCRIPT_EXECUTION_RETRIES, Constants.XQ_FATAL_ERR, intStatus, jobEntry, workerJobRabbitMQRequest, jobExecutor, jobExecutorHistory);
     }
 }

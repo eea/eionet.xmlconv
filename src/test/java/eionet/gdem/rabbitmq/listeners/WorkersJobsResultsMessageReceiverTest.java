@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
@@ -92,6 +93,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         response.setJobExecutorName("demoJobExecutor");
         response.setHeartBeatQueue("demoJobExecutor-queue");
         response.setErrorExists(errorExists);
+        response.setJobExecutorType(JobExecutorType.Light);
         return response;
     }
 

@@ -2,24 +2,24 @@ package eionet.gdem.rabbitMQ.model;
 
 import java.sql.Timestamp;
 
-public class WorkerHeartBeatMessageInfo {
+public class WorkerHeartBeatMessageInfo extends WorkerInfo {
 
     private Integer id;
-    private String jobExecutorName;
     private Integer jobId;
     private Integer jobStatus;
     private Timestamp requestTimestamp;
 
     public WorkerHeartBeatMessageInfo() {
+
     }
 
     public WorkerHeartBeatMessageInfo(String jobExecutorName, Integer jobId) {
-        this.jobExecutorName = jobExecutorName;
+        super(jobExecutorName);
         this.jobId = jobId;
     }
 
     public WorkerHeartBeatMessageInfo(String jobExecutorName, Integer jobId, Timestamp requestTimestamp) {
-        this.jobExecutorName = jobExecutorName;
+        super(jobExecutorName);
         this.jobId = jobId;
         this.requestTimestamp = requestTimestamp;
     }
@@ -30,15 +30,6 @@ public class WorkerHeartBeatMessageInfo {
 
     public WorkerHeartBeatMessageInfo setId(Integer id) {
         this.id = id;
-        return this;
-    }
-
-    public String getJobExecutorName() {
-        return jobExecutorName;
-    }
-
-    public WorkerHeartBeatMessageInfo setJobExecutorName(String jobExecutorName) {
-        this.jobExecutorName = jobExecutorName;
         return this;
     }
 

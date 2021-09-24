@@ -90,10 +90,10 @@ public class RabbitMQMessageFactoryImplTest {
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
         when(jobService.getRetryCounter(anyInt())).thenReturn(0);
         doNothing().when(jobService).updateJobInfo(anyInt(), anyString(), any(Timestamp.class), anyInt(), anyInt());
-        doNothing().when(jobService).changeStatusesAndJobExecutorName(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
+        doNothing().when(jobService).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), any(JobEntry.class));
         when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryDao.getQueryInfo(anyString())).thenReturn(queryMap);
-        doNothing().when(rabbitMQMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
+        doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
         createRabbitMQMessage.createScriptAndSendMessageToRabbitMQ("627015");
         verify(queryDao).getQueryInfo(anyString());
     }

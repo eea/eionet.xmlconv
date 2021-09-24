@@ -11,6 +11,23 @@ public interface SchedulingConstants {
     int INTERNAL_STATUS_PROCESSING = 3;
     int INTERNAL_STATUS_CANCELLED = 4;
 
+    public enum CONTAINER_STATE_ENUM {
+
+        RUNNING("running"),
+        STOPPING("stopping"),
+        STOPPED("stopped");
+
+        private String value;
+
+        CONTAINER_STATE_ENUM(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
     public enum CONTAINER_HEALTH_STATE_ENUM {
         HEALTHY("healthy"), UNHEALTHY("unhealthy"), UPDATING_HEALTHY("updating-healthy"),
         UPDATING_UNHEALTHY("updating-unhealthy"), INITIALIZING("initializing");
