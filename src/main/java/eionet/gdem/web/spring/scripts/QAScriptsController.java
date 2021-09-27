@@ -3,12 +3,17 @@ package eionet.gdem.web.spring.scripts;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.jpa.Entities.QueryMetadataEntry;
+import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
+import eionet.gdem.jpa.repositories.QueryMetadataHistoryRepository;
+import eionet.gdem.jpa.repositories.QueryMetadataRepository;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
+import eionet.gdem.services.QueryMetadataService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
 import eionet.gdem.web.spring.SpringMessages;
@@ -37,6 +42,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -49,6 +55,15 @@ public class QAScriptsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptsController.class);
 
     private MessageService messageService;
+
+    @Autowired
+    QueryMetadataHistoryRepository queryMetadataHistoryRepository;
+
+    @Autowired
+    QueryMetadataRepository queryMetadataRepository;
+
+    @Autowired
+    QueryMetadataService queryMetadataService;
 
     @Autowired
     public QAScriptsController(MessageService messageService) {
@@ -445,6 +460,25 @@ public class QAScriptsController {
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/schemas/" + schemaId + "/scripts";
+    }
+
+    @GetMapping("/{id}/executionHistory")
+    public String executionHistory(@PathVariable String id, Model model) {
+
+        List<QueryMetadataHistoryEntry> historyList = queryMetadataHistoryRepository.findByQueryId(Integer.valueOf(id));
+        historyList = queryMetadataService.fillQueryMetadataAdditionalInfo(historyList);
+        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(Integer.valueOf(id));
+        if(queryMetadataEntryList.size() > 0){
+            Long durationToMs = queryMetadataEntryList.get(0).getAverageDuration();
+            String formattedDuration = Utils.createFormatForMs(durationToMs);
+
+            model.addAttribute("averageDuration", formattedDuration);
+            model.addAttribute("numberOfExecutions", queryMetadataEntryList.get(0).getNumberOfExecutions());
+        }
+        model.addAttribute("history", historyList);
+        model.addAttribute("scriptId", id);
+
+        return "/scripts/executionHistory";
     }
 
 }

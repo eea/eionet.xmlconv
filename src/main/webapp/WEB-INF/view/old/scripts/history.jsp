@@ -10,7 +10,13 @@
       </li>
       <li id="currenttab"><span style="color: black; text-decoration: none;"
                                 title='<spring:message code="label.qascript.history"/>'><spring:message
-              code="label.qascript.history"/></span></li>
+              code="label.qascript.history"/></span>
+      </li>
+      <li>
+        <a href="/scripts/${scriptId}/executionHistory" style="color: black; text-decoration: none;">
+          <spring:message code="label.qascript.executionHistory"/>
+        </a>
+      </li>
     </ul>
   </div>
 

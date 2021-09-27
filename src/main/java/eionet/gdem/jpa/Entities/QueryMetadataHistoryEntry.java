@@ -34,6 +34,15 @@ public class QueryMetadataHistoryEntry implements Serializable {
     @Column(name = "VERSION")
     private Integer version;
 
+    @Transient
+    private String shortFileName;
+
+    @Transient
+    private String durationFormatted;
+
+    @Transient
+    private String statusName;
+
     public QueryMetadataHistoryEntry() {
     }
 
@@ -120,5 +129,29 @@ public class QueryMetadataHistoryEntry implements Serializable {
 
     public void setJobStatus(Integer jobStatus) {
         this.jobStatus = jobStatus;
+    }
+
+    public String getShortFileName() {
+        return shortFileName;
+    }
+
+    public void setShortFileName(String shortFileName) {
+        this.shortFileName = shortFileName;
+    }
+
+    public String getDurationFormatted() {
+        return durationFormatted;
+    }
+
+    public void setDurationFormatted(String durationFormatted) {
+        this.durationFormatted = durationFormatted;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 }

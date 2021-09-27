@@ -1,5 +1,6 @@
 package eionet.gdem.services.impl;
 
+import eionet.gdem.Constants;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
 import eionet.gdem.jpa.repositories.JobRepository;
@@ -9,6 +10,8 @@ import eionet.gdem.services.QueryMetadataService;
 import eionet.gdem.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -48,5 +51,30 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
             QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , oldEntry.getMarkedHeavy(), jobStatus, oldEntry.getVersion());
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
+    }
+
+    @Override
+    public List<QueryMetadataHistoryEntry> fillQueryMetadataAdditionalInfo(List<QueryMetadataHistoryEntry> historyEntries){
+        for (QueryMetadataHistoryEntry entry: historyEntries){
+            entry.setDurationFormatted(Utils.createFormatForMs(entry.getDuration()));
+            List<String> filenameList = Arrays.asList(entry.getScriptFilename().split("/"));
+            if(filenameList.size() > 0){
+                entry.setShortFileName(filenameList.get(filenameList.size()-1));
+            }
+            else{
+                entry.setShortFileName(entry.getScriptFilename());
+            }
+
+            if(entry.getJobStatus() == Constants.XQ_READY){
+                entry.setStatusName("Successful");
+            }
+            else  if(entry.getJobStatus() == Constants.XQ_FATAL_ERR){
+                entry.setStatusName("Failed");
+            }
+            else{
+                entry.setStatusName("Unknown status (" + entry.getJobStatus() + ")");
+            }
+        }
+        return historyEntries;
     }
 }

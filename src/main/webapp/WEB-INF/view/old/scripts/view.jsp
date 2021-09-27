@@ -15,6 +15,11 @@
           <spring:message code="label.qascript.history"/>
         </a>
       </li>
+      <li>
+        <a href="/scripts/${form.scriptId}/executionHistory" style="color: black; text-decoration: none;">
+          <spring:message code="label.qascript.executionHistory"/>
+        </a>
+      </li>
     </ul>
   </div>
   <ed:breadcrumbs-push label="View QA script" level="3"/>
