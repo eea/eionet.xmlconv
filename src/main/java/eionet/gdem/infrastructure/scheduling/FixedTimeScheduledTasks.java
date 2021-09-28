@@ -15,6 +15,7 @@ import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
+import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
@@ -42,6 +43,7 @@ import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FixedTimeScheduledTasks {
@@ -141,6 +143,7 @@ public class FixedTimeScheduledTasks {
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         List<JobEntry> jobs = jobService.findByIntSchedulingStatus(internalStatus);
         List<JobExecutor> readyWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_READY);
+        readyWorkers = readyWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
         if (jobs.size() > readyWorkers.size()) {
             Integer newWorkers = jobs.size() - readyWorkers.size();
             try {
