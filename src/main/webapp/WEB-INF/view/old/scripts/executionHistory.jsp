@@ -29,7 +29,7 @@
 
     <c:choose>
         <c:when test="${!empty history}">
-            <p>Average duration for script with id ${scriptId} is <c:out value = "${averageDuration}"/>. The script has been executed <c:out value = "${numberOfExecutions}"/> times.</p>
+            <p>Average duration for script with id ${scriptId} is <b><c:out value = "${averageDuration}"/></b>. The script has been executed <c:out value = "${numberOfExecutions}"/> times.</p>
             <div style="width: 97%">
                 <table class="datatable results" width="100%">
                     <col style="width:30%"/>
@@ -64,7 +64,7 @@
                                     ${entry.markedHeavy}
                             </td>
                             <td>
-                                    ${entry.jobStatus}
+                                    ${entry.statusName}
                             </td>
                             <td>
                                     ${entry.version}
