@@ -70,7 +70,9 @@ public class FixedTimeScheduledTasks {
     @Autowired
     WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
 
-    /** Dao for getting job data. */
+    /**
+     * Dao for getting job data.
+     */
     private WorkqueueManager jobsManager = new WorkqueueManager();
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
@@ -192,30 +194,13 @@ public class FixedTimeScheduledTasks {
      */
     void deleteFailedWorkers(String serviceId) throws RancherApiException, DatabaseException {
         List<JobExecutor> failedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
-        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        if (failedWorkers.size()==1 && instances.size()==1) {
-            LOGGER.info("Restarting failed worker because found only one worker instance.");
-            containersOrchestrator.restartContainer(failedWorkers.get(0).getName());
-            return;
+        for (JobExecutor worker : failedWorkers) {
+            deleteFromRancherAndDatabase(worker);
         }
-        if (instances.size() == failedWorkers.size()) {
-            Integer workersDeleted = 1;
-            for (JobExecutor worker : failedWorkers) {
-                while (workersDeleted <= failedWorkers.size()) {
-                    instances = servicesOrchestrator.getContainerInstances(serviceId);
-                    if (instances.size() == 1) {
-                        containersOrchestrator.restartContainer(worker.getName());
-                        return;
-                    }
-                    deleteFromRancherAndDatabase(worker);
-                    workersDeleted++;
-                    break;
-                }
-            }
-        } else {
-            for (JobExecutor worker : failedWorkers) {
-                deleteFromRancherAndDatabase(worker);
-            }
+        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+        if (instances.size()==0) {
+            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
+            servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         }
     }
 
@@ -424,7 +409,7 @@ public class FixedTimeScheduledTasks {
      * Deletes expired finished jobs from workqueue
      **/
     @Scheduled(cron = "0 0 */3 * * *") //Every 3 hours
-    public void schedulePeriodicCleanupOfFinishedWorkqueueJobs(){
+    public void schedulePeriodicCleanupOfFinishedWorkqueueJobs() {
         LOGGER.info("Cleanup of finished workqueue jobs.");
         try {
             List<WorkqueueJob> jobs = jobsManager.getFinishedJobs();
@@ -444,8 +429,7 @@ public class FixedTimeScheduledTasks {
     /**
      * Check the job's age and return true if it is possible to delete it.
      *
-     * @param job
-     *            Workqueue job object
+     * @param job Workqueue job object
      * @return true if job can be deleted.
      */
     public static boolean canDeleteJob(WorkqueueJob job) {
@@ -467,7 +451,7 @@ public class FixedTimeScheduledTasks {
      * Updates Data Dictionary tables cache.
      **/
     @Scheduled(cron = "0 0 */1 * * *") //Every 1 hour
-    public void schedulePeriodicDDTablesCacheUpdate(){
+    public void schedulePeriodicDDTablesCacheUpdate() {
         LOGGER.info("Updating DD tables chache.");
         try {
             List<DDDatasetTable> ddTables = DDServiceClient.getDDTablesFromDD();
