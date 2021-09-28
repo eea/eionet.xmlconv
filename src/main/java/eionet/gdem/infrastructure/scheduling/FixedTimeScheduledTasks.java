@@ -197,6 +197,7 @@ public class FixedTimeScheduledTasks {
      */
     void deleteFailedWorkers(String serviceId) throws RancherApiException, DatabaseException {
         List<JobExecutor> failedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
+        failedWorkers = failedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
         for (JobExecutor worker : failedWorkers) {
             deleteFromRancherAndDatabase(worker);
         }
@@ -261,7 +262,8 @@ public class FixedTimeScheduledTasks {
             this.updateDbContainersHealthStatusFromRancher(instances);
 
             List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
-            this.synchronizeRancherContainersWithDbEntries(jobExecutors, instances);
+            List<JobExecutor> lightJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
+            this.synchronizeRancherContainersWithDbEntries(lightJobExecutors, instances);
         } catch (RancherApiException rae) {
             LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
             throw rae;
