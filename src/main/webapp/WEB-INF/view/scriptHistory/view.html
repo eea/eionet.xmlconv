@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm">
+<head th:replace="~{fragments/head-old :: head}" />
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<div class="row">
+    <div class="columns">
+        <div th:if="${not #lists.isEmpty(history)}">
+            <p th:text="${'Average duration for script with id ' + scriptId + ' is ' + averageDuration + '. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
+            <table>
+                <thead>
+                <tr>
+                    <th scope="col" class="scope-col">File Name</th>
+                    <th scope="col" class="scope-col">Script Type</th>
+                    <th scope="col" class="scope-col">Duration</th>
+                    <th scope="col" class="scope-col">Was Heavy</th>
+                    <th scope="col" class="scope-col">Job Status</th>
+                    <th scope="col" class="scope-col">Version</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry, pos : ${history}">
+                    <td th:text="${entry.shortFileName}"></td>
+                    <td th:text="${entry.scriptType}"></td>
+                    <td th:text="${entry.durationFormatted}"></td>
+                    <td th:text="${entry.markedHeavy}"></td>
+                    <td th:text="${entry.statusName}"></td>
+                    <td th:text="${entry.version}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:unless="${not #lists.isEmpty(history)}">
+            <p th:text="${'There is no execution history info for script with id ' + scriptId}"></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

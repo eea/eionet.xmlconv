@@ -481,4 +481,22 @@ public class QAScriptsController {
         return "/scripts/executionHistory";
     }
 
+    @GetMapping("/{id}/executionHistory2")
+    public String executionHistory2(@PathVariable String id, Model model) {
+
+        List<QueryMetadataHistoryEntry> historyList = queryMetadataHistoryRepository.findByQueryId(Integer.valueOf(id));
+        historyList = queryMetadataService.fillQueryMetadataAdditionalInfo(historyList);
+        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(Integer.valueOf(id));
+        if(queryMetadataEntryList.size() > 0){
+            Long durationToMs = queryMetadataEntryList.get(0).getAverageDuration();
+            String formattedDuration = Utils.createFormatForMs(durationToMs);
+
+            model.addAttribute("averageDuration", formattedDuration);
+            model.addAttribute("numberOfExecutions", queryMetadataEntryList.get(0).getNumberOfExecutions());
+        }
+        model.addAttribute("history", historyList);
+        model.addAttribute("scriptId", id);
+
+        return "scriptHistory/view";
+    }
 }
