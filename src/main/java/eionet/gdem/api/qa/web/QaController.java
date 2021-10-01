@@ -161,7 +161,6 @@ public class QaController {
         
         XQueryService xqueryService = new XQueryService();
           String jobId = xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId());
-          xqueryService.analyzeXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
           LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
           results.put("jobId",jobId);
           return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
