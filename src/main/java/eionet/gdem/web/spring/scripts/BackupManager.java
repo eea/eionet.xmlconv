@@ -21,16 +21,6 @@
 
 package eionet.gdem.web.spring.scripts;
 
-import java.io.File;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-
-
-
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SpringApplicationContext;
@@ -38,7 +28,6 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.QueryBackupEntry;
-import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.service.QueryBackupService;
 import eionet.gdem.jpa.service.QueryHistoryService;
@@ -46,6 +35,13 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Backup manager.

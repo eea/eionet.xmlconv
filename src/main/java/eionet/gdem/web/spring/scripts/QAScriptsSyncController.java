@@ -10,7 +10,6 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
-import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.SpringMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +82,6 @@ public class QAScriptsSyncController {
                 syncForm.setScriptId(scriptId);
                 syncForm.setUrl(scriptUrl);
                 syncForm.setFileName(scriptFile);
-
                 syncForm.setDescription(form.getDescription());
                 syncForm.setShortName(form.getShortName());
                 syncForm.setFileName(form.getFileName());
@@ -132,7 +130,6 @@ public class QAScriptsSyncController {
             QAScriptManager qm = new QAScriptManager();
             BackupManager bum = new BackupManager();
             bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user, queryHistoryEntry);
-
             qm.replaceScriptFromRemoteFile(user, url, scriptFileName);
             messages.add(messageService.getMessage("label.uplScript.cached"));
 
