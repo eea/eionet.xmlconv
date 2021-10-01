@@ -57,10 +57,6 @@
 
   <div id="leftcolumn" class="localnav">
     <ul>
-      <%--<li>JSP menu</li>
-      <ed:menuItem action="/projects" title="Schemas">
-        <spring:message code="label.menu.projects"/>
-      </ed:menuItem>--%>
       <ed:menuItem action="/schemas" title="Schemas">
         <spring:message code="label.menu.schemas"/>
       </ed:menuItem>

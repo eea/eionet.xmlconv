@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="hasPerm">
+    <head>
+        <link rel="stylesheet" type="text/css" th:href="@{../../../resources/css/main.css}" media="screen" />
+       <!-- <link rel="stylesheet" type="text/css" th:href="@{../../../resources/css/xmlconv.css}" media="screen" />-->
+    </head>
     <body>
     <div th:fragment="menu">
         <div id="toolribbon">
@@ -8,7 +12,7 @@
                 <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
             </div>
         <div id="righttools">
-            <a th:if="${#strings.isEmpty(session.user)}" id="loginlink" th:href="@{${loginUrl}}" title="Login">Login</a>
+            <a th:if="${#strings.isEmpty(session.user)}" id="loginlink" th:href="${loginUrl}" title="Login">Login</a>
             <a th:if="${not #strings.isEmpty(session.user)}" id="logoutlink" href="/do/logout" th:text="'Logout (' + ${session.user} + ')'"></a>
             <a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
             <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
@@ -47,26 +51,26 @@
 
     <div id="leftcolumn" class="localnav">
         <ul>
-            <li>Thymeleaf menu</li>
-            <li><a href="/projects">Projects</a></li>
-            <li><a href="/schemas">Schemas</a></li>
-            <li><a href="/conversions">Handcoded Stylesheets</a></li>
-            <li><a href="/conversions/generated">Generated Stylesheets</a></li>
-            <li><a href="/converter">Converter</a></li>
-            <li><a href="/validation">Validate XML</a></li>
-            <li><a href="/workqueue">QA jobs</a></li>
-            <li><a href="/scripts">QA Scripts</a></li>
-            <li><a href="/qaSandbox">QA Sandbox</a></li>
-            <li><a href="/xmlFiles">XML Files</a></li>
+
+            <li><a href="/schemas" th:text="#{label.menu.schemas}"></a></li>
+            <li><a href="/conversions" th:text="#{label.menu.stylesheets}"></a></li>
+            <li><a href="/conversions/generated" th:text="#{label.menu.stylesheetsGenerated}"></a></li>
+            <li><a href="/converter" th:text="#{label.menu.converter}"></a></li>
+            <li><a href="/validation" th:text="#{label.conversion.tab.validation}"></a></li>
+            <li><a href="/workqueue" th:text="#{label.menu.QAJobs}"></a></li>
+            <li><a href="/scripts" th:text="#{label.menu.queries}"></a></li>
+            <li><a href="/qaSandbox" th:text="#{label.menu.xqsendbox}"></a></li>
+            <li><a href="/xmlFiles" th:text="#{label.menu.xmlfiles}"></a></li>
+
 
             <perm:hasPerm acl="host" permission="v">
-                <li><a href="/hosts/list" th:text="#{label.menu.hosts}"></a></li>
+                <li><a href="/hosts" th:text="#{label.menu.hosts}"></a></li>
             </perm:hasPerm>
             <perm:hasPerm acl="config" permission="u">
-                <li><a href="/admin/purge" th:text="#{label.menu.config}"></a></li>
+                <li><a href="/admin/purge" th:text="#{label.menu.admintools}"></a></li>
             </perm:hasPerm>
             <perm:hasPerm acl="serverstatus" permission="v">
-                <li><a href="/serverstatus.jsp" th:text="#{label.menu.serverstatus}"></a></li>
+                <li><a href="/webstatus" th:text="#{label.menu.serverstatus}"></a></li>
             </perm:hasPerm>
         </ul>
     </div> <!-- leftcolumn -->

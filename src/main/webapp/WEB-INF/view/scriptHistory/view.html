@@ -1,38 +1,102 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm">
-<head th:replace="~{fragments/head-old :: head}" />
-<body th:include="~{fragments/layout-old :: layout(~{::div})}">
-<div class="row">
-    <div class="columns">
-        <div th:if="${not #lists.isEmpty(history)}">
-            <p th:text="${'Average duration for script with id ' + scriptId + ' is ' + averageDuration + '. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
-            <table>
-                <thead>
-                <tr>
-                    <th scope="col" class="scope-col">File Name</th>
-                    <th scope="col" class="scope-col">Script Type</th>
-                    <th scope="col" class="scope-col">Duration</th>
-                    <th scope="col" class="scope-col">Was Heavy</th>
-                    <th scope="col" class="scope-col">Job Status</th>
-                    <th scope="col" class="scope-col">Version</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="entry, pos : ${history}">
-                    <td th:text="${entry.shortFileName}"></td>
-                    <td th:text="${entry.scriptType}"></td>
-                    <td th:text="${entry.durationFormatted}"></td>
-                    <td th:text="${entry.markedHeavy}"></td>
-                    <td th:text="${entry.statusName}"></td>
-                    <td th:text="${entry.version}"></td>
-                </tr>
-                </tbody>
-            </table>
+    <head th:replace="~{fragments/head-old :: head}"/>
+    <body th:include="~{fragments/layout-old :: layout(~{::div})}">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mt-5 mb-5">
+                    <div th:if="${not #lists.isEmpty(history)}">
+                        <p th:text="${'Average duration for script with id ' + scriptId + ' is ' + averageDuration + '. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
+
+                        <table id="example" class="table table-bordered" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="scope-col">File Name</th>
+                                    <th scope="col" class="scope-col">Script Type</th>
+                                    <th scope="col" class="scope-col">Duration</th>
+                                    <th scope="col" class="scope-col">Was Heavy</th>
+                                    <th scope="col" class="scope-col">Job Status</th>
+                                    <th scope="col" class="scope-col">Version</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="entry, pos : ${history}">
+                                    <td th:text="${entry.shortFileName}"></td>
+                                    <td th:text="${entry.scriptType}"></td>
+                                    <td th:text="${entry.durationFormatted}"></td>
+                                    <td th:text="${entry.markedHeavy}"></td>
+                                    <td th:text="${entry.statusName}"></td>
+                                    <td th:text="${entry.version}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                       <!-- <nav aria-label="Page navigation" class="paging">
+                            <ul class="pagination" th:if="${employees.page.totalPages > 1}">
+                                <li class="page-item" th:classappend="${!employees.paging.isPrevEnabled()? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/?pageNumber=' + ${employees.paging.pageNumber - 1}}"
+                                       tabindex="-1">Previous</a>
+                                </li>
+                                <th:block th:each="item : ${employees.paging.getItems()}">
+                                    <li class="page-item" th:classappend="${item.index == employees.paging.pageNumber? 'active' : ''}"
+                                        th:if="${item.pageItemType.name() == 'PAGE'}">
+                                        <a class="page-link" th:href="@{'/?pageNumber=' + ${item.index}}"
+                                           th:text="${item.index}"></a>
+                                    </li>
+                                    <li class="page-item disabled" th:if="${item.pageItemType.name() == 'DOTS'}">
+                                        <a class="page-link" href="#">...</a>
+                                    </li>
+                                </th:block>
+                                <li class="page-item" th:classappend="${!employees.paging.isNextEnabled()? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/?pageNumber=' + ${employees.paging.pageNumber + 1}}">Next</a>
+                                </li>
+                            </ul>
+                        </nav>-->
+                    </div>
+                    <div th:unless="${not #lists.isEmpty(history)}">
+                        <p th:text="${'There is no execution history info for script with id ' + scriptId}"></p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div th:unless="${not #lists.isEmpty(history)}">
-            <p th:text="${'There is no execution history info for script with id ' + scriptId}"></p>
-        </div>
-    </div>
-</div>
-</body>
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+      <!--  <div class="row">
+            <div class="columns">
+                <div th:if="${not #lists.isEmpty(history)}">
+                    <p th:text="${'Average duration for script with id ' + scriptId + ' is ' + averageDuration + '. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col" class="scope-col">File Name</th>
+                            <th scope="col" class="scope-col">Script Type</th>
+                            <th scope="col" class="scope-col">Duration</th>
+                            <th scope="col" class="scope-col">Was Heavy</th>
+                            <th scope="col" class="scope-col">Job Status</th>
+                            <th scope="col" class="scope-col">Version</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="entry, pos : ${history}">
+                            <td th:text="${entry.shortFileName}"></td>
+                            <td th:text="${entry.scriptType}"></td>
+                            <td th:text="${entry.durationFormatted}"></td>
+                            <td th:text="${entry.markedHeavy}"></td>
+                            <td th:text="${entry.statusName}"></td>
+                            <td th:text="${entry.version}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:unless="${not #lists.isEmpty(history)}">
+                    <p th:text="${'There is no execution history info for script with id ' + scriptId}"></p>
+                </div>
+            </div>
+        </div>-->
+    </body>
 </html>
