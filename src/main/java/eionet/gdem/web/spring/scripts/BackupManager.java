@@ -33,9 +33,15 @@ import java.util.List;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.QueryBackupEntry;
+import eionet.gdem.jpa.Entities.QueryEntry;
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.jpa.service.QueryBackupService;
+import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -61,7 +67,7 @@ public class BackupManager {
      * @param id Id
      * @param user user
      */
-    public void backupFile(String folderName, String fileName, String id, String user) {
+        public void backupFile(String folderName, String fileName, String id, String user, QueryHistoryEntry.QueryHistoryEntryBuilder queryHistoryEntryBuilder) {
 
         File origFile = new File(folderName, fileName);
         if (!origFile.exists())
@@ -85,15 +91,15 @@ public class BackupManager {
 
         try {
             Utils.copyFile(origFile, backupFile);
-            BackupDto backup = new BackupDto();
-            backup.setFileName(backupFileName);
-            backup.setQueryId(id);
-            backup.setUser(user);
-            backup.setTimestamp(new Timestamp(timestamp));
-            backupDao.addBackup(backup);
+
+            QueryBackupEntry queryBackupEntry = new QueryBackupEntry.QueryBackupEntryBuilder().setFileName(backupFileName).setObjectId(Integer.parseInt(id))
+                    .setUser(user).setfTimestamp(new Timestamp(timestamp)).build();
+            queryBackupEntry = getQueryBackupService().save(queryBackupEntry);
+
+            QueryHistoryEntry queryHistoryEntry = queryHistoryEntryBuilder.setQueryBackupEntry(queryBackupEntry).build();
+            getQueryHistoryService().save(queryHistoryEntry);
         } catch (Exception e) {
-            LOGGER.error("Unable to create backupfile - copy original file " + origFile.getPath() + " to " + backupFile.getPath()
-                    + ". " + e.toString());
+            LOGGER.error("Error during query backup history or query history creation for script with id " + id);
             e.printStackTrace();
         }
     }
@@ -177,4 +183,11 @@ public class BackupManager {
         return result;
     }
 
+    private static QueryBackupService getQueryBackupService() {
+        return (QueryBackupService) SpringApplicationContext.getBean("queryBackupServiceImpl");
+    }
+
+    private static QueryHistoryService getQueryHistoryService() {
+        return (QueryHistoryService) SpringApplicationContext.getBean("queryHistoryServiceImpl");
+    }
 }

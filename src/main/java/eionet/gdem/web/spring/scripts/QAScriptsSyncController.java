@@ -3,6 +3,8 @@ package eionet.gdem.web.spring.scripts;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.QueryEntry;
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
@@ -82,6 +84,17 @@ public class QAScriptsSyncController {
                 syncForm.setUrl(scriptUrl);
                 syncForm.setFileName(scriptFile);
 
+                syncForm.setDescription(form.getDescription());
+                syncForm.setShortName(form.getShortName());
+                syncForm.setFileName(form.getFileName());
+                syncForm.setSchemaId(form.getSchemaId());
+                syncForm.setResultType(form.getResultType());
+                syncForm.setScriptType(form.getScriptType());
+                syncForm.setUpperLimit(form.getUpperLimit());
+                syncForm.setUrl(form.getUrl());
+                syncForm.setActive(form.getActive());
+                syncForm.setAsynchronousExecution(form.isAsynchronousExecution());
+
                 try {
                     syncForm.setScriptFile(new String(remoteScript, "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
@@ -110,6 +123,10 @@ public class QAScriptsSyncController {
         }
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
+        QueryEntry queryEntry = new QueryEntry.QueryEntryBuilder(Integer.parseInt(scriptId)).build();
+        QueryHistoryEntry.QueryHistoryEntryBuilder queryHistoryEntryBuilder = new QueryHistoryEntry.QueryHistoryEntryBuilder().setDescription(form.getDescription()).setShortName(form.getShortName()).setQueryFileName(form.getFileName())
+                .setSchemaId(Integer.parseInt(form.getSchemaId())).setResultType(form.getResultType()).setScriptType(form.getScriptType()).setUpperLimit(Integer.parseInt(form.getUpperLimit()))
+                .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(1).setUser(user).setQueryEntry(queryEntry);
 
         try {
             QAScriptManager qm = new QAScriptManager();
@@ -117,7 +134,7 @@ public class QAScriptsSyncController {
             qm.replaceScriptFromRemoteFile(user, url, scriptFileName);
 
             BackupManager bum = new BackupManager();
-            bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user);
+            bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user, queryHistoryEntryBuilder);
             messages.add(messageService.getMessage("label.uplScript.cached"));
 
         } catch (DCMException e) {

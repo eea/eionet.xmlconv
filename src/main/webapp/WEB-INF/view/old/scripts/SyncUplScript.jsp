@@ -25,6 +25,20 @@
   <form:hidden path="scriptFile"/>
   <form:hidden path="fileName"/>
   <form:hidden path="url"/>
+  <form:hidden path="description"/>
+  <form:hidden path="shortName"/>
+  <form:hidden path="filePath"/>
+  <form:hidden path="schemaId"/>
+  <form:hidden path="resultType"/>
+  <form:hidden path="scriptType"/>
+  <form:hidden path="modified"/>
+  <form:hidden path="checksum"/>
+  <form:hidden path="scriptContent"/>
+  <form:hidden path="schema"/>
+  <form:hidden path="upperLimit"/>
+  <form:hidden path="active"/>
+  <form:hidden path="asynchronousExecution"/>
+
 </form:form>
 
 

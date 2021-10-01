@@ -337,18 +337,6 @@
             <spring:message code="label.qasandbox.addToWorkqueue"/>
           </button>
         </c:if>
-          <%--  Save content to file --%>
-        <c:if test="${permissions.wquPrm}">
-          <c:if test="${!form.showScripts}">
-            <c:if test="${form.scriptId = '0'}">
-              <c:if test="${form.scriptId != '0'}">
-                <button name="saveFile" class="button">
-                  <spring:message code="label.qasandbox.saveFile"/>
-                </button>
-              </c:if>
-            </c:if>
-          </c:if>
-        </c:if>
       </div>
       </fieldset>
     </c:if>

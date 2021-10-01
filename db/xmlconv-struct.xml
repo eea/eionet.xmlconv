@@ -658,4 +658,53 @@
             <column name="WORKER_RETRIES" type="INT"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-67">
+        <comment> Table for storing script history info</comment>
+        <createTable tableName="QUERY_HISTORY">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="QUERY_ID" type="INT">
+                <constraints foreignKeyName="FK_T_QUERY"
+                             references="T_QUERY(QUERY_ID)"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column defaultValue="Query" name="SHORT_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="QUERY_FILENAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="SCHEMA_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="HTML" name="RESULT_TYPE" type="VARCHAR(50)"/>
+            <column name="SCRIPT_TYPE" type="VARCHAR(50)"/>
+            <column defaultValueNumeric="10" name="UPPER_LIMIT" type="INT"/>
+            <column name="URL" type="VARCHAR(1024)"/>
+            <column name="ACTIVE" defaultValue="true" type="BOOLEAN"></column>
+            <column name="ASYNCHRONOUS_EXECUTION" defaultValue="false" type="BOOLEAN"></column>
+            <column name="VERSION" defaultValue="1" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="USER" type="VARCHAR(50)"/>
+            <column name="QUERY_BACK_UP_ID" type="INT">
+                <constraints foreignKeyName="FK_QUERY_BACKUP"
+                             references="T_BACKUP(BACKUP_ID)"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-68">
+        <comment>
+            Added column VERSION to T_QUERY table
+        </comment>
+        <addColumn tableName="T_QUERY">
+            <column name="VERSION" defaultValue="1" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

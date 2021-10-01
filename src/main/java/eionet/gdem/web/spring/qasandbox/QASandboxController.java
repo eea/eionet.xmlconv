@@ -19,7 +19,6 @@ import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.security.TokenVerifier;
 import eionet.gdem.security.errors.JWTException;
 import eionet.gdem.security.service.AuthTokenService;
-import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobOnDemandHandlerService;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
@@ -40,14 +39,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -575,33 +571,6 @@ public class QASandboxController {
             session.removeAttribute("jobId");
         }
         return null;
-    }
-
-    @PostMapping(value = "/scripts", params = {"save"})
-    public String save(@ModelAttribute("form") QASandboxForm cForm, Model model, BindingResult bindingResult,
-                       RedirectAttributes redirectAttributes, HttpSession session) {
-
-        SpringMessages messages = new SpringMessages();
-        SpringMessages errors = new SpringMessages();
-        String scriptId = cForm.getScriptId();
-        String content = cForm.getScriptContent();
-
-        String userName = (String) session.getAttribute("user");
-
-        new QASandboxValidator().validateSaveScript(cForm, bindingResult);
-        if (bindingResult.hasErrors()) {
-            return "/qaSandbox/view";
-        }
-
-        try {
-            QAScriptManager qm = new QAScriptManager();
-            qm.storeQAScriptFromString(userName, scriptId, content);
-            messages.add(messageService.getMessage("message.qasandbox.contentSaved"));
-        } catch (DCMException | IOException e) {
-            throw new RuntimeException("Error saving script content");
-        }
-        model.addAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
-        return "/qaSandbox/view";
     }
 
     @PostMapping(params = {"searchCR"})

@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.web.spring.scripts.BackupManager;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -85,8 +86,9 @@ public class BackupManagerTest {
 
         // create backup folder and 2 new backupfiles
         BackupManager bm = new BackupManager();
-        bm.backupFile(folderName, fileName, id, user);
-        bm.backupFile(folderName, fileName, id, user);
+        QueryHistoryEntry.QueryHistoryEntryBuilder queryHistoryEntryBuilder = new QueryHistoryEntry.QueryHistoryEntryBuilder();
+        bm.backupFile(folderName, fileName, id, user, queryHistoryEntryBuilder);
+        bm.backupFile(folderName, fileName, id, user, queryHistoryEntryBuilder);
 
         // check if backupfolder exists
         File backupFolder = new File(folderName, Constants.BACKUP_FOLDER_NAME);

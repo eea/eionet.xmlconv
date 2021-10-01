@@ -1,12 +1,13 @@
 package eionet.gdem.web.spring.scripts;
 
 import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.QueryEntry;
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.jpa.service.QueryHistoryService;
+import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.Utils;
@@ -20,22 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -49,10 +41,12 @@ public class QAScriptsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptsController.class);
 
     private MessageService messageService;
+    private QueryHistoryService queryHistoryService;
 
     @Autowired
-    public QAScriptsController(MessageService messageService) {
+    public QAScriptsController(MessageService messageService, QueryHistoryService queryHistoryService) {
         this.messageService = messageService;
+        this.queryHistoryService = queryHistoryService;
     }
 
     @ModelAttribute
@@ -95,6 +89,7 @@ public class QAScriptsController {
         String upperLimit = form.getUpperLimit();
         Boolean asynchronousExecution = form.isAsynchronousExecution();
         MultipartFile scriptFile = form.getScriptFile();
+        boolean active = form.getActive();
 
 /*        // if URL is filled download from the remote source
         if (!Utils.isNullStr(url)) {
@@ -120,7 +115,7 @@ public class QAScriptsController {
 
         try {
             QAScriptManager qaScriptManager = new QAScriptManager();
-            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution);
+            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution, active);
             messages.add(messageService.getMessage("label.qascript.inserted"));
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
@@ -230,7 +225,7 @@ public class QAScriptsController {
         String upperLimit = form.getUpperLimit();
         String url = form.getUrl();
         Boolean asynchronousExecution = form.isAsynchronousExecution();
-
+        boolean active = form.getActive();
 
         String user = (String) request.getSession().getAttribute("user");
 
@@ -243,7 +238,7 @@ public class QAScriptsController {
 
         try {
             QAScriptManager qm = new QAScriptManager();
-            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit, url, asynchronousExecution);
+            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit, url, asynchronousExecution, active);
 
             messages.add(messageService.getMessage("label.qascript.updated"));
 
@@ -312,8 +307,17 @@ public class QAScriptsController {
         try {
             QAScriptManager qm = new QAScriptManager();
             qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
-                    url, scriptContent, updateContent, asynchronousExecution);
+                    url, scriptContent, updateContent, asynchronousExecution, active);
             qm.activateDeactivate(user, scriptId, active);
+
+            if (!updateContent) {
+                QueryEntry queryEntry = new QueryEntry.QueryEntryBuilder(Integer.parseInt(scriptId)).build();
+                QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry.QueryHistoryEntryBuilder().setDescription(desc).setShortName(shortName).setQueryFileName(curFileName)
+                        .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
+                        .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(1).setUser(user).setQueryEntry(queryEntry).build();
+                queryHistoryService.save(queryHistoryEntry);
+            }
+
             // clear qascript list in cache
             QAScriptListLoader.reloadList(request);
             messages.add(messageService.getMessage("label.qascript.updated"));
