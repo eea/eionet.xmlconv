@@ -7,6 +7,7 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
+@Ignore
 public class IntSchedulingStatusRepositoryTestIT {
 
     @Autowired
