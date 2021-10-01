@@ -359,8 +359,7 @@ public class QAScriptManager {
             }
             Utils.deleteFile(queriesFolder + fileName);
 
-            getQueryHistoryService().updateQueryId(null, Integer.parseInt(scriptId));
-            getQueryJpaService().delete(Integer.parseInt(scriptId));
+            queryDao.removeQuery(scriptId);
         } catch (Exception e) {
             LOGGER.error("Error deleting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);

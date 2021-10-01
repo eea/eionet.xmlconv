@@ -1,7 +1,9 @@
 package eionet.gdem.qa;
 
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.database.MySqlBaseDao;
+import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,6 +234,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         if (isDebugMode) {
             LOGGER.debug("Query is " + qRemoveQuery);
         }
+
+        getQueryHistoryService().updateQueryId(null, Integer.parseInt(queryId));
+
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(qRemoveQuery);
@@ -631,6 +636,10 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         finally {
             closeAllResources(rs, pstmt, conn);
         }
+    }
+
+    private static QueryHistoryService getQueryHistoryService() {
+        return (QueryHistoryService) SpringApplicationContext.getBean("queryHistoryServiceImpl");
     }
 
 }

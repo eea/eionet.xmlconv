@@ -48,6 +48,55 @@
     <T_QUERY QUERY_ID="75" DESCRIPTION="" SHORT_NAME="Nid_water 2008 NVZ_DES_GIS" QUERY_FILENAME="nid_nvz_des_08_4945.xquery" SCHEMA_ID="121" RESULT_TYPE="HTML"/>
     <T_QUERY QUERY_ID="76" DESCRIPTION="" SHORT_NAME="Nid_water 2008 NVZ_POT_GIS" QUERY_FILENAME="nid_nvz_pot_08_4946.xquery" SCHEMA_ID="122" RESULT_TYPE="HTML"/>
     <T_QUERY QUERY_ID="77" DESCRIPTION="" SHORT_NAME="Nid_water 2008 WTA RiskAreas" QUERY_FILENAME="nid_wta_riskareas_08_4943.xquery" SCHEMA_ID="123" RESULT_TYPE="HTML"/>
+
+    <QUERY_HISTORY QUERY_ID="1" DESCRIPTION="The script is checking 1. EWN Code 2. min mean max values 3. Land use percentage = 100%" SHORT_NAME="Script for checking Groundwater bodies&apos; metadata" QUERY_FILENAME="GW_Body_rules2551.xql" SCHEMA_ID="42" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="3" DESCRIPTION="" SHORT_NAME="Ozone monthly - Station meta-information" QUERY_FILENAME="ozone1927_1.xql" SCHEMA_ID="44" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="5" DESCRIPTION="Ozone stations information" SHORT_NAME="Staions Eol codes" QUERY_FILENAME="ozone_stations.xml" SCHEMA_ID="48" RESULT_TYPE="XML"/>
+    <QUERY_HISTORY QUERY_ID="6" DESCRIPTION="" SHORT_NAME="Table schema for testing" QUERY_FILENAME="TBLschema1142_1.xsd" SCHEMA_ID="48" RESULT_TYPE="XML"/>
+    <QUERY_HISTORY QUERY_ID="7" DESCRIPTION="" SHORT_NAME="instance for testing" QUERY_FILENAME="TBLInstance1142_3.xml" SCHEMA_ID="48" RESULT_TYPE="XML"/>
+    <QUERY_HISTORY QUERY_ID="8" DESCRIPTION="" SHORT_NAME="Elements container schema" QUERY_FILENAME="Container1142.xsd" SCHEMA_ID="48" RESULT_TYPE="XML"/>
+    <QUERY_HISTORY QUERY_ID="11" DESCRIPTION="exceedance information" SHORT_NAME="Ozone monthly - exceedance information" QUERY_FILENAME="information1925.xq" SCHEMA_ID="47" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="12" DESCRIPTION="Exceedance alert" SHORT_NAME="Ozone monthly - exceedance alert" QUERY_FILENAME="alert1924.xq" SCHEMA_ID="46" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="13" DESCRIPTION="Ozone stations min max longitudes and lattitudes degrees" SHORT_NAME="Station boundaries" QUERY_FILENAME="stations-min-max.xml" SCHEMA_ID="48" RESULT_TYPE="XML"/>
+    <QUERY_HISTORY QUERY_ID="14" DESCRIPTION="Checks that data should be uniquely identified by national station ID, year and aggregation period." SHORT_NAME="Eionet-Water: Rivers - Nutrients" QUERY_FILENAME="rivers_nutrients_3242_13.xql" SCHEMA_ID="52" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="15" DESCRIPTION="Checks whether National Station ID is provided for all rows and duplicate values" SHORT_NAME="Eionet-Water: Rivers - Proxy pressures" QUERY_FILENAME="rivers_pressures_3227_7.xql" SCHEMA_ID="50" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="16" DESCRIPTION="Checks that data should be uniquely identified by national station ID, year, month, day and determinand." SHORT_NAME="Eionet-Water: Rivers - Hazardous Substances" QUERY_FILENAME="rivers_substances_3260_8.xql" SCHEMA_ID="51" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="17" DESCRIPTION="1. Station ID should not be empty and there should not be duplicate values
+2. rule checks that the station longitude and latitude are in correct boundaries" SHORT_NAME="Eionet-Water: Rivers - Stations" QUERY_FILENAME="rivers_station_3243_11.xql" SCHEMA_ID="49" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="18" DESCRIPTION="The script is checking 1. EWN Code 2. min mean max values 3. Land use percentage = 100%" SHORT_NAME="Script for checking Groundwater bodies metadata" QUERY_FILENAME="GW_Body_rules3282_1.xql" SCHEMA_ID="53" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="20" DESCRIPTION="" SHORT_NAME="Rivers instance xml 3242" QUERY_FILENAME="ProxyPressures_1.xml" SCHEMA_ID="48" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="21" DESCRIPTION="Exceedance alert" SHORT_NAME="Ozone monthly - exceedance alert" QUERY_FILENAME="alert_ns1924.xql" SCHEMA_ID="54" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="22" DESCRIPTION="exceedance information" SHORT_NAME="Ozone monthly - exceedance information" QUERY_FILENAME="information_ns1925.xql" SCHEMA_ID="55" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="23" DESCRIPTION="" SHORT_NAME="Ozone monthly - Station meta-information" QUERY_FILENAME="ozone_ns1927.xql" SCHEMA_ID="57" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="24" DESCRIPTION="" SHORT_NAME="test xls" QUERY_FILENAME="ImpactQuality.xls" SCHEMA_ID="48" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="25" DESCRIPTION="" SHORT_NAME="Summer ozone - information" QUERY_FILENAME="sum-oz_info_1920_1.xql" SCHEMA_ID="62" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="26" DESCRIPTION="" SHORT_NAME="Summer ozone - alert" QUERY_FILENAME="sum-oz_alert_1919_2.xql" SCHEMA_ID="60" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="27" DESCRIPTION="" SHORT_NAME="Summer ozone - stations" QUERY_FILENAME="sum-oz_stations_1922.xql" SCHEMA_ID="63" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="28" DESCRIPTION="" SHORT_NAME="Summer ozone - health" QUERY_FILENAME="sum-oz_health_1968_3.xql" SCHEMA_ID="59" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="29" DESCRIPTION="" SHORT_NAME="rivers test" QUERY_FILENAME="BasicImpact_1.xml" SCHEMA_ID="48" RESULT_TYPE="XML"/>
+    <QUERY_HISTORY QUERY_ID="30" DESCRIPTION="" SHORT_NAME="ELV" QUERY_FILENAME="elv_7.xquery" SCHEMA_ID="68" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="44" DESCRIPTION="ä" SHORT_NAME="Article 17 - species report checks" QUERY_FILENAME="art17_species.xquery" SCHEMA_ID="86" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="45" DESCRIPTION="CDDA sites" SHORT_NAME="CDDA sites" QUERY_FILENAME="cdda_sites.xquery" SCHEMA_ID="88" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="46" DESCRIPTION="a" SHORT_NAME="Article 17 - habitat report" QUERY_FILENAME="art17_habitats.xquery" SCHEMA_ID="85" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="47" DESCRIPTION="Validates mandatory fields, sitecodes and their coverages and period fields" SHORT_NAME="General report" QUERY_FILENAME="art17_report.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="48" DESCRIPTION="Checks species names and suggest fuzzy matching alternatves if found from the list of European species" SHORT_NAME="Article 17 - General report species check" QUERY_FILENAME="art17_general_report_species.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="49" DESCRIPTION="Script counts the different types of files and generates a warning giving a list of files that are unrecognized." SHORT_NAME="Article 17 envelope" QUERY_FILENAME="envelope_rod269.xquery" SCHEMA_ID="90" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="58" DESCRIPTION="" SHORT_NAME="Ozone monthly - Station meta-information 2007" QUERY_FILENAME="month-oz_station_07_3453.xql" SCHEMA_ID="100" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="59" DESCRIPTION="" SHORT_NAME="Ozone monthly - exceedance alert 2007" QUERY_FILENAME="month-oz_alert_07_3739.xql" SCHEMA_ID="101" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="60" DESCRIPTION="" SHORT_NAME="Ozone monthly - exceedance information 2007" QUERY_FILENAME="month-oz_information_07_3816.xql" SCHEMA_ID="102" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="64" DESCRIPTION="" SHORT_NAME="test TEXT output" QUERY_FILENAME="art17_report_txt.xquery" SCHEMA_ID="83" RESULT_TYPE="TEXT"/>
+    <QUERY_HISTORY QUERY_ID="65" DESCRIPTION="" SHORT_NAME="test" QUERY_FILENAME="lingid.txt" SCHEMA_ID="85" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="68" DESCRIPTION="" SHORT_NAME="Nid_water SW_MonitoringStations 2008" QUERY_FILENAME="nid_sw_stations_08_4949.xquery" SCHEMA_ID="115" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="69" DESCRIPTION="" SHORT_NAME="Nid_water GW_MonitoringStations 2008" QUERY_FILENAME="nid_gw_stations_08_4947.xquery" SCHEMA_ID="114" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="70" DESCRIPTION="   	" SHORT_NAME="Nid_water 2008 GW_NO3_concentrations" QUERY_FILENAME="nid_gw_no3_08_4948.xquery" SCHEMA_ID="116" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="71" DESCRIPTION="" SHORT_NAME="Nid_water 2008 SW_NO3_concentrations" QUERY_FILENAME="nid_sw_no3_08_4950.xquery" SCHEMA_ID="117" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="72" DESCRIPTION="" SHORT_NAME="Nid_water 2008 SW_Eutrophication_measurements" QUERY_FILENAME="nid_sw_eutr_params_08_4951.xquery" SCHEMA_ID="118" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="73" DESCRIPTION="" SHORT_NAME="Nid_water 2008 SW_Eutrophication_state" QUERY_FILENAME="nid_sw_eutr_state_08_4952.xquery" SCHEMA_ID="119" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="74" DESCRIPTION="" SHORT_NAME=" Nid_water 2008 WTA" QUERY_FILENAME="nid_wta_08_4944.xquery" SCHEMA_ID="120" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="75" DESCRIPTION="" SHORT_NAME="Nid_water 2008 NVZ_DES_GIS" QUERY_FILENAME="nid_nvz_des_08_4945.xquery" SCHEMA_ID="121" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="76" DESCRIPTION="" SHORT_NAME="Nid_water 2008 NVZ_POT_GIS" QUERY_FILENAME="nid_nvz_pot_08_4946.xquery" SCHEMA_ID="122" RESULT_TYPE="HTML"/>
+    <QUERY_HISTORY QUERY_ID="77" DESCRIPTION="" SHORT_NAME="Nid_water 2008 WTA RiskAreas" QUERY_FILENAME="nid_wta_riskareas_08_4943.xquery" SCHEMA_ID="123" RESULT_TYPE="HTML"/>
+
     <T_SCHEMA SCHEMA_ID="1" XML_SCHEMA="http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
     <T_SCHEMA SCHEMA_ID="14" XML_SCHEMA="http://roddev.eionet.eu.int/eper/eper_examples.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
     <T_SCHEMA SCHEMA_ID="20" XML_SCHEMA="http://www.lisa.org/tmx/tmx14.dtd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>

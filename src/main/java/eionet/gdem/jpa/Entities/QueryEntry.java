@@ -1,6 +1,7 @@
 package eionet.gdem.jpa.Entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "T_QUERY")
@@ -44,6 +45,9 @@ public class QueryEntry {
     @Column(name = "VERSION")
     private Integer version;
 
+    @OneToMany(mappedBy = "queryEntry", cascade = CascadeType.PERSIST)
+    private List<QueryHistoryEntry> queryHistoryEntries;
+
     public QueryEntry() {
     }
 
@@ -60,6 +64,7 @@ public class QueryEntry {
         this.active = builder.active;
         this.asynchronousExecution = builder.asynchronousExecution;
         this.version = builder.version;
+        this.queryHistoryEntries = builder.queryHistoryEntries;
     }
 
     public static class QueryEntryBuilder {
@@ -76,6 +81,7 @@ public class QueryEntry {
         private boolean active;
         private boolean asynchronousExecution;
         private Integer version;
+        private List<QueryHistoryEntry> queryHistoryEntries;
 
         public QueryEntryBuilder() {
         }
@@ -144,6 +150,11 @@ public class QueryEntry {
             return this;
         }
 
+        public QueryEntryBuilder setQueryHistoryEntries(List<QueryHistoryEntry> queryHistoryEntries) {
+            this.queryHistoryEntries = queryHistoryEntries;
+            return this;
+        }
+
         public QueryEntry build() {
             return new QueryEntry(this);
         }
@@ -195,6 +206,10 @@ public class QueryEntry {
 
     public Integer getVersion() {
         return version;
+    }
+
+    public List<QueryHistoryEntry> getQueryHistoryEntries() {
+        return queryHistoryEntries;
     }
 }
 
