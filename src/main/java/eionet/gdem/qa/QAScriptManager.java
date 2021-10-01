@@ -29,7 +29,6 @@ import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
-import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.GDEMServices;
@@ -430,7 +429,6 @@ public class QAScriptManager {
                     .setQueryFileName(fileName).setDescription(description).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
                     .setUrl(url).setAsynchronousExecution(asynchronousExecution).setVersion(1);
 
-
             QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, description, scriptType, upperLimit, url, asynchronousExecution, active, fileName);
 
             queryEntry.addQueryHistoryEntry(queryHistoryEntry);
@@ -574,10 +572,6 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
-    }
-
-    private static QueryHistoryService getQueryHistoryService() {
-        return (QueryHistoryService) SpringApplicationContext.getBean("queryHistoryServiceImpl");
     }
 
     private static QueryJpaService getQueryJpaService() {
