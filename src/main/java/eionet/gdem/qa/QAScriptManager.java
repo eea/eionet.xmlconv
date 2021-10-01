@@ -31,24 +31,22 @@ import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.jpa.service.QueryJpaService;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.web.spring.scripts.BackupManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * QA Script manager.
@@ -188,14 +186,14 @@ public class QAScriptManager {
                         throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
                     }
                 }
-                QueryEntry queryEntry = new QueryEntry.QueryEntryBuilder(Integer.parseInt(scriptId)).build();
-                QueryHistoryEntry.QueryHistoryEntryBuilder queryHistoryEntryBuilder = new QueryHistoryEntry.QueryHistoryEntryBuilder().setDescription(descr).setShortName(shortName).setQueryFileName(curFileName)
-                        .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
-                        .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExeuction).setVersion(1).setUser(user).setQueryEntry(queryEntry);
+                QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
+
+                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, descr, scriptType, upperLimit, url, asynchronousExeuction, active, curFileName);
+                queryHistoryEntry.setQueryEntry(queryEntry);
 
                 // create backup of existing file
                 BackupManager bum = new BackupManager();
-                bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user, queryHistoryEntryBuilder);
+                bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user, queryHistoryEntry);
 
                 storeQAScriptFile(file, curFileName);
             }
@@ -248,14 +246,13 @@ public class QAScriptManager {
             if (!Utils.isNullStr(curFileName) && !Utils.isNullStr(content) && content.indexOf(Constants.FILEREAD_EXCEPTION) == -1
                     && updateContent) {
 
-                QueryEntry queryEntry = new QueryEntry.QueryEntryBuilder(Integer.parseInt(scriptId)).build();
-                QueryHistoryEntry.QueryHistoryEntryBuilder queryHistoryEntryBuilder = new QueryHistoryEntry.QueryHistoryEntryBuilder().setDescription(descr).setShortName(shortName).setQueryFileName(curFileName)
-                        .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
-                        .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(1).setUser(user).setQueryEntry(queryEntry);
+                QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
+                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, descr, scriptType, upperLimit, url, asynchronousExecution, active, curFileName);
+                queryHistoryEntry.setQueryEntry(queryEntry);
 
                 // create backup of existing file
                 BackupManager bum = new BackupManager();
-                bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user, queryHistoryEntryBuilder);
+                bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user, queryHistoryEntry);
 
                 Utils.saveStrToFile(Properties.queriesFolder + File.separator + curFileName, content, null);
             }
@@ -429,21 +426,15 @@ public class QAScriptManager {
                 }
             }
             // XXX - make sure script database entry AND local file is added
-            QueryEntry queryEntry = new QueryEntry.QueryEntryBuilder().setSchemaId(Integer.parseInt(schemaId)).setShortName(shortName)
+            QueryEntry queryEntry = new QueryEntry().setSchemaId(Integer.parseInt(schemaId)).setShortName(shortName)
                     .setQueryFileName(fileName).setDescription(description).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
-                    .setUrl(url).setAsynchronousExecution(asynchronousExecution).setVersion(1).build();
-            queryEntry = getQueryJpaService().save(queryEntry);
-            scriptId = queryEntry.getQueryId().toString();
+                    .setUrl(url).setAsynchronousExecution(asynchronousExecution).setVersion(1);
 
-            QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry.QueryHistoryEntryBuilder().setDescription(description).setShortName(shortName).setQueryFileName(fileName)
-                    .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
-                    .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(1).setUser(user).setQueryEntry(queryEntry).build();
-            getQueryHistoryService().save(queryHistoryEntry);
 
-//            List<QueryHistoryEntry> queryHistoryEntries = new ArrayList<>();
-//            queryHistoryEntries.add(queryHistoryEntry);
-//            QueryEntry queryEntry = queryEntryBuilder.build();
-//            queryEntryBuilder.addQueryHistoryEntry(queryHistoryEntryBuilder);
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, description, scriptType, upperLimit, url, asynchronousExecution, active, fileName);
+
+            queryEntry.addQueryHistoryEntry(queryHistoryEntry);
+            scriptId = getQueryJpaService().save(queryEntry).getQueryId().toString();
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {

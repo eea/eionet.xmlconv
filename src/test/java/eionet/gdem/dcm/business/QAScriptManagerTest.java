@@ -189,7 +189,6 @@ public class QAScriptManagerTest {
         String user = TestConstants.TEST_ADMIN_USER;
 
         QAScriptManager qm = new QAScriptManager();
-        QueryHistoryEntry.QueryHistoryEntryBuilder queryHistoryEntryBuilder = new QueryHistoryEntry.QueryHistoryEntryBuilder();
 
         // update qa script properties
         qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false, false, true);

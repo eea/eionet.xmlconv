@@ -67,7 +67,7 @@ public class BackupManager {
      * @param id Id
      * @param user user
      */
-        public void backupFile(String folderName, String fileName, String id, String user, QueryHistoryEntry.QueryHistoryEntryBuilder queryHistoryEntryBuilder) {
+        public void backupFile(String folderName, String fileName, String id, String user, QueryHistoryEntry queryHistoryEntry) {
 
         File origFile = new File(folderName, fileName);
         if (!origFile.exists())
@@ -96,7 +96,7 @@ public class BackupManager {
                     .setUser(user).setfTimestamp(new Timestamp(timestamp)).build();
             queryBackupEntry = getQueryBackupService().save(queryBackupEntry);
 
-            QueryHistoryEntry queryHistoryEntry = queryHistoryEntryBuilder.setQueryBackupEntry(queryBackupEntry).build();
+            queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);
             getQueryHistoryService().save(queryHistoryEntry);
         } catch (Exception e) {
             LOGGER.error("Error during query backup history or query history creation for script with id " + id);

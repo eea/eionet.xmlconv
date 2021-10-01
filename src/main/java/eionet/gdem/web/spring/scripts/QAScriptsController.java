@@ -9,6 +9,7 @@ import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
@@ -311,10 +312,9 @@ public class QAScriptsController {
             qm.activateDeactivate(user, scriptId, active);
 
             if (!updateContent) {
-                QueryEntry queryEntry = new QueryEntry.QueryEntryBuilder(Integer.parseInt(scriptId)).build();
-                QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry.QueryHistoryEntryBuilder().setDescription(desc).setShortName(shortName).setQueryFileName(curFileName)
-                        .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
-                        .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(1).setUser(user).setQueryEntry(queryEntry).build();
+                QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
+                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url, asynchronousExecution, active, curFileName);
+                queryHistoryEntry.setQueryEntry(queryEntry);
                 queryHistoryService.save(queryHistoryEntry);
             }
 

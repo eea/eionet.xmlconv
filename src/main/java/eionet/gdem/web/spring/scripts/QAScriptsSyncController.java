@@ -123,18 +123,17 @@ public class QAScriptsSyncController {
         }
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
-        QueryEntry queryEntry = new QueryEntry.QueryEntryBuilder(Integer.parseInt(scriptId)).build();
-        QueryHistoryEntry.QueryHistoryEntryBuilder queryHistoryEntryBuilder = new QueryHistoryEntry.QueryHistoryEntryBuilder().setDescription(form.getDescription()).setShortName(form.getShortName()).setQueryFileName(form.getFileName())
+        QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
+        QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(form.getDescription()).setShortName(form.getShortName()).setQueryFileName(form.getFileName())
                 .setSchemaId(Integer.parseInt(form.getSchemaId())).setResultType(form.getResultType()).setScriptType(form.getScriptType()).setUpperLimit(Integer.parseInt(form.getUpperLimit()))
                 .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(1).setUser(user).setQueryEntry(queryEntry);
 
         try {
             QAScriptManager qm = new QAScriptManager();
+            BackupManager bum = new BackupManager();
+            bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user, queryHistoryEntry);
 
             qm.replaceScriptFromRemoteFile(user, url, scriptFileName);
-
-            BackupManager bum = new BackupManager();
-            bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user, queryHistoryEntryBuilder);
             messages.add(messageService.getMessage("label.uplScript.cached"));
 
         } catch (DCMException e) {
