@@ -353,6 +353,11 @@ public class WorkqueueManager {
                             }
                         }
                         else{
+                            //user has already pressed delete for the job
+                            if (status.equals(String.valueOf(Constants.DELETED))) {
+                                LOGGER.info("Job with id " + jobId + " has already status deleted=" + Constants.DELETED);
+                                return;
+                            }
                             jobsToDelete.add(jobId);
                             // delete also result files from file system tmp folder
                             String resultFile = jobData[2];
