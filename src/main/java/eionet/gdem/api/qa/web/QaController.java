@@ -156,7 +156,6 @@ public class QaController {
 
         QueryService queryService = new QueryService();
         String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null);
-        getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(),envelopeWrapper.getScriptId(),null);
         LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
         results.put("jobId",jobId);
         return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
