@@ -5,30 +5,27 @@
        <!-- <link rel="stylesheet" type="text/css" th:href="@{../../../resources/css/xmlconv.css}" media="screen" />-->
     </head>
     <body>
-    <div th:fragment="menu">
+    <div th:fragment="menu" id="container">
         <div id="toolribbon">
             <div id="lefttools">
                 <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
                 <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
             </div>
         <div id="righttools">
+            <!-- TODO fix this -->
             <a th:if="${#strings.isEmpty(session.user)}" id="loginlink" th:href="${loginUrl}" title="Login">Login</a>
             <a th:if="${not #strings.isEmpty(session.user)}" id="logoutlink" href="/do/logout" th:text="'Logout (' + ${session.user} + ')'"></a>
-            <a href="javascript:openWindow(applicationRoot+'/help/index.jsp','olinehelp');" title="Help">Online Help</a>
+
             <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
             <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
-            <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>
+            <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" style="display:inline;" title="Look up acronyms"><span>Acronyms</span></a>
+
             <form action="https://google.com/search" method="get">
                 <div id="freesrchform">
-                    <label for="freesrchfld">Search</label>
-                    <input type="text" id="freesrchfld" name="q"
-                           onfocus="if (this.value == 'Search the site')
-                                                   this.value = '';"
-                           onblur="if (this.value == '')
-                                                   this.value = 'Search the site';"
-                           value="Search the site"/>fragment
-                    <input type="hidden" name="sitesearch" value="<%=Properties.appHost%>" />
-                    <input id="freesrchbtn" type="image" src="/images/button_go.gif" />
+                    <label class="simple" for="freesrchfld" style="display:inline;">Search</label>
+                    <input type="text" id="freesrchfld" name="q" placeholder="Search the site" style="display:inline;" />
+                    <input type="hidden" name="sitesearch" value="<%=Properties.appHost%>"/>
+                    <input id="freesrchbtn" type="image" src="/static/images/button_go.gif" alt="Go"/>
                 </div>
             </form>
         </div>
@@ -37,40 +34,42 @@
     <div id="pagehead">
         <a href="/"><img th:src="@{/images/eea-print-logo.gif}" alt="Logo" id="logo" /></a>
         <div id="networktitle">Eionet</div>
-        <div id="sitetitle">XML Services</div>
-        <div id="sitetagline">Conversion and Quality Assessment Service</div>
+        <div id="sitetitle">Conversion and Quality Assessment Service</div>
+        <div id="sitetagline"></div>
     </div> <!-- pagehead -->
 
-    <div id="menuribbon" th:insert="~{fragments/dropdownmenus-old :: dropdownmenus}">
+    <div id="menuribbon">
     </div> <!-- menuribbon -->
 
     <div id="portal-breadcrumbs" class="breadcrumbtrail">
         <div class="breadcrumbhead">You are here:</div>
-        <div class="breadcrumbitem eionetaccronym"><a href="http://www.eionet.europa.eu" title="European Environment Information and Observation Network (Eionet)">Eionet</a></div>
+        <div class="breadcrumbitem eionetaccronym"><a href="http://www.eionet.europa.eu"
+                                                      title="European Environment Information and Observation Network (Eionet)">Eionet</a>
+        </div>
     </div> <!-- breadcrumbtrail -->
 
     <div id="leftcolumn" class="localnav">
         <ul>
 
-            <li><a href="/schemas" th:text="#{label.menu.schemas}"></a></li>
-            <li><a href="/conversions" th:text="#{label.menu.stylesheets}"></a></li>
-            <li><a href="/conversions/generated" th:text="#{label.menu.stylesheetsGenerated}"></a></li>
-            <li><a href="/converter" th:text="#{label.menu.converter}"></a></li>
-            <li><a href="/validation" th:text="#{label.conversion.tab.validation}"></a></li>
-            <li><a href="/workqueue" th:text="#{label.menu.QAJobs}"></a></li>
-            <li><a href="/scripts" th:text="#{label.menu.queries}"></a></li>
-            <li><a href="/qaSandbox" th:text="#{label.menu.xqsendbox}"></a></li>
-            <li><a href="/xmlFiles" th:text="#{label.menu.xmlfiles}"></a></li>
+            <li class="menuListItem"><a href="/schemas" th:text="#{label.menu.schemas}"></a></li>
+            <li class="menuListItem"><a href="/conversions" th:text="#{label.menu.stylesheets}"></a></li>
+            <li class="menuListItem"><a href="/conversions/generated" th:text="#{label.menu.stylesheetsGenerated}"></a></li>
+            <li class="menuListItem"><a href="/converter" th:text="#{label.menu.converter}"></a></li>
+            <li class="menuListItem"><a href="/validation" th:text="#{label.conversion.tab.validation}"></a></li>
+            <li class="menuListItem"><a href="/workqueue" th:text="#{label.menu.QAJobs}"></a></li>
+            <li class="menuListItem"><a href="/scripts" th:text="#{label.menu.queries}"></a></li>
+            <li class="menuListItem"><a href="/qaSandbox" th:text="#{label.menu.xqsendbox}"></a></li>
+            <li class="menuListItem"><a href="/xmlFiles" th:text="#{label.menu.xmlfiles}"></a></li>
 
 
             <perm:hasPerm acl="host" permission="v">
-                <li><a href="/hosts" th:text="#{label.menu.hosts}"></a></li>
+                <li class="menuListItem"><a href="/hosts" th:text="#{label.menu.hosts}"></a></li>
             </perm:hasPerm>
             <perm:hasPerm acl="config" permission="u">
-                <li><a href="/admin/purge" th:text="#{label.menu.admintools}"></a></li>
+                <li class="menuListItem"><a href="/admin/purge" th:text="#{label.menu.admintools}"></a></li>
             </perm:hasPerm>
             <perm:hasPerm acl="serverstatus" permission="v">
-                <li><a href="/webstatus" th:text="#{label.menu.serverstatus}"></a></li>
+                <li class="menuListItem"><a href="/webstatus" th:text="#{label.menu.serverstatus}"></a></li>
             </perm:hasPerm>
         </ul>
     </div> <!-- leftcolumn -->

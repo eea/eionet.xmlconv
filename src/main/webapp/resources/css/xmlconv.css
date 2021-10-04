@@ -148,14 +148,19 @@ body{
 
 .localnav li {
     font-size: 100%;
-    border-top: 1px solid #D5E5E6;
+    border-top: 5px solid darkred;
 }
 
-.localnav li:first-child {
+.menuListItem {
+    font-size: 100%;
+    border-top: 5px solid darkred;
+}
+
+.localnav li:first-child, menuListItem:first-child {
     border-top: none;
 }
 
-.localnav li a {
+.localnav li a, menuListItem a {
     background: #ECF4F5;
     border-left: 7px solid #ECF4F5;
     padding: 10px 20px 10px 15px;
@@ -165,14 +170,21 @@ body{
 
 .localnav li a:hover,
 .localnav li.current a,
-.localnav li.current a:hover {
+.localnav li.current a:hover,
+menuListItem a:hover,
+menuListItem.current a,
+menuListItem.current a:hover
+{
     background: #CEDC32;
     border-left: 7px solid #AAAD28;
     color: #000000;
 }
 
 .localnav li.current a,
-.localnav li.current a:hover {
+.localnav li.current a:hover,
+menuListItem.current a,
+menuListItem.current a:hover
+{
     font-weight: bold;
 }
 
