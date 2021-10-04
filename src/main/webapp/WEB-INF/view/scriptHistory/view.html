@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-lg-10 mt-5 mb-5">
                     <div th:if="${not #lists.isEmpty(history)}">
-                        <p th:text="${'Average duration for script with id ' + scriptId + ' is ' + averageDuration + '. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
+                        <p th:utext="${'Average duration for script with id ' + scriptId + ' is <b>' + averageDuration + '</b>. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
 
                         <table id="example" class="table table-bordered" style="width: 100%">
                             <thead>
@@ -64,39 +64,5 @@
         <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
         <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
         <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-
-
-      <!--  <div class="row">
-            <div class="columns">
-                <div th:if="${not #lists.isEmpty(history)}">
-                    <p th:text="${'Average duration for script with id ' + scriptId + ' is ' + averageDuration + '. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th scope="col" class="scope-col">File Name</th>
-                            <th scope="col" class="scope-col">Script Type</th>
-                            <th scope="col" class="scope-col">Duration</th>
-                            <th scope="col" class="scope-col">Was Heavy</th>
-                            <th scope="col" class="scope-col">Job Status</th>
-                            <th scope="col" class="scope-col">Version</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="entry, pos : ${history}">
-                            <td th:text="${entry.shortFileName}"></td>
-                            <td th:text="${entry.scriptType}"></td>
-                            <td th:text="${entry.durationFormatted}"></td>
-                            <td th:text="${entry.markedHeavy}"></td>
-                            <td th:text="${entry.statusName}"></td>
-                            <td th:text="${entry.version}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div th:unless="${not #lists.isEmpty(history)}">
-                    <p th:text="${'There is no execution history info for script with id ' + scriptId}"></p>
-                </div>
-            </div>
-        </div>-->
     </body>
 </html>

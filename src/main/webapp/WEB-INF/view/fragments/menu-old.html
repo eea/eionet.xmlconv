@@ -13,7 +13,6 @@
                 <!-- TODO fix this -->
                 <a th:if="${#strings.isEmpty(session.user)}" id="loginlink" style="display:inline;" th:href="@{${loginUrl}}" title="Login">Login</a>
                 <a th:if="${not #strings.isEmpty(session.user)}" id="logoutlink" style="display:inline;" href="/login/logout">Logout
-                    <span>(${session.user})</span>
                 </a>
 
                 <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
