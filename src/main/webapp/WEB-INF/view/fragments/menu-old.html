@@ -61,13 +61,15 @@
             <li class="menuListItem"><a href="/qaSandbox" th:text="#{label.menu.xqsendbox}"></a></li>
             <li class="menuListItem"><a href="/xmlFiles" th:text="#{label.menu.xmlfiles}"></a></li>
 
+            <li class="menuListItem"><a href="/hosts" th:text="#{label.menu.hosts}"></a></li>
+            <li class="menuListItem2"><a href="/admin/purge" th:text="#{label.menu.admintools}"></a></li>
 
-            <perm:hasPerm acl="host" permission="v">
-                <li class="menuListItem"><a href="/hosts" th:text="#{label.menu.hosts}"></a></li>
-            </perm:hasPerm>
-            <perm:hasPerm acl="config" permission="u">
+           <!-- <perm:hasPerm acl="host" permission="v">
+
+            </perm:hasPerm> -->
+            <!--<perm:hasPerm acl="config" permission="u">
                 <li class="menuListItem"><a href="/admin/purge" th:text="#{label.menu.admintools}"></a></li>
-            </perm:hasPerm>
+            </perm:hasPerm>-->
             <perm:hasPerm acl="serverstatus" permission="v">
                 <li class="menuListItem"><a href="/webstatus" th:text="#{label.menu.serverstatus}"></a></li>
             </perm:hasPerm>

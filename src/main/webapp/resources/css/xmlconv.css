@@ -156,6 +156,11 @@ body{
     border-top: 5px solid darkred;
 }
 
+.menuListItem2 {
+    font-size: 100%;
+    border-top: 5px solid darkblue;
+}
+
 .localnav li:first-child, menuListItem:first-child {
     border-top: none;
 }
