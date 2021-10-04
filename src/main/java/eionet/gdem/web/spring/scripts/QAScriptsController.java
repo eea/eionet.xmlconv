@@ -484,6 +484,9 @@ public class QAScriptsController {
     @GetMapping("/{id}/executionHistory2")
     public String executionHistory2(@PathVariable String id, Model model) {
 
+        //Add page title
+        model.addAttribute("title", "Script Execution History");
+
         List<QueryMetadataHistoryEntry> historyList = queryMetadataHistoryRepository.findByQueryId(Integer.valueOf(id));
         historyList = queryMetadataService.fillQueryMetadataAdditionalInfo(historyList);
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(Integer.valueOf(id));
