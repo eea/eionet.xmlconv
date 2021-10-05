@@ -1,18 +1,18 @@
 package eionet.gdem.web.spring.scripts;
 
 import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
 import eionet.gdem.jpa.repositories.QueryMetadataHistoryRepository;
 import eionet.gdem.jpa.repositories.QueryMetadataRepository;
+import eionet.gdem.paging.Paged;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
+import eionet.gdem.services.PaginationService;
 import eionet.gdem.services.QueryMetadataService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
@@ -32,17 +32,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -57,7 +52,7 @@ public class QAScriptsController {
     private MessageService messageService;
 
     @Autowired
-    QueryMetadataHistoryRepository queryMetadataHistoryRepository;
+    PaginationService paginationService;
 
     @Autowired
     QueryMetadataRepository queryMetadataRepository;
@@ -462,8 +457,8 @@ public class QAScriptsController {
         return "redirect:/schemas/" + schemaId + "/scripts";
     }
 
-    @GetMapping("/{id}/executionHistory")
-    public String executionHistory(@PathVariable String id, Model model) {
+    //@GetMapping("/{id}/executionHistory")
+    /*public String executionHistory(@PathVariable String id, Model model) {
 
         List<QueryMetadataHistoryEntry> historyList = queryMetadataHistoryRepository.findByQueryId(Integer.valueOf(id));
         historyList = queryMetadataService.fillQueryMetadataAdditionalInfo(historyList);
@@ -479,16 +474,17 @@ public class QAScriptsController {
         model.addAttribute("scriptId", id);
 
         return "/scripts/executionHistory";
-    }
+    }*/
 
     @GetMapping("/{id}/executionHistory2")
-    public String executionHistory2(@PathVariable String id, Model model) {
+    public String executionHistory2(@PathVariable String id, @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                                    @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model) {
 
         //Add page title
         model.addAttribute("title", "Script Execution History");
 
-        List<QueryMetadataHistoryEntry> historyList = queryMetadataHistoryRepository.findByQueryId(Integer.valueOf(id));
-        historyList = queryMetadataService.fillQueryMetadataAdditionalInfo(historyList);
+        Paged<QueryMetadataHistoryEntry> pagedEntries = paginationService.getQueryMetadataHistoryEntries(pageNumber, size, Integer.valueOf(id));
+
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(Integer.valueOf(id));
         if(queryMetadataEntryList.size() > 0){
             Long durationToMs = queryMetadataEntryList.get(0).getAverageDuration();
@@ -497,7 +493,7 @@ public class QAScriptsController {
             model.addAttribute("averageDuration", formattedDuration);
             model.addAttribute("numberOfExecutions", queryMetadataEntryList.get(0).getNumberOfExecutions());
         }
-        model.addAttribute("history", historyList);
+        model.addAttribute("history", pagedEntries);
         model.addAttribute("scriptId", id);
 
         return "scriptHistory/view";
