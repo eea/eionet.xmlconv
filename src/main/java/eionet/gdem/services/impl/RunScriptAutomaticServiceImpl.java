@@ -1,6 +1,7 @@
 package eionet.gdem.services.impl;
 
 import eionet.gdem.XMLConvException;
+import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.qa.RunQAScriptMethod;
 import eionet.gdem.services.RunScriptAutomaticService;
@@ -30,7 +31,20 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
      * @throws XMLConvException in case of business logic error
      */
     @Override
-    public Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException {
+    public Vector runQAScript(String sourceUrl, String scriptId, HttpMethodResponseWrapper httpResponse) throws XMLConvException {
+
+        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
+            LOGGER.debug("ConversionService.convert method called through XML-rpc.");
+        }
+        RunQAScriptMethod runQaMethod = new RunQAScriptMethod();
+        super.setHttpResponse(httpResponse);
+        setGlobalParameters(runQaMethod);
+        return runQaMethod.runQAScript(sourceUrl, scriptId);
+
+    }
+
+    @Override
+    public Vector runQAScript(String sourceUrl, String scriptId ) throws XMLConvException {
 
         if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
             LOGGER.debug("ConversionService.convert method called through XML-rpc.");
