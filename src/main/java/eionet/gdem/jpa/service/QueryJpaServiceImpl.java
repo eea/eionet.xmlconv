@@ -17,6 +17,11 @@ public class QueryJpaServiceImpl implements QueryJpaService {
 
 
     @Override
+    public QueryEntry findByQueryId(Integer queryId) {
+        return queryRepository.findByQueryId(queryId);
+    }
+
+    @Override
     public QueryEntry save(QueryEntry queryEntry) {
         return queryRepository.save(queryEntry);
     }

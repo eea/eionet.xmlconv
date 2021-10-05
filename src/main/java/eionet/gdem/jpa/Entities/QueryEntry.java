@@ -46,9 +46,6 @@ public class QueryEntry {
     @Column(name = "VERSION")
     private Integer version;
 
-    @OneToMany(mappedBy = "queryEntry", cascade = CascadeType.PERSIST)
-    private List<QueryHistoryEntry> queryHistoryEntries;
-
     public QueryEntry() {
     }
 
@@ -162,22 +159,6 @@ public class QueryEntry {
     public QueryEntry setVersion(Integer version) {
         this.version = version;
         return this;
-    }
-
-    public List<QueryHistoryEntry> getQueryHistoryEntries() {
-        return queryHistoryEntries;
-    }
-
-    public void setQueryHistoryEntries(List<QueryHistoryEntry> queryHistoryEntries) {
-        this.queryHistoryEntries = queryHistoryEntries;
-    }
-
-    public void addQueryHistoryEntry(QueryHistoryEntry queryHistoryEntry) {
-        if (queryHistoryEntries == null) {
-            queryHistoryEntries = new ArrayList<>();
-        }
-        queryHistoryEntry.setQueryEntry(this);
-        queryHistoryEntries.add(queryHistoryEntry);
     }
 }
 

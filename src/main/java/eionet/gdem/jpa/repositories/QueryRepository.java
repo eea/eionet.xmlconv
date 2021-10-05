@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QueryRepository extends JpaRepository<QueryEntry, Integer> {
+
+    QueryEntry findByQueryId(Integer queryId);
 }

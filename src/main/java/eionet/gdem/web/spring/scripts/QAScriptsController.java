@@ -7,6 +7,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.service.QueryHistoryService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.qa.utils.ScriptUtils;
@@ -43,11 +44,13 @@ public class QAScriptsController {
 
     private MessageService messageService;
     private QueryHistoryService queryHistoryService;
+    private QueryJpaService queryJpaService;
 
     @Autowired
-    public QAScriptsController(MessageService messageService, QueryHistoryService queryHistoryService) {
+    public QAScriptsController(MessageService messageService, QueryHistoryService queryHistoryService, QueryJpaService queryJpaService) {
         this.messageService = messageService;
         this.queryHistoryService = queryHistoryService;
+        this.queryJpaService = queryJpaService;
     }
 
     @ModelAttribute
@@ -393,6 +396,13 @@ public class QAScriptsController {
             QAScriptManager qaScriptManager = new QAScriptManager();
             qaScriptManager.activateDeactivate(user, scriptId, true);
             messages.add(messageService.getMessage("label.qascript.activated"));
+
+            QueryEntry queryEntry = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(),
+                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName());
+            queryHistoryEntry.setQueryEntry(queryEntry);
+            queryHistoryService.save(queryHistoryEntry);
+
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
@@ -415,6 +425,13 @@ public class QAScriptsController {
             QAScriptManager qaScriptManager = new QAScriptManager();
             qaScriptManager.activateDeactivate(user, scriptId, false);
             messages.add(messageService.getMessage("label.qascript.deactivated"));
+
+            QueryEntry queryEntry = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(),
+                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName());
+            queryHistoryEntry.setQueryEntry(queryEntry);
+            queryHistoryService.save(queryHistoryEntry);
+
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
