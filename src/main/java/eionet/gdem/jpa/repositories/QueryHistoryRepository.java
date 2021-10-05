@@ -14,9 +14,6 @@ public interface QueryHistoryRepository extends JpaRepository<QueryHistoryEntry,
 
     List<QueryHistoryEntry> findById(Integer id);
 
-    @Query(value = "SELECT MAX(VERSION) FROM QUERY_HISTORY WHERE QUERY_ID= :queryId", nativeQuery = true)
-    Integer findQueryMaxVersion(@Param("queryId") Integer queryId);
-
     @Modifying
     @Query(value = "update QUERY_HISTORY set QUERY_ID= :newQueryId where QUERY_ID= :oldQueryId", nativeQuery=true)
     void updateQueryId(@Param("newQueryId") Integer newQueryId, @Param("oldQueryId") Integer oldQueryId);

@@ -28,11 +28,6 @@ public class QueryHistoryServiceImpl implements QueryHistoryService {
         return queryHistoryRepository.save(entry);
     }
 
-    @Override
-    public Integer findQueryMaxVersion(Integer queryId) {
-        return queryHistoryRepository.findQueryMaxVersion(queryId);
-    }
-
     @Transactional
     @Override
     public void updateQueryId(Integer newQueryId, Integer oldQueryId) {

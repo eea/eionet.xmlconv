@@ -10,7 +10,5 @@ public interface QueryHistoryService {
 
     QueryHistoryEntry save(QueryHistoryEntry entry);
 
-    Integer findQueryMaxVersion(Integer queryId);
-
     void updateQueryId(Integer newQueryId, Integer oldQueryId);
 }

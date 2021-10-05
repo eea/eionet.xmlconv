@@ -5,6 +5,7 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
@@ -38,10 +39,12 @@ public class QAScriptsSyncController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptsSyncController.class);
 
     private MessageService messageService;
+    private QueryJpaService queryJpaService;
 
     @Autowired
-    public QAScriptsSyncController(MessageService messageService) {
+    public QAScriptsSyncController(MessageService messageService, QueryJpaService queryJpaService) {
         this.messageService = messageService;
+        this.queryJpaService = queryJpaService;
     }
 
     @ModelAttribute
@@ -122,9 +125,11 @@ public class QAScriptsSyncController {
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
         QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
+        Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
+        queryJpaService.updateVersion(maxVersion+1, Integer.parseInt(scriptId));
         QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(form.getDescription()).setShortName(form.getShortName()).setQueryFileName(form.getFileName())
                 .setSchemaId(Integer.parseInt(form.getSchemaId())).setResultType(form.getResultType()).setScriptType(form.getScriptType()).setUpperLimit(Integer.parseInt(form.getUpperLimit()))
-                .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(1).setUser(user).setQueryEntry(queryEntry);
+                .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(maxVersion+1).setUser(user).setQueryEntry(queryEntry);
 
         try {
             QAScriptManager qm = new QAScriptManager();

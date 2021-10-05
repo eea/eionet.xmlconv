@@ -46,10 +46,10 @@ public final class ScriptUtils {
     }
 
     public synchronized static QueryHistoryEntry createQueryHistoryEntry(String user, String shortName, String schemaId, String resultType, String description, String scriptType,
-                                                            String upperLimit, String url, Boolean asynchronousExecution, boolean active, String fileName) {
+                                                            String upperLimit, String url, Boolean asynchronousExecution, boolean active, String fileName, Integer version) {
         QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(description).setShortName(shortName).setQueryFileName(fileName)
                 .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
-                .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(1).setUser(user);
+                .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(version).setUser(user);
         return queryHistoryEntry;
     }
 }

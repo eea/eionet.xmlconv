@@ -4,6 +4,7 @@ import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.repositories.QueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("queryJpaServiceImpl")
 public class QueryJpaServiceImpl implements QueryJpaService {
@@ -15,6 +16,10 @@ public class QueryJpaServiceImpl implements QueryJpaService {
         this.queryRepository = queryRepository;
     }
 
+    @Override
+    public Integer findMaxVersion(Integer queryId) {
+        return queryRepository.findMaxVersion(queryId);
+    }
 
     @Override
     public QueryEntry findByQueryId(Integer queryId) {
@@ -26,8 +31,9 @@ public class QueryJpaServiceImpl implements QueryJpaService {
         return queryRepository.save(queryEntry);
     }
 
+    @Transactional
     @Override
-    public void delete(Integer id) {
-        queryRepository.delete(id);
+    public void updateVersion(Integer version, Integer queryId) {
+        queryRepository.updateVersion(version, queryId);
     }
 }

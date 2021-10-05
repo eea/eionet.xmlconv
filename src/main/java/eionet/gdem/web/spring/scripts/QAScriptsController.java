@@ -315,8 +315,9 @@ public class QAScriptsController {
             qm.activateDeactivate(user, scriptId, active);
 
             if (!updateContent) {
+                Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
                 QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
-                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url, asynchronousExecution, active, curFileName);
+                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url, asynchronousExecution, active, curFileName, maxVersion);
                 queryHistoryEntry.setQueryEntry(queryEntry);
                 queryHistoryService.save(queryHistoryEntry);
             }
@@ -399,7 +400,7 @@ public class QAScriptsController {
 
             QueryEntry queryEntry = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
             QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(),
-                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName());
+                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName(), queryEntry.getVersion());
             queryHistoryEntry.setQueryEntry(queryEntry);
             queryHistoryService.save(queryHistoryEntry);
 
@@ -428,7 +429,7 @@ public class QAScriptsController {
 
             QueryEntry queryEntry = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
             QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(),
-                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName());
+                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName(), queryEntry.getVersion());
             queryHistoryEntry.setQueryEntry(queryEntry);
             queryHistoryService.save(queryHistoryEntry);
 

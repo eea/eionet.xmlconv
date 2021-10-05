@@ -178,6 +178,7 @@ public class QAScriptManager {
 
         try {
             String fileName = file.getOriginalFilename().trim();
+            Integer maxVersion = getQueryJpaService().findMaxVersion(Integer.parseInt(scriptId));
             // upload file
             if (!Utils.isNullStr(fileName)) {
                 if (Utils.isNullStr(curFileName)) {
@@ -187,8 +188,7 @@ public class QAScriptManager {
                     }
                 }
                 QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
-
-                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, descr, scriptType, upperLimit, url, asynchronousExeuction, active, curFileName);
+                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, descr, scriptType, upperLimit, url, asynchronousExeuction, active, curFileName, maxVersion+1);
                 queryHistoryEntry.setQueryEntry(queryEntry);
 
                 // create backup of existing file
@@ -197,7 +197,7 @@ public class QAScriptManager {
 
                 storeQAScriptFile(file, curFileName);
             }
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExeuction);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExeuction, maxVersion+1);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -223,8 +223,8 @@ public class QAScriptManager {
      * @param asynchronousExecution
      * @throws DCMException If an error occurs.
      */
-    public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-            String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent, boolean asynchronousExecution, boolean active)
+    public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr, String scriptType,
+                       String curFileName, String upperLimit, String url, String content, boolean updateContent, boolean asynchronousExecution, boolean active)
             throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
@@ -242,12 +242,14 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
+        Integer maxVersion = getQueryJpaService().findMaxVersion(Integer.parseInt(scriptId));
         try {
             if (!Utils.isNullStr(curFileName) && !Utils.isNullStr(content) && content.indexOf(Constants.FILEREAD_EXCEPTION) == -1
                     && updateContent) {
 
                 QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
-                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, descr, scriptType, upperLimit, url, asynchronousExecution, active, curFileName);
+                getQueryJpaService().updateVersion(maxVersion+1, Integer.parseInt(scriptId));
+                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, descr, scriptType, upperLimit, url, asynchronousExecution, active, curFileName, maxVersion+1);
                 queryHistoryEntry.setQueryEntry(queryEntry);
 
                 // create backup of existing file
@@ -262,7 +264,7 @@ public class QAScriptManager {
                 curFileName = StringUtils.substringAfterLast(url, "/");
             }
 
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExecution);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExecution, updateContent ? maxVersion+1 : maxVersion);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Error updating QA script", e);
@@ -431,7 +433,7 @@ public class QAScriptManager {
                     .setUrl(url).setAsynchronousExecution(asynchronousExecution).setVersion(1);
             scriptId = getQueryJpaService().save(queryEntry).getQueryId().toString();
 
-            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, description, scriptType, upperLimit, url, asynchronousExecution, active, fileName);
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, description, scriptType, upperLimit, url, asynchronousExecution, active, fileName, 1);
             queryHistoryEntry.setQueryEntry(queryEntry);
             getQueryHistoryService().save(queryHistoryEntry);
         } catch (DCMException e) {

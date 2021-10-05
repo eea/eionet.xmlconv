@@ -6,7 +6,9 @@ public interface QueryJpaService {
 
     QueryEntry findByQueryId(Integer queryId);
 
+    Integer findMaxVersion(Integer queryId);
+
     QueryEntry save(QueryEntry queryEntry);
 
-    void delete(Integer id);
+    void updateVersion(Integer version, Integer queryId);
 }
