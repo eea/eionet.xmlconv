@@ -6,10 +6,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 mt-5 mb-5">
-                    <div th:if="${not #lists.isEmpty(history)}">
+                    <div th:if="${not #lists.isEmpty(history.page.content)}">
                         <p th:utext="${'Average duration for script with id ' + scriptId + ' is <b>' + averageDuration + '</b>. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
 
-                        <table id="example" class="table table-bordered" style="width: 100%">
+                        <table id="scriptExecutionHistoryTable" class="table table-bordered datatable results" style="width: 100%">
                             <thead>
                                 <tr>
                                     <th scope="col" class="scope-col">File Name</th>
@@ -55,7 +55,7 @@
                             </ul>
                         </nav>
                     </div>
-                    <div th:unless="${not #lists.isEmpty(history)}">
+                    <div th:unless="${not #lists.isEmpty(history.page.content)}">
                         <p th:text="${'There is no execution history info for script with id ' + scriptId}"></p>
                     </div>
                 </div>

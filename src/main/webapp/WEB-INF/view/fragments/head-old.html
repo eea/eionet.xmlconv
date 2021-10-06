@@ -15,15 +15,25 @@
   <link rel="shortcut icon" th:href="@{/static/images/favicon.ico}" type="image/x-icon" />
 
   <!-- jQuery javascripts and css-->
-  <link th:href="@{/static/webjars/jquery-ui/jquery-ui.css}" rel="stylesheet" type="text/css"/>
   <script type="text/javascript" th:src="@{/static/webjars/jquery/jquery.min.js}"></script>
   <script type="text/javascript" th:src="@{/static/webjars/jquery-ui/jquery-ui.js}"></script>
   <script type="text/javascript" th:src="@{/static/webjars/jquery-validation/jquery.validate.js}"></script>
+  <link th:href="@{/static/webjars/jquery-ui/jquery-ui.css}" rel="stylesheet" type="text/css"/>
 
   <!-- local javascripts -->
   <script type="text/javascript" th:src="@{/static/js/admin.js}"></script>
   <script type="text/javascript" th:src="@{/static/js/pageops.js}"></script>
 
-</head>
-<body></body>
-</html>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/js/DataTables/media/css/jquery.dataTables.min.css}"></link>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/webjars/font-awesome/web-fonts-with-css/css/fontawesome-all.css}"></link>
+  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/jquery.dataTables.min.js}"></script>
+
+  <!--export buttons-->
+  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/dataTables.buttons.min.js}"></script>
+  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/jszip.min.js}"></script>
+  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/buttons.html5.min.js}"></script>
+  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/buttons.colVis.min.js}"></script>
+
+  </head>
+  <body></body>
+  </html>
