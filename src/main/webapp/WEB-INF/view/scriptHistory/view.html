@@ -34,22 +34,23 @@
 
                         <nav aria-label="Page navigation" class="paging">
                             <ul class="pagination" th:if="${history.page.totalPages > 1}">
-                                <li class="page-item" th:classappend="${!history.paging.isPrevEnabled()? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/executionHistory2/?pageNumber=' + ${history.paging.pageNumber - 1}}"
-                                       tabindex="-1">Previous</a>
+                                <li class="page-item">
+                                    <a class="page-link" th:classappend="${!history.paging.isPrevEnabled()? 'disabledButton' : 'blueButton' }"
+                                       th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${history.paging.pageNumber - 1}}" tabindex="-1">Previous</a>
                                 </li>
                                 <th:block th:each="item : ${history.paging.getItems()}">
                                     <li class="page-item" th:classappend="${item.index == history.paging.pageNumber? 'active' : ''}"
                                         th:if="${item.pageItemType.name() == 'PAGE'}">
-                                        <a class="page-link" th:href="@{'/executionHistory2/?pageNumber=' + ${item.index}}"
+                                        <a class="page-link" th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${item.index}}"
                                            th:text="${item.index}"></a>
                                     </li>
                                     <li class="page-item disabled" th:if="${item.pageItemType.name() == 'DOTS'}">
                                         <a class="page-link" href="#">...</a>
                                     </li>
                                 </th:block>
-                                <li class="page-item" th:classappend="${!history.paging.isNextEnabled()? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'executionHistory2/?pageNumber=' + ${history.paging.pageNumber + 1}}">Next</a>
+                                <li class="page-item">
+                                    <a class="page-link" th:classappend="${!history.paging.isNextEnabled()? 'disabledButton' : 'blueButton' }"
+                                       th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${history.paging.pageNumber + 1}}">Next</a>
                                 </li>
                             </ul>
                         </nav>
@@ -60,9 +61,5 @@
                 </div>
             </div>
         </div>
-
-        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
-        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
     </body>
 </html>

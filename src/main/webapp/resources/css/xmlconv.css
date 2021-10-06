@@ -1824,3 +1824,25 @@ table.datatable {
 .actionButton {
     float: left;
 }
+
+.blueButton {
+    background-color: #1779ba;
+    color: white !important;
+    border: 1px solid #1779ba;
+    border-radius: 7% !important;
+}
+
+.blueButton:hover {
+    background-color: white;
+    color: black !important;
+}
+
+.disabledButton {
+    background-color: #b0b0b0;
+    color: white !important;
+    border: 1px solid #b0b0b0;
+    border-radius: 7% !important;
+    disabled:true;
+    pointer-events:none;
+    cursor: default;
+}
