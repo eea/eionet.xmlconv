@@ -28,7 +28,6 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.QueryBackupEntry;
-import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.service.QueryBackupService;
 import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.services.GDEMServices;
@@ -63,41 +62,37 @@ public class BackupManager {
      * @param id Id
      * @param user user
      */
-        public void backupFile(String folderName, String fileName, String id, String user, QueryHistoryEntry queryHistoryEntry) {
+    public QueryBackupEntry backupFile(String folderName, String fileName, String id, String user) {
 
         File origFile = new File(folderName, fileName);
-        if (!origFile.exists())
-        {
-            return; // there's nothing to backup since file does not exist
+        if (!origFile.exists()) {
+            return null; // there's nothing to backup since file does not exist
         }
 
         long timestamp = System.currentTimeMillis();
         String backupFileName =
-            Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
+                Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
 
         // backup folder is the subfolder
         String backupFolderName = folderName + File.separator + Constants.BACKUP_FOLDER_NAME;
         File backupFolder = new File(backupFolderName);
-        if (!backupFolder.exists())
-        {
+        if (!backupFolder.exists()) {
             backupFolder.mkdir(); // create backup folder if it does not exist
         }
 
         File backupFile = new File(backupFolderName, backupFileName);
-
+        QueryBackupEntry queryBackupEntry = null;
         try {
             Utils.copyFile(origFile, backupFile);
 
-            QueryBackupEntry queryBackupEntry = new QueryBackupEntry.QueryBackupEntryBuilder().setFileName(backupFileName).setObjectId(Integer.parseInt(id))
+            queryBackupEntry = new QueryBackupEntry.QueryBackupEntryBuilder().setFileName(backupFileName).setObjectId(Integer.parseInt(id))
                     .setUser(user).setfTimestamp(new Timestamp(timestamp)).build();
             queryBackupEntry = getQueryBackupService().save(queryBackupEntry);
-
-            queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);
-            getQueryHistoryService().save(queryHistoryEntry);
         } catch (Exception e) {
             LOGGER.error("Error during query backup history or query history creation for script with id " + id);
             e.printStackTrace();
         }
+        return queryBackupEntry;
     }
 
     /**
@@ -181,9 +176,5 @@ public class BackupManager {
 
     private static QueryBackupService getQueryBackupService() {
         return (QueryBackupService) SpringApplicationContext.getBean("queryBackupServiceImpl");
-    }
-
-    private static QueryHistoryService getQueryHistoryService() {
-        return (QueryHistoryService) SpringApplicationContext.getBean("queryHistoryServiceImpl");
     }
 }

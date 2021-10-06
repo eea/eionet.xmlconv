@@ -27,6 +27,7 @@ import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.QueryBackupEntry;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.service.QueryHistoryService;
@@ -50,17 +51,24 @@ import java.util.HashMap;
 
 /**
  * QA Script manager.
+ *
  * @author Enriko Käsper, Tieto Estonia QAScriptManager
  * @author George Sofianos
  */
 
 public class QAScriptManager {
 
-    /** */
+    /**
+     *
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptManager.class);
-    /** */
+    /**
+     *
+     */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
-    /** */
+    /**
+     *
+     */
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 
     /**
@@ -93,10 +101,9 @@ public class QAScriptManager {
                 qaScript.setUrl((String) scriptData.get(QaScriptView.URL));
                 qaScript.setActive((String) scriptData.get(QaScriptView.IS_ACTIVE));
                 String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
-                if(asynchronousExecution != null && asynchronousExecution.equals("1")){
+                if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
                     qaScript.setAsynchronousExecution(true);
-                }
-                else{
+                } else {
                     qaScript.setAsynchronousExecution(false);
                 }
                 String queryFolder = Properties.queriesFolder;
@@ -144,22 +151,23 @@ public class QAScriptManager {
 
     /**
      * Update QA script record in database.
-     * @param user logged in user name.
-     * @param scriptId QA script Id.
-     * @param shortName QA script short name.
-     * @param schemaId XML Schema Id.
-     * @param resultType QA script execution result type (XML, HTML, ...).
-     * @param descr QA script textual description.
-     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
-     * @param curFileName QA script file name.
-     * @param file FormFile uploaded through web interface.
-     * @param upperLimit Maximum size of XML to be sent to ad-hoc QA.
-     * @param url URL of the QA script file if maintained in web.
+     *
+     * @param user                  logged in user name.
+     * @param scriptId              QA script Id.
+     * @param shortName             QA script short name.
+     * @param schemaId              XML Schema Id.
+     * @param resultType            QA script execution result type (XML, HTML, ...).
+     * @param descr                 QA script textual description.
+     * @param scriptType            QA script type (XQUERY, XSL, XGAWK).
+     * @param curFileName           QA script file name.
+     * @param file                  FormFile uploaded through web interface.
+     * @param upperLimit            Maximum size of XML to be sent to ad-hoc QA.
+     * @param url                   URL of the QA script file if maintained in web.
      * @param asynchronousExeuction
      * @throws DCMException if DB or file operation fails.
      */
-    public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-                       String scriptType, String curFileName, MultipartFile file, String upperLimit, String url, Boolean asynchronousExeuction, boolean active) throws DCMException {
+    public QueryBackupEntry update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
+                                   String scriptType, String curFileName, MultipartFile file, String upperLimit, String url, Boolean asynchronousExeuction, boolean active, Integer version) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -176,9 +184,9 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
+        QueryBackupEntry queryBackupEntry = null;
         try {
             String fileName = file.getOriginalFilename().trim();
-            Integer maxVersion = getQueryJpaService().findMaxVersion(Integer.parseInt(scriptId));
             // upload file
             if (!Utils.isNullStr(fileName)) {
                 if (Utils.isNullStr(curFileName)) {
@@ -187,44 +195,41 @@ public class QAScriptManager {
                         throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
                     }
                 }
-                QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
-                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, descr, scriptType, upperLimit, url, asynchronousExeuction, active, curFileName, maxVersion+1);
-                queryHistoryEntry.setQueryEntry(queryEntry);
 
                 // create backup of existing file
                 BackupManager bum = new BackupManager();
-                bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user, queryHistoryEntry);
+                queryBackupEntry = bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user);
 
                 storeQAScriptFile(file, curFileName);
             }
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExeuction, maxVersion+1);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExeuction, version);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
             LOGGER.error("Error updating QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
-
+        return queryBackupEntry;
     }
 
     /**
      * Update script properties.
      *
-     * @param user logged in user name.
-     * @param scriptId QA script Id.
-     * @param shortName QA script short name.
-     * @param schemaId XML Schema Id.
-     * @param resultType QA script execution result type (XML, HTML, ...).
-     * @param descr QA script textual description.
-     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
-     * @param curFileName QA script file name.
-     * @param content File content
-     * @param updateContent Update content
+     * @param user                  logged in user name.
+     * @param scriptId              QA script Id.
+     * @param shortName             QA script short name.
+     * @param schemaId              XML Schema Id.
+     * @param resultType            QA script execution result type (XML, HTML, ...).
+     * @param descr                 QA script textual description.
+     * @param scriptType            QA script type (XQUERY, XSL, XGAWK).
+     * @param curFileName           QA script file name.
+     * @param content               File content
+     * @param updateContent         Update content
      * @param asynchronousExecution
      * @throws DCMException If an error occurs.
      */
-    public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr, String scriptType,
-                       String curFileName, String upperLimit, String url, String content, boolean updateContent, boolean asynchronousExecution, boolean active)
+    public QueryBackupEntry update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr, String scriptType,
+                                   String curFileName, String upperLimit, String url, String content, boolean updateContent, boolean asynchronousExecution, boolean active, Integer version)
             throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
@@ -242,19 +247,14 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
-        Integer maxVersion = getQueryJpaService().findMaxVersion(Integer.parseInt(scriptId));
+        QueryBackupEntry queryBackupEntry = null;
         try {
             if (!Utils.isNullStr(curFileName) && !Utils.isNullStr(content) && content.indexOf(Constants.FILEREAD_EXCEPTION) == -1
                     && updateContent) {
 
-                QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
-                getQueryJpaService().updateVersion(maxVersion+1, Integer.parseInt(scriptId));
-                QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, descr, scriptType, upperLimit, url, asynchronousExecution, active, curFileName, maxVersion+1);
-                queryHistoryEntry.setQueryEntry(queryEntry);
-
                 // create backup of existing file
                 BackupManager bum = new BackupManager();
-                bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user, queryHistoryEntry);
+                queryBackupEntry = bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user);
 
                 Utils.saveStrToFile(Properties.queriesFolder + File.separator + curFileName, content, null);
             }
@@ -264,7 +264,8 @@ public class QAScriptManager {
                 curFileName = StringUtils.substringAfterLast(url, "/");
             }
 
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExecution, updateContent ? maxVersion+1 : maxVersion);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExecution, version);
+            return queryBackupEntry;
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Error updating QA script", e);
@@ -300,10 +301,10 @@ public class QAScriptManager {
     /**
      * Store QA script file into file system.
      *
-     * @param file FormFile object uploaded through web interface.
+     * @param file     FormFile object uploaded through web interface.
      * @param fileName File name.
      * @throws FileNotFoundException File is not found.
-     * @throws IOException file store operations failed.
+     * @throws IOException           file store operations failed.
      */
     public void storeQAScriptFile(MultipartFile file, String fileName) throws FileNotFoundException, IOException {
 
@@ -326,7 +327,7 @@ public class QAScriptManager {
     /**
      * Delete the selected QA script from database and file system
      *
-     * @param user logged in user name.
+     * @param user     logged in user name.
      * @param scriptId QA script Id.
      * @throws DCMException If an error occurs.
      */
@@ -368,14 +369,14 @@ public class QAScriptManager {
     /**
      * Add a new QA script into the repository
      *
-     * @param user logged in user name.
-     * @param shortName QA script short name.
-     * @param schemaId XML Schema Id.
-     * @param resultType QA script execution result type (XML, HTML, ...).
+     * @param user        logged in user name.
+     * @param shortName   QA script short name.
+     * @param schemaId    XML Schema Id.
+     * @param resultType  QA script execution result type (XML, HTML, ...).
      * @param description QA script textual description.
-     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
-     * @param schema Schema
-     * @param scriptFile QA script file
+     * @param scriptType  QA script type (XQUERY, XSL, XGAWK).
+     * @param schema      Schema
+     * @param scriptFile  QA script file
      * @return Script id
      * @throws DCMException If an error occurs.
      */
@@ -449,10 +450,10 @@ public class QAScriptManager {
     /**
      * Update schema validation and blocker flag.
      *
-     * @param user logged in username.
+     * @param user     logged in username.
      * @param schemaId XML Schema Id.
      * @param validate XML Schema validation is part of QA.
-     * @param blocker return blocker flag in QA if XML Schema validation fails.
+     * @param blocker  return blocker flag in QA if XML Schema validation fails.
      * @throws DCMException if database operation fails.
      */
     public void updateSchemaValidation(String user, String schemaId, boolean validate, boolean blocker) throws DCMException {
@@ -481,9 +482,9 @@ public class QAScriptManager {
     /**
      * Method tries to download the remote script and replace the local file. Method updates table.
      *
-     * @param user user login name.
+     * @param user      user login name.
      * @param remoteUrl where to download script file.
-     * @param fileName QA script file name.
+     * @param fileName  QA script file name.
      * @throws DCMException in case of HTTP connection or database errors.
      */
     public void replaceScriptFromRemoteFile(String user, String remoteUrl, String fileName) throws DCMException {
@@ -509,7 +510,8 @@ public class QAScriptManager {
 
     /**
      * Update QA script content from InputStream.
-     * @param fileName QA script file name stored in the system.
+     *
+     * @param fileName        QA script file name stored in the system.
      * @param fileInputStream new content of the QA script
      * @throws DCMException in case of IO or database error.
      */
@@ -537,11 +539,12 @@ public class QAScriptManager {
         }
 
     }
-    
+
     /**
-     * Set/Unset "ACTIVE" flag on a specific scriptId 
-     * @param user User
-     * @param scriptId Script id
+     * Set/Unset "ACTIVE" flag on a specific scriptId
+     *
+     * @param user      User
+     * @param scriptId  Script id
      * @param setActive Active flag
      * @throws DCMException If an error occurs.
      */
@@ -557,17 +560,16 @@ public class QAScriptManager {
             LOGGER.error("Error setting activation status for QA script.", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
-        
+
         if (Utils.isNullStr(scriptId)) {
             LOGGER.error("Cannot set activation status for QA script. Script ID is empty.");
             throw new DCMException(BusinessConstants.EXCEPTION_NO_QASCRIPT_SELECTED);
         }
-        
+
         try {
-            if (setActive){
+            if (setActive) {
                 queryDao.activateQuery(scriptId);
-            }
-            else {
+            } else {
                 queryDao.deactivateQuery(scriptId);
             }
         } catch (Exception e) {

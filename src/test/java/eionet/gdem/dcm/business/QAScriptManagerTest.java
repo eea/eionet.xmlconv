@@ -191,7 +191,7 @@ public class QAScriptManagerTest {
         QAScriptManager qm = new QAScriptManager();
 
         // update qa script properties
-        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false, false, true);
+        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false, false, true, 1);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -232,7 +232,7 @@ public class QAScriptManagerTest {
         MockMultipartFile scriptFile = new MockMultipartFile("scriptFile", fileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(fileName).getFile().getBytes());
 
         QAScriptManager qm = new QAScriptManager();
-        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url, false, true);
+        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url, false, true, 1);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);

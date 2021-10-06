@@ -3,8 +3,10 @@ package eionet.gdem.web.spring.scripts;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.QueryBackupEntry;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
@@ -40,11 +42,13 @@ public class QAScriptsSyncController {
 
     private MessageService messageService;
     private QueryJpaService queryJpaService;
+    private QueryHistoryService queryHistoryService;
 
     @Autowired
-    public QAScriptsSyncController(MessageService messageService, QueryJpaService queryJpaService) {
+    public QAScriptsSyncController(MessageService messageService, QueryJpaService queryJpaService, QueryHistoryService queryHistoryService) {
         this.messageService = messageService;
         this.queryJpaService = queryJpaService;
+        this.queryHistoryService = queryHistoryService;
     }
 
     @ModelAttribute
@@ -134,7 +138,12 @@ public class QAScriptsSyncController {
         try {
             QAScriptManager qm = new QAScriptManager();
             BackupManager bum = new BackupManager();
-            bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user, queryHistoryEntry);
+            QueryBackupEntry queryBackupEntry = bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user);
+            if (queryBackupEntry!=null) {
+                queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);
+            }
+            queryHistoryService.save(queryHistoryEntry);
+
             qm.replaceScriptFromRemoteFile(user, url, scriptFileName);
             messages.add(messageService.getMessage("label.uplScript.cached"));
 

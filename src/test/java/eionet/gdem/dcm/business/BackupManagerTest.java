@@ -86,9 +86,8 @@ public class BackupManagerTest {
 
         // create backup folder and 2 new backupfiles
         BackupManager bm = new BackupManager();
-        QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry();
-        bm.backupFile(folderName, fileName, id, user, queryHistoryEntry);
-        bm.backupFile(folderName, fileName, id, user, queryHistoryEntry);
+        bm.backupFile(folderName, fileName, id, user);
+        bm.backupFile(folderName, fileName, id, user);
 
         // check if backupfolder exists
         File backupFolder = new File(folderName, Constants.BACKUP_FOLDER_NAME);
