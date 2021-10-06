@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import org.mockito.Mock;
 import static org.mockito.Mockito.times;
@@ -91,11 +92,11 @@ public class QaControllerTest {
         EnvelopeWrapper envelopeWrapper = new EnvelopeWrapper();
         envelopeWrapper.setSourceUrl(sourceUrl);
         envelopeWrapper.setScriptId(scriptId);
-        when(qaServiceMock.runQaScript(anyString(), anyString())).thenThrow(new XMLConvException("xmlconv exception"));
+        when(qaServiceMock.runQaScript(anyString(), anyString(),anyBoolean())).thenThrow(new XMLConvException("xmlconv exception"));
         qaController.performInstantQARequestOnFile(envelopeWrapper);
         ArgumentCaptor<String> sourceUrlCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> scriptIdCaptor = ArgumentCaptor.forClass(String.class);
-        verify(qaServiceMock, times(1)).runQaScript(sourceUrlCaptor.capture(), scriptIdCaptor.capture());
+        verify(qaServiceMock, times(1)).runQaScript(sourceUrlCaptor.capture(), scriptIdCaptor.capture(),false);
         assertTrue(EqualsBuilder.reflectionEquals(sourceUrlCaptor.getValue(), sourceUrl));
         assertTrue(EqualsBuilder.reflectionEquals(scriptIdCaptor.getValue(), scriptId));
     }
