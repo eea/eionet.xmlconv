@@ -476,8 +476,8 @@ public class QAScriptsController {
         return "/scripts/executionHistory";
     }*/
 
-    @GetMapping("/{id}/executionHistory2")
-    public String executionHistory2(@PathVariable String id, @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+    @GetMapping("/{id}/executionHistory")
+    public String executionHistory(@PathVariable String id, @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
                                     @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model) {
 
         //Add page title

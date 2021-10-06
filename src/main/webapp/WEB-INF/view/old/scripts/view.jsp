@@ -16,7 +16,7 @@
         </a>
       </li>
       <li>
-        <a href="/scripts/${form.scriptId}/executionHistory" style="color: black; text-decoration: none;">
+        <a href="/new/scripts/${form.scriptId}/executionHistory" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.executionHistory"/>
         </a>
       </li>

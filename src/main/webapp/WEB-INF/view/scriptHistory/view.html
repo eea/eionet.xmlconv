@@ -4,6 +4,25 @@
     <body th:include="~{fragments/layout-old :: layout(~{::div})}">
 
         <div class="container">
+
+            <div id="tabbedmenu">
+                <ul>
+                    <li>
+                        <a th:href="@{'/scripts/' +${scriptId}}" style="color: black; text-decoration: none;">
+                            Qa Script
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{'/scripts/' +${scriptId} + '/history'}" style="color: black; text-decoration: none;">
+                            History
+                        </a>
+                    </li>
+                    <li id="currenttab">
+                        <span style="color: black; text-decoration: none;" title="Script Execution History"/></span>
+                    </li>
+                </ul>
+            </div>
+
             <div class="row">
                 <div class="col-lg-10 mt-5 mb-5">
                     <div th:if="${not #lists.isEmpty(history.page.content)}">

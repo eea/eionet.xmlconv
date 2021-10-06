@@ -13,7 +13,7 @@
               code="label.qascript.history"/></span>
       </li>
       <li>
-        <a href="/scripts/${scriptId}/executionHistory" style="color: black; text-decoration: none;">
+        <a href="/new/scripts/${scriptId}/executionHistory" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.executionHistory"/>
         </a>
       </li>
