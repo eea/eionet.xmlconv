@@ -27,11 +27,12 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
      *
      * @param sourceUrl URL of the source XML
      * @param scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
+     * @param isHttpRequest this param(wrongly named) indicates wether the result should be placed in the HttpResponse stream or returned as json further down.
      * @return Vector of 2 fields: content type and byte array
      * @throws XMLConvException in case of business logic error
      */
     @Override
-    public Vector runQAScript(String sourceUrl, String scriptId, HttpMethodResponseWrapper httpResponse) throws XMLConvException {
+    public Vector runQAScript(String sourceUrl, String scriptId, HttpMethodResponseWrapper httpResponse,boolean isHttpRequest) throws XMLConvException {
 
         if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
             LOGGER.debug("ConversionService.convert method called through XML-rpc.");
@@ -39,6 +40,7 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
         RunQAScriptMethod runQaMethod = new RunQAScriptMethod();
         super.setHttpResponse(httpResponse);
         setGlobalParameters(runQaMethod);
+        runQaMethod.setHttpRequest(isHttpRequest);
         return runQaMethod.runQAScript(sourceUrl, scriptId);
 
     }
@@ -51,6 +53,19 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
         }
         RunQAScriptMethod runQaMethod = new RunQAScriptMethod();
         setGlobalParameters(runQaMethod);
+        return runQaMethod.runQAScript(sourceUrl, scriptId);
+
+    }
+
+    @Override
+    public Vector runQAScript(String sourceUrl, String scriptId ,boolean isHttpRequest) throws XMLConvException {
+
+        if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
+            LOGGER.debug("ConversionService.convert method called through XML-rpc.");
+        }
+        RunQAScriptMethod runQaMethod = new RunQAScriptMethod();
+       // setGlobalParameters(runQaMethod);
+        runQaMethod.setHttpRequest(isHttpRequest);
         return runQaMethod.runQAScript(sourceUrl, scriptId);
 
     }

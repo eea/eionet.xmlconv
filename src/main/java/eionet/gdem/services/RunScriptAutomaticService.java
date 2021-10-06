@@ -8,7 +8,10 @@ import java.util.Vector;
 public interface RunScriptAutomaticService {
 
 
-    Vector runQAScript(String sourceUrl, String scriptId, HttpMethodResponseWrapper methodResponse) throws XMLConvException;
+    Vector runQAScript(String sourceUrl, String scriptId, HttpMethodResponseWrapper methodResponse,boolean isHttpRequest) throws XMLConvException;
 
     Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException;
+
+    Vector runQAScript(String sourceUrl, String scriptId,boolean isHttpRequest) throws XMLConvException;
+
 }

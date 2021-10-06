@@ -158,6 +158,15 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
+    public Vector runQaScript(String sourceUrl, String scriptId,boolean setBodyInResponse) throws XMLConvException {
+        try {
+            return getRunScriptAutomaticService().runQAScript(sourceUrl, scriptId,setBodyInResponse);
+        } catch (XMLConvException ex) {
+            throw new XMLConvException("error running Qa Script for sourceUrl :" + sourceUrl + " and scriptId:" + scriptId, ex);
+        }
+    }
+
+    @Override
     public Hashtable<String, Object> getJobResults(String jobId) throws XMLConvException {
 
         QueryService queryService = getQueryService(); // new QueryService();

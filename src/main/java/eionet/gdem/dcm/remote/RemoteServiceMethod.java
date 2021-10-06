@@ -62,6 +62,10 @@ public abstract class RemoteServiceMethod {
         return isHttpRequest;
     }
 
+    public void setHttpRequest(boolean httpRequest) {
+        isHttpRequest = httpRequest;
+    }
+
     public HttpMethodResponseWrapper getHttpResponse() {
         return httpResponse;
     }

@@ -90,7 +90,7 @@ public class QAScriptsApiController {
         xqs.setHttpResponse(methodResponse);
         xqs.setTicket(getTicket(request));
         // execute conversion
-        getRunScriptAutomaticServiceBean().runQAScript(url, scriptId,methodResponse);
+        getRunScriptAutomaticServiceBean().runQAScript(url, scriptId,methodResponse,true);
 
         return new ResponseEntity(HttpStatus.OK);
     }
