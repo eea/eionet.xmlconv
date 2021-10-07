@@ -457,6 +457,7 @@ public class QAScriptsController {
         return "redirect:/schemas/" + schemaId + "/scripts";
     }
 
+    //jsp page
     //@GetMapping("/{id}/executionHistory")
     /*public String executionHistory(@PathVariable String id, Model model) {
 
@@ -478,10 +479,14 @@ public class QAScriptsController {
 
     @GetMapping("/{id}/executionHistory")
     public String executionHistory(@PathVariable String id, @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
-                                    @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model) {
+                                    @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model, HttpServletRequest request) {
 
         //Add page title
-        model.addAttribute("title", "Script Execution History");
+        model.addAttribute("title", "QA Script Execution History");
+        String changedPageSize = request.getParameter("pageEntries");
+        if(!Utils.isNullStr(changedPageSize)){
+            size = Integer.valueOf(changedPageSize);
+        }
 
         Paged<QueryMetadataHistoryEntry> pagedEntries = paginationService.getQueryMetadataHistoryEntries(pageNumber, size, Integer.valueOf(id));
 
@@ -495,7 +500,7 @@ public class QAScriptsController {
         }
         model.addAttribute("history", pagedEntries);
         model.addAttribute("scriptId", id);
-
+        model.addAttribute("pageEntries", size);
         return "scriptHistory/view";
     }
 }

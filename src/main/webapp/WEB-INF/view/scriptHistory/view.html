@@ -9,16 +9,16 @@
                 <ul>
                     <li>
                         <a th:href="@{'/scripts/' +${scriptId}}" style="color: black; text-decoration: none;">
-                            Qa Script
+                            <span th:text="#{label.qascript.tab.title}"></span>
                         </a>
                     </li>
                     <li>
                         <a th:href="@{'/scripts/' +${scriptId} + '/history'}" style="color: black; text-decoration: none;">
-                            History
+                            <span th:text="#{label.qascript.history}"></span>
                         </a>
                     </li>
                     <li id="currenttab">
-                        <span style="color: black; text-decoration: none;" title="Script Execution History"/></span>
+                        <span style="color: black; text-decoration: none;" th:text="#{label.qascript.executionHistory}"></span>
                     </li>
                 </ul>
             </div>
@@ -28,6 +28,21 @@
                     <div th:if="${not #lists.isEmpty(history.page.content)}">
                         <p th:utext="${'Average duration for script with id ' + scriptId + ' is <b>' + averageDuration + '</b>. The script has been executed ' + numberOfExecutions + ' times.'}"></p>
 
+                        <div class="tablePageEntriesSize" style="float: right;">
+                            <form th:action="@{${#httpServletRequest.requestURI} + '?pageNumber=1'}" method="get">
+                                <label for="pageEntries">Entries per page:</label>
+                                <select name="pageEntries" id="pageEntries" onchange="this.form.submit()">
+                                    <option th:if="${numberOfExecutions > 10}" th:selected="${pageEntries} == ${10}" value="10">10</option>
+                                    <option th:if="${numberOfExecutions > 20}" th:selected="${pageEntries} == ${20}" value="20">20</option>
+                                    <option th:if="${numberOfExecutions > 50}" th:selected="${pageEntries} == ${50}" value="50">50</option>
+                                    <option th:if="${numberOfExecutions > 100}" th:selected="${pageEntries} == ${100}" value="100">100</option>
+                                    <option th:if="${numberOfExecutions > 200}" th:selected="${pageEntries} == ${200}" value="200">200</option>
+                                    <option th:if="${numberOfExecutions > 500}" th:selected="${pageEntries} == ${500}" value="500">500</option>
+                                    <option th:value="${numberOfExecutions}" th:selected="${pageEntries} == ${numberOfExecutions}"><span th:text="${numberOfExecutions}"></span></option>
+                                </select>
+                            </form>
+
+                        </div>
                         <table id="scriptExecutionHistoryTable" class="table table-bordered datatable results" style="width: 100%">
                             <thead>
                                 <tr>
@@ -52,15 +67,18 @@
                         </table>
 
                         <nav aria-label="Page navigation" class="paging">
+                            <script th:inline="javascript">
+                                // write code here
+                            </script>
                             <ul class="pagination" th:if="${history.page.totalPages > 1}">
                                 <li class="page-item">
                                     <a class="page-link" th:classappend="${!history.paging.isPrevEnabled()? 'disabledButton' : 'blueButton' }"
-                                       th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${history.paging.pageNumber - 1}}" tabindex="-1">Previous</a>
+                                       th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${history.paging.pageNumber - 1} + '&size='+ ${pageEntries}}" tabindex="-1">Previous</a>
                                 </li>
                                 <th:block th:each="item : ${history.paging.getItems()}">
                                     <li class="page-item" th:classappend="${item.index == history.paging.pageNumber? 'active' : ''}"
                                         th:if="${item.pageItemType.name() == 'PAGE'}">
-                                        <a class="page-link" th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${item.index}}"
+                                        <a class="page-link" th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${item.index} + '&size='+ ${pageEntries}}"
                                            th:text="${item.index}"></a>
                                     </li>
                                     <li class="page-item disabled" th:if="${item.pageItemType.name() == 'DOTS'}">
@@ -69,7 +87,7 @@
                                 </th:block>
                                 <li class="page-item">
                                     <a class="page-link" th:classappend="${!history.paging.isNextEnabled()? 'disabledButton' : 'blueButton' }"
-                                       th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${history.paging.pageNumber + 1}}">Next</a>
+                                       th:href="@{${#httpServletRequest.requestURI} + '?pageNumber=' + ${history.paging.pageNumber + 1} + '&size='+ ${pageEntries}}">Next</a>
                                 </li>
                             </ul>
                         </nav>

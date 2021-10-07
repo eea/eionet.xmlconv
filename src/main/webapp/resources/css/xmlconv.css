@@ -1842,7 +1842,7 @@ table.datatable {
     color: white !important;
     border: 1px solid #b0b0b0;
     border-radius: 7% !important;
-    disabled:true;
-    pointer-events:none;
+    disabled: true;
+    pointer-events: none;
     cursor: default;
 }
