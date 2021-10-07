@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.web.spring.scripts.BackupManager;
 import org.junit.Before;
 import org.junit.Ignore;

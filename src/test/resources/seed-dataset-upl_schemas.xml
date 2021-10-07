@@ -19,6 +19,9 @@
   <T_QUERY QUERY_ID="1" DESCRIPTION="The script is checking 1. EWN Code 2. min mean max values 3. Land use percentage = 100%" SHORT_NAME="Script for checking Groundwater bodies&apos; metadata" QUERY_FILENAME="GW_Body_rules2551.xql" SCHEMA_ID="1" RESULT_TYPE="HTML"/>
   <T_QUERY QUERY_ID="3" DESCRIPTION="" SHORT_NAME="Ozone monthly - Station meta-information" QUERY_FILENAME="ozone1927_1.xql" SCHEMA_ID="1" RESULT_TYPE="HTML"/>
 
+  <QUERY_HISTORY QUERY_ID="1" DESCRIPTION="The script is checking 1. EWN Code 2. min mean max values 3. Land use percentage = 100%" SHORT_NAME="Script for checking Groundwater bodies&apos; metadata" QUERY_FILENAME="GW_Body_rules2551.xql" SCHEMA_ID="1" RESULT_TYPE="HTML"/>
+  <QUERY_HISTORY QUERY_ID="3" DESCRIPTION="" SHORT_NAME="Ozone monthly - Station meta-information" QUERY_FILENAME="ozone1927_1.xql" SCHEMA_ID="1" RESULT_TYPE="HTML"/>
+
   <T_STYLESHEET CONVERT_ID="1" DESCRIPTION="Simple table" RESULT_TYPE="HTML" XSL_FILENAME="simpletablehtml.xsl"/>
   <T_STYLESHEET CONVERT_ID="2" DESCRIPTION="Average yearly pH value per station" RESULT_TYPE="HTML" XSL_FILENAME="averagephhtml.xsl"/>
 
