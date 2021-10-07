@@ -12,8 +12,6 @@ import java.util.List;
 @Repository
 public interface QueryHistoryRepository extends JpaRepository<QueryHistoryEntry, Integer> {
 
-    List<QueryHistoryEntry> findById(Integer id);
-
     @Modifying
     @Query(value = "update QUERY_HISTORY set QUERY_ID= :newQueryId where QUERY_ID= :oldQueryId", nativeQuery=true)
     void updateQueryId(@Param("newQueryId") Integer newQueryId, @Param("oldQueryId") Integer oldQueryId);

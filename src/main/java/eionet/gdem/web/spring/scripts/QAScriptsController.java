@@ -533,4 +533,9 @@ public class QAScriptsController {
 
         return "scriptHistory/view";
     }
+
+    @GetMapping("/infoHistory")
+    public String getScriptsHistory() {
+        return "scriptsInfoHistory/view";
+    }
 }

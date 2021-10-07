@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm">
+<head th:replace="~{fragments/head-old :: head}"/>
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+
+<template>
+    <div class="container" id="main">
+        <v-app>
+            <v-main>
+                <v-data-table
+                        :headers="headers"
+                        :items="scriptsHistoryEntries"
+                        :items-per-page="10"
+                        :options.sync="options"
+                        class="elevation-1"
+                >
+                </v-data-table>
+            </v-main>
+        </v-app>
+    </div>
+</template>
+
+</body>
+</html>

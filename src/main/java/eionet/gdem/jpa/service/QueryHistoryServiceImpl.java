@@ -19,8 +19,8 @@ public class QueryHistoryServiceImpl implements QueryHistoryService {
     }
 
     @Override
-    public List<QueryHistoryEntry> findById(Integer id) {
-        return queryHistoryRepository.findById(id);
+    public List<QueryHistoryEntry> findAll() {
+        return queryHistoryRepository.findAll();
     }
 
     @Override
