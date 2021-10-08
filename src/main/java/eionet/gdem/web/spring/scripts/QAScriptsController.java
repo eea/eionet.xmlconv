@@ -531,11 +531,11 @@ public class QAScriptsController {
         model.addAttribute("history", pagedEntries);
         model.addAttribute("scriptId", id);
 
-        return "scriptHistory/view";
+        return "scriptHistory/scriptExecutionHistory";
     }
 
-    @GetMapping("/infoHistory")
+    @GetMapping("/history")
     public String getScriptsHistory() {
-        return "scriptsInfoHistory/view";
+        return "scriptHistory/scriptInfoHistory";
     }
 }

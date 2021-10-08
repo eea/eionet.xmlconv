@@ -1,10 +1,14 @@
 var app = new Vue({
-    el: '#main',
+    el: '#app',
     vuetify: new Vuetify(),
     data() {
         return {
-            scriptsHistoryEntries: [],
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 10,
+            entries: [],
             options: {},
+            search: '',
             headers: [
                 {text: "Query id", value: "queryEntry.queryId"},
                 {text: "Short name", value: "shortName"},
@@ -13,7 +17,7 @@ var app = new Vue({
             ],
         };
     },
-    //this one will populate new data set when user changes current page.
+//    this one will populate new data set when user changes current page.
     watch: {
         options: {
             handler() {
@@ -30,7 +34,7 @@ var app = new Vue({
                     "/restapi/scripts/history/all"
                 )
                 .then((response) => {
-                    this.scriptsHistoryEntries = response.data;
+                    this.entries = response.data;
                 });
         }
     },

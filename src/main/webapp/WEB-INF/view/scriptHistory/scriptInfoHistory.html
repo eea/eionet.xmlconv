@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm">
+<head th:replace="~{fragments/head-old :: head}"/>
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+
+<template>
+    <div id="app">
+        <v-app>
+            <v-main>
+                <v-card>
+                    <v-card-title>
+                        Search
+                        <v-spacer></v-spacer>
+                        <v-text-field
+                                v-model="search"
+                                append-icon="mdi-magnify"
+                                single-line
+                                hide-details
+                        ></v-text-field>
+                    </v-card-title>
+                    <v-data-table
+                            :headers="headers"
+                            :items="entries"
+                            :search="search"
+                            :options.sync="options"
+                            :items-per-page="itemsPerPage"
+                            class="elevation-1"
+                    >
+                    </v-data-table>
+                </v-card>
+            </v-main>
+        </v-app>
+    </div>
+</template>
+
+</body>
+</html>
