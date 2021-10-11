@@ -3,10 +3,7 @@ package eionet.gdem.qa.utils;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.qa.XQScript;
-import org.openrdf.query.Query;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -52,7 +49,7 @@ public final class ScriptUtils {
                                                             String upperLimit, String url, Boolean asynchronousExecution, boolean active, String fileName, Integer version) {
         QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(description).setShortName(shortName).setQueryFileName(fileName)
                 .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
-                .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(version).setUser(user).setDateModified(new Timestamp(new Date().getTime()));
+                .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(version).setUser(user).setDateModified(new Date());
         return queryHistoryEntry;
     }
 }

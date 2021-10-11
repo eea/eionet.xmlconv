@@ -4,6 +4,7 @@ var app = new Vue({
     data() {
         return {
             sortBy: "dateModified",
+            sortDesc: true,
             queryId: document.querySelector("#queryId").defaultValue,
             historyEntries: [],
             expanded: [],
@@ -20,7 +21,7 @@ var app = new Vue({
                 {text: "Query filename", value: "queryFileName"},
                 {text: "Version", value: "version"},
                 {text: "Username", value: "user"},
-                {text: "Date modified", value: "dateModified", dataType: "Date"},
+                {text: "Date modified", value: "dateModified"},
                 {text: '', value: 'data-table-expand' }
             ],
         };

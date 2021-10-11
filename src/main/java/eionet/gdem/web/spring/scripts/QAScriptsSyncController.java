@@ -29,7 +29,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -135,7 +134,7 @@ public class QAScriptsSyncController {
         queryJpaService.updateVersion(maxVersion+1, Integer.parseInt(scriptId));
         QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(form.getDescription()).setShortName(form.getShortName()).setQueryFileName(form.getFileName())
                 .setSchemaId(Integer.parseInt(form.getSchemaId())).setResultType(form.getResultType()).setScriptType(form.getScriptType()).setUpperLimit(Integer.parseInt(form.getUpperLimit()))
-                .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(maxVersion+1).setUser(user).setDateModified(new Timestamp(new Date().getTime())).setQueryEntry(queryEntry);
+                .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(maxVersion+1).setUser(user).setDateModified(new Date()).setQueryEntry(queryEntry);
 
         try {
             QAScriptManager qm = new QAScriptManager();

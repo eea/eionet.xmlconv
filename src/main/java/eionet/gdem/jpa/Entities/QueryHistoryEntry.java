@@ -2,6 +2,7 @@ package eionet.gdem.jpa.Entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "QUERY_HISTORY")
@@ -48,7 +49,7 @@ public class QueryHistoryEntry {
     private String user;
 
     @Column(name = "DATE_MODIFIED")
-    private Timestamp dateModified;
+    private Date dateModified;
 
     @ManyToOne
     @JoinColumn(name = "QUERY_ID")
@@ -178,11 +179,11 @@ public class QueryHistoryEntry {
         return this;
     }
 
-    public Timestamp getDateModified() {
+    public Date getDateModified() {
         return dateModified;
     }
 
-    public QueryHistoryEntry setDateModified(Timestamp dateModified) {
+    public QueryHistoryEntry setDateModified(Date dateModified) {
         this.dateModified = dateModified;
         return this;
     }
