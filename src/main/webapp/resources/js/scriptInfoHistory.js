@@ -12,7 +12,11 @@ var app = new Vue({
             loading: true,
             headers: [
                 {text: "id", value: "id"},
+                {text: "Upper limit", value: "upperLimit"},
                 {text: "Url", value: "url"},
+                {text: "Active", value: "active"},
+                {text: "Asynchronous execution", value: "asynchronousExecution"},
+                {text: "Username", value: "user"},
                 {text: "Short name", value: "shortName"},
                 {text: "Query filename", value: "queryFileName"},
                 {text: "Version", value: "version"},
