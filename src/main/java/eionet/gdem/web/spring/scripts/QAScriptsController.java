@@ -1,6 +1,7 @@
 package eionet.gdem.web.spring.scripts;
 
 import eionet.gdem.Constants;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
 import eionet.gdem.jpa.repositories.QueryMetadataRepository;
@@ -13,6 +14,7 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.PaginationService;
 import eionet.gdem.jpa.service.QueryMetadataService;
+import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
 import eionet.gdem.web.spring.SpringMessages;
@@ -500,6 +502,14 @@ public class QAScriptsController {
         model.addAttribute("history", pagedEntries);
         model.addAttribute("scriptId", id);
         model.addAttribute("pageEntries", size);
+
+        //Add loginUrl param
+        try {
+            model.addAttribute("loginUrl", SecurityUtil.getLoginURL(request));
+        } catch (XMLConvException e) {
+            LOGGER.error("Could not retrieve login url");
+        }
+
         return "scriptHistory/scriptExecutionHistory";
     }
 }
