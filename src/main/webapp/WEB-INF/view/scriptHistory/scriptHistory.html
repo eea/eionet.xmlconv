@@ -62,7 +62,7 @@
                                                 {{ item.queryBackupEntry.fileName }}
                                             </a>
                                         </td>
-                                        <td>{{ item.queryBackupEntry.fTimestamp }}</td>
+                                        <td>{{ new Date(item.queryBackupEntry.fTimestamp).toLocaleString() }}</td>
                                         <td>{{ item.queryBackupEntry.user }}</td>
                                     </tr>
                                 </table>
