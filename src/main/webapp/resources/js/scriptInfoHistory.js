@@ -19,7 +19,6 @@ var app = new Vue({
                 {text: "Short name", value: "shortName"},
                 {text: "Query filename", value: "queryFileName"},
                 {text: "Version", value: "version"},
-                {text: "Backup Id", value: "queryBackupEntry.backupId"},
                 {text: '', value: 'data-table-expand' }
             ],
         };
