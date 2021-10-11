@@ -11,7 +11,6 @@ var app = new Vue({
             search: '',
             loading: true,
             headers: [
-                {text: "id", value: "id"},
                 {text: "Upper limit", value: "upperLimit"},
                 {text: "Url", value: "url"},
                 {text: "Active", value: "active"},
