@@ -46,11 +46,11 @@ public class QueryHistoryEntry {
     @Column(name = "USER")
     private String user;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "QUERY_ID")
     private QueryEntry queryEntry;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "QUERY_BACK_UP_ID")
     private QueryBackupEntry queryBackupEntry;
 

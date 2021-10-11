@@ -3,17 +3,21 @@ var app = new Vue({
     vuetify: new Vuetify(),
     data() {
         return {
-            page: 1,
-            pageCount: 0,
-            itemsPerPage: 10,
-            entries: [],
+            queryId: document.querySelector("#queryId").defaultValue,
+            historyEntries: [],
+            expanded: [],
+            item: null,
             options: {},
             search: '',
+            loading: true,
             headers: [
-                {text: "Query id", value: "queryEntry.queryId"},
+                {text: "id", value: "id"},
+                {text: "Url", value: "url"},
                 {text: "Short name", value: "shortName"},
                 {text: "Query filename", value: "queryFileName"},
-                {text: "Version", value: "version"}
+                {text: "Version", value: "version"},
+                {text: "Backup Id", value: "queryBackupEntry.backupId"},
+                {text: '', value: 'data-table-expand' }
             ],
         };
     },
@@ -21,25 +25,27 @@ var app = new Vue({
     watch: {
         options: {
             handler() {
-                this.readDataFromAPI();
+                this.readHistoryEntries(this.queryId);
             },
         },
         deep: true,
     },
     methods: {
         //Reading data from API method.
-        readDataFromAPI() {
+        readHistoryEntries(queryId) {
+            this.loading = true;
             axios
                 .get(
-                    "/restapi/scripts/history/all"
+                    "/restapi/scripts/history/" + queryId
                 )
                 .then((response) => {
-                    this.entries = response.data;
+                    this.loading = false;
+                    this.historyEntries = response.data;
                 });
         }
     },
     //this will trigger in the onReady State
     mounted() {
-        this.readDataFromAPI();
+        this.readHistoryEntries(this.queryId);
     }
 })

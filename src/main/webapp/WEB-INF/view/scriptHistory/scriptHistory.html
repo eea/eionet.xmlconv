@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm"
+      xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<head th:replace="~{fragments/head-old :: head}">
+<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+
+<template>
+    <div id="tabbedmenu">
+        <ul>
+            <li>
+                <a th:href="@{'/scripts/'+${queryId}}" style="color: black; text-decoration: none;">
+                    Qa Script
+                </a>
+            </li>
+            <li id="currenttab">
+                <a href="" style="color: black; text-decoration: none;"/>History</a>
+            </li>
+            <li>
+                <a th:href="@{'/new/scripts/'+${queryId}+'/executionHistory'}"
+                   style="color: black; text-decoration: none;">
+                    Execution History
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="container" id="app" style="display: grid">
+        <input type="hidden" id="queryId" th:value="${queryId}">
+        <v-app>
+            <v-main>
+                <v-card>
+                    <v-card-title>
+                        Search
+                        <v-spacer></v-spacer>
+                        <v-text-field
+                                v-model="search"
+                                append-icon="mdi-magnify"
+                                single-line
+                                hide-details
+                        ></v-text-field>
+                    </v-card-title>
+                    <v-data-table
+                            :headers="headers"
+                            :items="historyEntries"
+                            :search="search"
+                            :options.sync="options"
+                            :loading="loading"
+                            :expanded.sync="expanded"
+                            show-expand
+                            class="elevation-1"
+                    >
+                        <template v-slot:expanded-item="{ headers, item }">
+                            <td v-if="item.queryBackupEntry" :colspan="headers.length">
+                                <table>
+                                    <tr>
+                                        <th style="text-align: left">File</th>
+                                        <th style="text-align: left">Timestamp</th>
+                                        <th style="text-align: left">Username</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a :href="'/queries/backup/'+item.queryBackupEntry.fileName">
+                                                {{ item.queryBackupEntry.fileName }}
+                                            </a>
+                                        </td>
+                                        <td>{{ item.queryBackupEntry.fTimestamp }}</td>
+                                        <td>{{ item.queryBackupEntry.user }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td v-else :colspan="headers.length">There are no backup entries</td>
+                        </template>
+                    </v-data-table>
+                </v-card>
+            </v-main>
+        </v-app>
+    </div>
+</template>
+
+</body>
+</html>

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface QueryHistoryService {
 
-    List<QueryHistoryEntry> findAll();
+    List<QueryHistoryEntry> findEntriesByQueryId(Integer queryId);
 
     QueryHistoryEntry save(QueryHistoryEntry entry);
 

@@ -4,13 +4,14 @@ import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.service.QueryHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/scripts/history")
+@RequestMapping("/scripts")
 public class ScriptsHistoryController {
 
     private QueryHistoryService queryHistoryService;
@@ -20,9 +21,9 @@ public class ScriptsHistoryController {
         this.queryHistoryService = queryHistoryService;
     }
 
-    @GetMapping("/all")
-    public List<QueryHistoryEntry> getAllScriptsHistory() {
-        return queryHistoryService.findAll();
+    @GetMapping("/history/{queryId}")
+    public List<QueryHistoryEntry> getAllScriptsHistory(@PathVariable Integer queryId) {
+        return queryHistoryService.findEntriesByQueryId(queryId);
     }
 
 }

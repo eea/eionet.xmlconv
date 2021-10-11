@@ -147,7 +147,7 @@ public class QAScriptsController {
     }
 
 
-    @GetMapping("/{id}/history")
+    @GetMapping("/{id}/backupHistory")
     public String history(@PathVariable String id, Model model) {
 
         SpringMessages errors = new SpringMessages();
@@ -534,8 +534,9 @@ public class QAScriptsController {
         return "scriptHistory/scriptExecutionHistory";
     }
 
-    @GetMapping("/history")
-    public String getScriptsHistory() {
-        return "scriptHistory/scriptInfoHistory";
+    @GetMapping("/history/{queryId}")
+    public String getScriptsHistory(@PathVariable Integer queryId, Model model) {
+        model.addAttribute("queryId", queryId);
+        return "scriptHistory/scriptHistory";
     }
 }
