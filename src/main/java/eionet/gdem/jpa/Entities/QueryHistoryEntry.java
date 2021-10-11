@@ -1,6 +1,7 @@
 package eionet.gdem.jpa.Entities;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "QUERY_HISTORY")
@@ -45,6 +46,9 @@ public class QueryHistoryEntry {
 
     @Column(name = "USER")
     private String user;
+
+    @Column(name = "DATE_MODIFIED")
+    private Timestamp dateModified;
 
     @ManyToOne
     @JoinColumn(name = "QUERY_ID")
@@ -171,6 +175,15 @@ public class QueryHistoryEntry {
 
     public QueryHistoryEntry setUser(String user) {
         this.user = user;
+        return this;
+    }
+
+    public Timestamp getDateModified() {
+        return dateModified;
+    }
+
+    public QueryHistoryEntry setDateModified(Timestamp dateModified) {
+        this.dateModified = dateModified;
         return this;
     }
 

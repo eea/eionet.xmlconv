@@ -21,14 +21,13 @@
 
 package eionet.gdem.dcm.business;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
-import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.Constants;
+import eionet.gdem.Properties;
+import eionet.gdem.dto.BackupDto;
+import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
 import eionet.gdem.web.spring.scripts.BackupManager;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -38,15 +37,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.dto.BackupDto;
-import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.test.DbHelper;
-import eionet.gdem.test.TestConstants;
-import eionet.gdem.test.TestUtils;
-
 import javax.sql.DataSource;
+import java.io.File;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Enriko Käsper, Tieto Estonia BackupManagerTest

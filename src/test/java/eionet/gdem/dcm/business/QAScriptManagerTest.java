@@ -1,16 +1,15 @@
 package eionet.gdem.dcm.business;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
-import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.Properties;
+import eionet.gdem.dto.QAScript;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.QAScriptManager;
+import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
-import net.xqj.basex.bin.M;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,15 +20,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import eionet.gdem.Properties;
-import eionet.gdem.dto.QAScript;
-import eionet.gdem.dto.Schema;
-import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.test.DbHelper;
-import eionet.gdem.test.TestConstants;
-import eionet.gdem.test.TestUtils;
-
 import javax.sql.DataSource;
+import java.io.File;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerDBTest

@@ -41,6 +41,8 @@
                     <v-data-table
                             :headers="headers"
                             :items="historyEntries"
+                            :sort-by.sync="sortBy"
+                            :sort-desc.sync="sortDesc"
                             :search="search"
                             :options.sync="options"
                             :loading="loading"

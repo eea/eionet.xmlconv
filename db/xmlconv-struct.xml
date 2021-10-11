@@ -734,6 +734,7 @@
                 <constraints nullable="false"/>
             </column>
             <column defaultValue="" name="USER" type="VARCHAR(50)"/>
+            <column name="DATE_MODIFIED" type="TIMESTAMP"/>
             <column name="QUERY_BACK_UP_ID" type="INT">
                 <constraints foreignKeyName="FK_QUERY_BACKUP"
                              references="T_BACKUP(BACKUP_ID)"/>

@@ -3,6 +3,7 @@ var app = new Vue({
     vuetify: new Vuetify(),
     data() {
         return {
+            sortBy: "dateModified",
             queryId: document.querySelector("#queryId").defaultValue,
             historyEntries: [],
             expanded: [],
@@ -15,10 +16,11 @@ var app = new Vue({
                 {text: "Url", value: "url"},
                 {text: "Active", value: "active"},
                 {text: "Asynchronous execution", value: "asynchronousExecution"},
-                {text: "Username", value: "user"},
                 {text: "Short name", value: "shortName"},
                 {text: "Query filename", value: "queryFileName"},
                 {text: "Version", value: "version"},
+                {text: "Username", value: "user"},
+                {text: "Date modified", value: "dateModified", dataType: "Date"},
                 {text: '', value: 'data-table-expand' }
             ],
         };
