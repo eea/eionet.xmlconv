@@ -1,12 +1,12 @@
-package eionet.gdem.services.impl;
+package eionet.gdem.jpa.service;
 
 import eionet.gdem.Constants;
+import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.jpa.repositories.QueryMetadataHistoryRepository;
 import eionet.gdem.jpa.repositories.QueryMetadataRepository;
-import eionet.gdem.services.QueryMetadataService;
 import eionet.gdem.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,17 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
     @Autowired
     JobRepository jobRepository;
 
+    @Autowired
+    QueryJpaService queryJpaService;
+
     @Override
     public void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus){
+        //if queryID does not exist in T_QUERY do nothing
+        QueryEntry queryEntry = queryJpaService.findByQueryId(queryID);
+        if(queryEntry == null){
+            return;
+        }
+
         //Store script information
         List<QueryMetadataEntry> queryMetadataList = queryMetadataRepository.findByQueryId(queryID);
         if (Utils.isNullList(queryMetadataList)){

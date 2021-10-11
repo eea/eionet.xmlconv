@@ -3,7 +3,6 @@ package eionet.gdem.web.spring.scripts;
 import eionet.gdem.Constants;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
-import eionet.gdem.jpa.repositories.QueryMetadataHistoryRepository;
 import eionet.gdem.jpa.repositories.QueryMetadataRepository;
 import eionet.gdem.paging.Paged;
 import eionet.gdem.qa.QAScriptManager;
@@ -13,7 +12,7 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.PaginationService;
-import eionet.gdem.services.QueryMetadataService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
 import eionet.gdem.web.spring.SpringMessages;
@@ -501,6 +500,6 @@ public class QAScriptsController {
         model.addAttribute("history", pagedEntries);
         model.addAttribute("scriptId", id);
         model.addAttribute("pageEntries", size);
-        return "scriptHistory/view";
+        return "scriptHistory/scriptExecutionHistory";
     }
 }

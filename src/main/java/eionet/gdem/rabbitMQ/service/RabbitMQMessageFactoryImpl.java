@@ -15,7 +15,7 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
 import eionet.gdem.services.JobHistoryService;
-import eionet.gdem.services.impl.QueryMetadataServiceImpl;
+import eionet.gdem.jpa.service.QueryMetadataServiceImpl;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;

@@ -1,11 +1,10 @@
 package eionet.gdem.services.impl;
 
-import org.springframework.core.GenericTypeResolver;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
 import eionet.gdem.jpa.repositories.QueryMetadataHistoryRepository;
 import eionet.gdem.paging.*;
 import eionet.gdem.services.PaginationService;
-import eionet.gdem.services.QueryMetadataService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

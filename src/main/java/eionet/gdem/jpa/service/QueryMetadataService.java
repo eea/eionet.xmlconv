@@ -1,4 +1,4 @@
-package eionet.gdem.services;
+package eionet.gdem.jpa.service;
 
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
 

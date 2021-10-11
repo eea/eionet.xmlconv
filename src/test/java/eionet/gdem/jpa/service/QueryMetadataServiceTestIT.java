@@ -1,10 +1,11 @@
-package eionet.gdem.services.impl;
+package eionet.gdem.jpa.service;
 
 import eionet.gdem.Constants;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
 import eionet.gdem.jpa.repositories.QueryMetadataHistoryRepository;
 import eionet.gdem.jpa.repositories.QueryMetadataRepository;
+import eionet.gdem.jpa.service.QueryMetadataServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -25,7 +26,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
-public class QueryMetadataServiceImplTestIT {
+public class QueryMetadataServiceTestIT {
 
     @Autowired
     QueryMetadataServiceImpl queryMetadataService;
@@ -94,12 +95,8 @@ public class QueryMetadataServiceImplTestIT {
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(queryID);
-        if(Utils.isNullList(queryMetadataEntryList)){
-            throw new Exception("Entry with queryId 2 was not added in QUERY_METADATA table");
-        }
-        else if(queryMetadataEntryList.size() > 1){
-            throw new Exception("More than one entries were found in QUERY_METADATA table for queryId 2");
-        }
+        Assert.assertThat(queryMetadataEntryList.size(), is(1));
+
         QueryMetadataEntry queryMetadataEntry = queryMetadataEntryList.get(0);
         Long averageDuration = (durationOfJob + 720000)/2;
 
@@ -131,19 +128,14 @@ public class QueryMetadataServiceImplTestIT {
     /*There is an entry in QUERY_METADATA table for the given queryID and numberOfExecutions = 4*/
     @Test
     public void testStoreScriptInformationForExistingScriptWithMultipleExecutions() throws Exception {
-        //(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus)
         Integer queryID = 3;
         Long durationOfJob = Long.valueOf(180000); //3 minutes
         queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(queryID);
-        if(Utils.isNullList(queryMetadataEntryList)){
-            throw new Exception("Entry with queryId 3 was not added in QUERY_METADATA table");
-        }
-        else if(queryMetadataEntryList.size() > 1){
-            throw new Exception("More than one entries were found in QUERY_METADATA table for queryId 3");
-        }
+        Assert.assertThat(queryMetadataEntryList.size(), is(1));
+
         QueryMetadataEntry queryMetadataEntry = queryMetadataEntryList.get(0);
         Long averageDuration = (durationOfJob + 240000)/5;
 
@@ -170,5 +162,21 @@ public class QueryMetadataServiceImplTestIT {
         Assert.assertThat(newQueryMetadataHistoryEntry.getJobStatus(), is(3));
         Assert.assertThat(newQueryMetadataHistoryEntry.getMarkedHeavy(), is(false));
         Assert.assertThat(newQueryMetadataHistoryEntry.getVersion(), is(1));
+    }
+
+    /*Query id does not exist */
+    @Test
+    public void testStoreScriptInformationForNotExistingQueryId() throws Exception {
+        Integer queryID = -1;
+        Long durationOfJob = Long.valueOf(180000); //3 minutes
+        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY);
+
+        //Check entry in table QUERY_METADATA
+        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(queryID);
+        Assert.assertThat(queryMetadataEntryList.size(), is(0));
+
+        //Check entry in table QUERY_METADATA_HISTORY
+        List<QueryMetadataHistoryEntry> queryMetadataHistoryEntryList = queryMetadataHistoryRepository.findByQueryId(queryID);
+        Assert.assertThat(queryMetadataHistoryEntryList.size(), is(0));
     }
 }
