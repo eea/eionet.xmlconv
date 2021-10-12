@@ -2,12 +2,16 @@ package eionet.gdem.utils;
 
 import eionet.acl.AppUser;
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.web.tags.breadcrumbs.BreadCrumb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ThymeleafUtils {
 
@@ -39,6 +43,22 @@ public final class ThymeleafUtils {
             model.addAttribute("username", user.getUserName());
         }
 
+        return model;
+    }
+
+    /**
+     * Set up breadcrumbs
+     * @param model
+     * @return model
+     */
+    public static Model setUpBreadCrumbsForScriptExecutionHistory(Model model, String scriptId) {
+        List<BreadCrumb> breadcrumbs = new ArrayList();
+        breadcrumbs.add(new BreadCrumb(Properties.gdemURL + "/index.jsp", Properties.getStringProperty("label.gdem.title")));
+        breadcrumbs.add(new BreadCrumb(Properties.gdemURL + "/scripts", Properties.getStringProperty("label.qascript.all.title")));
+        breadcrumbs.add(new BreadCrumb(Properties.gdemURL + "/scripts/" + scriptId, Properties.getStringProperty("label.qascriptView.title")));
+        breadcrumbs.add(new BreadCrumb(null, Properties.getStringProperty("label.qascript.executionHistory.title")));
+
+        model.addAttribute("breadcrumbs", breadcrumbs);
         return model;
     }
 }

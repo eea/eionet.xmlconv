@@ -46,6 +46,14 @@
             <div class="breadcrumbitem eionetaccronym"><a href="http://www.eionet.europa.eu"
                                                           title="European Environment Information and Observation Network (Eionet)">Eionet</a>
             </div>
+            <span th:each="breadcrumb : ${breadcrumbs}">
+                <div th:if="${breadcrumb.url}" style="display:inline;" class="breadcrumbitem eionetaccronym">
+                   <a th:href="${breadcrumb.url}"><span th:text="${breadcrumb.label}"></span></a>
+                </div>
+                <div th:unless="${breadcrumb.url}" style="display:inline;">
+                   <span th:text="${breadcrumb.label}"></span>
+                </div>
+            </span>
         </div> <!-- breadcrumbtrail -->
 
         <div id="leftcolumn" class="localnav">

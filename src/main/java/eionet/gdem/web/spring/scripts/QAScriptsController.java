@@ -2,6 +2,7 @@ package eionet.gdem.web.spring.scripts;
 
 import eionet.acl.AppUser;
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
@@ -485,7 +486,9 @@ public class QAScriptsController {
                                     @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model, HttpServletRequest request) {
 
         //Setup headerVariables
-        model = ThymeleafUtils.setUpTitleAndLogin(model, "QA Script Execution History", request);
+        model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.qascript.executionHistory.title"), request);
+        //Setup breadcrumbs
+        model = ThymeleafUtils.setUpBreadCrumbsForScriptExecutionHistory(model, id);
 
         String changedPageSize = request.getParameter("pageEntries");
         if(!Utils.isNullStr(changedPageSize)){
