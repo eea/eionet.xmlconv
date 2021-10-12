@@ -2,7 +2,7 @@ package eionet.gdem.rabbitMQ.model;
 
 import eionet.gdem.qa.XQScript;
 
-public class WorkerJobRabbitMQRequest extends WorkerInfo {
+public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
 
     private XQScript script;
     private Integer jobExecutionRetries;
@@ -11,10 +11,10 @@ public class WorkerJobRabbitMQRequest extends WorkerInfo {
     private Integer jobExecutorStatus;
     private String heartBeatQueue;
 
-    public WorkerJobRabbitMQRequest(){
+    public WorkerJobRabbitMQRequestMessage(){
     }
 
-    public WorkerJobRabbitMQRequest(XQScript script) {
+    public WorkerJobRabbitMQRequestMessage(XQScript script) {
         this.script = script;
     }
 
@@ -22,7 +22,7 @@ public class WorkerJobRabbitMQRequest extends WorkerInfo {
         return script;
     }
 
-    public WorkerJobRabbitMQRequest setScript(XQScript script) {
+    public WorkerJobRabbitMQRequestMessage setScript(XQScript script) {
         this.script = script;
         return this;
     }

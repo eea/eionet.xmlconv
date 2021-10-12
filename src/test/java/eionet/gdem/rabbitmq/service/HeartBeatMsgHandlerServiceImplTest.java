@@ -2,7 +2,7 @@ package eionet.gdem.rabbitmq.service;
 
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
-import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerServiceImpl;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.test.ApplicationTestContext;
@@ -41,8 +41,8 @@ public class HeartBeatMsgHandlerServiceImplTest {
         WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry();
         workerHeartBeatMsgEntry.setId(1);
         when(workerHeartBeatMsgService.save(any(WorkerHeartBeatMsgEntry.class))).thenReturn(workerHeartBeatMsgEntry);
-        doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerHeartBeatMessageInfo.class));
-        WorkerHeartBeatMessageInfo heartBeatMessageInfo = new WorkerHeartBeatMessageInfo();
+        doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerHeartBeatMessage.class));
+        WorkerHeartBeatMessage heartBeatMessageInfo = new WorkerHeartBeatMessage();
         heartBeatMsgHandlerService.saveMsgAndSendToRabbitMQ(heartBeatMessageInfo, workerHeartBeatMsgEntry);
         verify(workerHeartBeatMsgService).save(any(WorkerHeartBeatMsgEntry.class));
     }

@@ -9,7 +9,7 @@ import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.utils.JobExecutorType;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -90,12 +90,12 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequest workerJobRabbitMQRequest,
+    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage,
                                       JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), jobEntry.getId());
         this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
         this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
-        rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequest);
+        rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
     }
 }
 

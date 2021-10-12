@@ -15,7 +15,7 @@ import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
@@ -173,8 +173,8 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 }
 
                 processJob(jobEntry);
-                WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(xq);
-                rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequest);
+                WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(xq);
+                rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
             }
         } catch (Exception e) {
             throw new CreateRabbitMQMessageException(e.getMessage());

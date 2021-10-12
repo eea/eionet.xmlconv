@@ -1,13 +1,13 @@
 package eionet.gdem.rabbitMQ.model;
 
-public class WorkerInfo {
+public class WorkerMessage {
 
     private String jobExecutorName;
 
-    public WorkerInfo() {
+    public WorkerMessage() {
     }
 
-    public WorkerInfo(String jobExecutorName) {
+    public WorkerMessage(String jobExecutorName) {
         this.jobExecutorName = jobExecutorName;
     }
 

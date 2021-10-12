@@ -2,7 +2,7 @@ package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +34,8 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void handle(WorkerJobRabbitMQRequest workerJobRabbitMQRequest) {
-        LOGGER.info("Handling heavy job " + workerJobRabbitMQRequest.getScript().getJobId());
-        rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequest);
+    public void handle(WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage) {
+        LOGGER.info("Handling heavy job " + workerJobRabbitMQRequestMessage.getScript().getJobId());
+        rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
     }
 }

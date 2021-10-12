@@ -14,7 +14,7 @@ import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
+import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
         XQScript script = null;
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
-            WorkerJobInfoRabbitMQResponse response = mapper.readValue(messageBody, WorkerJobInfoRabbitMQResponse.class);
+            WorkerJobInfoRabbitMQResponseMessage response = mapper.readValue(messageBody, WorkerJobInfoRabbitMQResponseMessage.class);
 
             String containerId="";
             if (Properties.enableJobExecRancherScheduledTask) {
@@ -94,7 +94,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
      * @param jobExecutorHistory
      * @throws DatabaseException
      */
-    private void findIfJobIsHeavyBasedOnWorkerType(WorkerJobInfoRabbitMQResponse response, JobEntry jobEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
+    private void findIfJobIsHeavyBasedOnWorkerType(WorkerJobInfoRabbitMQResponseMessage response, JobEntry jobEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         if (response.getJobExecutorType().equals(JobExecutorType.Heavy)) {  //the response came from a heavy worker, so the job is heavy
             jobEntry.setHeavy(true);
             List<JobExecutor> jobExecutors = jobExecutorService.findExecutorsByJobId(jobEntry.getId());

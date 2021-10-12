@@ -17,7 +17,7 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.notifications.UNSEventSender;
-import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
@@ -280,7 +280,7 @@ public class FixedTimeScheduledTasks {
         List<JobEntry> processingJobs = jobService.findProcessingJobs();
         for (JobEntry jobEntry : processingJobs) {
             try {
-                WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
+                WorkerHeartBeatMessage heartBeatMsgInfo = new WorkerHeartBeatMessage(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
                 WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
                 heartBeatMsgHandlerService.saveMsgAndSendToRabbitMQ(heartBeatMsgInfo, workerHeartBeatMsgEntry);
             } catch (Exception e) {

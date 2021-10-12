@@ -2,23 +2,23 @@ package eionet.gdem.rabbitMQ.model;
 
 import java.sql.Timestamp;
 
-public class WorkerHeartBeatMessageInfo extends WorkerInfo {
+public class WorkerHeartBeatMessage extends WorkerMessage {
 
     private Integer id;
     private Integer jobId;
     private Integer jobStatus;
     private Timestamp requestTimestamp;
 
-    public WorkerHeartBeatMessageInfo() {
+    public WorkerHeartBeatMessage() {
 
     }
 
-    public WorkerHeartBeatMessageInfo(String jobExecutorName, Integer jobId) {
+    public WorkerHeartBeatMessage(String jobExecutorName, Integer jobId) {
         super(jobExecutorName);
         this.jobId = jobId;
     }
 
-    public WorkerHeartBeatMessageInfo(String jobExecutorName, Integer jobId, Timestamp requestTimestamp) {
+    public WorkerHeartBeatMessage(String jobExecutorName, Integer jobId, Timestamp requestTimestamp) {
         super(jobExecutorName);
         this.jobId = jobId;
         this.requestTimestamp = requestTimestamp;
@@ -28,7 +28,7 @@ public class WorkerHeartBeatMessageInfo extends WorkerInfo {
         return id;
     }
 
-    public WorkerHeartBeatMessageInfo setId(Integer id) {
+    public WorkerHeartBeatMessage setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -37,7 +37,7 @@ public class WorkerHeartBeatMessageInfo extends WorkerInfo {
         return jobId;
     }
 
-    public WorkerHeartBeatMessageInfo setJobId(Integer jobId) {
+    public WorkerHeartBeatMessage setJobId(Integer jobId) {
         this.jobId = jobId;
         return this;
     }
@@ -46,7 +46,7 @@ public class WorkerHeartBeatMessageInfo extends WorkerInfo {
         return jobStatus;
     }
 
-    public WorkerHeartBeatMessageInfo setJobStatus(Integer jobStatus) {
+    public WorkerHeartBeatMessage setJobStatus(Integer jobStatus) {
         this.jobStatus = jobStatus;
         return this;
     }
@@ -55,7 +55,7 @@ public class WorkerHeartBeatMessageInfo extends WorkerInfo {
         return requestTimestamp;
     }
 
-    public WorkerHeartBeatMessageInfo setRequestTimestamp(Timestamp requestTimestamp) {
+    public WorkerHeartBeatMessage setRequestTimestamp(Timestamp requestTimestamp) {
         this.requestTimestamp = requestTimestamp;
         return this;
     }

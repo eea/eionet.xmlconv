@@ -9,7 +9,7 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.JobOnDemandHandlerService;
@@ -55,8 +55,8 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             script.setJobId(jobEntry.getId().toString());
 
-            WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(script);
-            jobMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequest);
+            WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
+            jobMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
 
             Integer retryCounter = jobService.getRetryCounter(jobEntry.getId());
             jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());

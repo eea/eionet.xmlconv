@@ -7,7 +7,7 @@ import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
-import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponse;
+import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponseMessage;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class WorkersStatusMessageReceiver implements MessageListener {
         String messageBody = new String(message.getBody());
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
-            WorkerStateRabbitMQResponse response = mapper.readValue(messageBody, WorkerStateRabbitMQResponse.class);
+            WorkerStateRabbitMQResponseMessage response = mapper.readValue(messageBody, WorkerStateRabbitMQResponseMessage.class);
 
             String containerId="";
             if (Properties.enableJobExecRancherScheduledTask) {

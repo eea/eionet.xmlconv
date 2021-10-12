@@ -8,7 +8,7 @@ import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
-import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +36,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
 
     @Transactional
     @Override
-    public void saveMsgAndSendToRabbitMQ(WorkerHeartBeatMessageInfo heartBeatMsgInfo, WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry) {
+    public void saveMsgAndSendToRabbitMQ(WorkerHeartBeatMessage heartBeatMsgInfo, WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry) {
         workerHeartBeatMsgEntry = workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
         heartBeatMsgInfo.setId(workerHeartBeatMsgEntry.getId());
         rabbitMQMessageSender.sendMessageToRabbitMQ(heartBeatMsgInfo);

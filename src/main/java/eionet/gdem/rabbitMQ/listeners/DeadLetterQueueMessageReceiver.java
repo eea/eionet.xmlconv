@@ -11,7 +11,7 @@ import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
@@ -60,7 +60,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
         String messageBody = new String(message.getBody());
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
-            WorkerJobRabbitMQRequest deadLetterMessage = mapper.readValue(messageBody, WorkerJobRabbitMQRequest.class);
+            WorkerJobRabbitMQRequestMessage deadLetterMessage = mapper.readValue(messageBody, WorkerJobRabbitMQRequestMessage.class);
 
             LOGGER.info("Received error message in DEAD LETTER QUEUE: " + deadLetterMessage.getErrorMessage());
             XQScript script = deadLetterMessage.getScript();

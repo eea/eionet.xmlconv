@@ -10,7 +10,7 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerServiceImpl;
 import eionet.gdem.services.JobHistoryService;
@@ -92,10 +92,10 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     @Test
     public void testResendMessageToWorker() throws DatabaseException {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-        WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest();
+        WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage();
         doNothing().when(jobService).updateWorkerRetries(anyInt(), any(Timestamp.class), anyInt());
-        doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
-        workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(Constants.MAX_SCRIPT_EXECUTION_RETRIES, Constants.XQ_FATAL_ERR, intStatus, jobEntry, workerJobRabbitMQRequest, jobExecutor, jobExecutorHistory);
+        doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
+        workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(Constants.MAX_SCRIPT_EXECUTION_RETRIES, Constants.XQ_FATAL_ERR, intStatus, jobEntry, workerJobRabbitMQRequestMessage, jobExecutor, jobExecutorHistory);
     }
 }
 

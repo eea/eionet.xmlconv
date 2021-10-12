@@ -2,36 +2,26 @@ package eionet.gdem.rabbitMQ.model;
 
 import eionet.gdem.jpa.utils.JobExecutorType;
 
-public class WorkerStateRabbitMQResponse {
+public class WorkerStateRabbitMQResponseMessage extends WorkerMessage {
 
-    private String jobExecutorName;
     private Integer jobExecutorStatus;
     private String healthState;
     private String heartBeatQueue;
     private JobExecutorType jobExecutorType;
 
-    public WorkerStateRabbitMQResponse() {
+    public WorkerStateRabbitMQResponseMessage() {
     }
 
-    public WorkerStateRabbitMQResponse(String jobExecutorName, Integer jobExecutorStatus) {
-        this.jobExecutorName = jobExecutorName;
+    public WorkerStateRabbitMQResponseMessage(String jobExecutorName, Integer jobExecutorStatus) {
+        super(jobExecutorName);
         this.jobExecutorStatus = jobExecutorStatus;
-    }
-
-    public String getJobExecutorName() {
-        return jobExecutorName;
-    }
-
-    public WorkerStateRabbitMQResponse setJobExecutorName(String jobExecutorName) {
-        this.jobExecutorName = jobExecutorName;
-        return this;
     }
 
     public Integer getJobExecutorStatus() {
         return jobExecutorStatus;
     }
 
-    public WorkerStateRabbitMQResponse setJobExecutorStatus(Integer jobExecutorStatus) {
+    public WorkerStateRabbitMQResponseMessage setJobExecutorStatus(Integer jobExecutorStatus) {
         this.jobExecutorStatus = jobExecutorStatus;
         return this;
     }
@@ -40,7 +30,7 @@ public class WorkerStateRabbitMQResponse {
         return healthState;
     }
 
-    public WorkerStateRabbitMQResponse setHealthState(String healthState) {
+    public WorkerStateRabbitMQResponseMessage setHealthState(String healthState) {
         this.healthState = healthState;
         return this;
     }
@@ -49,7 +39,7 @@ public class WorkerStateRabbitMQResponse {
         return heartBeatQueue;
     }
 
-    public WorkerStateRabbitMQResponse setHeartBeatQueue(String heartBeatQueue) {
+    public WorkerStateRabbitMQResponseMessage setHeartBeatQueue(String heartBeatQueue) {
         this.heartBeatQueue = heartBeatQueue;
         return this;
     }
@@ -58,7 +48,7 @@ public class WorkerStateRabbitMQResponse {
         return jobExecutorType;
     }
 
-    public WorkerStateRabbitMQResponse setJobExecutorType(JobExecutorType jobExecutorType) {
+    public WorkerStateRabbitMQResponseMessage setJobExecutorType(JobExecutorType jobExecutorType) {
         this.jobExecutorType = jobExecutorType;
         return this;
     }
