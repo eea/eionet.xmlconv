@@ -49,6 +49,7 @@ public final class ThymeleafUtils {
     /**
      * Set up breadcrumbs
      * @param model
+     * @param scriptId
      * @return model
      */
     public static Model setUpBreadCrumbsForScriptExecutionHistory(Model model, String scriptId) {
