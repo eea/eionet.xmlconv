@@ -59,6 +59,9 @@ public class QueryHistoryEntry {
     @JoinColumn(name = "QUERY_BACK_UP_ID")
     private QueryBackupEntry queryBackupEntry;
 
+    @Transient
+    private String dateMod;
+
     public QueryHistoryEntry() {
     }
 
@@ -204,5 +207,13 @@ public class QueryHistoryEntry {
     public QueryHistoryEntry setQueryBackupEntry(QueryBackupEntry queryBackupEntry) {
         this.queryBackupEntry = queryBackupEntry;
         return this;
+    }
+
+    public String getDateMod() {
+        return dateMod;
+    }
+
+    public void setDateMod(String dateMod) {
+        this.dateMod = dateMod;
     }
 }

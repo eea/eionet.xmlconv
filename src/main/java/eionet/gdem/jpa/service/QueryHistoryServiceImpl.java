@@ -20,7 +20,9 @@ public class QueryHistoryServiceImpl implements QueryHistoryService {
 
     @Override
     public List<QueryHistoryEntry> findEntriesByQueryId(Integer queryId) {
-        return queryHistoryRepository.findEntriesByQueryId(queryId);
+        List<QueryHistoryEntry> entries = queryHistoryRepository.findEntriesByQueryId(queryId);
+        entries.stream().forEach(entry -> entry.setDateMod(entry.getDateModified().toString()));
+        return entries;
     }
 
     @Override
