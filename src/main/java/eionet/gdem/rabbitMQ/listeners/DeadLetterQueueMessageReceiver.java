@@ -66,7 +66,9 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
             XQScript script = deadLetterMessage.getScript();
 
             if (deadLetterMessage.getErrorStatus()==null) {
-                LOGGER.info("Job " + script.getJobId() + " was detected as heavy");
+                //We assume that a message arriving in Dead Letter queue, without error Status, has come from a worker that
+                //exploded due to memory exceptions.
+                LOGGER.info("Job Message didn't contain ErrorStatus, therefore, " + script.getJobId() + " was detected as heavy");
                 handleHeavyJobsService.handle(deadLetterMessage);
                 return;
             }
