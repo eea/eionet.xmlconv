@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.scripts;
 
+import eionet.acl.AppUser;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
@@ -15,6 +16,7 @@ import eionet.gdem.services.MessageService;
 import eionet.gdem.services.PaginationService;
 import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.ThymeleafUtils;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
 import eionet.gdem.web.spring.SpringMessages;
@@ -482,8 +484,9 @@ public class QAScriptsController {
     public String executionHistory(@PathVariable String id, @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
                                     @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model, HttpServletRequest request) {
 
-        //Add page title
-        model.addAttribute("title", "QA Script Execution History");
+        //Setup headerVariables
+        model = ThymeleafUtils.setUpTitleAndLogin(model, "QA Script Execution History", request);
+
         String changedPageSize = request.getParameter("pageEntries");
         if(!Utils.isNullStr(changedPageSize)){
             size = Integer.valueOf(changedPageSize);
@@ -503,12 +506,6 @@ public class QAScriptsController {
         model.addAttribute("scriptId", id);
         model.addAttribute("pageEntries", size);
 
-        //Add loginUrl param
-        try {
-            model.addAttribute("loginUrl", SecurityUtil.getLoginURL(request));
-        } catch (XMLConvException e) {
-            LOGGER.error("Could not retrieve login url");
-        }
 
         return "scriptHistory/scriptExecutionHistory";
     }
