@@ -11,7 +11,8 @@ import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
+import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -42,7 +44,11 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
     private ContainersRancherApiOrchestrator containersOrchestrator;
 
     @Autowired
+    @Qualifier("heartBeatRabbitMessageSenderImpl")
     RabbitMQMessageSender rabbitMQMessageSender;
+
+    @Autowired
+    HandleHeavyJobsService handleHeavyJobsService;
 
     /**
      * time in milliseconds
@@ -54,10 +60,18 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
         String messageBody = new String(message.getBody());
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
-            WorkerJobRabbitMQRequest deadLetterMessage = mapper.readValue(messageBody, WorkerJobRabbitMQRequest.class);
+            WorkerJobRabbitMQRequestMessage deadLetterMessage = mapper.readValue(messageBody, WorkerJobRabbitMQRequestMessage.class);
 
             LOGGER.info("Received error message in DEAD LETTER QUEUE: " + deadLetterMessage.getErrorMessage());
             XQScript script = deadLetterMessage.getScript();
+
+            if (deadLetterMessage.getErrorStatus()==null) {
+                //We assume that a message arriving in Dead Letter queue, without error Status, has come from a worker that
+                //exploded due to memory exceptions.
+                LOGGER.info("Job Message didn't contain ErrorStatus, therefore, " + script.getJobId() + " was detected as heavy");
+                handleHeavyJobsService.handle(deadLetterMessage);
+                return;
+            }
 
             String containerId="";
             if (Properties.enableJobExecRancherScheduledTask) {

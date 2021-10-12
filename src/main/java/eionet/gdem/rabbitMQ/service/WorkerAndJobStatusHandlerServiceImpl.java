@@ -8,9 +8,11 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.jpa.utils.JobExecutorType;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +30,7 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
 
     @Autowired
     public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService,
-                                                JobExecutorHistoryService jobExecutorHistoryService, RabbitMQMessageSender rabbitMQMessageSender) {
+                                                JobExecutorHistoryService jobExecutorHistoryService, @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobExecutorService = jobExecutorService;
@@ -43,8 +45,8 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     }
 
     protected void updateJobAndJobHistory(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException {
-        jobService.changeStatusesAndJobExecutorName(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
-        jobHistoryService.updateStatusesAndJobExecutorName(nStatus, internalStatus.getId(), jobEntry);
+        jobService.updateJob(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
+        jobHistoryService.updateJobHistory(nStatus, internalStatus.getId(), jobEntry);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -54,7 +56,16 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     }
 
     protected void updateJobExecutorAndJobExecutorHistory(JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
-        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
+        JobExecutor jobExecDb = jobExecutorService.findByName(jobExecutor.getName());
+        if (jobExecDb!=null) {
+            JobExecutorType jobExecutorType;
+            if (jobExecutor.getJobExecutorType() != null) {
+                jobExecutorType = jobExecutor.getJobExecutorType();
+            } else jobExecutorType = jobExecDb.getJobExecutorType();
+            jobExecutor.setJobExecutorType(jobExecutorType);
+            jobExecutorHistory.setJobExecutorType(jobExecutorType);
+        }
+        jobExecutorService.saveOrUpdateJobExecutor(jobExecDb!=null, jobExecutor);
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(jobExecutorHistory);
     }
 
@@ -79,12 +90,12 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequest workerJobRabbitMQRequest,
+    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage,
                                       JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), jobEntry.getId());
         this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
         this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
-        rabbitMQMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
+        rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
     }
 }
 

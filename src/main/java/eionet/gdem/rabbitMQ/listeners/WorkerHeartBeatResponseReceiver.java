@@ -8,7 +8,7 @@ import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
-import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +38,11 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        WorkerHeartBeatMessageInfo response = null;
+        WorkerHeartBeatMessage response = null;
         StopWatch timer = new StopWatch();
         try {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            response = mapper.readValue(message.getBody(), WorkerHeartBeatMessageInfo.class);
+            response = mapper.readValue(message.getBody(), WorkerHeartBeatMessage.class);
 
             LOGGER.info("Received heart beat response from worker " + response.getJobExecutorName() + " for job " + response.getJobId());
 

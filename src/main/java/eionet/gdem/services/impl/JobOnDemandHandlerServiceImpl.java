@@ -9,13 +9,14 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.JobOnDemandHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     @Autowired
     public JobOnDemandHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService,
-                                         RabbitMQMessageSender jobMessageSender) {
+                                         @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageSender) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobMessageSender = jobMessageSender;
@@ -54,13 +55,13 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             script.setJobId(jobEntry.getId().toString());
 
-            WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(script);
-            jobMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
+            WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
+            jobMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
 
             Integer retryCounter = jobService.getRetryCounter(jobEntry.getId());
             jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());
             internalSchedulingStatus.setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobService.changeStatusesAndJobExecutorName(Constants.XQ_PROCESSING, internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry.getId());
+            jobService.updateJob(Constants.XQ_PROCESSING, internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry);
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_QUEUED);
         } catch (Exception e) {
             throw new XMLConvException(e.getMessage());

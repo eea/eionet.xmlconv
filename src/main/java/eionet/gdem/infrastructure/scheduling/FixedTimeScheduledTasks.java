@@ -15,8 +15,9 @@ import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
+import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.notifications.UNSEventSender;
-import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
@@ -42,6 +43,7 @@ import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FixedTimeScheduledTasks {
@@ -70,7 +72,9 @@ public class FixedTimeScheduledTasks {
     @Autowired
     WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
 
-    /** Dao for getting job data. */
+    /**
+     * Dao for getting job data.
+     */
     private WorkqueueManager jobsManager = new WorkqueueManager();
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
@@ -139,6 +143,7 @@ public class FixedTimeScheduledTasks {
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         List<JobEntry> jobs = jobService.findByIntSchedulingStatus(internalStatus);
         List<JobExecutor> readyWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_READY);
+        readyWorkers = readyWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
         if (jobs.size() > readyWorkers.size()) {
             Integer newWorkers = jobs.size() - readyWorkers.size();
             try {
@@ -192,30 +197,14 @@ public class FixedTimeScheduledTasks {
      */
     void deleteFailedWorkers(String serviceId) throws RancherApiException, DatabaseException {
         List<JobExecutor> failedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
-        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        if (failedWorkers.size()==1 && instances.size()==1) {
-            LOGGER.info("Restarting failed worker because found only one worker instance.");
-            containersOrchestrator.restartContainer(failedWorkers.get(0).getName());
-            return;
+        failedWorkers = failedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
+        for (JobExecutor worker : failedWorkers) {
+            deleteFromRancherAndDatabase(worker);
         }
-        if (instances.size() == failedWorkers.size()) {
-            Integer workersDeleted = 1;
-            for (JobExecutor worker : failedWorkers) {
-                while (workersDeleted <= failedWorkers.size()) {
-                    instances = servicesOrchestrator.getContainerInstances(serviceId);
-                    if (instances.size() == 1) {
-                        containersOrchestrator.restartContainer(worker.getName());
-                        return;
-                    }
-                    deleteFromRancherAndDatabase(worker);
-                    workersDeleted++;
-                    break;
-                }
-            }
-        } else {
-            for (JobExecutor worker : failedWorkers) {
-                deleteFromRancherAndDatabase(worker);
-            }
+        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+        if (instances.size()==0) {
+            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
+            servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         }
     }
 
@@ -273,7 +262,8 @@ public class FixedTimeScheduledTasks {
             this.updateDbContainersHealthStatusFromRancher(instances);
 
             List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
-            this.synchronizeRancherContainersWithDbEntries(jobExecutors, instances);
+            List<JobExecutor> lightJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
+            this.synchronizeRancherContainersWithDbEntries(lightJobExecutors, instances);
         } catch (RancherApiException rae) {
             LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
             throw rae;
@@ -290,7 +280,7 @@ public class FixedTimeScheduledTasks {
         List<JobEntry> processingJobs = jobService.findProcessingJobs();
         for (JobEntry jobEntry : processingJobs) {
             try {
-                WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
+                WorkerHeartBeatMessage heartBeatMsgInfo = new WorkerHeartBeatMessage(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
                 WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
                 heartBeatMsgHandlerService.saveMsgAndSendToRabbitMQ(heartBeatMsgInfo, workerHeartBeatMsgEntry);
             } catch (Exception e) {
@@ -326,12 +316,14 @@ public class FixedTimeScheduledTasks {
             //for each instance find status
             ContainerData data = containersOrchestrator.getContainerInfoById(containerId);
             String healthState = data.getHealthState();
-            if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue())) {
+            String state = data.getState();
+            if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue()) || state.equals(SchedulingConstants.CONTAINER_STATE_ENUM.STOPPED.getValue())) {
                 //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
                 String containerName = data.getName();
                 String heartBeatQueue = containerName + "-queue";
                 JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, heartBeatQueue);
                 try {
+                    LOGGER.info("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus: setting status of container with name " + containerName + " to WORKER_FAILED");
                     JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 } catch (DatabaseException e) {
@@ -422,7 +414,7 @@ public class FixedTimeScheduledTasks {
      * Deletes expired finished jobs from workqueue
      **/
     @Scheduled(cron = "0 0 */3 * * *") //Every 3 hours
-    public void schedulePeriodicCleanupOfFinishedWorkqueueJobs(){
+    public void schedulePeriodicCleanupOfFinishedWorkqueueJobs() {
         LOGGER.info("Cleanup of finished workqueue jobs.");
         try {
             List<WorkqueueJob> jobs = jobsManager.getFinishedJobs();
@@ -442,8 +434,7 @@ public class FixedTimeScheduledTasks {
     /**
      * Check the job's age and return true if it is possible to delete it.
      *
-     * @param job
-     *            Workqueue job object
+     * @param job Workqueue job object
      * @return true if job can be deleted.
      */
     public static boolean canDeleteJob(WorkqueueJob job) {
@@ -465,7 +456,7 @@ public class FixedTimeScheduledTasks {
      * Updates Data Dictionary tables cache.
      **/
     @Scheduled(cron = "0 0 */1 * * *") //Every 1 hour
-    public void schedulePeriodicDDTablesCacheUpdate(){
+    public void schedulePeriodicDDTablesCacheUpdate() {
         LOGGER.info("Updating DD tables chache.");
         try {
             List<DDDatasetTable> ddTables = DDServiceClient.getDDTablesFromDD();

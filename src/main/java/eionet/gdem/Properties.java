@@ -223,6 +223,9 @@ public class Properties {
     public static String WORKER_STATUS_ROUTING_KEY;
     public static String WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY;
     public static String WORKERS_DEAD_LETTER_ROUTING_KEY;
+    public static String HEAVY_WORKERS_JOBS_QUEUE;
+    public static String  MAIN_XMLCONV_HEAVY_JOBS_EXCHANGE;
+    public static String HEAVY_JOBS_ROUTING_KEY;
 
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
@@ -362,6 +365,9 @@ public class Properties {
         JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
         WORKER_STATUS_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.status.routingkey");
         WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.heartBeat.response.routingKey");
+        HEAVY_WORKERS_JOBS_QUEUE = getStringProperty("env.rabbitmq.heavy.workers.jobs.queue");
+        MAIN_XMLCONV_HEAVY_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.heavy.jobs.exchange");
+        HEAVY_JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.heavy.jobs.routingkey");
 
         jobsOnDemandLimitBeforeTimeout = getLongProperty("env.jobs.onDemand.limit.before.time.out");
         jobsOnDemandUITimeout = getLongProperty("env.jobs.onDemand.ui.time.out");

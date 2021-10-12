@@ -4,6 +4,7 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.qa.XQScript;
+import org.basex.core.jobs.Job;
 import org.springframework.data.repository.query.Param;
 
 import java.sql.Timestamp;
@@ -13,7 +14,7 @@ public interface JobService {
 
     void changeNStatus(Integer jobId, Integer status) throws DatabaseException;
 
-    void changeStatusesAndJobExecutorName(Integer nStatus, InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, Integer jobId) throws DatabaseException;
+    void updateJob(Integer nStatus, InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, JobEntry jobEntry) throws DatabaseException;
 
     JobEntry findById(Integer id);
 

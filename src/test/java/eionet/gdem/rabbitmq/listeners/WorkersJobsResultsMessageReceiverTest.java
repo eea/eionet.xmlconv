@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
-import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
+import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
@@ -47,7 +48,7 @@ public class WorkersJobsResultsMessageReceiverTest {
     public void testOnMessageReadyJob() throws JsonProcessingException {
         XQScript xqScript = createXqScript();
 
-        WorkerJobInfoRabbitMQResponse response = createRabbitMQResponse(xqScript, false);
+        WorkerJobInfoRabbitMQResponseMessage response = createRabbitMQResponse(xqScript, false);
         Message message = convertObjectToByteArray(response);
 
         receiver.onMessage(message);
@@ -59,7 +60,7 @@ public class WorkersJobsResultsMessageReceiverTest {
     public void testOnMessageJobFailure() throws JsonProcessingException {
         XQScript xqScript = createXqScript();
 
-        WorkerJobInfoRabbitMQResponse response = createRabbitMQResponse(xqScript, true);
+        WorkerJobInfoRabbitMQResponseMessage response = createRabbitMQResponse(xqScript, true);
         Message message = convertObjectToByteArray(response);
 
         receiver.onMessage(message);
@@ -77,7 +78,7 @@ public class WorkersJobsResultsMessageReceiverTest {
         return xqScript;
     }
 
-    private Message convertObjectToByteArray(WorkerJobInfoRabbitMQResponse response) throws JsonProcessingException {
+    private Message convertObjectToByteArray(WorkerJobInfoRabbitMQResponseMessage response) throws JsonProcessingException {
         ObjectMapper jsonMapper = new ObjectMapper();
         String responseObject = jsonMapper.writeValueAsString(response);
         byte[] body = responseObject.getBytes();
@@ -85,13 +86,14 @@ public class WorkersJobsResultsMessageReceiverTest {
         return new Message(body, messageProperties);
     }
 
-    private WorkerJobInfoRabbitMQResponse createRabbitMQResponse(XQScript xqScript, boolean errorExists) {
-        WorkerJobInfoRabbitMQResponse response = new WorkerJobInfoRabbitMQResponse();
+    private WorkerJobInfoRabbitMQResponseMessage createRabbitMQResponse(XQScript xqScript, boolean errorExists) {
+        WorkerJobInfoRabbitMQResponseMessage response = new WorkerJobInfoRabbitMQResponseMessage();
         response.setScript(xqScript);
         response.setJobExecutorStatus(1);
         response.setJobExecutorName("demoJobExecutor");
         response.setHeartBeatQueue("demoJobExecutor-queue");
         response.setErrorExists(errorExists);
+        response.setJobExecutorType(JobExecutorType.Light);
         return response;
     }
 

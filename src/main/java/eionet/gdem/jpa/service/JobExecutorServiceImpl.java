@@ -3,6 +3,7 @@ package eionet.gdem.jpa.service;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
+import eionet.gdem.jpa.utils.JobExecutorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,9 @@ public class JobExecutorServiceImpl implements JobExecutorService {
 
     private JobExecutorRepository jobExecutorRepository;
 
-    /** */
+    /**
+     *
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(JobExecutorServiceImpl.class);
 
     @Autowired
@@ -37,11 +40,10 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     }
 
     @Override
-    public void saveOrUpdateJobExecutor(JobExecutor jobExecutor) throws DatabaseException {
+    public void saveOrUpdateJobExecutor(boolean update, JobExecutor jobExecutor) throws DatabaseException {
         try {
-            JobExecutor jobExec = jobExecutorRepository.findByName(jobExecutor.getName());
-            if (jobExec!=null) {
-                jobExecutorRepository.updateStatusAndJobId(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExec.getName());
+            if (update) {
+                jobExecutorRepository.updateJobExecutor(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getJobExecutorType().getId(), jobExecutor.getName());
             } else {
                 jobExecutorRepository.save(jobExecutor);
             }
@@ -80,9 +82,19 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     @Override
     public void deleteByName(String name) throws DatabaseException {
         try {
-           jobExecutorRepository.deleteByName(name);
+            jobExecutorRepository.deleteByName(name);
         } catch (Exception e) {
             LOGGER.error("Database exception while trying to delete jobExecutor with name " + name);
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<JobExecutor> findExecutorsByJobId(Integer jobId) throws DatabaseException {
+        try {
+            return jobExecutorRepository.findJobExecutorsByJobId(jobId);
+        } catch (Exception e) {
+            LOGGER.error("Database exception while trying to retrieve JOB_EXECUTOR entry for job with id " + jobId);
             throw new DatabaseException(e.getMessage());
         }
     }

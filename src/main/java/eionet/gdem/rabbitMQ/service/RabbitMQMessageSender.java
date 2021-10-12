@@ -1,12 +1,10 @@
 package eionet.gdem.rabbitMQ.service;
 
-import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerMessage;
 
-public interface RabbitMQMessageSender {
+public interface RabbitMQMessageSender<T extends WorkerMessage> {
 
-    void sendJobInfoToRabbitMQ(WorkerJobRabbitMQRequest workerJobRabbitMQRequest);
 
-    void sendHeartBeatMessage(WorkerHeartBeatMessageInfo workerHeartBeatMessageInfo);
+    void sendMessageToRabbitMQ(T t);
 
 }

@@ -15,7 +15,7 @@ import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
@@ -28,6 +28,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +54,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
-                                      RabbitMQMessageSender rabbitMQMessageSender, JobService jobService) {
+                                      @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, JobService jobService) {
         this.queryDao = queryDao;
         this.jobHistoryService = jobHistoryService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
@@ -172,8 +173,8 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 }
 
                 processJob(jobEntry);
-                WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(xq);
-                rabbitMQMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
+                WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(xq);
+                rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
             }
         } catch (Exception e) {
             throw new CreateRabbitMQMessageException(e.getMessage());
@@ -200,7 +201,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             Integer retryCounter = jobService.getRetryCounter(jobId);
             jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobId);
             InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobService.changeStatusesAndJobExecutorName(Constants.XQ_PROCESSING, intStatus, null, new Timestamp(new Date().getTime()), jobId);
+            jobService.updateJob(Constants.XQ_PROCESSING, intStatus, null, new Timestamp(new Date().getTime()), jobEntry);
             LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);

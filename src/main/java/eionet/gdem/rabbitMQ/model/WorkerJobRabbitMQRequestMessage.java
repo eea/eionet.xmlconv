@@ -2,20 +2,19 @@ package eionet.gdem.rabbitMQ.model;
 
 import eionet.gdem.qa.XQScript;
 
-public class WorkerJobRabbitMQRequest {
+public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
 
     private XQScript script;
-    private String jobExecutorName;
     private Integer jobExecutionRetries;
     private String errorMessage;
     private Integer errorStatus;
     private Integer jobExecutorStatus;
     private String heartBeatQueue;
 
-    public WorkerJobRabbitMQRequest(){
+    public WorkerJobRabbitMQRequestMessage(){
     }
 
-    public WorkerJobRabbitMQRequest(XQScript script) {
+    public WorkerJobRabbitMQRequestMessage(XQScript script) {
         this.script = script;
     }
 
@@ -23,17 +22,8 @@ public class WorkerJobRabbitMQRequest {
         return script;
     }
 
-    public WorkerJobRabbitMQRequest setScript(XQScript script) {
+    public WorkerJobRabbitMQRequestMessage setScript(XQScript script) {
         this.script = script;
-        return this;
-    }
-
-    public String getJobExecutorName() {
-        return jobExecutorName;
-    }
-
-    public WorkerJobRabbitMQRequest setJobExecutorName(String jobExecutorName) {
-        this.jobExecutorName = jobExecutorName;
         return this;
     }
 

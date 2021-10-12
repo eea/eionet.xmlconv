@@ -31,6 +31,15 @@ public class SpringRabbitMqConfig {
                 .build();
     }
 
+    //Queue where converters sends script messages for heavy jobs for heavy workers to retrieve
+    @Bean
+    Queue heavyWorkersJobsQueue() {
+        return QueueBuilder.durable(Properties.HEAVY_WORKERS_JOBS_QUEUE)
+                .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
+                .build();
+    }
+
     //Queue where workers respond with results after executing a script
     @Bean
     Queue workersJobsResultsQueue() {
@@ -73,13 +82,23 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
+    DirectExchange mainXmlconvHeavyWorkersExchange() {
+        return new DirectExchange(Properties.MAIN_XMLCONV_HEAVY_JOBS_EXCHANGE,true,false);
+    }
+
+    @Bean
     DirectExchange deadLetterExchange() {
         return new DirectExchange(Properties.WORKERS_DEAD_LETTER_EXCHANGE);
     }
 
     @Bean
-    Binding xmlconvExchangeToXmlConvJobsQUeueBinding() {
+    Binding xmlconvExchangeToXmlConvJobsQueueBinding() {
         return BindingBuilder.bind(workersJobsQueue()).to(mainXmlconvJobsExchange()).with(Properties.JOBS_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding xmlconvExchangeToXmlConvHeavyJobsQueueBinding() {
+        return BindingBuilder.bind(heavyWorkersJobsQueue()).to(mainXmlconvHeavyWorkersExchange()).with(Properties.HEAVY_JOBS_ROUTING_KEY);
     }
 
     @Bean
@@ -192,17 +211,20 @@ public class SpringRabbitMqConfig {
 
         admin.declareExchange(mainWorkersExchange());
         admin.declareExchange(mainXmlconvJobsExchange());
+        admin.declareExchange(mainXmlconvHeavyWorkersExchange());
         admin.declareExchange(workersHeartBeatRequestExchange());
         admin.declareExchange(deadLetterExchange());
 
         admin.declareQueue(workersJobsQueue());
+        admin.declareQueue(heavyWorkersJobsQueue());
         admin.declareQueue(workersJobsResultsQueue());
         admin.declareQueue(workersStatusQueue());
         admin.declareQueue(workerHeartBeatResponseQueue());
         admin.declareQueue(deadLetterQueue());
 
         admin.declareBinding(workersExchangeToWorkersJobResultsQueueBinding());
-        admin.declareBinding(xmlconvExchangeToXmlConvJobsQUeueBinding());
+        admin.declareBinding(xmlconvExchangeToXmlConvJobsQueueBinding());
+        admin.declareBinding(xmlconvExchangeToXmlConvHeavyJobsQueueBinding());
         admin.declareBinding(workersExchangeToWorkersStatusQueueBinding());
         admin.declareBinding(exchangeToWorkerHeartBeatResponseQueueBinding());
         admin.declareBinding(exchangeToDeadLetterQueueBinding());
