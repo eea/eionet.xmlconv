@@ -5,11 +5,10 @@ import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.JobNotFoundException;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.logging.Markers;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
@@ -17,6 +16,7 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.jpa.service.QueryMetadataServiceImpl;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
 import eionet.gdem.validation.ValidationService;
@@ -51,14 +51,17 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     private JobHistoryService jobHistoryService;
     private RabbitMQMessageSender rabbitMQMessageSender;
     private JobService jobService;
+    private QueryMetadataService queryMetadataService;
 
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
                                       @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, JobService jobService) {
+                                      RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, QueryMetadataService queryMetadataService) {
         this.queryDao = queryDao;
         this.jobHistoryService = jobHistoryService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
         this.jobService = jobService;
+        this.queryMetadataService = queryMetadataService;
     }
 
     @Transactional(rollbackFor=Exception.class)
@@ -78,9 +81,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
+                long startTime = System.nanoTime();
+                Integer jobStatus = null;
                 try {
-                    long startTime = System.nanoTime();
-
                     // validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
@@ -101,11 +104,21 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     String result = vs.validateSchema(srcFile, scriptFile);
                     LOGGER.debug("Validation proceeded, now store to the result file");
                     Utils.saveStrToFile(resultFile, result, null);
-                    changeStatus(Constants.XQ_READY,jobId);
                     long stopTime = System.nanoTime();
+
+                    changeStatus(Constants.XQ_READY,jobId);
+                    jobStatus = Constants.XQ_READY;
                     LOGGER.info("### job with id: " + jobId + " has been Validated. Validation time in nanoseconds = " + (stopTime - startTime));
                 } catch (Exception e) {
+                    jobStatus = Constants.XQ_FATAL_ERR;
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true,jobEntry, jobId);
+                }
+                finally{
+                    long stopTime = System.nanoTime();
+                    Long durationOfJob = stopTime - startTime;
+                    //Store script information
+                    queryMetadataService.storeScriptInformation(Integer.valueOf(queryID), scriptFile, scriptType, durationOfJob, jobStatus);
+                    LOGGER.info("Updated tables QUERY_METADATA and QUERY_METADATA_HISTORY for script: " + scriptFile);
                 }
             } else {
 

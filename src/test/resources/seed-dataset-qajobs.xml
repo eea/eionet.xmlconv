@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+  <T_XQJOBS job_id="1" url="http://test.dev/test.xml" xq_file="test.xq" xq_type="xquery 3.0+" result_file="test.html" n_status="2" retry_counter="0" internal_status_id="3" job_executor_name="jobExecutor1" time_stamp="2021-01-03 16:53:52.0"/>
+  <T_XQJOBS job_id="2" url="http://test.dev/test.xml" xq_file="test.xq" xq_type="xquery 3.0+" result_file="test.html" n_status="0" retry_counter="0" internal_status_id="1" job_executor_name="" time_stamp="2021-01-03 16:53:52.0"/>
   <T_XQJOBS job_id="1" url="http://test.dev/test.xml" xq_file="test.xq" xq_type="xquery 3.0+" result_file="test.html" n_status="2" retry_counter="0" internal_status_id="3" job_executor_name="jobExecutor1" is_heavy="0"/>
   <T_XQJOBS job_id="2" url="http://test.dev/test.xml" xq_file="test.xq" xq_type="xquery 3.0+" result_file="test.html" n_status="0" retry_counter="0" internal_status_id="1" job_executor_name="" is_heavy="0"/>
 

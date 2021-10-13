@@ -48,7 +48,7 @@ public class WorkerHeartBeatResponseReceiverTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(heartBeatMsgHandlerService).updateHeartBeatAndJobTables(any(WorkerHeartBeatMsgEntry.class), anyInt(), anyInt(), anyInt(), any(InternalSchedulingStatus.class));
+        doNothing().when(heartBeatMsgHandlerService).updateHeartBeatJobAndQueryTables(any(WorkerHeartBeatMsgEntry.class), anyInt(), anyInt(), anyInt(), any(InternalSchedulingStatus.class));
     }
 
     @Test

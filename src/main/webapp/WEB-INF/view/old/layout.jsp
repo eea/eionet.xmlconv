@@ -36,7 +36,6 @@
   <%--<script type="text/javascript" src="/static/js/foundation.js"></script>--%>
   <tiles:insertAttribute name="specific_header" ignore="true"/>
 </head>
-
 <body>
   <tiles:insertAttribute name="header"/>
   <tiles:insertAttribute name="messages"/>

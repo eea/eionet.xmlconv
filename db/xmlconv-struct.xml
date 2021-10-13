@@ -658,6 +658,77 @@
             <column name="WORKER_RETRIES" type="INT"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-61">
+        <comment>Table for storing script info</comment>
+        <createTable tableName="QUERY_METADATA">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="SCRIPT_FILENAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="T_QUERY_ID" type="INT">
+                <constraints foreignKeyName="FK_QUERY_METADATA"
+                             references="T_QUERY(QUERY_ID)"/>
+            </column>
+            <column name="SCRIPT_TYPE" type="VARCHAR(50)"/>
+            <column name="AVERAGE_DURATION" type="BIGINT"/>
+            <column name="NUMBER_OF_EXECUTIONS" type="INT"/>
+            <column name="MARKED_HEAVY" defaultValue="false" type="BOOLEAN"/>
+            <column name="VERSION" type="INT"/>
+        </createTable>
+        <createIndex indexName="QUERY_METADATA_FILENAME" tableName="QUERY_METADATA" unique="false">
+            <column name="SCRIPT_FILENAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-62">
+        <comment>Table for storing script info history</comment>
+        <createTable tableName="QUERY_METADATA_HISTORY">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="SCRIPT_FILENAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="T_QUERY_ID" type="INT">
+                <constraints foreignKeyName="FK_QUERY_METADATA_HISTORY"
+                             references="T_QUERY(QUERY_ID)"/>
+            </column>
+            <column name="SCRIPT_TYPE" type="VARCHAR(50)"/>
+            <column name="DURATION" type="BIGINT"/>
+            <column name="MARKED_HEAVY" defaultValue="false" type="BOOLEAN"/>
+            <column name="JOB_STATUS" type="INT"/>
+            <column name="VERSION" type="INT"/>
+        </createTable>
+        <createIndex indexName="QUERY_METADATA_HISTORY_FILENAME" tableName="QUERY_METADATA_HISTORY" unique="false">
+            <column name="SCRIPT_FILENAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-69">
+        <comment>Remove foreign key constraints</comment>
+        <sql>
+            ALTER TABLE QUERY_METADATA DROP FOREIGN KEY FK_QUERY_METADATA;
+            ALTER TABLE QUERY_METADATA_HISTORY DROP FOREIGN KEY FK_QUERY_METADATA_HISTORY;
+        </sql>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-70">
+        <comment>Add foreign key constraints</comment>
+        <addForeignKeyConstraint baseColumnNames="T_QUERY_ID" baseTableName="QUERY_METADATA"
+                                 constraintName="FK_QUERY_METADATA"
+                                 onDelete="SET NULL" onUpdate="CASCADE"
+                                 referencedColumnNames="QUERY_ID" referencedTableName="T_QUERY"/>
+        <addForeignKeyConstraint baseColumnNames="T_QUERY_ID" baseTableName="QUERY_METADATA_HISTORY"
+                                 constraintName="FK_QUERY_METADATA_HISTORY"
+                                 onDelete="SET NULL" onUpdate="CASCADE"
+                                 referencedColumnNames="QUERY_ID" referencedTableName="T_QUERY"/>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-71">
+        <comment>Add duration sum column</comment>
+        <addColumn tableName="QUERY_METADATA">
+            <column name="DURATION_SUM" type="BIGINT">
+            </column>
+        </addColumn>
+    </changeSet>
     <changeSet author="favvmary" id="rev-63">
         <comment>
             Added column JOB_EXECUTOR_TYPE to JOB_EXECUTOR table

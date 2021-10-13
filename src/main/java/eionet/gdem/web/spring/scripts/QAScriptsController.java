@@ -1,14 +1,22 @@
 package eionet.gdem.web.spring.scripts;
 
+import eionet.acl.AppUser;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.XMLConvException;
+import eionet.gdem.jpa.Entities.QueryMetadataEntry;
+import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
+import eionet.gdem.jpa.repositories.QueryMetadataRepository;
+import eionet.gdem.paging.Paged;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
+import eionet.gdem.jpa.service.QueryMetadataService;
+import eionet.gdem.utils.SecurityUtil;
+import eionet.gdem.utils.ThymeleafUtils;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
 import eionet.gdem.web.spring.SpringMessages;
@@ -27,15 +35,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -49,6 +53,12 @@ public class QAScriptsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptsController.class);
 
     private MessageService messageService;
+
+    @Autowired
+    QueryMetadataRepository queryMetadataRepository;
+
+    @Autowired
+    QueryMetadataService queryMetadataService;
 
     @Autowired
     public QAScriptsController(MessageService messageService) {
@@ -447,4 +457,35 @@ public class QAScriptsController {
         return "redirect:/schemas/" + schemaId + "/scripts";
     }
 
+    @GetMapping("/{id}/executionHistory")
+    public String executionHistory(@PathVariable String id, @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                                    @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model, HttpServletRequest request) {
+
+        //Setup headerVariables
+        model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.qascript.executionHistory.title"), request);
+        //Setup breadcrumbs
+        model = ThymeleafUtils.setUpBreadCrumbsForScriptExecutionHistory(model, id);
+
+        String changedPageSize = request.getParameter("pageEntries");
+        if(!Utils.isNullStr(changedPageSize)){
+            size = Integer.valueOf(changedPageSize);
+        }
+
+        Paged<QueryMetadataHistoryEntry> pagedEntries = queryMetadataService.getQueryMetadataHistoryEntries(pageNumber, size, Integer.valueOf(id));
+
+        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(Integer.valueOf(id));
+        if(queryMetadataEntryList.size() > 0){
+            Long durationToMs = queryMetadataEntryList.get(0).getAverageDuration();
+            String formattedDuration = Utils.createFormatForMs(durationToMs);
+
+            model.addAttribute("averageDuration", formattedDuration);
+            model.addAttribute("numberOfExecutions", queryMetadataEntryList.get(0).getNumberOfExecutions());
+        }
+        model.addAttribute("history", pagedEntries);
+        model.addAttribute("scriptId", id);
+        model.addAttribute("pageEntries", size);
+
+
+        return "scriptHistory/scriptExecutionHistory";
+    }
 }
