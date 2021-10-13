@@ -30,8 +30,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
     private QueryMetadataService queryMetadataService;
 
     @Autowired
-    public HeartBeatMsgHandlerServiceImpl(WorkerHeartBeatMsgService workerHeartBeatMsgService, @Qualifier("heartBeatRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, JobHistoryService jobHistoryService) {
-    public HeartBeatMsgHandlerServiceImpl(WorkerHeartBeatMsgService workerHeartBeatMsgService, RabbitMQMessageSender rabbitMQMessageSender,
+    public HeartBeatMsgHandlerServiceImpl(WorkerHeartBeatMsgService workerHeartBeatMsgService, @Qualifier("heartBeatRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender,
                                           JobService jobService, JobHistoryService jobHistoryService, QueryMetadataService queryMetadataService) {
         this.workerHeartBeatMsgService = workerHeartBeatMsgService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;

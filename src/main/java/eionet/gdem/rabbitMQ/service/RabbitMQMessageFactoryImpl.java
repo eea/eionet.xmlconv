@@ -55,8 +55,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
-                                      @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, JobService jobService) {
-                                      RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, QueryMetadataService queryMetadataService) {
+                                      @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, QueryMetadataService queryMetadataService) {
         this.queryDao = queryDao;
         this.jobHistoryService = jobHistoryService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
