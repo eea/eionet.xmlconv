@@ -8,6 +8,7 @@ import eionet.gdem.exceptions.JobNotFoundException;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.logging.Markers;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
@@ -49,17 +50,16 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     private JobHistoryService jobHistoryService;
     private RabbitMQMessageSender rabbitMQMessageSender;
     private JobService jobService;
-
-    @Autowired
-    QueryMetadataServiceImpl queryMetadataService;
+    private QueryMetadataService queryMetadataService;
 
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
-                                      RabbitMQMessageSender rabbitMQMessageSender, JobService jobService) {
+                                      RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, QueryMetadataService queryMetadataService) {
         this.queryDao = queryDao;
         this.jobHistoryService = jobHistoryService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
         this.jobService = jobService;
+        this.queryMetadataService = queryMetadataService;
     }
 
     @Transactional(rollbackFor=Exception.class)

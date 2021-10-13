@@ -11,6 +11,7 @@ import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.jpa.service.QueryMetadataService;
+import eionet.gdem.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +26,16 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
     private RabbitMQMessageSender rabbitMQMessageSender;
     private JobService jobService;
     private JobHistoryService jobHistoryService;
-
-
-    @Autowired
-    QueryMetadataService queryMetadataService;
+    private QueryMetadataService queryMetadataService;
 
     @Autowired
-    public HeartBeatMsgHandlerServiceImpl(WorkerHeartBeatMsgService workerHeartBeatMsgService, RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, JobHistoryService jobHistoryService) {
+    public HeartBeatMsgHandlerServiceImpl(WorkerHeartBeatMsgService workerHeartBeatMsgService, RabbitMQMessageSender rabbitMQMessageSender,
+                                          JobService jobService, JobHistoryService jobHistoryService, QueryMetadataService queryMetadataService) {
         this.workerHeartBeatMsgService = workerHeartBeatMsgService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
+        this.queryMetadataService = queryMetadataService;
     }
 
     @Transactional
@@ -58,8 +58,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
                     .setIntSchedulingStatus(internalStatus.getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setWorkerRetries(jobEntry.getWorkerRetries()).setJobType(jobEntry.getJobType())
                     .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null);
             jobHistoryService.save(jobHistoryEntry);
-            Long currentMs = new Timestamp(new Date().getTime()).getTime();
-            Long durationOfJob = Math.abs(currentMs - jobEntry.getTimestamp().getTime());
+            Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
             queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR);
         }
     }

@@ -15,6 +15,7 @@ import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponse;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.jpa.service.QueryMetadataService;
+import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -63,8 +64,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
             InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
             jobEntry.setJobExecutorName(response.getJobExecutorName());
-            Long currentMs = new Timestamp(new Date().getTime()).getTime();
-            Long durationOfJob = Math.abs(currentMs - jobEntry.getTimestamp().getTime());
+            Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
             if (response.isErrorExists()) {
                 LOGGER.info("Job with id " + script.getJobId() + " failed with error: " + response.getErrorMessage());
                 workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);

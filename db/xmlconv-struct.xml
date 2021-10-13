@@ -722,4 +722,11 @@
                                  onDelete="SET NULL" onUpdate="CASCADE"
                                  referencedColumnNames="QUERY_ID" referencedTableName="T_QUERY"/>
     </changeSet>
+    <changeSet author="anthaant" id="rev-71">
+        <comment>Add duration sum column</comment>
+        <addColumn tableName="QUERY_METADATA">
+            <column name="DURATION_SUM" type="BIGINT">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

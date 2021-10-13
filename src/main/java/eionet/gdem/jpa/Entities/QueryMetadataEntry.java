@@ -34,10 +34,13 @@ public class QueryMetadataEntry implements Serializable {
     @Column(name = "VERSION")
     private Integer version;
 
+    @Column(name = "DURATION_SUM")
+    private Long durationSum;
+
     public QueryMetadataEntry() {
     }
 
-    public QueryMetadataEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long averageDuration, Integer numberOfExecutions, Boolean markedHeavy, Integer version) {
+    public QueryMetadataEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long averageDuration, Integer numberOfExecutions, Boolean markedHeavy, Integer version, Long durationSum) {
         this.id = id;
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
@@ -46,9 +49,10 @@ public class QueryMetadataEntry implements Serializable {
         this.numberOfExecutions = numberOfExecutions;
         this.markedHeavy = markedHeavy;
         this.version = version;
+        this.durationSum = durationSum;
     }
 
-    public QueryMetadataEntry(String scriptFilename, Integer queryId, String scriptType, Long averageDuration, Integer numberOfExecutions, Boolean markedHeavy, Integer version) {
+    public QueryMetadataEntry(String scriptFilename, Integer queryId, String scriptType, Long averageDuration, Integer numberOfExecutions, Boolean markedHeavy, Integer version, Long durationSum) {
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
         this.averageDuration = averageDuration;
@@ -56,6 +60,7 @@ public class QueryMetadataEntry implements Serializable {
         this.numberOfExecutions = numberOfExecutions;
         this.markedHeavy = markedHeavy;
         this.version = version;
+        this.durationSum = durationSum;
     }
 
     public Integer getId() {
@@ -120,5 +125,13 @@ public class QueryMetadataEntry implements Serializable {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Long getDurationSum() {
+        return durationSum;
+    }
+
+    public void setDurationSum(Long durationSum) {
+        this.durationSum = durationSum;
     }
 }

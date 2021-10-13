@@ -159,11 +159,6 @@
         <put-attribute name="body" value="/WEB-INF/view/old/scripts/history.jsp" />
     </definition>
 
-    <definition name="/scripts/executionHistory" extends="base">
-        <put-attribute name="title" value="label.qascript.executionHistory.title" />
-        <put-attribute name="body" value="/WEB-INF/view/old/scripts/executionHistory.jsp" />
-    </definition>
-
     <definition name="/scripts/view" extends="base">
         <put-attribute name="title" value="label.qascriptView.title" />
         <put-attribute name="body" value="/WEB-INF/view/old/scripts/view.jsp" />

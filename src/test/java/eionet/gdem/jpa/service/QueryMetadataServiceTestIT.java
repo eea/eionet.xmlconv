@@ -137,12 +137,11 @@ public class QueryMetadataServiceTestIT {
         Assert.assertThat(queryMetadataEntryList.size(), is(1));
 
         QueryMetadataEntry queryMetadataEntry = queryMetadataEntryList.get(0);
-        Long averageDuration = (durationOfJob + 240000)/5;
 
         Assert.assertThat(queryMetadataEntry.getQueryId(), is(queryID));
         Assert.assertThat(queryMetadataEntry.getScriptFilename(), is("testFile3"));
         Assert.assertThat(queryMetadataEntry.getScriptType(), is("xq"));
-        Assert.assertThat(queryMetadataEntry.getAverageDuration(), is(averageDuration));
+        Assert.assertThat(queryMetadataEntry.getAverageDuration(), is(Long.valueOf(228000)));
         Assert.assertThat(queryMetadataEntry.getNumberOfExecutions(), is(5));
         Assert.assertThat(queryMetadataEntry.getMarkedHeavy(), is(false));
         Assert.assertThat(queryMetadataEntry.getVersion(), is(1));

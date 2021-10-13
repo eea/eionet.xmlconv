@@ -14,7 +14,6 @@ import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
-import eionet.gdem.services.PaginationService;
 import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.ThymeleafUtils;
@@ -54,9 +53,6 @@ public class QAScriptsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptsController.class);
 
     private MessageService messageService;
-
-    @Autowired
-    PaginationService paginationService;
 
     @Autowired
     QueryMetadataRepository queryMetadataRepository;
@@ -461,26 +457,6 @@ public class QAScriptsController {
         return "redirect:/schemas/" + schemaId + "/scripts";
     }
 
-    //jsp page
-    //@GetMapping("/{id}/executionHistory")
-    /*public String executionHistory(@PathVariable String id, Model model) {
-
-        List<QueryMetadataHistoryEntry> historyList = queryMetadataHistoryRepository.findByQueryId(Integer.valueOf(id));
-        historyList = queryMetadataService.fillQueryMetadataAdditionalInfo(historyList);
-        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(Integer.valueOf(id));
-        if(queryMetadataEntryList.size() > 0){
-            Long durationToMs = queryMetadataEntryList.get(0).getAverageDuration();
-            String formattedDuration = Utils.createFormatForMs(durationToMs);
-
-            model.addAttribute("averageDuration", formattedDuration);
-            model.addAttribute("numberOfExecutions", queryMetadataEntryList.get(0).getNumberOfExecutions());
-        }
-        model.addAttribute("history", historyList);
-        model.addAttribute("scriptId", id);
-
-        return "/scripts/executionHistory";
-    }*/
-
     @GetMapping("/{id}/executionHistory")
     public String executionHistory(@PathVariable String id, @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
                                     @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model, HttpServletRequest request) {
@@ -495,7 +471,7 @@ public class QAScriptsController {
             size = Integer.valueOf(changedPageSize);
         }
 
-        Paged<QueryMetadataHistoryEntry> pagedEntries = paginationService.getQueryMetadataHistoryEntries(pageNumber, size, Integer.valueOf(id));
+        Paged<QueryMetadataHistoryEntry> pagedEntries = queryMetadataService.getQueryMetadataHistoryEntries(pageNumber, size, Integer.valueOf(id));
 
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(Integer.valueOf(id));
         if(queryMetadataEntryList.size() > 0){
