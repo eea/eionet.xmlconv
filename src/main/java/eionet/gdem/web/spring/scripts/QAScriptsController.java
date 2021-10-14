@@ -497,7 +497,7 @@ public class QAScriptsController {
         //Setup headerVariables
         model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.qascript.executionHistory.title"), request);
         //Setup breadcrumbs
-        model = ThymeleafUtils.setUpBreadCrumbsForScriptExecutionHistory(model, id);
+        model = ThymeleafUtils.setUpBreadCrumbsForScriptPages(model, id, Properties.getStringProperty("label.qascript.executionHistory.title"));
 
         String changedPageSize = request.getParameter("pageEntries");
         if(!Utils.isNullStr(changedPageSize)){
@@ -523,7 +523,13 @@ public class QAScriptsController {
     }
 
     @GetMapping("/history/{queryId}")
-    public String getScriptsHistory(@PathVariable Integer queryId, Model model) {
+    public String getScriptsHistory(@PathVariable Integer queryId, Model model, HttpServletRequest request) {
+
+        //Setup headerVariables
+        model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.qascriptHistory.title"), request);
+        //Setup breadcrumbs
+        model = ThymeleafUtils.setUpBreadCrumbsForScriptPages(model, queryId.toString(), Properties.getStringProperty("label.qascriptHistory.title"));
+
         //we pass queryId in html to be able to use it in the tabbed menu and in scriptInfoHistory.js vue script
         model.addAttribute("queryId", queryId);
         return "scriptHistory/scriptHistory";

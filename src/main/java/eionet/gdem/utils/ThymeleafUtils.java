@@ -52,12 +52,12 @@ public final class ThymeleafUtils {
      * @param scriptId
      * @return model
      */
-    public static Model setUpBreadCrumbsForScriptExecutionHistory(Model model, String scriptId) {
+    public static Model setUpBreadCrumbsForScriptPages(Model model, String scriptId, String pageTitle) {
         List<BreadCrumb> breadcrumbs = new ArrayList();
         breadcrumbs.add(new BreadCrumb(Properties.gdemURL + "/index.jsp", Properties.getStringProperty("label.gdem.title")));
         breadcrumbs.add(new BreadCrumb(Properties.gdemURL + "/scripts", Properties.getStringProperty("label.qascript.all.title")));
         breadcrumbs.add(new BreadCrumb(Properties.gdemURL + "/scripts/" + scriptId, Properties.getStringProperty("label.qascriptView.title")));
-        breadcrumbs.add(new BreadCrumb(null, Properties.getStringProperty("label.qascript.executionHistory.title")));
+        breadcrumbs.add(new BreadCrumb(null, pageTitle));
 
         model.addAttribute("breadcrumbs", breadcrumbs);
         return model;

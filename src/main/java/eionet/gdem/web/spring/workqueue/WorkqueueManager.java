@@ -358,7 +358,7 @@ public class WorkqueueManager {
                             // behavior in terms of the workers previously executing the job, and their termination, as well as the job removal from rabbitmq queues.
                             if (status.equals(String.valueOf(Constants.DELETED))) {
                                 LOGGER.info("Job with id " + jobId + " has already status deleted=" + Constants.DELETED);
-                                return;
+                                continue;
                             }
                             jobsToDelete.add(jobId);
                             // delete also result files from file system tmp folder
