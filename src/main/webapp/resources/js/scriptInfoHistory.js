@@ -41,7 +41,7 @@ var app = new Vue({
             this.loading = true;
             axios
                 .get(
-                    "/restapi/scripts/history/" + queryId
+                    "/restapi/scriptData/history/" + queryId
                 )
                 .then((response) => {
                     this.loading = false;

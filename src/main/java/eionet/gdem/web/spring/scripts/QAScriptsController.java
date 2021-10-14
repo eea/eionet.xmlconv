@@ -536,6 +536,7 @@ public class QAScriptsController {
 
     @GetMapping("/history/{queryId}")
     public String getScriptsHistory(@PathVariable Integer queryId, Model model) {
+        //we pass queryId in html to be able to use it in the tabbed menu and in scriptInfoHistory.js vue script
         model.addAttribute("queryId", queryId);
         return "scriptHistory/scriptHistory";
     }

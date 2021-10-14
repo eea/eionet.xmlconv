@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/scripts")
+@RequestMapping("/scriptData")
 public class ScriptsHistoryController {
 
     private QueryHistoryService queryHistoryService;
