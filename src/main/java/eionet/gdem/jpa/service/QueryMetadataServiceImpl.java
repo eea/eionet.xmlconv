@@ -10,6 +10,7 @@ import eionet.gdem.jpa.repositories.QueryMetadataRepository;
 import eionet.gdem.paging.*;
 import eionet.gdem.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -23,12 +24,15 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
     public QueryMetadataServiceImpl() {
     }
 
+    @Qualifier("queryMetadataRepository")
     @Autowired
     QueryMetadataRepository queryMetadataRepository;
 
+    @Qualifier("queryMetadataHistoryRepository")
     @Autowired
     QueryMetadataHistoryRepository queryMetadataHistoryRepository;
 
+    @Qualifier("jobRepository")
     @Autowired
     JobRepository jobRepository;
 
