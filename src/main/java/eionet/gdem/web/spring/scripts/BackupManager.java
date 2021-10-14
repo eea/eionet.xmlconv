@@ -21,25 +21,26 @@
 
 package eionet.gdem.web.spring.scripts;
 
+import eionet.gdem.Constants;
+import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
+import eionet.gdem.dcm.BusinessConstants;
+import eionet.gdem.dto.BackupDto;
+import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.QueryBackupEntry;
+import eionet.gdem.jpa.service.QueryBackupService;
+import eionet.gdem.jpa.service.QueryHistoryService;
+import eionet.gdem.services.GDEMServices;
+import eionet.gdem.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-
-
-
-import eionet.gdem.Constants;
-import eionet.gdem.Properties;
-import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.dto.BackupDto;
-import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Backup manager.
@@ -61,41 +62,37 @@ public class BackupManager {
      * @param id Id
      * @param user user
      */
-    public void backupFile(String folderName, String fileName, String id, String user) {
+    public QueryBackupEntry backupFile(String folderName, String fileName, String id, String user) {
 
         File origFile = new File(folderName, fileName);
-        if (!origFile.exists())
-        {
-            return; // there's nothing to backup since file does not exist
+        if (!origFile.exists()) {
+            return null; // there's nothing to backup since file does not exist
         }
 
         long timestamp = System.currentTimeMillis();
         String backupFileName =
-            Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
+                Constants.BACKUP_FILE_PREFIX + id + "_" + timestamp + fileName.substring(fileName.lastIndexOf("."));
 
         // backup folder is the subfolder
         String backupFolderName = folderName + File.separator + Constants.BACKUP_FOLDER_NAME;
         File backupFolder = new File(backupFolderName);
-        if (!backupFolder.exists())
-        {
+        if (!backupFolder.exists()) {
             backupFolder.mkdir(); // create backup folder if it does not exist
         }
 
         File backupFile = new File(backupFolderName, backupFileName);
-
+        QueryBackupEntry queryBackupEntry = null;
         try {
             Utils.copyFile(origFile, backupFile);
-            BackupDto backup = new BackupDto();
-            backup.setFileName(backupFileName);
-            backup.setQueryId(id);
-            backup.setUser(user);
-            backup.setTimestamp(new Timestamp(timestamp));
-            backupDao.addBackup(backup);
+
+            queryBackupEntry = new QueryBackupEntry.QueryBackupEntryBuilder().setFileName(backupFileName).setObjectId(Integer.parseInt(id))
+                    .setUser(user).setfTimestamp(new Timestamp(timestamp)).build();
+            queryBackupEntry = getQueryBackupService().save(queryBackupEntry);
         } catch (Exception e) {
-            LOGGER.error("Unable to create backupfile - copy original file " + origFile.getPath() + " to " + backupFile.getPath()
-                    + ". " + e.toString());
+            LOGGER.error("Error during query backup history or query history creation for script with id " + id);
             e.printStackTrace();
         }
+        return queryBackupEntry;
     }
 
     /**
@@ -177,4 +174,7 @@ public class BackupManager {
         return result;
     }
 
+    private static QueryBackupService getQueryBackupService() {
+        return (QueryBackupService) SpringApplicationContext.getBean("queryBackupServiceImpl");
+    }
 }

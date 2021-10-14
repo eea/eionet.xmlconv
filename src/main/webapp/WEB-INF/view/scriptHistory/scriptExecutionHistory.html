@@ -3,7 +3,7 @@
     <head th:replace="~{fragments/head-old :: head}"/>
     <body th:include="~{fragments/layout-old :: layout(~{::div})}">
 
-        <div class="container">
+        <div class="container" style="display: grid">
 
             <div id="tabbedmenu">
                 <ul>
@@ -13,7 +13,7 @@
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{'/scripts/' +${scriptId} + '/history'}" style="color: black; text-decoration: none;">
+                        <a th:href="@{'/new/scripts/history/'+${scriptId}}" style="color: black; text-decoration: none;">
                             <span th:text="#{label.qascript.history}"></span>
                         </a>
                     </li>

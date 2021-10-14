@@ -11,7 +11,7 @@
         </span>
       </li>
       <li>
-        <a href="/scripts/${form.scriptId}/history" style="color: black; text-decoration: none;">
+        <a href="/new/scripts/history/${form.scriptId}" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.history"/>
         </a>
       </li>

@@ -10,21 +10,19 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
-import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -43,10 +41,6 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
     @Autowired
     private ContainersRancherApiOrchestrator containersOrchestrator;
-
-    @Autowired
-    @Qualifier("heartBeatRabbitMessageSenderImpl")
-    RabbitMQMessageSender rabbitMQMessageSender;
 
     @Autowired
     HandleHeavyJobsService handleHeavyJobsService;

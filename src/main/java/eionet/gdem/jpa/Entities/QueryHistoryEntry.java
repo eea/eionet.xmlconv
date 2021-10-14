@@ -1,15 +1,16 @@
 package eionet.gdem.jpa.Entities;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
-@Table(name = "T_QUERY")
-public class QueryEntry {
+@Table(name = "QUERY_HISTORY")
+public class QueryHistoryEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "QUERY_ID")
-    private Integer queryId;
+    private Integer id;
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -44,19 +45,32 @@ public class QueryEntry {
     @Column(name = "VERSION")
     private Integer version;
 
-    public QueryEntry() {
+    @Column(name = "USER")
+    private String user;
+
+    @Column(name = "DATE_MODIFIED")
+    private Date dateModified;
+
+    @ManyToOne
+    @JoinColumn(name = "QUERY_ID")
+    private QueryEntry queryEntry;
+
+    @OneToOne
+    @JoinColumn(name = "QUERY_BACK_UP_ID")
+    private QueryBackupEntry queryBackupEntry;
+
+    @Transient
+    private String dateMod;
+
+    public QueryHistoryEntry() {
     }
 
-    public QueryEntry(Integer queryId) {
-        this.queryId = queryId;
+    public Integer getId() {
+        return id;
     }
 
-    public Integer getQueryId() {
-        return queryId;
-    }
-
-    public QueryEntry setQueryId(Integer queryId) {
-        this.queryId = queryId;
+    public QueryHistoryEntry setId(Integer id) {
+        this.id = id;
         return this;
     }
 
@@ -64,7 +78,7 @@ public class QueryEntry {
         return description;
     }
 
-    public QueryEntry setDescription(String description) {
+    public QueryHistoryEntry setDescription(String description) {
         this.description = description;
         return this;
     }
@@ -73,7 +87,7 @@ public class QueryEntry {
         return shortName;
     }
 
-    public QueryEntry setShortName(String shortName) {
+    public QueryHistoryEntry setShortName(String shortName) {
         this.shortName = shortName;
         return this;
     }
@@ -82,7 +96,7 @@ public class QueryEntry {
         return queryFileName;
     }
 
-    public QueryEntry setQueryFileName(String queryFileName) {
+    public QueryHistoryEntry setQueryFileName(String queryFileName) {
         this.queryFileName = queryFileName;
         return this;
     }
@@ -91,7 +105,7 @@ public class QueryEntry {
         return schemaId;
     }
 
-    public QueryEntry setSchemaId(Integer schemaId) {
+    public QueryHistoryEntry setSchemaId(Integer schemaId) {
         this.schemaId = schemaId;
         return this;
     }
@@ -100,7 +114,7 @@ public class QueryEntry {
         return resultType;
     }
 
-    public QueryEntry setResultType(String resultType) {
+    public QueryHistoryEntry setResultType(String resultType) {
         this.resultType = resultType;
         return this;
     }
@@ -109,7 +123,7 @@ public class QueryEntry {
         return scriptType;
     }
 
-    public QueryEntry setScriptType(String scriptType) {
+    public QueryHistoryEntry setScriptType(String scriptType) {
         this.scriptType = scriptType;
         return this;
     }
@@ -118,7 +132,7 @@ public class QueryEntry {
         return upperLimit;
     }
 
-    public QueryEntry setUpperLimit(Integer upperLimit) {
+    public QueryHistoryEntry setUpperLimit(Integer upperLimit) {
         this.upperLimit = upperLimit;
         return this;
     }
@@ -127,7 +141,7 @@ public class QueryEntry {
         return url;
     }
 
-    public QueryEntry setUrl(String url) {
+    public QueryHistoryEntry setUrl(String url) {
         this.url = url;
         return this;
     }
@@ -136,7 +150,7 @@ public class QueryEntry {
         return active;
     }
 
-    public QueryEntry setActive(boolean active) {
+    public QueryHistoryEntry setActive(boolean active) {
         this.active = active;
         return this;
     }
@@ -145,7 +159,7 @@ public class QueryEntry {
         return asynchronousExecution;
     }
 
-    public QueryEntry setAsynchronousExecution(boolean asynchronousExecution) {
+    public QueryHistoryEntry setAsynchronousExecution(boolean asynchronousExecution) {
         this.asynchronousExecution = asynchronousExecution;
         return this;
     }
@@ -154,21 +168,52 @@ public class QueryEntry {
         return version;
     }
 
-    public QueryEntry setVersion(Integer version) {
+    public QueryHistoryEntry setVersion(Integer version) {
         this.version = version;
         return this;
     }
+
+    public String getUser() {
+        return user;
+    }
+
+    public QueryHistoryEntry setUser(String user) {
+        this.user = user;
+        return this;
+    }
+
+    public Date getDateModified() {
+        return dateModified;
+    }
+
+    public QueryHistoryEntry setDateModified(Date dateModified) {
+        this.dateModified = dateModified;
+        return this;
+    }
+
+    public QueryEntry getQueryEntry() {
+        return queryEntry;
+    }
+
+    public QueryHistoryEntry setQueryEntry(QueryEntry queryEntry) {
+        this.queryEntry = queryEntry;
+        return this;
+    }
+
+    public QueryBackupEntry getQueryBackupEntry() {
+        return queryBackupEntry;
+    }
+
+    public QueryHistoryEntry setQueryBackupEntry(QueryBackupEntry queryBackupEntry) {
+        this.queryBackupEntry = queryBackupEntry;
+        return this;
+    }
+
+    public String getDateMod() {
+        return dateMod;
+    }
+
+    public void setDateMod(String dateMod) {
+        this.dateMod = dateMod;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

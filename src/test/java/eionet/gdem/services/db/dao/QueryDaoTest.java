@@ -120,7 +120,7 @@ public class QueryDaoTest {
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
 
         // upadate query fileds
-        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type, upperLimit, url, false);
+        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type, upperLimit, url, false, 1);
 
         // Get query by ID and test if all upadted fields are in DB
         query = queryDao.getQueryInfo(queryId);
