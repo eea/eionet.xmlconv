@@ -105,6 +105,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
         String script_title = "";
 
         String feedbackStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
+        LOGGER.info("Feedback status for jobId " + jobId + " is set " + Constants.XQ_FEEDBACKSTATUS_UNKNOWN);
         String feedbackMsg = "";
 
         if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING) {
@@ -163,6 +164,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
                 HashMap<String, String> feedbackResult = FeedbackAnalyzer.getFeedbackResultFromFile(jobData[2]);
 
                 feedbackStatus = feedbackResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
+                LOGGER.info("Feedback status for jobId " + jobId + " is set " + feedbackResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
                 feedbackMsg = feedbackResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM);
 
 

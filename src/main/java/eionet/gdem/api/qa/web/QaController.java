@@ -201,6 +201,8 @@ public class QaController {
         jsonResults.put("feedbackMessage", results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
         jsonResults.put("feedbackContentType", results.get(Constants.RESULT_METATYPE_PRM));
 
+        LOGGER.info("For job id " + jobId + " statusId=" + (String) results.get(Constants.RESULT_CODE_PRM) + " and feedbackStatus=" + results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
+
         if(results.get("REMOTE_FILES")!=null){
             String[] fileUrls = (String[]) results.get("REMOTE_FILES");
             if(fileUrls[0]!=null) {

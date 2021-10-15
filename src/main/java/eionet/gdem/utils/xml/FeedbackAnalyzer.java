@@ -58,15 +58,20 @@ public final class FeedbackAnalyzer {
      */
     private static HashMap<String, String> getFeedbackMap(Document document) {
         HashMap<String, String> fbResult = new HashMap<String, String>();
-        String fbStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;;
+        String fbStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
+        LOGGER.info("Feedback status is set to " + Constants.XQ_FEEDBACKSTATUS_UNKNOWN);
         String fbMessage = "";
 
         Element feedbackStatus = document.select("#feedbackStatus").first();
         if (feedbackStatus != null) {
             fbStatus = StringUtils.defaultIfBlank(feedbackStatus.attr("class"), Constants.XQ_FEEDBACKSTATUS_UNKNOWN);
+            if(fbStatus.equals(Constants.XQ_FEEDBACKSTATUS_UNKNOWN)){
+                LOGGER.info("feedbackStatus.attr(class) is blank so status will be set to " + Constants.XQ_FEEDBACKSTATUS_UNKNOWN);
+            }
             fbMessage = feedbackStatus.text();
         }
         fbResult.put(Constants.RESULT_FEEDBACKSTATUS_PRM, fbStatus);
+        LOGGER.info("Feedback status is set to " + fbStatus);
         fbResult.put(Constants.RESULT_FEEDBACKMESSAGE_PRM, fbMessage);
         return fbResult;
     }
