@@ -21,9 +21,6 @@ $(document).ready(function() {
                     csvColumns[5] = 'Version';
                     csvRows[0] = csvColumns.join(';');
                     return csvRows.join('\n');
-                },
-                exportOptions: {
-                    columns: ':gt(0)'
                 }
             }
         ],
