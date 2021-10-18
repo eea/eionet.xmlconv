@@ -105,7 +105,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
         String script_title = "";
 
         String feedbackStatus = Constants.XQ_FEEDBACKSTATUS_UNKNOWN;
-        LOGGER.info("Feedback status for jobId " + jobId + " is set " + Constants.XQ_FEEDBACKSTATUS_UNKNOWN);
+        LOGGER.info("Feedback status for jobId " + jobId + " is set to " + Constants.XQ_FEEDBACKSTATUS_UNKNOWN + " and N_STATUS=" +status);
         String feedbackMsg = "";
 
         if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING) {
