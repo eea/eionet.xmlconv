@@ -113,6 +113,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
                     containerApiResponse = getContainerInfo(containerName);
                     if (containerApiResponse.getData().size() > 0) {
                         state = containerApiResponse.getData().get(0).getState();
+                        healthState = containerApiResponse.getData().get(0).getState();
                     }
                 } catch (RancherApiException e) {
                     LOGGER.info(e.getMessage());
@@ -169,6 +170,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
                     containerApiResponse = getContainerInfo(containerName);
                     if (containerApiResponse.getData().size() > 0) {
                         state = containerApiResponse.getData().get(0).getState();
+                        healthState = containerApiResponse.getData().get(0).getHealthState();
                     }
                 } catch (RancherApiException e) {
                     LOGGER.error("Error getting information for container " + containerName + ", " + e);
