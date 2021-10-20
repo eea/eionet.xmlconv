@@ -61,6 +61,8 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
             LOGGER.info("Updating heart beat message entry with id " + response.getId());
 
             InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+            //We will mark a job as Fatal Error, only when the heartbeat message Response
+            // from the worker was JobNotFound, and the job is in processing status.
             heartBeatMsgHandlerService.updateHeartBeatAndJobTables(oldEntry, response.getJobId(), response.getJobStatus(), Constants.XQ_FATAL_ERR, internalStatus);
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing ", e);
