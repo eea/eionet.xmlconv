@@ -20,14 +20,18 @@ import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
+import eionet.gdem.rancher.exception.RancherApiTimoutException;
+import eionet.gdem.rancher.model.ContainerApiResponse;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
+import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
+import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -75,6 +79,10 @@ public class FixedTimeScheduledTasks {
     private WorkqueueManager jobsManager = new WorkqueueManager();
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
+    /**
+     * time in milliseconds
+     */
+    private static final Integer TIME_LIMIT = 60000;
 
     @Autowired
     public FixedTimeScheduledTasks() {
@@ -196,10 +204,42 @@ public class FixedTimeScheduledTasks {
         for (JobExecutor worker : failedWorkers) {
             deleteFromRancherAndDatabase(worker);
         }
-        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        if (instances.size()==0) {
-            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
-            servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+        StopWatch timer = new StopWatch();
+        String instance;
+        String containerName = null;
+        try {
+            List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+            if (instances.size()==0) {
+                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
+                ServiceApiResponse serviceApiResponse = servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+                instance = serviceApiResponse.getInstanceIds().get(0);
+                ContainerData containerData = containersOrchestrator.getContainerInfoById(instance);
+                containerName = containerData.getName();
+                String state = containerData.getState();
+                String healthState = containerData.getHealthState();
+                ContainerApiResponse containerApiResponse;
+                timer.start();
+                while (!state.equals("running") || !healthState.equals("healthy")) {
+                    try {
+                        containerApiResponse = containersOrchestrator.getContainerInfo(containerName);
+                        if (containerApiResponse.getData().size() > 0) {
+                            state = containerApiResponse.getData().get(0).getState();
+                            healthState = containerApiResponse.getData().get(0).getHealthState();
+                        }
+                    } catch (RancherApiException e) {
+                        LOGGER.error("Error getting information for container " + containerName + ", " + e);
+                        throw new RancherApiException(e);
+                    }
+                    if (timer.getTime() > TIME_LIMIT) {
+                        throw new RancherApiTimoutException("Time exceeded for creating new container");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.info("Error deleting container with id " + e.getMessage());
+            throw new RancherApiException(e.getMessage());
+        } finally {
+            timer.stop();
         }
     }
 
