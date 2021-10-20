@@ -571,8 +571,10 @@ public class QASandboxController {
         } catch (IOException | DCMException | SignOnException | SQLException | InterruptedException e) {
             throw new RuntimeException("Exception:" + e.getMessage());
         } finally {
-            timer.stop();
-            session.removeAttribute("jobId");
+            if (!String.valueOf(Constants.JOB_VALIDATION).equals(scriptId)) {
+                timer.stop();
+                session.removeAttribute("jobId");
+            }
         }
         return null;
     }

@@ -105,13 +105,15 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             timer.start();
             result = restTemplate.exchange(rancherApiUrl + "/" + containerId + "?action=restart", HttpMethod.POST, entity, ContainerData.class);
             String state = result.getBody().getState();
+            String healthState = result.getBody().getHealthState();
             LOGGER.info("Restarting container with id " + containerId + " for container with name " + containerName);
             ContainerApiResponse containerApiResponse;
-            while (!state.equals("running")) {
+            while (!state.equals("running") || !healthState.equals("healthy")) {
                 try {
                     containerApiResponse = getContainerInfo(containerName);
                     if (containerApiResponse.getData().size() > 0) {
                         state = containerApiResponse.getData().get(0).getState();
+                        healthState = containerApiResponse.getData().get(0).getState();
                     }
                 } catch (RancherApiException e) {
                     LOGGER.info(e.getMessage());
@@ -161,12 +163,14 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             //THis happens because rancher has already in mind a scale number which we haven't yet touched, so it tries to replace what we delete.
             newContainerReplacingTheJustDeletedOne = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.DELETE, entity, ContainerData.class);
             String state = newContainerReplacingTheJustDeletedOne.getBody().getState();
+            String healthState = newContainerReplacingTheJustDeletedOne.getBody().getHealthState();
             LOGGER.info("Deleting container with id " + containerId + " for container with name " + containerName);
-            while (!state.equals("running")) {
+            while (!state.equals("running") || !healthState.equals("healthy")) {
                 try {
                     containerApiResponse = getContainerInfo(containerName);
                     if (containerApiResponse.getData().size() > 0) {
                         state = containerApiResponse.getData().get(0).getState();
+                        healthState = containerApiResponse.getData().get(0).getHealthState();
                     }
                 } catch (RancherApiException e) {
                     LOGGER.error("Error getting information for container " + containerName + ", " + e);

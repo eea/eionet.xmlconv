@@ -42,6 +42,7 @@ import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FixedTimeScheduledTasks {
@@ -192,30 +193,13 @@ public class FixedTimeScheduledTasks {
      */
     void deleteFailedWorkers(String serviceId) throws RancherApiException, DatabaseException {
         List<JobExecutor> failedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
-        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        if (failedWorkers.size()==1 && instances.size()==1) {
-            LOGGER.info("Restarting failed worker because found only one worker instance.");
-            containersOrchestrator.restartContainer(failedWorkers.get(0).getName());
-            return;
+        for (JobExecutor worker : failedWorkers) {
+            deleteFromRancherAndDatabase(worker);
         }
-        if (instances.size() == failedWorkers.size()) {
-            Integer workersDeleted = 1;
-            for (JobExecutor worker : failedWorkers) {
-                while (workersDeleted <= failedWorkers.size()) {
-                    instances = servicesOrchestrator.getContainerInstances(serviceId);
-                    if (instances.size() == 1) {
-                        containersOrchestrator.restartContainer(worker.getName());
-                        return;
-                    }
-                    deleteFromRancherAndDatabase(worker);
-                    workersDeleted++;
-                    break;
-                }
-            }
-        } else {
-            for (JobExecutor worker : failedWorkers) {
-                deleteFromRancherAndDatabase(worker);
-            }
+        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+        if (instances.size()==0) {
+            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
+            servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         }
     }
 
