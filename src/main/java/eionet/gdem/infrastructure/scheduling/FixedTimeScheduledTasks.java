@@ -207,6 +207,7 @@ public class FixedTimeScheduledTasks {
         StopWatch timer = new StopWatch();
         String instance;
         String containerName = null;
+        timer.start();
         try {
             List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
             if (instances.size()==0) {
@@ -218,7 +219,6 @@ public class FixedTimeScheduledTasks {
                 String state = containerData.getState();
                 String healthState = containerData.getHealthState();
                 ContainerApiResponse containerApiResponse;
-                timer.start();
                 while (!state.equals("running") || !healthState.equals("healthy")) {
                     try {
                         containerApiResponse = containersOrchestrator.getContainerInfo(containerName);
