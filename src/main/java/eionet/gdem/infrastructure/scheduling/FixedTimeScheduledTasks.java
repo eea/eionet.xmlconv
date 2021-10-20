@@ -205,26 +205,42 @@ public class FixedTimeScheduledTasks {
             deleteFromRancherAndDatabase(worker);
         }
         StopWatch timer = new StopWatch();
+        StopWatch stateTimer = new StopWatch();
         String instance;
         String containerName = null;
         timer.start();
+        stateTimer.start();
         try {
             List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
             if (instances.size()==0) {
                 ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
                 ServiceApiResponse serviceApiResponse = servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-                instance = serviceApiResponse.getInstanceIds().get(0);
-                ContainerData containerData = containersOrchestrator.getContainerInfoById(instance);
-                containerName = containerData.getName();
-                String state = containerData.getState();
-                String healthState = containerData.getHealthState();
-                ContainerApiResponse containerApiResponse;
-                while (!state.equals("running") || !healthState.equals("healthy")) {
+                instances = serviceApiResponse.getInstanceIds();
+                while (instances==null) {
                     try {
-                        containerApiResponse = containersOrchestrator.getContainerInfo(containerName);
-                        if (containerApiResponse.getData().size() > 0) {
-                            state = containerApiResponse.getData().get(0).getState();
-                            healthState = containerApiResponse.getData().get(0).getHealthState();
+                        instances = servicesOrchestrator.getContainerInstances(serviceId);
+                        if (instances!=null) {
+                            instance = instances.get(0);
+                            ContainerData containerData = containersOrchestrator.getContainerInfoById(instance);
+                            containerName = containerData.getName();
+                            String state = containerData.getState();
+                            String healthState = containerData.getHealthState();
+                            ContainerApiResponse containerApiResponse;
+                            while (!state.equals("running") || !healthState.equals("healthy")) {
+                                try {
+                                    containerApiResponse = containersOrchestrator.getContainerInfo(containerName);
+                                    if (containerApiResponse.getData().size() > 0) {
+                                        state = containerApiResponse.getData().get(0).getState();
+                                        healthState = containerApiResponse.getData().get(0).getHealthState();
+                                    }
+                                } catch (RancherApiException e) {
+                                    LOGGER.error("Error getting information for container " + containerName + ", " + e);
+                                    throw new RancherApiException(e);
+                                }
+                                if (stateTimer.getTime() > TIME_LIMIT) {
+                                    throw new RancherApiTimoutException("Time exceeded for creating new container");
+                                }
+                            }
                         }
                     } catch (RancherApiException e) {
                         LOGGER.error("Error getting information for container " + containerName + ", " + e);
@@ -236,10 +252,11 @@ public class FixedTimeScheduledTasks {
                 }
             }
         } catch (Exception e) {
-            LOGGER.info("Error deleting container with id " + e.getMessage());
+            LOGGER.info("Error creating new container: " + e.getMessage());
             throw new RancherApiException(e.getMessage());
         } finally {
             timer.stop();
+            stateTimer.stop();
         }
     }
 
