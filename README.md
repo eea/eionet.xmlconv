@@ -82,3 +82,8 @@ docker run -d --hostname my-rabbit -p 0.0.0.0:15672:15672 -p 5672:5672 --name so
 * env.enable.jobExecutor.rancher.scheduled.task=false
 
 It should be set to false locally so as not to run.
+
+#### Rabbitmq rancher stack configuration
+To properly configure rabbitmq stack, a file rabbitmq.conf needs to be created in the directory /etc/rabbitmq/ of the rabbitmq stack. 
+The file should contain the line "consumer_timeout = 16200000", in order to increase the default timeout value that a rabbitmq consumer 
+should ack its delivery before the channel is closed.
