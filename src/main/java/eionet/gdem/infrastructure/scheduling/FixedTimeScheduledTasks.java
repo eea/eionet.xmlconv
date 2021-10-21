@@ -20,18 +20,14 @@ import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.exception.RancherApiTimoutException;
-import eionet.gdem.rancher.model.ContainerApiResponse;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
-import eionet.gdem.rancher.model.ServiceApiResponse;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
-import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -46,7 +42,6 @@ import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class FixedTimeScheduledTasks {
@@ -79,10 +74,6 @@ public class FixedTimeScheduledTasks {
     private WorkqueueManager jobsManager = new WorkqueueManager();
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
-    /**
-     * time in milliseconds
-     */
-    private static final Integer TIME_LIMIT = 60000;
 
     @Autowired
     public FixedTimeScheduledTasks() {
@@ -139,7 +130,7 @@ public class FixedTimeScheduledTasks {
         String serviceId = Properties.rancherJobExecServiceId;
 
         try {
-            deleteFailedWorkers();
+            deleteFailedWorkers(serviceId);
         } catch (RancherApiException | DatabaseException e) {
             LOGGER.error("Error during deletion of failed workers");
             return;
@@ -147,9 +138,7 @@ public class FixedTimeScheduledTasks {
 
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         List<JobEntry> jobs = jobService.findByIntSchedulingStatus(internalStatus);
-        LOGGER.info("Found " + jobs.size() + " jobs with internal status queued!");
         List<JobExecutor> readyWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_READY);
-        LOGGER.info("Found " + readyWorkers.size() + " ready workers!");
         if (jobs.size() > readyWorkers.size()) {
             Integer newWorkers = jobs.size() - readyWorkers.size();
             try {
@@ -193,15 +182,7 @@ public class FixedTimeScheduledTasks {
                 }
             }
         }
-        try {
-            List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-            if (instances.size()==0) {
-                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
-                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-            }
-        } catch (RancherApiException e) {
-            LOGGER.error("Error finding jobExecutor service instances");
-        }
+
     }
 
     /**
@@ -209,10 +190,15 @@ public class FixedTimeScheduledTasks {
      *
      * @throws RancherApiException
      */
-    void deleteFailedWorkers() throws RancherApiException, DatabaseException {
+    void deleteFailedWorkers(String serviceId) throws RancherApiException, DatabaseException {
         List<JobExecutor> failedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
         for (JobExecutor worker : failedWorkers) {
             deleteFromRancherAndDatabase(worker);
+        }
+        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+        if (instances.size()==0) {
+            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
+            servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         }
     }
 
