@@ -147,7 +147,9 @@ public class FixedTimeScheduledTasks {
 
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         List<JobEntry> jobs = jobService.findByIntSchedulingStatus(internalStatus);
+        LOGGER.info("Found " + jobs.size() + " jobs with internal status queued!");
         List<JobExecutor> readyWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_READY);
+        LOGGER.info("Found " + readyWorkers + " ready workers!");
         if (jobs.size() > readyWorkers.size()) {
             Integer newWorkers = jobs.size() - readyWorkers.size();
             try {
