@@ -139,7 +139,7 @@ public class FixedTimeScheduledTasks {
         String serviceId = Properties.rancherJobExecServiceId;
 
         try {
-            deleteFailedWorkers(serviceId);
+            deleteFailedWorkers();
         } catch (RancherApiException | DatabaseException e) {
             LOGGER.error("Error during deletion of failed workers");
             return;
@@ -193,7 +193,15 @@ public class FixedTimeScheduledTasks {
                 }
             }
         }
-
+        try {
+            List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+            if (instances.size()==0) {
+                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
+                servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            }
+        } catch (RancherApiException e) {
+            LOGGER.error("Error finding jobExecutor service instances");
+        }
     }
 
     /**
@@ -201,64 +209,10 @@ public class FixedTimeScheduledTasks {
      *
      * @throws RancherApiException
      */
-    void deleteFailedWorkers(String serviceId) throws RancherApiException, DatabaseException {
+    void deleteFailedWorkers() throws RancherApiException, DatabaseException {
         List<JobExecutor> failedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
         for (JobExecutor worker : failedWorkers) {
             deleteFromRancherAndDatabase(worker);
-        }
-        StopWatch timer = new StopWatch();
-        StopWatch stateTimer = new StopWatch();
-        String instance;
-        String containerName = null;
-        timer.start();
-        stateTimer.start();
-        try {
-            List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-            if (instances.size()==0) {
-                ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
-                ServiceApiResponse serviceApiResponse = servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-                instances = serviceApiResponse.getInstanceIds();
-                while (instances==null) {
-                    try {
-                        instances = servicesOrchestrator.getContainerInstances(serviceId);
-                        if (instances!=null) {
-                            instance = instances.get(0);
-                            ContainerData containerData = containersOrchestrator.getContainerInfoById(instance);
-                            containerName = containerData.getName();
-                            String state = containerData.getState();
-                            String healthState = containerData.getHealthState();
-                            ContainerApiResponse containerApiResponse;
-                            while (!state.equals("running") || !healthState.equals("healthy")) {
-                                try {
-                                    containerApiResponse = containersOrchestrator.getContainerInfo(containerName);
-                                    if (containerApiResponse.getData().size() > 0) {
-                                        state = containerApiResponse.getData().get(0).getState();
-                                        healthState = containerApiResponse.getData().get(0).getHealthState();
-                                    }
-                                } catch (RancherApiException e) {
-                                    LOGGER.error("Error getting information for container " + containerName + ", " + e);
-                                    throw new RancherApiException(e);
-                                }
-                                if (stateTimer.getTime() > TIME_LIMIT) {
-                                    throw new RancherApiTimoutException("Time exceeded for creating new container");
-                                }
-                            }
-                        }
-                    } catch (RancherApiException e) {
-                        LOGGER.error("Error getting information for container " + containerName + ", " + e);
-                        throw new RancherApiException(e);
-                    }
-                    if (timer.getTime() > TIME_LIMIT) {
-                        throw new RancherApiTimoutException("Time exceeded for creating new container");
-                    }
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.info("Error creating new container: " + e.getMessage());
-            throw new RancherApiException(e.getMessage());
-        } finally {
-            timer.stop();
-            stateTimer.stop();
         }
     }
 
