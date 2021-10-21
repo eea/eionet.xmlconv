@@ -658,4 +658,20 @@
             <column name="WORKER_RETRIES" type="INT"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-72">
+        <comment>
+            Changed HEART_BEAT_QUEUE column size in JOB_EXECUTOR table
+        </comment>
+        <sql>
+            ALTER TABLE JOB_EXECUTOR MODIFY COLUMN HEART_BEAT_QUEUE varchar(200);
+        </sql>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-73">
+        <comment>
+            Changed HEART_BEAT_QUEUE column size in JOB_EXECUTOR_HISTORY table
+        </comment>
+        <sql>
+            ALTER TABLE JOB_EXECUTOR_HISTORY MODIFY COLUMN HEART_BEAT_QUEUE varchar(200);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
