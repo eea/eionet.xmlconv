@@ -102,6 +102,7 @@ public class WorkqueueController {
             String instance = list[i][7];
             String durationMs = list[i][8];
             String jobType = list[i][9];
+            String jobExecutorName = list[i][10];
 
             job.setJobId(jobId);
             /*job.setUrl(url);*/
@@ -113,6 +114,7 @@ public class WorkqueueController {
             job.setScriptId(xqStringID);
             job.setInstance(instance);
             job.setJobType(jobType);
+            job.setJobExecutorName(jobExecutorName);
             int xqID = 0;
             String scriptType = "";
             try {

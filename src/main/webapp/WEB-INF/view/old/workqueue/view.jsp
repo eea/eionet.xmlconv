@@ -83,7 +83,7 @@
 <div id="main_table">
   <form:form id="jobs" servletRelativeAction="/workqueue" method="post" modelAttribute="form">
     <form:errors path="*" cssClass="error-msg" element="div"/>
-    <table id="workqueue_table" class="datatable results" width="100%" export="true">
+    <table id="workqueue_table" class="datatable results" width="100%" export="true" style="overflow-wrap: break-word;white-space: normal;">
       <col style="width:30px; text-align:right;"/>
       <col style="width:50px; text-align:right;"/>
       <col/>
@@ -130,6 +130,7 @@
         <th scope="col" class="scope-col">Instance</th>
         <th scope="col" class="scope-col">Duration</th>
         <th scope="col" class="scope-col">Job type</th>
+        <th scope="col" class="scope-col">Worker</th>
       </tr>
       </thead>
       <tbody>
@@ -209,6 +210,7 @@
             </c:choose>
           </td>
           <td>${job.jobType}</td>
+          <td>${job.jobExecutorName}</td>
         </tr>
       </c:forEach>
       </tbody>

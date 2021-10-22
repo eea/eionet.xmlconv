@@ -26,6 +26,10 @@ function format ( row, tr ) {
                     '<td>Date that status was modified:</td>'+
                     '<td>'+dateModified+'</td>'+
                     '</tr>'+
+                    '<tr>'+
+                    '<td>Job Executor Name:</td>'+
+                    '<td>'+entry.jobExecutorName+'</td>'+
+                    '</tr>'+
                     '</table>'
                 );
                 return additionalInfo;
