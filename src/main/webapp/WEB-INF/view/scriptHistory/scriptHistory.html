@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm"
       xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-<head th:replace="~{fragments/head-old :: head}">
+<head th:replace="~{fragments/head-old :: head}"/>
 <body th:include="~{fragments/script-history-old :: layout(~{::div})}">
 
 <template>
@@ -9,16 +9,15 @@
         <ul>
             <li>
                 <a th:href="@{'/scripts/'+${queryId}}" style="color: black; text-decoration: none;">
-                    Qa Script
+                    <span th:text="#{label.qascript.tab.title}"></span>
                 </a>
             </li>
             <li id="currenttab">
-                <a href="" style="color: black; text-decoration: none;"/>History</a>
+                <span style="color: black; text-decoration: none;" th:text="#{label.qascript.history}"></span>
             </li>
             <li>
-                <a th:href="@{'/new/scripts/'+${queryId}+'/executionHistory'}"
-                   style="color: black; text-decoration: none;">
-                    Execution History
+                <a th:href="@{'/new/scripts/'+${queryId}+'/executionHistory'}" style="color: black; text-decoration: none;">
+                    <span th:text="#{label.qascript.executionHistory}"></span>
                 </a>
             </li>
         </ul>

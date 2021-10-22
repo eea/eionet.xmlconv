@@ -1,0 +1,11 @@
+.v-data-table > .v-data-table__wrapper > table > .v-data-table-header {
+    background-color: #306886;
+}
+
+.v-application--is-ltr .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+    color: #FFFFFF;
+}
+
+.theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr > td, .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+    border: 1px solid #cfe3e4;
+}
