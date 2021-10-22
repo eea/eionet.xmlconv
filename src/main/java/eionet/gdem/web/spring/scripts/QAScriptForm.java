@@ -20,6 +20,9 @@ public class QAScriptForm {
     private String url;
     private boolean active;
     private boolean asynchronousExecution;
+    private boolean markedHeavy;
+    private Integer markedHeavyReason;
+    private String markedHeavyReasonText;
 
     public QAScriptForm() {
         upperLimit = "10";
@@ -163,5 +166,29 @@ public class QAScriptForm {
 
     public void setAsynchronousExecution(boolean asynchronousExecution) {
         this.asynchronousExecution = asynchronousExecution;
+    }
+
+    public boolean isMarkedHeavy() {
+        return markedHeavy;
+    }
+
+    public void setMarkedHeavy(boolean markedHeavy) {
+        this.markedHeavy = markedHeavy;
+    }
+
+    public Integer getMarkedHeavyReason() {
+        return markedHeavyReason;
+    }
+
+    public void setMarkedHeavyReason(Integer markedHeavyReason) {
+        this.markedHeavyReason = markedHeavyReason;
+    }
+
+    public String getMarkedHeavyReasonText() {
+        return markedHeavyReasonText;
+    }
+
+    public void setMarkedHeavyReasonText(String markedHeavyReasonText) {
+        this.markedHeavyReasonText = markedHeavyReasonText;
     }
 }

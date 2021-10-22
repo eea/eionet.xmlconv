@@ -6,6 +6,7 @@
 <script type="text/javascript" src="<c:url value='/static/webjars/jquery/jquery.min.js'/>"></script>
 <script type="text/javascript" src="<c:url value='/static/webjars/jquery-ui/jquery-ui.js'/>"></script>
 <script type="text/javascript" src="/resources/js/statusModal.js"></script>
+<script type="text/javascript" src="/resources/js/scripts.js"></script>
 
 
 <form:form servletRelativeAction="/scripts" method="post" enctype="multipart/form-data" modelAttribute="form">
@@ -76,6 +77,37 @@
       <div class="columns small-8">
         <form:radiobutton path="asynchronousExecution" id="asynchronousExecution" value="true"/>
         <label for="asynchronousExecution"><spring:message code="label.qascript.asynchronous"/></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-8">
+        <br><p><b>Heavy/Light Selection</b></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-8">
+        <form:radiobutton path="markedHeavy" name="heavyScript" id="light" value="false" checked="checked" onclick="hideDropdown()"/>
+        <label for="light"><spring:message code="label.qascript.light"/></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-8">
+        <form:radiobutton path="markedHeavy" name="heavyScript" id="heavy" value="true" onclick="showDropdown()"/>
+        <label for="heavy"><spring:message code="label.qascript.heavy"/></label>
+      </div>
+    </div>
+    <div class="row" id="markedHeavyReason" style='display:none'>
+      <div class="columns small-8">
+        <form:select path="markedHeavyReason" id="selMarkedHeavyReason">
+          <form:option value="Long running script" id="longRunning" selected="true">Long running script</form:option>
+          <form:option value="Out of memory" id="oom">Out of memory</form:option>
+          <form:option value="Other" id="other">Other</form:option>
+        </form:select>
+      </div>
+    </div>
+    <div class="row" id="markedHeavyOtherReason" style='display:none'>
+      <div class="columns small-8">
+        <form:input id="markedHeavyOtherReasonTxt" path="markedHeavyReasonText" style="width:680px" maxlength="200"/>
       </div>
     </div>
     <div class="row">

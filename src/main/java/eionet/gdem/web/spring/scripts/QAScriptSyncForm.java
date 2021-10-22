@@ -28,6 +28,9 @@ public class QAScriptSyncForm {
     private String upperLimit;
     private boolean active;
     private boolean asynchronousExecution;
+    private boolean markedHeavy;
+    private Integer markedHeavyReason;
+    private String markedHeavyReasonText;
 
     /*@Override
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -168,6 +171,31 @@ public class QAScriptSyncForm {
 
     public void setAsynchronousExecution(boolean asynchronousExecution) {
         this.asynchronousExecution = asynchronousExecution;
+    }
+
+
+    public boolean isMarkedHeavy() {
+        return markedHeavy;
+    }
+
+    public void setMarkedHeavy(boolean markedHeavy) {
+        this.markedHeavy = markedHeavy;
+    }
+
+    public Integer getMarkedHeavyReason() {
+        return markedHeavyReason;
+    }
+
+    public void setMarkedHeavyReason(Integer markedHeavyReason) {
+        this.markedHeavyReason = markedHeavyReason;
+    }
+
+    public String getMarkedHeavyReasonText() {
+        return markedHeavyReasonText;
+    }
+
+    public void setMarkedHeavyReasonText(String markedHeavyReasonText) {
+        this.markedHeavyReasonText = markedHeavyReasonText;
     }
 
     /*    @Override
