@@ -156,16 +156,11 @@
           </td>
           <td>
             <c:choose>
-              <c:when test="${job.scriptType != 'fme'}">
-                <c:if test="${fn:startsWith(job.scriptFile, 'gdem')}">
+              <c:when test="${fn:startsWith(job.scriptFile, 'gdem')}">
                   <a href="/tmp/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
-                </c:if>
-                <c:if test="${not fn:startsWith(job.scriptFile, 'gdem')}">
-                  <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
-                </c:if>
               </c:when>
               <c:otherwise>
-                ${job.scriptType}
+                  <a href="/scripts/${job.scriptId}" rel="nofollow">${job.scriptFile}</a>
               </c:otherwise>
             </c:choose>
           </td>
