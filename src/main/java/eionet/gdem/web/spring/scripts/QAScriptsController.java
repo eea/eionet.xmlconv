@@ -2,6 +2,7 @@ package eionet.gdem.web.spring.scripts;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
@@ -103,6 +104,9 @@ public class QAScriptsController {
         String url = form.getUrl();
         String upperLimit = form.getUpperLimit();
         Boolean asynchronousExecution = form.isAsynchronousExecution();
+        Boolean markedHeavy = form.isMarkedHeavy();
+        String markedHeavyReason = form.getMarkedHeavyReason();
+        String markedHeavyReasonOther = form.getMarkedHeavyReasonOther();
         MultipartFile scriptFile = form.getScriptFile();
         boolean active = form.getActive();
 
@@ -130,7 +134,8 @@ public class QAScriptsController {
 
         try {
             QAScriptManager qaScriptManager = new QAScriptManager();
-            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution, active);
+            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution,
+                    active, markedHeavy, markedHeavyReason, markedHeavyReasonOther);
             messages.add(messageService.getMessage("label.qascript.inserted"));
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
@@ -183,6 +188,16 @@ public class QAScriptsController {
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
             form.setAsynchronousExecution(qaScript.isAsynchronousExecution());
+            form.setMarkedHeavy(qaScript.getMarkedHeavy());
+
+            if(qaScript.getMarkedHeavy()){
+                if (qaScript.getMarkedHeavyReason() != HeavyScriptReasonEnum.OTHER.getCode()){
+                    form.setMarkedHeavyReasonOther(ScriptUtils.getHeavyScriptReasonTextByCode(qaScript.getMarkedHeavyReason()));
+                }
+                else{
+                    form.setMarkedHeavyReasonOther(qaScript.getMarkedHeavyReasonOther());
+                }
+            }
 
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
         } catch (DCMException e) {
@@ -213,6 +228,16 @@ public class QAScriptsController {
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
             form.setAsynchronousExecution(qaScript.isAsynchronousExecution());
+            form.setMarkedHeavy(qaScript.getMarkedHeavy());
+            if(qaScript.getMarkedHeavy()){
+                String markedHeavyReasonText = ScriptUtils.getHeavyScriptReasonTextByCode(qaScript.getMarkedHeavyReason());
+                if(markedHeavyReasonText != null) {
+                    form.setMarkedHeavyReason(markedHeavyReasonText);
+                    if(qaScript.getMarkedHeavyReason() == HeavyScriptReasonEnum.OTHER.getCode()){
+                        form.setMarkedHeavyReasonOther(qaScript.getMarkedHeavyReasonOther());
+                    }
+                }
+            }
 
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
 
@@ -241,6 +266,9 @@ public class QAScriptsController {
         String url = form.getUrl();
         Boolean asynchronousExecution = form.isAsynchronousExecution();
         boolean active = form.getActive();
+        Boolean markedHeavy = form.isMarkedHeavy();
+        String markedHeavyReason = form.getMarkedHeavyReason();
+        String markedHeavyReasonOther = form.getMarkedHeavyReasonOther();
 
         String user = (String) request.getSession().getAttribute("user");
 
@@ -251,13 +279,24 @@ public class QAScriptsController {
             return "/scripts/edit";
         }
 
+        Integer markedHeavyReasonStatus = null;
+        if(markedHeavy){
+            //Get Marked heavy reason code
+            markedHeavyReasonStatus = ScriptUtils.getHeavyScriptReasonCodeByText(markedHeavyReason);
+        }
+        if(markedHeavyReasonStatus != HeavyScriptReasonEnum.OTHER.getCode()){
+            markedHeavyReasonOther = null;
+        }
+
         try {
             Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
             QAScriptManager qm = new QAScriptManager();
-            QueryBackupEntry queryBackupEntry = qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit, url, asynchronousExecution, active, maxVersion+1);
+            QueryBackupEntry queryBackupEntry = qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName,
+                    content, upperLimit, url, asynchronousExecution, active, maxVersion+1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
 
             QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
-            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url, asynchronousExecution, active, curFileName, maxVersion+1);
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url,
+                    asynchronousExecution, active, curFileName, maxVersion+1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
             queryHistoryEntry.setQueryEntry(queryEntry);
             if (queryBackupEntry!=null) {
                 queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);
@@ -300,6 +339,9 @@ public class QAScriptsController {
         String checksum = form.getChecksum();
         Boolean asynchronousExecution = form.isAsynchronousExecution();
         boolean active = form.getActive();
+        Boolean markedHeavy = form.isMarkedHeavy();
+        String markedHeavyReason = form.getMarkedHeavyReason();
+        String markedHeavyReasonOther = form.getMarkedHeavyReasonOther();
 
         boolean updateContent = false;
         String newChecksum = null;
@@ -327,16 +369,26 @@ public class QAScriptsController {
         if (bindingResult.hasErrors()) {
             return "/scripts/edit";
         }
+        Integer markedHeavyReasonStatus = null;
+        if(markedHeavy){
+            //Get Marked heavy reason code
+            markedHeavyReasonStatus = ScriptUtils.getHeavyScriptReasonCodeByText(markedHeavyReason);
+        }
+        if(markedHeavyReasonStatus != HeavyScriptReasonEnum.OTHER.getCode()){
+            markedHeavyReasonOther = null;
+        }
+
 
         try {
             Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
             QAScriptManager qm = new QAScriptManager();
             QueryBackupEntry queryBackupEntry = qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
-                    url, scriptContent, updateContent, asynchronousExecution, active, updateContent ? maxVersion+1 : maxVersion);
+                    url, scriptContent, updateContent, asynchronousExecution, active, updateContent ? maxVersion+1 : maxVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
             qm.activateDeactivate(user, scriptId, active);
 
             QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
-            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url, asynchronousExecution, active, curFileName, updateContent ? maxVersion+1 : maxVersion);
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url,
+                    asynchronousExecution, active, curFileName, updateContent ? maxVersion+1 : maxVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
             queryHistoryEntry.setQueryEntry(queryEntry);
             if (queryBackupEntry!=null) {
                 queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);
@@ -421,7 +473,8 @@ public class QAScriptsController {
 
             QueryEntry queryEntry = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
             QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(),
-                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName(), queryEntry.getVersion());
+                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(),
+                    queryEntry.isActive(), queryEntry.getQueryFileName(), queryEntry.getVersion(), queryEntry.getMarkedHeavy(), queryEntry.getMarkedHeavyReason(), queryEntry.getMarkedHeavyReasonOther());
             queryHistoryEntry.setQueryEntry(queryEntry);
             queryHistoryService.save(queryHistoryEntry);
 
@@ -450,7 +503,8 @@ public class QAScriptsController {
 
             QueryEntry queryEntry = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
             QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(),
-                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName(), queryEntry.getVersion());
+                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName(),
+                    queryEntry.getVersion(), queryEntry.getMarkedHeavy(), queryEntry.getMarkedHeavyReason(), queryEntry.getMarkedHeavyReasonOther());
             queryHistoryEntry.setQueryEntry(queryEntry);
             queryHistoryService.save(queryHistoryEntry);
 

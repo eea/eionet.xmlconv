@@ -80,10 +80,19 @@
       </div>
     </div>
     <div class="row">
+      <div class="columns small-4">
+        <label class="question required" for="txtUpperLimit">
+          <spring:message code="label.qascript.upperlimit"/>
+        </label>
+      </div>
       <div class="columns small-8">
-        <br><p><b>Heavy/Light Selection</b></p>
+        <form:input id="txtUpperLimit" size="3" path="upperLimit"/>
       </div>
     </div>
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend><spring:message code="label.qascript.mark.heavy.section"/></legend>
     <div class="row">
       <div class="columns small-8">
         <form:radiobutton path="markedHeavy" name="heavyScript" id="light" value="false" checked="checked" onchange="hideDropdown()"/>
@@ -107,17 +116,8 @@
     </div>
     <div class="row" id="markedHeavyOtherReason" style='display:none'>
       <div class="columns small-8">
-        <form:input id="markedHeavyOtherReasonTxt" path="markedHeavyReasonText" maxlength="200"/>
-      </div>
-    </div>
-    <div class="row">
-      <div class="columns small-4">
-        <label class="question required" for="txtUpperLimit">
-          <spring:message code="label.qascript.upperlimit"/>
-        </label>
-      </div>
-      <div class="columns small-8">
-        <form:input id="txtUpperLimit" size="3" path="upperLimit"/>
+        <label for="markedHeavyOtherReasonTxt"><spring:message code="label.qascript.heavy.reason"/></label>
+        <form:input id="markedHeavyOtherReasonTxt" path="markedHeavyReasonOther" maxlength="200"/>
       </div>
     </div>
   </fieldset>

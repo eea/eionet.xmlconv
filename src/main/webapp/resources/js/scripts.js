@@ -5,7 +5,7 @@ $(document).ready(function() {
             $('#markedHeavyOtherReason').show();
         }else{
             $('#markedHeavyOtherReason').hide();
-            $("#markedHeavyOtherReason").val('');
+            $("#markedHeavyOtherReasonTxt").val('');
         }
     });
 });
@@ -13,7 +13,8 @@ $(document).ready(function() {
 function hideDropdown(){
     $('#markedHeavyReason').hide();
     $('#markedHeavyOtherReason').hide();
-    $('#markedHeavyOtherReason').val('Long running script')
+    $('#selMarkedHeavyReason').val('Long running script')
+    $("#markedHeavyOtherReasonTxt").val('');
 }
 
 function showDropdown(){

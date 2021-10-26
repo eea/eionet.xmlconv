@@ -59,6 +59,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     public static final String JOB_RETRY_COUNTER = "RETRY_COUNTER";
     public static final String ASYNCHRONOUS_EXECUTION_FLD = "ASYNCHRONOUS_EXECUTION";
     public static final String VERSION = "VERSION";
+    public static final String MARKED_HEAVY = "MARKED_HEAVY";
+    public static final String MARKED_HEAVY_REASON = "MARKED_HEAVY_REASON";
+    public static final String MARKED_HEAVY_REASON_OTHER = "MARKED_HEAVY_REASON_OTHER";
 
     private static final String qListQueries = "SELECT " + QUERY_TABLE + "." + QUERY_ID_FLD + ", " + SHORT_NAME_FLD + ", "
             + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + ","
@@ -98,7 +101,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qUpdateQuery = "UPDATE  " + QUERY_TABLE + " SET " + QUERY_FILE_FLD + "=?" + ", " + SHORT_NAME_FLD
             + "=?" + ", " + DESCR_FLD + "=?" + ", " + XSL_SCHEMA_ID_FLD + "=?" + ", " + RESULT_TYPE_FLD + "=?" + ", "
             + QUERY_SCRIPT_TYPE + "=?" + ", " + UPPER_LIMIT_FLD + "=?" + ", " + QUERY_URL_FLD + "=?" + ", " + ASYNCHRONOUS_EXECUTION_FLD + "=?" + ", "
-            + VERSION + "=?" + " WHERE " + QUERY_ID_FLD + "=?";
+            + VERSION + "=?" + ", " + MARKED_HEAVY + "=?" + MARKED_HEAVY_REASON + "=?" + MARKED_HEAVY_REASON_OTHER + "=?" + " WHERE " + QUERY_ID_FLD + "=?";
 
     private static final String qInsertQuery = "INSERT INTO " + QUERY_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + SHORT_NAME_FLD
             + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ", " + RESULT_TYPE_FLD + ", " + QUERY_SCRIPT_TYPE + ", "
@@ -193,7 +196,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
      */
     @Override
     public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName,
-            String content_type, String script_type, String upperLimit, String url, Boolean asynchronousExecution, Integer version) throws SQLException {
+            String content_type, String script_type, String upperLimit, String url, Boolean asynchronousExecution, Integer version,
+                            Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -217,8 +221,11 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             pstmt.setString(8, url);
             pstmt.setBoolean(9, asynchronousExecution);
             pstmt.setInt(10, version);
+            pstmt.setBoolean(11, markedHeavy);
+            pstmt.setInt(12, markedHeavyReason);
+            pstmt.setString(13, markedHeavyReasonOther);
 
-            pstmt.setInt(11, Integer.parseInt(query_id));
+            pstmt.setInt(14, Integer.parseInt(query_id));
 
 
             pstmt.executeUpdate();

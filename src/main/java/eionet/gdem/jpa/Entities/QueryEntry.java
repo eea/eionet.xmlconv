@@ -44,6 +44,15 @@ public class QueryEntry {
     @Column(name = "VERSION")
     private Integer version;
 
+    @Column(name = "MARKED_HEAVY")
+    private Boolean markedHeavy;
+
+    @Column(name = "MARKED_HEAVY_REASON")
+    private Integer markedHeavyReason;
+
+    @Column(name = "MARKED_HEAVY_REASON_OTHER")
+    private String markedHeavyReasonOther;
+
     public QueryEntry() {
     }
 
@@ -156,6 +165,33 @@ public class QueryEntry {
 
     public QueryEntry setVersion(Integer version) {
         this.version = version;
+        return this;
+    }
+
+    public Boolean getMarkedHeavy() {
+        return markedHeavy;
+    }
+
+    public QueryEntry setMarkedHeavy(Boolean markedHeavy) {
+        this.markedHeavy = markedHeavy;
+        return this;
+    }
+
+    public Integer getMarkedHeavyReason() {
+        return markedHeavyReason;
+    }
+
+    public QueryEntry setMarkedHeavyReason(Integer markedHeavyReason) {
+        this.markedHeavyReason = markedHeavyReason;
+        return this;
+    }
+
+    public String getMarkedHeavyReasonOther() {
+        return markedHeavyReasonOther;
+    }
+
+    public QueryEntry setMarkedHeavyReasonOther(String markedHeavyReasonOther) {
+        this.markedHeavyReasonOther = markedHeavyReasonOther;
         return this;
     }
 }
