@@ -12,6 +12,8 @@ $(document).ready(function() {
 
 function hideDropdown(){
     $('#markedHeavyReason').hide();
+    $('#markedHeavyOtherReason').hide();
+    $('#markedHeavyOtherReason').val('Long running script')
 }
 
 function showDropdown(){

@@ -86,13 +86,13 @@
     </div>
     <div class="row">
       <div class="columns small-8">
-        <form:radiobutton path="markedHeavy" name="heavyScript" id="light" value="false" checked="checked" onclick="hideDropdown()"/>
+        <form:radiobutton path="markedHeavy" name="heavyScript" id="light" value="false" checked="checked" onchange="hideDropdown()"/>
         <label for="light"><spring:message code="label.qascript.light"/></label>
       </div>
     </div>
     <div class="row">
       <div class="columns small-8">
-        <form:radiobutton path="markedHeavy" name="heavyScript" id="heavy" value="true" onclick="showDropdown()"/>
+        <form:radiobutton path="markedHeavy" name="heavyScript" id="heavy" value="true" onchange="showDropdown()"/>
         <label for="heavy"><spring:message code="label.qascript.heavy"/></label>
       </div>
     </div>
@@ -107,7 +107,7 @@
     </div>
     <div class="row" id="markedHeavyOtherReason" style='display:none'>
       <div class="columns small-8">
-        <form:input id="markedHeavyOtherReasonTxt" path="markedHeavyReasonText" style="width:680px" maxlength="200"/>
+        <form:input id="markedHeavyOtherReasonTxt" path="markedHeavyReasonText" maxlength="200"/>
       </div>
     </div>
     <div class="row">
