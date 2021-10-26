@@ -226,6 +226,8 @@ public class Properties {
     public static String HEAVY_WORKERS_JOBS_QUEUE;
     public static String  MAIN_XMLCONV_HEAVY_JOBS_EXCHANGE;
     public static String HEAVY_JOBS_ROUTING_KEY;
+    public static String CONVERTERS_GRAYLOG;
+    public static String JOB_EXECUTOR_GRAYLOG;
 
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
@@ -375,6 +377,9 @@ public class Properties {
         WORKERS_DEAD_LETTER_QUEUE = getStringProperty("env.rabbitmq.dead.letter.queue");
         WORKERS_DEAD_LETTER_EXCHANGE = getStringProperty("env.rabbitmq.dead.letter.exchange");
         WORKERS_DEAD_LETTER_ROUTING_KEY = getStringProperty("env.rabbitmq.dead.letter.routingKey");
+
+        CONVERTERS_GRAYLOG = getStringProperty("env.converters.graylog");
+        JOB_EXECUTOR_GRAYLOG = getStringProperty("env.jobExecutor.graylog");
     }
 
     /**

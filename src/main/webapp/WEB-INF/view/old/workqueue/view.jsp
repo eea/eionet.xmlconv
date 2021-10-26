@@ -1,3 +1,4 @@
+<%@ page import="eionet.gdem.Properties" %>
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
@@ -233,6 +234,8 @@
       </c:if>
       <input type="hidden" name="ACTION" id="ACTION" value="delete"/>
       <input type="hidden" name="ID" value=""/>
+      <input type="hidden" id="convGraylog" name="convertersGraylog" value="<%=Properties.CONVERTERS_GRAYLOG%>" />
+      <input type="hidden" id="jobExecGraylog" name="jobExecGraylog" value="<%=Properties.JOB_EXECUTOR_GRAYLOG%>" />
     </div>
   </form:form>
 </div>

@@ -75,6 +75,9 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                 default:
                     entry.setFullStatusName("UNKNOWN STATUS");
             }
+            if (entry.getJobExecutorName()==null) {
+                entry.setJobExecutorName("Not defined yet");
+            }
         }
         return entries;
     }

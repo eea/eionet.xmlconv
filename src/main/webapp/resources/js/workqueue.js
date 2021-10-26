@@ -6,6 +6,8 @@ function format ( row, tr ) {
     var d = row.data();
     // `d` is the original data object for the row
     var jobId = getSelectedJobId(d[1]);
+    var convGraylog = document.getElementById('convGraylog').value;
+    var jobExecGraylog = document.getElementById('jobExecGraylog').value;
     //ajax call to get data by jobid
     $.ajax({
         async: false,
@@ -34,8 +36,9 @@ function format ( row, tr ) {
                 );
                 return additionalInfo;
             });
-
             additionalInfo = additionalInfo.concat('</table>');
+            additionalInfo = additionalInfo.concat('<div>'+'<a href="'+convGraylog + jobId+'">Converters graylog</a>'+'</div>' + '<br>' +
+                '<div>'+'<a href="'+jobExecGraylog + jobId+'">JobExecutor graylog</a>'+'</div>');
             //show the row
             row.child(additionalInfo).show();
             tr.addClass('shown');
@@ -45,6 +48,10 @@ function format ( row, tr ) {
         }
     });
 
+}
+
+function getGraylogUrl(url,jobId) {
+    $(this).attr("href", url+jobId);
 }
 
 function getSelectedJobId(label){
