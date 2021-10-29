@@ -5,6 +5,7 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
@@ -41,6 +42,9 @@ public class JobOnDemandHandlerServiceTest {
     @Mock
     private RabbitMQMessageSender jobMessageSender;
 
+    @Mock
+    private QueryJpaService queryJpaService;
+
     @InjectMocks
     private JobOnDemandHandlerServiceImpl jobOnDemandHandlerService;
 
@@ -67,6 +71,7 @@ public class JobOnDemandHandlerServiceTest {
     public void testCreateJobAndSendToRabbitMQ() throws XMLConvException {
         when(jobService.save(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
+        when(queryJpaService.findByQueryId(0)).thenReturn(null);
         doNothing().when(jobMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
         when(jobService.getRetryCounter(anyInt())).thenReturn(0);
         JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0);

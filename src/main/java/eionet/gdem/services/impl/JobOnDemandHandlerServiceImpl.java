@@ -43,7 +43,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
     public JobOnDemandHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService,
                                          @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageLightSender,
                                          @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageHeavySender,
-                                         @Qualifier("queryJpaServiceImpl") QueryJpaService queryJpaService) {
+                                         QueryJpaService queryJpaService) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobMessageLightSender = jobMessageLightSender;
@@ -66,8 +66,13 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
 
+            LOGGER.info("Before getting query entry");
+            if(queryJpaService == null){
+                LOGGER.info("Null query Jpa service");
+            }
             QueryEntry query = queryJpaService.findByQueryId(scriptId);
-            if (query.getMarkedHeavy()) {
+            LOGGER.info("After getting query entry");
+            if (query != null && query.getMarkedHeavy()) {
                 jobMessageHeavySender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
             } else {
                 jobMessageLightSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);

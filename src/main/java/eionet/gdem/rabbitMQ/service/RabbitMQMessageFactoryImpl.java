@@ -174,13 +174,13 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     if (query != null && query.containsKey(QaScriptView.URL)) {
                         xq.setScriptSource((String) query.get(QaScriptView.URL));
                     }
-
-                    String asynchronousExecution = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
-                    if(asynchronousExecution != null && asynchronousExecution.equals("1")){
-                        xq.setAsynchronousExecution(true);
-                    }
-                    else{
-                        xq.setAsynchronousExecution(false);
+                    if(query != null) {
+                        String asynchronousExecution = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+                        if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
+                            xq.setAsynchronousExecution(true);
+                        } else {
+                            xq.setAsynchronousExecution(false);
+                        }
                     }
 
                     LOGGER.info("** FME Job will be added in queue, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
@@ -191,10 +191,15 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 processJob(jobEntry);
                 WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(xq);
                 //marked heavy properties
-                String markedHeavy = (String) query.get(QaScriptView.MARKED_HEAVY);
-                if (markedHeavy != null && markedHeavy.equals("1")) {
-                    rabbitMQHeavyMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
-                } else {
+                if(query != null) {
+                    String markedHeavy = (String) query.get(QaScriptView.MARKED_HEAVY);
+                    if (markedHeavy != null && markedHeavy.equals("1")) {
+                        rabbitMQHeavyMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                    } else {
+                        rabbitMQLightMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                    }
+                }
+                else{
                     rabbitMQLightMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
                 }
             }
