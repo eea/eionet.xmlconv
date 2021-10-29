@@ -1,5 +1,6 @@
 package eionet.gdem.jpa.service;
 
+import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
 import eionet.gdem.paging.Paged;
 
@@ -9,7 +10,15 @@ public interface QueryMetadataService {
 
     void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus);
 
-    List<QueryMetadataHistoryEntry> fillQueryMetadataAdditionalInfo(List<QueryMetadataHistoryEntry> historyEntries);
+    List<QueryMetadataHistoryEntry> fillQueryHistoryMetadataAdditionalInfo(List<QueryMetadataHistoryEntry> historyEntries);
+
+    List<QueryMetadataEntry> fillQueryMetadataAdditionalInfo(List<QueryMetadataEntry> entries);
 
     Paged<QueryMetadataHistoryEntry> getQueryMetadataHistoryEntries(Integer pageNumber, Integer size, Integer scriptId);
+
+    Paged<QueryMetadataEntry> getQueryMetadataEntries(Integer pageNumber, Integer size, Integer scriptId);
+
+    Integer getCountOfHistoryEntriesByScript(Integer scriptId);
+
+    Integer getCountOfEntriesByScript(Integer scriptId);
 }

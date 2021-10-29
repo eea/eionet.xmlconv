@@ -55,7 +55,7 @@ public class QueryMetadataServiceTestIT {
         queryMetadataService.storeScriptInformation(queryID, "testFile1", "xq", durationOfJob, Constants.XQ_READY);
 
         //Check entry in table QUERY_METADATA
-        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(queryID);
+        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
         Assert.assertThat(queryMetadataEntryList, is(notNullValue()));
         Assert.assertThat(queryMetadataEntryList.size(), is(1));
 
@@ -94,7 +94,7 @@ public class QueryMetadataServiceTestIT {
         queryMetadataService.storeScriptInformation(queryID, "testFile2", "xq", durationOfJob, Constants.XQ_READY);
 
         //Check entry in table QUERY_METADATA
-        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(queryID);
+        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
         Assert.assertThat(queryMetadataEntryList.size(), is(1));
 
         QueryMetadataEntry queryMetadataEntry = queryMetadataEntryList.get(0);
@@ -133,7 +133,7 @@ public class QueryMetadataServiceTestIT {
         queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY);
 
         //Check entry in table QUERY_METADATA
-        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(queryID);
+        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
         Assert.assertThat(queryMetadataEntryList.size(), is(1));
 
         QueryMetadataEntry queryMetadataEntry = queryMetadataEntryList.get(0);
@@ -171,7 +171,7 @@ public class QueryMetadataServiceTestIT {
         queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY);
 
         //Check entry in table QUERY_METADATA
-        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(queryID);
+        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
         Assert.assertThat(queryMetadataEntryList.size(), is(0));
 
         //Check entry in table QUERY_METADATA_HISTORY

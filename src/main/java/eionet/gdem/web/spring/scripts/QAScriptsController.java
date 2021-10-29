@@ -50,19 +50,14 @@ public class QAScriptsController {
     private MessageService messageService;
     private QueryHistoryService queryHistoryService;
     private QueryJpaService queryJpaService;
-
-    @Qualifier("queryMetadataRepository")
-    @Autowired
-    QueryMetadataRepository queryMetadataRepository;
+    private QueryMetadataService queryMetadataService;
 
     @Autowired
-    QueryMetadataService queryMetadataService;
-
-    @Autowired
-    public QAScriptsController(MessageService messageService, QueryHistoryService queryHistoryService, QueryJpaService queryJpaService) {
+    public QAScriptsController(MessageService messageService, QueryHistoryService queryHistoryService, QueryJpaService queryJpaService, QueryMetadataService queryMetadataService) {
         this.messageService = messageService;
         this.queryHistoryService = queryHistoryService;
         this.queryJpaService = queryJpaService;
+        this.queryMetadataService = queryMetadataService;
     }
 
     @ModelAttribute
@@ -545,32 +540,36 @@ public class QAScriptsController {
     }
 
     @GetMapping("/{id}/executionHistory")
-    public String executionHistory(@PathVariable String id, @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
-                                    @RequestParam(value = "size", required = false, defaultValue = "10") int size, Model model, HttpServletRequest request) {
+    public String executionHistory(@PathVariable String id, @RequestParam(value = "historyPageNumber", required = false, defaultValue = "1") int historyPageNumber,
+                                    @RequestParam(value = "historySize", required = false, defaultValue = "10") int historySize,
+                                    @RequestParam(value = "versionPageNumber", required = false, defaultValue = "1") int versionPageNumber,
+                                    @RequestParam(value = "versionSize", required = false, defaultValue = "10") int versionSize, Model model, HttpServletRequest request) {
 
         //Setup headerVariables
         model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.qascript.executionHistory.title"), request);
         //Setup breadcrumbs
         model = ThymeleafUtils.setUpBreadCrumbsForScriptPages(model, id, Properties.getStringProperty("label.qascript.executionHistory.title"));
 
-        String changedPageSize = request.getParameter("pageEntries");
-        if(!Utils.isNullStr(changedPageSize)){
-            size = Integer.valueOf(changedPageSize);
+        String changedHistoryPageSize = request.getParameter("pageHistoryEntries");
+        if(!Utils.isNullStr(changedHistoryPageSize)){
+            historySize = Integer.valueOf(changedHistoryPageSize);
         }
 
-        Paged<QueryMetadataHistoryEntry> pagedEntries = queryMetadataService.getQueryMetadataHistoryEntries(pageNumber, size, Integer.valueOf(id));
-
-        List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryId(Integer.valueOf(id));
-        if(queryMetadataEntryList.size() > 0){
-            Long durationToMs = queryMetadataEntryList.get(0).getAverageDuration();
-            String formattedDuration = Utils.createFormatForMs(durationToMs);
-
-            model.addAttribute("averageDuration", formattedDuration);
-            model.addAttribute("numberOfExecutions", queryMetadataEntryList.get(0).getNumberOfExecutions());
+        String changedVersionPageSize = request.getParameter("pageVersionEntries");
+        if(!Utils.isNullStr(changedVersionPageSize)){
+            versionSize = Integer.valueOf(changedVersionPageSize);
         }
-        model.addAttribute("history", pagedEntries);
+
+        Paged<QueryMetadataEntry> pagedVersionEntries = queryMetadataService.getQueryMetadataEntries(versionPageNumber, versionSize, Integer.valueOf(id));
+        Paged<QueryMetadataHistoryEntry> pagedHistoryEntries = queryMetadataService.getQueryMetadataHistoryEntries(historyPageNumber, historySize, Integer.valueOf(id));
+
+        model.addAttribute("versionTableSize", queryMetadataService.getCountOfEntriesByScript(Integer.valueOf(id)));
+        model.addAttribute("historyTableSize", queryMetadataService.getCountOfHistoryEntriesByScript(Integer.valueOf(id)));
+
+        model.addAttribute("versionTable", pagedVersionEntries);
+        model.addAttribute("history", pagedHistoryEntries);
         model.addAttribute("scriptId", id);
-        model.addAttribute("pageEntries", size);
+        model.addAttribute("pageHistoryEntries", versionSize);
 
 
         return "scriptHistory/scriptExecutionHistory";

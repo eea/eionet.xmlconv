@@ -37,6 +37,9 @@ public class QueryMetadataEntry implements Serializable {
     @Column(name = "DURATION_SUM")
     private Long durationSum;
 
+    @Transient
+    private String averageDurationFormatted;
+
     public QueryMetadataEntry() {
     }
 
@@ -133,5 +136,13 @@ public class QueryMetadataEntry implements Serializable {
 
     public void setDurationSum(Long durationSum) {
         this.durationSum = durationSum;
+    }
+
+    public String getAverageDurationFormatted() {
+        return averageDurationFormatted;
+    }
+
+    public void setAverageDurationFormatted(String averageDurationFormatted) {
+        this.averageDurationFormatted = averageDurationFormatted;
     }
 }
