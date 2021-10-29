@@ -86,7 +86,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qQueryInfo = "SELECT " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + QUERY_FILE_FLD + ", "
             + QUERY_TABLE + "." + DESCR_FLD + "," + SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ","
             + QUERY_TABLE + "." + RESULT_TYPE_FLD + ", " + CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + "," + QUERY_TABLE + "."
-            + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD + "," + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD + ","+ QUERY_TABLE + "." + ASYNCHRONOUS_EXECUTION_FLD
+            + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD + "," + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD + "," +
+            QUERY_TABLE + "." + ASYNCHRONOUS_EXECUTION_FLD + "," + QUERY_TABLE + "." + MARKED_HEAVY + "," +
+            QUERY_TABLE + "." + MARKED_HEAVY_REASON + "," + QUERY_TABLE + "." + MARKED_HEAVY_REASON_OTHER
             + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN "
             + SCHEMA_TABLE + " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD
             + " LEFT OUTER JOIN " + CONVTYPE_TABLE + " ON " + QUERY_TABLE + "." + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "."
@@ -101,7 +103,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qUpdateQuery = "UPDATE  " + QUERY_TABLE + " SET " + QUERY_FILE_FLD + "=?" + ", " + SHORT_NAME_FLD
             + "=?" + ", " + DESCR_FLD + "=?" + ", " + XSL_SCHEMA_ID_FLD + "=?" + ", " + RESULT_TYPE_FLD + "=?" + ", "
             + QUERY_SCRIPT_TYPE + "=?" + ", " + UPPER_LIMIT_FLD + "=?" + ", " + QUERY_URL_FLD + "=?" + ", " + ASYNCHRONOUS_EXECUTION_FLD + "=?" + ", "
-            + VERSION + "=?" + ", " + MARKED_HEAVY + "=?" + MARKED_HEAVY_REASON + "=?" + MARKED_HEAVY_REASON_OTHER + "=?" + " WHERE " + QUERY_ID_FLD + "=?";
+            + VERSION + "=?" + ", " + MARKED_HEAVY + "=?" + ", "  + MARKED_HEAVY_REASON + "=?" + ", "  + MARKED_HEAVY_REASON_OTHER + "=?" + " WHERE " + QUERY_ID_FLD + "=?";
 
     private static final String qInsertQuery = "INSERT INTO " + QUERY_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + SHORT_NAME_FLD
             + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ", " + RESULT_TYPE_FLD + ", " + QUERY_SCRIPT_TYPE + ", "
@@ -222,7 +224,7 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             pstmt.setBoolean(9, asynchronousExecution);
             pstmt.setInt(10, version);
             pstmt.setBoolean(11, markedHeavy);
-            pstmt.setInt(12, markedHeavyReason);
+            pstmt.setObject(12, markedHeavyReason);
             pstmt.setString(13, markedHeavyReasonOther);
 
             pstmt.setInt(14, Integer.parseInt(query_id));
@@ -306,6 +308,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                 h.put(QaScriptView.URL, r[0][9]);
                 h.put(QaScriptView.IS_ACTIVE, r[0][10]);
                 h.put(QaScriptView.ASYNCHRONOUS_EXECUTION, r[0][11]);
+                h.put(QaScriptView.MARKED_HEAVY, r[0][12]);
+                h.put(QaScriptView.MARKED_HEAVY_REASON, r[0][13]);
+                h.put(QaScriptView.MARKED_HEAVY_REASON_OTHER, r[0][14]);
             }
 
         } finally {

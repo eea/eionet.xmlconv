@@ -107,6 +107,23 @@ public class QAScriptManager {
                 } else {
                     qaScript.setAsynchronousExecution(false);
                 }
+
+                //marked heavy properties
+                String markedHeavy = (String) scriptData.get(QaScriptView.MARKED_HEAVY);
+                if (markedHeavy != null && markedHeavy.equals("1")) {
+                    qaScript.setMarkedHeavy(true);
+                } else {
+                    qaScript.setMarkedHeavy(false);
+                }
+                String markedHeavyReason = (String) scriptData.get(QaScriptView.MARKED_HEAVY_REASON);
+                if(markedHeavyReason != null){
+                    qaScript.setMarkedHeavyReason(Integer.valueOf(markedHeavyReason));
+                }
+                else{
+                    qaScript.setMarkedHeavyReason(null);
+                }
+                qaScript.setMarkedHeavyReasonOther((String) scriptData.get(QaScriptView.MARKED_HEAVY_REASON_OTHER));
+
                 String queryFolder = Properties.queriesFolder;
 
                 if (!Utils.isNullStr(qaScript.getFileName())) {
