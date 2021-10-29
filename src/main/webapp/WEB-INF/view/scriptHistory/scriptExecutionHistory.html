@@ -86,7 +86,7 @@
                             </ul>
                         </nav>
                     </div>
-                    <div th:unless="${not #lists.isEmpty(version.page.content)}">
+                    <div th:unless="${not #lists.isEmpty(versionTable.page.content)}">
                         <p th:text="${'There is no execution history info for script with id ' + scriptId}"></p>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                     <div th:if="${not #lists.isEmpty(history.page.content)}">
 
                         <div class="tablePageEntriesSize" style="float: right;">
-                           n,n <form th:action="@{${#httpServletRequest.requestURI}}" method="get">
+                            <form th:action="@{${#httpServletRequest.requestURI}}" method="get">
                                 <label for="pageHistoryEntries">Entries per page:</label>
                                 <select name="pageHistoryEntries" id="pageHistoryEntries" onchange="this.form.submit()">
                                     <option th:if="${historyTableSize > 10}" th:selected="${pageHistoryEntries} == ${10}" value="10">10</option>

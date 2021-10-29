@@ -138,7 +138,7 @@
           </td>
         </tr>
       </c:when>
-    </c:choose>)
+    </c:choose>
     <tr>
       <th scope="row" class="scope-row">
         <spring:message code="label.qascript.upperlimit"/>

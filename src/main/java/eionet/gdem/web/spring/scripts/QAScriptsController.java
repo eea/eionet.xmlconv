@@ -569,7 +569,8 @@ public class QAScriptsController {
         model.addAttribute("versionTable", pagedVersionEntries);
         model.addAttribute("history", pagedHistoryEntries);
         model.addAttribute("scriptId", id);
-        model.addAttribute("pageHistoryEntries", versionSize);
+        model.addAttribute("pageHistoryEntries", historySize);
+        model.addAttribute("pageVersionEntries", versionSize);
 
 
         return "scriptHistory/scriptExecutionHistory";
