@@ -14,7 +14,7 @@ public interface QueryMetadataRepository extends JpaRepository<QueryMetadataEntr
     /* Retrieves the entry by its queryId */
     List<QueryMetadataEntry> findByQueryId(Integer queryId);
 
-    @Query(value = "SELECT * FROM QUERY_METADATA WHERE T_QUERY_ID= :queryId AND VERSION = (SELECT MAX(VERSION) FROM QUERY_METADATA)", nativeQuery = true)
+    @Query(value = "SELECT * FROM QUERY_METADATA WHERE T_QUERY_ID= :queryId AND VERSION = (SELECT MAX(VERSION) FROM QUERY_METADATA WHERE T_QUERY_ID = :queryId)", nativeQuery = true)
     List<QueryMetadataEntry> findByQueryIdAndMaxVersion(@Param("queryId") Integer queryId);
 
     @Query(value = "SELECT COUNT(ID) FROM QUERY_METADATA WHERE T_QUERY_ID= :queryId", nativeQuery = true)
