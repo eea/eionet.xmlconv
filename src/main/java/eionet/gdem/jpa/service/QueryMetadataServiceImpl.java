@@ -48,29 +48,39 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
         }
 
         //Store script information
-        List<QueryMetadataEntry> queryMetadataList = queryMetadataRepository.findByQueryId(queryID);
+        List<QueryMetadataEntry> queryMetadataList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
         if (Utils.isNullList(queryMetadataList)){
-            QueryMetadataEntry queryMetadataEntry = new QueryMetadataEntry(scriptFile,queryID, scriptType, durationOfJob, 1, false, 1, durationOfJob);
+            QueryMetadataEntry queryMetadataEntry = new QueryMetadataEntry(scriptFile,queryID, scriptType, durationOfJob, 1, queryEntry.getMarkedHeavy(), queryEntry.getVersion(), durationOfJob);
             queryMetadataRepository.save(queryMetadataEntry);
-            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , false, jobStatus, 1);
+            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion());
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
         else{
             //the information regarding the script will be updated
             QueryMetadataEntry oldEntry = queryMetadataList.get(0);
-            oldEntry.setNumberOfExecutions(oldEntry.getNumberOfExecutions() + 1);
-            oldEntry.setDurationSum(oldEntry.getDurationSum() + durationOfJob);
-            //adjust the duration of the entry.
-            Long newAverageJobDuration = oldEntry.getDurationSum() / oldEntry.getNumberOfExecutions();
-            oldEntry.setAverageDuration(newAverageJobDuration);
-            queryMetadataRepository.save(oldEntry);
-            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , oldEntry.getMarkedHeavy(), jobStatus, oldEntry.getVersion());
+
+            /*if version of script is different from the version that was stored in the old entry, the average duration will be recalculated from now on
+             and a new entry will be stored into QUERY_METADATA table for the new version */
+            if(oldEntry.getVersion() != queryEntry.getVersion()){
+                QueryMetadataEntry newEntry = new QueryMetadataEntry(scriptFile, queryID, scriptType, durationOfJob, 1 , queryEntry.getMarkedHeavy(), queryEntry.getVersion(), durationOfJob);
+                queryMetadataRepository.save(newEntry);
+            }
+            else{
+                //update the old entry
+                oldEntry.setNumberOfExecutions(oldEntry.getNumberOfExecutions() + 1);
+                oldEntry.setDurationSum(oldEntry.getDurationSum() + durationOfJob);
+                //adjust the duration of the entry.
+                Long newAverageJobDuration = oldEntry.getDurationSum() / oldEntry.getNumberOfExecutions();
+                oldEntry.setAverageDuration(newAverageJobDuration);
+                queryMetadataRepository.save(oldEntry);
+            }
+            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion());
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
     }
 
     @Override
-    public List<QueryMetadataHistoryEntry> fillQueryMetadataAdditionalInfo(List<QueryMetadataHistoryEntry> historyEntries){
+    public List<QueryMetadataHistoryEntry> fillQueryHistoryMetadataAdditionalInfo(List<QueryMetadataHistoryEntry> historyEntries){
         for (QueryMetadataHistoryEntry entry: historyEntries){
             entry.setDurationFormatted(Utils.createFormatForMs(entry.getDuration()));
             List<String> filenameList = Arrays.asList(entry.getScriptFilename().split("/"));
@@ -94,11 +104,19 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
         return historyEntries;
     }
 
+    @Override
+    public List<QueryMetadataEntry> fillQueryMetadataAdditionalInfo(List<QueryMetadataEntry> entries){
+        for (QueryMetadataEntry entry: entries){
+            entry.setAverageDurationFormatted(Utils.createFormatForMs(entry.getAverageDuration()));
+        }
+        return entries;
+    }
+
      /*Method to retrieve paginated results for html page*/
     @Override
     public Paged<QueryMetadataHistoryEntry> getQueryMetadataHistoryEntries(Integer pageNumber, Integer size, Integer scriptId) {
         List<QueryMetadataHistoryEntry> historyList = queryMetadataHistoryRepository.findByQueryId(Integer.valueOf(scriptId));
-        historyList = fillQueryMetadataAdditionalInfo(historyList);
+        historyList = fillQueryHistoryMetadataAdditionalInfo(historyList);
 
         int totalPages = ( (historyList.size() - 1 ) / size ) +1 ;
         int skip = pageNumber > 1 ? (pageNumber - 1) * size : 0;
@@ -109,5 +127,32 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
                 .collect(Collectors.toList());
 
         return new Paged<>(new Page<>(paged, totalPages), Paging.of(totalPages, pageNumber, size));
+    }
+
+    /*Method to retrieve paginated results for html page*/
+    @Override
+    public Paged<QueryMetadataEntry> getQueryMetadataEntries(Integer pageNumber, Integer size, Integer scriptId) {
+        List<QueryMetadataEntry> queryVersionsList = queryMetadataRepository.findByQueryId(Integer.valueOf(scriptId));
+        queryVersionsList = fillQueryMetadataAdditionalInfo(queryVersionsList);
+
+        int totalPages = ( (queryVersionsList.size() - 1 ) / size ) +1 ;
+        int skip = pageNumber > 1 ? (pageNumber - 1) * size : 0;
+
+        List<QueryMetadataEntry> paged = queryVersionsList.stream()
+                .skip(skip)
+                .limit(size)
+                .collect(Collectors.toList());
+
+        return new Paged<>(new Page<>(paged, totalPages), Paging.of(totalPages, pageNumber, size));
+    }
+
+    @Override
+    public Integer getCountOfHistoryEntriesByScript(Integer scriptId){
+        return queryMetadataHistoryRepository.findNumberOfEntriesByQueryId(scriptId);
+    }
+
+    @Override
+    public Integer getCountOfEntriesByScript(Integer scriptId){
+        return queryMetadataRepository.findNumberOfEntriesByQueryId(scriptId);
     }
 }

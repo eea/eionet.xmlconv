@@ -62,6 +62,15 @@ public class QueryHistoryEntry {
     @Transient
     private String dateMod;
 
+    @Column(name = "MARKED_HEAVY")
+    private Boolean markedHeavy;
+
+    @Column(name = "MARKED_HEAVY_REASON")
+    private Integer markedHeavyReason;
+
+    @Column(name = "MARKED_HEAVY_REASON_OTHER")
+    private String markedHeavyReasonOther;
+
     public QueryHistoryEntry() {
     }
 
@@ -215,5 +224,32 @@ public class QueryHistoryEntry {
 
     public void setDateMod(String dateMod) {
         this.dateMod = dateMod;
+    }
+
+    public Boolean getMarkedHeavy() {
+        return markedHeavy;
+    }
+
+    public QueryHistoryEntry setMarkedHeavy(Boolean markedHeavy) {
+        this.markedHeavy = markedHeavy;
+        return this;
+    }
+
+    public Integer getMarkedHeavyReason() {
+        return markedHeavyReason;
+    }
+
+    public QueryHistoryEntry setMarkedHeavyReason(Integer markedHeavyReason) {
+        this.markedHeavyReason = markedHeavyReason;
+        return this;
+    }
+
+    public String getMarkedHeavyReasonOther() {
+        return markedHeavyReasonOther;
+    }
+
+    public QueryHistoryEntry setMarkedHeavyReasonOther(String markedHeavyReasonOther) {
+        this.markedHeavyReasonOther = markedHeavyReasonOther;
+        return this;
     }
 }

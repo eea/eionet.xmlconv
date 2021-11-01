@@ -5,13 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
@@ -51,6 +50,9 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
     @Autowired
     private QueryMetadataService queryMetadataService;
+
+    @Autowired
+    private QueryJpaService queryJpaService;
 
     @Override
     public void onMessage(Message message) {
@@ -105,6 +107,16 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
     private void findIfJobIsHeavyBasedOnWorkerType(WorkerJobInfoRabbitMQResponseMessage response, JobEntry jobEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         if (response.getJobExecutorType().equals(JobExecutorType.Heavy)) {  //the response came from a heavy worker, so the job is heavy
             jobEntry.setHeavy(true);
+            QueryEntry script = queryJpaService.findByQueryId(jobEntry.getQueryId());
+            if(script != null){
+                //if script is not heavy, mark it as heavy and set reason Out of memory
+                if(script.getMarkedHeavy() != true){
+                    script.setMarkedHeavy(true);
+                    script.setMarkedHeavyReason(HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode());
+                    queryJpaService.save(script);
+                    LOGGER.info("Marked script with id " + script.getQueryId() + " as heavy because of Out of memory error");
+                }
+            }
             List<JobExecutor> jobExecutors = jobExecutorService.findExecutorsByJobId(jobEntry.getId());
             //find light workers that may have grabbed the job before the job was sent to heavy queue and set their status to failed in order for them to be deleted later by the responsible scheduled Task.
             jobExecutors = jobExecutors.stream().filter(j -> j.getJobExecutorType() == JobExecutorType.Light).collect(Collectors.toList());

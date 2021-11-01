@@ -31,4 +31,33 @@ $(document).ready(function() {
             "sInfoEmpty": '0 entries',
         },
     } );
+
+    var table = $('#scriptExecutionVersionTable').DataTable( {
+        paging:   false,
+        ordering: true,
+        info:     true,
+        searching: false,
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csv',
+                text: 'Export to CSV',
+                customize: function (csv) {
+                    var csvRows = csv.split('\n');
+                    var csvColumns = csv.split(';');
+                    csvColumns[0] = 'Average duration';
+                    csvColumns[1] = 'Number of executions';
+                    csvColumns[2] = 'Version';
+                    csvRows[0] = csvColumns.join(';');
+                    return csvRows.join('\n');
+                }
+            }
+        ],
+        bAutoWidth: false,
+        "order": [[ 1, "asc" ]],
+        "oLanguage": {
+            "sInfo": '_TOTAL_ entries<span class="lvllbl"></span>',
+            "sInfoEmpty": '0 entries',
+        },
+    } );
 } );

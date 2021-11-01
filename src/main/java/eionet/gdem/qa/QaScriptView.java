@@ -31,6 +31,9 @@ public  final  class QaScriptView implements Serializable {
     public static final String META_TYPE="metaType";
     public static final String URL = "url";
     public static final String ASYNCHRONOUS_EXECUTION = "asynchronousExecution";
+    public static final String MARKED_HEAVY = "markedHeavy";
+    public static final String MARKED_HEAVY_REASON = "markedHeavyReason";
+    public static final String MARKED_HEAVY_REASON_OTHER = "markedHeavyReasonOther";
 
     private QaScriptView() {
     }

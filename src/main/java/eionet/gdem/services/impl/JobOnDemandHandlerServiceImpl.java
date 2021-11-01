@@ -7,7 +7,10 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryJpaService;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
@@ -28,7 +31,9 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     private JobService jobService;
     private JobHistoryService jobHistoryService;
-    private RabbitMQMessageSender jobMessageSender;
+    private RabbitMQMessageSender jobMessageLightSender;
+    private RabbitMQMessageSender jobMessageHeavySender;
+    private QueryJpaService queryJpaService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobOnDemandHandlerServiceImpl.class);
 
@@ -36,10 +41,14 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     @Autowired
     public JobOnDemandHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService,
-                                         @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageSender) {
+                                         @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageLightSender,
+                                         @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageHeavySender,
+                                         QueryJpaService queryJpaService) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
-        this.jobMessageSender = jobMessageSender;
+        this.jobMessageLightSender = jobMessageLightSender;
+        this.jobMessageHeavySender = jobMessageHeavySender;
+        this.queryJpaService = queryJpaService;
     }
 
     @Transactional
@@ -56,7 +65,18 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             script.setJobId(jobEntry.getId().toString());
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
-            jobMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+
+            LOGGER.info("Before getting query entry");
+            if(queryJpaService == null){
+                LOGGER.info("Null query Jpa service");
+            }
+            QueryEntry query = queryJpaService.findByQueryId(scriptId);
+            LOGGER.info("After getting query entry");
+            if (query != null && query.getMarkedHeavy()) {
+                jobMessageHeavySender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+            } else {
+                jobMessageLightSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+            }
 
             Integer retryCounter = jobService.getRetryCounter(jobEntry.getId());
             jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());

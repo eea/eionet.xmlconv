@@ -38,6 +38,9 @@
   <form:hidden path="upperLimit"/>
   <form:hidden path="active"/>
   <form:hidden path="asynchronousExecution"/>
+  <form:hidden path="markedHeavy"/>
+  <form:hidden path="markedHeavyReason"/>
+  <form:hidden path="markedHeavyReasonOther"/>
 
 </form:form>
 

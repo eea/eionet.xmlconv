@@ -111,6 +111,7 @@
         ${form.scriptType}
       </td>
     </tr>
+    <tr>
     <th scope="row" class="scope-row">
       <spring:message code="label.qascript.asynchronous"/>
     </th>
@@ -118,6 +119,26 @@
       ${form.asynchronousExecution}
     </td>
     </tr>
+    <tr>
+      <th scope="row" class="scope-row">
+        <spring:message code="label.qascript.heavy"/>
+      </th>
+      <td>
+        ${form.markedHeavy}
+      </td>
+    </tr>
+    <c:choose>
+      <c:when test="${form.markedHeavy}">
+        <tr>
+          <th scope="row" class="scope-row">
+            <spring:message code="label.qascript.heavy.reason"/>
+          </th>
+          <td>
+              ${form.markedHeavyReasonOther}
+          </td>
+        </tr>
+      </c:when>
+    </c:choose>
     <tr>
       <th scope="row" class="scope-row">
         <spring:message code="label.qascript.upperlimit"/>

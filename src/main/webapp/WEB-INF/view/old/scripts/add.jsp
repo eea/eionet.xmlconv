@@ -6,6 +6,7 @@
 <script type="text/javascript" src="<c:url value='/static/webjars/jquery/jquery.min.js'/>"></script>
 <script type="text/javascript" src="<c:url value='/static/webjars/jquery-ui/jquery-ui.js'/>"></script>
 <script type="text/javascript" src="/resources/js/statusModal.js"></script>
+<script type="text/javascript" src="/resources/js/scripts.js"></script>
 
 
 <form:form servletRelativeAction="/scripts" method="post" enctype="multipart/form-data" modelAttribute="form">
@@ -86,6 +87,37 @@
       </div>
       <div class="columns small-8">
         <form:input id="txtUpperLimit" size="3" path="upperLimit"/>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend><spring:message code="label.qascript.mark.heavy.section"/></legend>
+    <div class="row">
+      <div class="columns small-8">
+        <form:radiobutton path="markedHeavy" name="heavyScript" id="light" value="false" checked="checked" onchange="hideDropdown()"/>
+        <label for="light"><spring:message code="label.qascript.light"/></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-8">
+        <form:radiobutton path="markedHeavy" name="heavyScript" id="heavy" value="true" onchange="showDropdown()"/>
+        <label for="heavy"><spring:message code="label.qascript.heavy"/></label>
+      </div>
+    </div>
+    <div class="row" id="markedHeavyReason" style='display:none'>
+      <div class="columns small-8">
+        <form:select path="markedHeavyReason" id="selMarkedHeavyReason">
+          <form:option value="Long running script" id="longRunning" selected="true">Long running script</form:option>
+          <form:option value="Out of memory" id="oom">Out of memory</form:option>
+          <form:option value="Other" id="other">Other</form:option>
+        </form:select>
+      </div>
+    </div>
+    <div class="row" id="markedHeavyOtherReason" style='display:none'>
+      <div class="columns small-8">
+        <label for="markedHeavyOtherReasonTxt"><spring:message code="label.qascript.heavy.reason"/></label>
+        <form:input id="markedHeavyOtherReasonTxt" path="markedHeavyReasonOther" maxlength="200"/>
       </div>
     </div>
   </fieldset>

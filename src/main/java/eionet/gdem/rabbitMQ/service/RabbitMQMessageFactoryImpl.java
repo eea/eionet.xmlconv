@@ -50,16 +50,19 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     private SchemaManager schemaManager;
     private IQueryDao queryDao;
     private JobHistoryService jobHistoryService;
-    private RabbitMQMessageSender rabbitMQMessageSender;
+    private RabbitMQMessageSender rabbitMQLightMessageSender;
+    private RabbitMQMessageSender rabbitMQHeavyMessageSender;
     private JobService jobService;
     private QueryMetadataService queryMetadataService;
 
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
-                                      @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, JobService jobService, QueryMetadataService queryMetadataService) {
+                                      @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQLightMessageSender,
+                                      @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQHeavyMessageSender, JobService jobService, QueryMetadataService queryMetadataService) {
         this.queryDao = queryDao;
         this.jobHistoryService = jobHistoryService;
-        this.rabbitMQMessageSender = rabbitMQMessageSender;
+        this.rabbitMQLightMessageSender = rabbitMQLightMessageSender;
+        this.rabbitMQHeavyMessageSender = rabbitMQHeavyMessageSender;
         this.jobService = jobService;
         this.queryMetadataService = queryMetadataService;
     }
@@ -171,13 +174,13 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     if (query != null && query.containsKey(QaScriptView.URL)) {
                         xq.setScriptSource((String) query.get(QaScriptView.URL));
                     }
-
-                    String asynchronousExecution = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
-                    if(asynchronousExecution != null && asynchronousExecution.equals("1")){
-                        xq.setAsynchronousExecution(true);
-                    }
-                    else{
-                        xq.setAsynchronousExecution(false);
+                    if(query != null) {
+                        String asynchronousExecution = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+                        if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
+                            xq.setAsynchronousExecution(true);
+                        } else {
+                            xq.setAsynchronousExecution(false);
+                        }
                     }
 
                     LOGGER.info("** FME Job will be added in queue, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
@@ -187,7 +190,18 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
                 processJob(jobEntry);
                 WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(xq);
-                rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                //marked heavy properties
+                if(query != null) {
+                    String markedHeavy = (String) query.get(QaScriptView.MARKED_HEAVY);
+                    if (markedHeavy != null && markedHeavy.equals("1")) {
+                        rabbitMQHeavyMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                    } else {
+                        rabbitMQLightMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                    }
+                }
+                else{
+                    rabbitMQLightMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                }
             }
         } catch (Exception e) {
             throw new CreateRabbitMQMessageException(e.getMessage());
