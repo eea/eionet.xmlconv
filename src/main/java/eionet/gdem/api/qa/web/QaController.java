@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -206,9 +207,24 @@ public class QaController {
         if(results.get("REMOTE_FILES")!=null){
             String[] fileUrls = (String[]) results.get("REMOTE_FILES");
             if(fileUrls[0]!=null) {
-                jsonResults.put("feedbackContent", "");
-                jsonResults.put("REMOTE_FILES",fileUrls);
+                String fileName = fileUrls[0].replace(Properties.gdemURL + "/restapi/download/zip/","");
+                if (fileName == null || fileName.isEmpty() || "/".equals(fileName)) {
+                    throw new XMLConvException("FileName is not correct");
+                }
+                String urlPath = new StringBuilder("/tmp/").append(fileName).toString();
+                String filePath = Properties.appRootFolder + urlPath;
+                File zipFile = new File(filePath);
+                Path file = Paths.get(filePath);
 
+                if (Files.exists(file) && zipFile.length()>0) {
+                    jsonResults.put("feedbackContent", "");
+                    jsonResults.put("REMOTE_FILES",fileUrls);
+                } else {
+                    jsonResults.put("feedbackContent","");
+                    executionStatusView.put("statusId", String.valueOf(Constants.JOB_NOT_READY));
+                    executionStatusView.put("statusName","Not Ready");
+                    jsonResults.put("executionStatus",executionStatusView);
+                }
             }
         }else{
             jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
