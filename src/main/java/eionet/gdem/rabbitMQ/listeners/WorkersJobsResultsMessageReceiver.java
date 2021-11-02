@@ -109,10 +109,11 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             jobEntry.setHeavy(true);
             QueryEntry script = queryJpaService.findByQueryId(jobEntry.getQueryId());
             if(script != null){
-                //if script is not heavy, mark it as heavy and set reason Out of memory
+                //if script is not heavy, mark it as heavy, set reason Out of memory and increase version
                 if(script.getMarkedHeavy() != true){
                     script.setMarkedHeavy(true);
                     script.setMarkedHeavyReason(HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode());
+                    script.setVersion(script.getVersion() + 1);
                     queryJpaService.save(script);
                     LOGGER.info("Marked script with id " + script.getQueryId() + " as heavy because of Out of memory error");
                 }

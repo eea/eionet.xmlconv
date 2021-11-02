@@ -376,14 +376,21 @@ public class QAScriptsController {
 
         try {
             Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
+            Integer newVersion = maxVersion;
+
+            QueryEntry oldScript = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
+            //if the content was updated or the marked heavy field was changed, the version must be increased
+            if(updateContent || (oldScript.getMarkedHeavy() != null && oldScript.getMarkedHeavy() != markedHeavy)){
+                newVersion = maxVersion + 1;
+            }
             QAScriptManager qm = new QAScriptManager();
             QueryBackupEntry queryBackupEntry = qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
-                    url, scriptContent, updateContent, asynchronousExecution, active, updateContent ? maxVersion+1 : maxVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
+                    url, scriptContent, updateContent, asynchronousExecution, active, newVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
             qm.activateDeactivate(user, scriptId, active);
 
             QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
             QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url,
-                    asynchronousExecution, active, curFileName, updateContent ? maxVersion+1 : maxVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
+                    asynchronousExecution, active, curFileName, newVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
             queryHistoryEntry.setQueryEntry(queryEntry);
             if (queryBackupEntry!=null) {
                 queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);

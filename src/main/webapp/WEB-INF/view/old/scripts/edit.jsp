@@ -13,6 +13,11 @@
           <spring:message code="label.qascript.history"/>
         </a>
       </li>
+      <li>
+        <a href="/new/scripts/${form.scriptId}/executionHistory" style="color: black; text-decoration: none;">
+          <spring:message code="label.qascript.executionHistory"/>
+        </a>
+      </li>
     </ul>
   </div>
   <ed:breadcrumbs-push label="Edit QA script" level="3"/>
@@ -115,7 +120,14 @@
           <label for="heavy"><spring:message code="label.qascript.heavy"/></label>
         </div>
       </div>
-      <div class="row" id="markedHeavyReason" style='display:none'>
+      <c:choose>
+        <c:when test="${form.markedHeavy == true}">
+          <div class="row" id="markedHeavyReason">
+        </c:when>
+        <c:otherwise>
+          <div class="row" id="markedHeavyReason" style='display:none'>
+        </c:otherwise>
+      </c:choose>
         <div class="columns small-8">
           <form:select path="markedHeavyReason" id="selMarkedHeavyReason">
             <form:option value="Long running script" id="longRunning" selected="true">Long running script</form:option>
@@ -124,7 +136,14 @@
           </form:select>
         </div>
       </div>
-      <div class="row" id="markedHeavyOtherReason" style='display:none'>
+      <c:choose>
+        <c:when test="${form.markedHeavy == true}">
+          <div class="row" id="markedHeavyOtherReason">
+        </c:when>
+        <c:otherwise>
+           <div class="row" id="markedHeavyOtherReason" style='display:none'>
+        </c:otherwise>
+      </c:choose>
         <div class="columns small-8">
           <label for="markedHeavyOtherReasonTxt"><spring:message code="label.qascript.heavy.reason"/></label>
           <form:input id="markedHeavyOtherReasonTxt" path="markedHeavyReasonOther" maxlength="200"/>
