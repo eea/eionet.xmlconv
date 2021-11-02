@@ -220,6 +220,7 @@ public class QaController {
                     jsonResults.put("feedbackContent", "");
                     jsonResults.put("REMOTE_FILES",fileUrls);
                 } else {
+                    LOGGER.info("Zip file " + fileName + " of job with id " + jobId + " is not ready");
                     jsonResults.put("feedbackContent","");
                     executionStatusView.put("statusId", String.valueOf(Constants.JOB_NOT_READY));
                     executionStatusView.put("statusName","Not Ready");
