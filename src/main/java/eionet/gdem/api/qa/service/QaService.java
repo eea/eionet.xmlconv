@@ -42,4 +42,6 @@ public interface QaService {
     Schema getSchemaBySchemaUrl(String schemaUrl) throws Exception;
 
     Integer getJobExternalStatus(String jobId) throws XMLConvException;
+
+    LinkedHashMap<String, Object> checkIfZipFileExistsOrIsEmpty(String[] fileUrls, String jobId, LinkedHashMap<String, Object> jsonResults) throws XMLConvException;
 }

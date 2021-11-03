@@ -207,25 +207,7 @@ public class QaController {
         if(results.get("REMOTE_FILES")!=null){
             String[] fileUrls = (String[]) results.get("REMOTE_FILES");
             if(fileUrls[0]!=null) {
-                String fileName = fileUrls[0].replace(Properties.gdemURL + "/restapi/download/zip/","");
-                if (fileName == null || fileName.isEmpty() || "/".equals(fileName)) {
-                    throw new XMLConvException("FileName is not correct");
-                }
-                String urlPath = new StringBuilder("/tmp/").append(fileName).toString();
-                String filePath = Properties.appRootFolder + urlPath;
-                File zipFile = new File(filePath);
-                Path file = Paths.get(filePath);
-
-                if (Files.exists(file) && zipFile.length()>0) {
-                    jsonResults.put("feedbackContent", "");
-                    jsonResults.put("REMOTE_FILES",fileUrls);
-                } else {
-                    LOGGER.info("Zip file " + fileName + " of job with id " + jobId + " is not ready");
-                    jsonResults.put("feedbackContent","");
-                    executionStatusView.put("statusId", String.valueOf(Constants.JOB_NOT_READY));
-                    executionStatusView.put("statusName","Not Ready");
-                    jsonResults.put("executionStatus",executionStatusView);
-                }
+                jsonResults = qaService.checkIfZipFileExistsOrIsEmpty(fileUrls, jobId, jsonResults);
             }
         }else{
             jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));

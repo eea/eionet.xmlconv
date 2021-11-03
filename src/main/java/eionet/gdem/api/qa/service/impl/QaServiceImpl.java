@@ -1,6 +1,7 @@
 package eionet.gdem.api.qa.service.impl;
 
 import eionet.gdem.Constants;
+import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
@@ -28,10 +29,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -309,6 +314,31 @@ public class QaServiceImpl implements QaService {
             return Integer.parseInt(jobData[3]);
         else
             return Constants.XQ_JOBNOTFOUND_ERR;
+    }
+
+    @Override
+    public LinkedHashMap<String, Object> checkIfZipFileExistsOrIsEmpty(String[] fileUrls, String jobId, LinkedHashMap<String, Object> jsonResults) throws XMLConvException {
+        String fileName = fileUrls[0].replace(eionet.gdem.Properties.gdemURL + "/restapi/download/zip/","");
+        if (fileName == null || fileName.isEmpty() || "/".equals(fileName)) {
+            throw new XMLConvException("FileName is not correct");
+        }
+        String urlPath = new StringBuilder("/tmp/").append(fileName).toString();
+        String filePath = Properties.appRootFolder + urlPath;
+        File zipFile = new File(filePath);
+        Path file = Paths.get(filePath);
+
+        if (Files.exists(file) && zipFile.length()>0) {
+            jsonResults.put("feedbackContent", "");
+            jsonResults.put("REMOTE_FILES",fileUrls);
+        } else {
+            LOGGER.info("Zip file " + fileName + " of job with id " + jobId + " is not ready");
+            jsonResults.put("feedbackContent","");
+            LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
+            executionStatusView.put("statusId", String.valueOf(Constants.JOB_NOT_READY));
+            executionStatusView.put("statusName","Not Ready");
+            jsonResults.put("executionStatus",executionStatusView);
+        }
+        return jsonResults;
     }
 
     public JobRequestHandlerService getJobRequestHandlerService() {
