@@ -55,7 +55,7 @@ public class LoginController {
 
         String afterLogin = (String) httpServletRequest.getSession().getAttribute(AFTER_LOGIN_ATTR_NAME);
 
-        if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp") && !afterLogin.contains("/error")) {
+        if (afterLogin != null && !afterLogin.toLowerCase().contains("/tiles/layout.jsp") && !afterLogin.contains("/error") && !afterLogin.contains("/getJobDetails")) {
             return "redirect:" + afterLogin;
         }
 

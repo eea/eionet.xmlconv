@@ -42,9 +42,9 @@ function format ( row, tr ) {
             additionalInfo = additionalInfo.concat('</table>');
             if (username) {
                 additionalInfo = additionalInfo.concat('<div>'+'<a href="'+convGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">Converters graylog</a>'+
-                    ' Display Graylog Results for Converters for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + '</div>' + '<br>' +
+                    ' (Display Graylog Results for Converters for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + ')' +'</div>' + '<br>' +
                     '<div>'+'<a href="'+jobExecGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">JobExecutor graylog</a>' +
-                    ' Display Graylog Results for JobExecutor for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate +'</div>');
+                    ' (Display Graylog Results for JobExecutor for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + ')' +'</div>');
             }
             //show the row
             row.child(additionalInfo).show();
