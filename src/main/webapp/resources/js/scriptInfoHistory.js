@@ -20,6 +20,7 @@ var app = new Vue({
                 {text: "Short name", value: "shortName"},
                 {text: "Query filename", value: "queryFileName"},
                 {text: "Version", value: "version"},
+                {text: "Marked heavy", value: "markedHeavy", sortable: false},
                 {text: "Username", value: "user"},
                 {text: "Date modified", value: "dateMod"},
                 {text: '', value: 'data-table-expand' }

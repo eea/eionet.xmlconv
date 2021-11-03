@@ -46,7 +46,7 @@ public final class ScriptUtils {
         return script;
     }
 
-    public synchronized static QueryHistoryEntry createQueryHistoryEntry(String user, String shortName, String schemaId, String resultType, String description, String scriptType,
+    public static QueryHistoryEntry createQueryHistoryEntry(String user, String shortName, String schemaId, String resultType, String description, String scriptType,
                                                             String upperLimit, String url, Boolean asynchronousExecution, boolean active, String fileName, Integer version,
                                                                          Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther) {
         QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(description).setShortName(shortName).setQueryFileName(fileName)

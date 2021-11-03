@@ -3,6 +3,7 @@ package eionet.gdem.jpa.Entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "QUERY_METADATA_HISTORY")
@@ -34,6 +35,9 @@ public class QueryMetadataHistoryEntry implements Serializable {
     @Column(name = "VERSION")
     private Integer version;
 
+    @Column(name = "TIMESTAMP")
+    private Timestamp timestamp;
+
     @Transient
     private String shortFileName;
 
@@ -46,7 +50,7 @@ public class QueryMetadataHistoryEntry implements Serializable {
     public QueryMetadataHistoryEntry() {
     }
 
-    public QueryMetadataHistoryEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version) {
+    public QueryMetadataHistoryEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version, Timestamp timestamp) {
         this.id = id;
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
@@ -55,9 +59,10 @@ public class QueryMetadataHistoryEntry implements Serializable {
         this.markedHeavy = markedHeavy;
         this.jobStatus = jobStatus;
         this.version = version;
+        this.timestamp = timestamp;
     }
 
-    public QueryMetadataHistoryEntry(String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version) {
+    public QueryMetadataHistoryEntry(String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version, Timestamp timestamp) {
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
         this.scriptType = scriptType;
@@ -65,6 +70,7 @@ public class QueryMetadataHistoryEntry implements Serializable {
         this.markedHeavy = markedHeavy;
         this.jobStatus = jobStatus;
         this.version = version;
+        this.timestamp = timestamp;
     }
 
     public Integer getId() {
@@ -153,5 +159,13 @@ public class QueryMetadataHistoryEntry implements Serializable {
 
     public void setStatusName(String statusName) {
         this.statusName = statusName;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 }
