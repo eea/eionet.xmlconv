@@ -6,6 +6,7 @@ function format ( row, tr ) {
     var d = row.data();
     // `d` is the original data object for the row
     var jobId = getSelectedJobId(d[1]);
+    var username = document.getElementById('username').value;
     var convGraylog = document.getElementById('convGraylog').value;
     var jobExecGraylog = document.getElementById('jobExecGraylog').value;
     //ajax call to get data by jobid
@@ -39,10 +40,12 @@ function format ( row, tr ) {
                 return additionalInfo;
             });
             additionalInfo = additionalInfo.concat('</table>');
-            additionalInfo = additionalInfo.concat('<div>'+'<a href="'+convGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">Converters graylog</a>'+
-                ' Display Graylog Results for Converters for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + '</div>' + '<br>' +
-                '<div>'+'<a href="'+jobExecGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">JobExecutor graylog</a>' +
-                ' Display Graylog Results for JobExecutor for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate +'</div>');
+            if (username) {
+                additionalInfo = additionalInfo.concat('<div>'+'<a href="'+convGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">Converters graylog</a>'+
+                    ' Display Graylog Results for Converters for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + '</div>' + '<br>' +
+                    '<div>'+'<a href="'+jobExecGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">JobExecutor graylog</a>' +
+                    ' Display Graylog Results for JobExecutor for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate +'</div>');
+            }
             //show the row
             row.child(additionalInfo).show();
             tr.addClass('shown');

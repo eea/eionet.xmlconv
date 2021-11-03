@@ -234,6 +234,7 @@
       </c:if>
       <input type="hidden" name="ACTION" id="ACTION" value="delete"/>
       <input type="hidden" name="ID" value=""/>
+      <input type="hidden" id="username" value="${username}">
       <input type="hidden" id="convGraylog" name="convertersGraylog" value="<%=Properties.CONVERTERS_GRAYLOG%>" />
       <input type="hidden" id="jobExecGraylog" name="jobExecGraylog" value="<%=Properties.JOB_EXECUTOR_GRAYLOG%>" />
     </div>

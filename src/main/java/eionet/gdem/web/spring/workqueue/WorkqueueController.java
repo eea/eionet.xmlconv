@@ -185,6 +185,7 @@ public class WorkqueueController {
         model.addAttribute("permissions", permissions);
         model.addAttribute("jobList", jobsList);
         model.addAttribute("form", form);
+        model.addAttribute("username", userName);
         return "/workqueue";
     }
 
