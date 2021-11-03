@@ -66,12 +66,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
 
-            LOGGER.info("Before getting query entry");
-            if(queryJpaService == null){
-                LOGGER.info("Null query Jpa service");
-            }
             QueryEntry query = queryJpaService.findByQueryId(scriptId);
-            LOGGER.info("After getting query entry");
             if (query != null && query.getMarkedHeavy()) {
                 jobMessageHeavySender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
             } else {

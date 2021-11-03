@@ -19,6 +19,7 @@ $(document).ready(function() {
                     csvColumns[3] = 'Was Heavy';
                     csvColumns[4] = 'Job Status';
                     csvColumns[5] = 'Version';
+                    csvColumns[6] = 'Timestamp';
                     csvRows[0] = csvColumns.join(';');
                     return csvRows.join('\n');
                 }
@@ -48,6 +49,7 @@ $(document).ready(function() {
                     csvColumns[0] = 'Average duration';
                     csvColumns[1] = 'Number of executions';
                     csvColumns[2] = 'Version';
+                    csvColumns[3] = 'Was Heavy';
                     csvRows[0] = csvColumns.join(';');
                     return csvRows.join('\n');
                 }

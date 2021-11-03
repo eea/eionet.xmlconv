@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +54,7 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
         if (Utils.isNullList(queryMetadataList)){
             QueryMetadataEntry queryMetadataEntry = new QueryMetadataEntry(scriptFile,queryID, scriptType, durationOfJob, 1, queryEntry.getMarkedHeavy(), queryEntry.getVersion(), durationOfJob);
             queryMetadataRepository.save(queryMetadataEntry);
-            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion());
+            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()));
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
         else{
@@ -74,7 +76,7 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
                 oldEntry.setAverageDuration(newAverageJobDuration);
                 queryMetadataRepository.save(oldEntry);
             }
-            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion());
+            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()));
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
     }

@@ -49,6 +49,7 @@
                                 <th scope="col" class="scope-col">Average duration</th>
                                 <th scope="col" class="scope-col">Number of executions</th>
                                 <th scope="col" class="scope-col">Version</th>
+                                <th scope="col" class="scope-col">Was Heavy</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -56,6 +57,7 @@
                                 <td th:text="${entry.averageDurationFormatted}"></td>
                                 <td th:text="${entry.numberOfExecutions}"></td>
                                 <td th:text="${entry.version}"></td>
+                                <td th:text="${entry.markedHeavy}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -121,6 +123,7 @@
                                     <th scope="col" class="scope-col">Was Heavy</th>
                                     <th scope="col" class="scope-col">Job Status</th>
                                     <th scope="col" class="scope-col">Version</th>
+                                    <th scope="col" class="scope-col">Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -131,6 +134,7 @@
                                     <td th:text="${entry.markedHeavy}"></td>
                                     <td th:text="${entry.statusName}"></td>
                                     <td th:text="${entry.version}"></td>
+                                    <td th:text="${entry.timestamp}"></td>
                                 </tr>
                             </tbody>
                         </table>

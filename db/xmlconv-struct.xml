@@ -846,4 +846,12 @@
             <column name="MARKED_HEAVY_REASON_OTHER" type="VARCHAR(200)"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-75">
+        <comment>
+            Add column to QUERY_METADATA_HISTORY table
+        </comment>
+        <addColumn tableName="QUERY_METADATA_HISTORY">
+            <column name="TIMESTAMP" type="TIMESTAMP"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
