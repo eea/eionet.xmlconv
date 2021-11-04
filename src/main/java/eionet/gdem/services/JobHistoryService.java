@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface JobHistoryService {
 
-    List<JobHistoryEntry> getAdditionalInfoOfJob(String jobId);
+    List<JobHistoryEntry> getJobHistoryEntriesOfJob(String jobId);
 
     void updateJobHistory(Integer nStatus, Integer internalStatus, JobEntry jobEntry) throws DatabaseException;
 

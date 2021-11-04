@@ -27,7 +27,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
 
     @Override
-    public List<JobHistoryEntry> getAdditionalInfoOfJob(String jobId){
+    public List<JobHistoryEntry> getJobHistoryEntriesOfJob(String jobId){
         List<JobHistoryEntry> entries = repository.findByJobName(jobId);
         for(JobHistoryEntry entry: entries){
             switch (entry.getStatus()) {

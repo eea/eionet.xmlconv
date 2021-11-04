@@ -66,6 +66,12 @@ public class JobEntry implements Serializable {
     @Column(name = "IS_HEAVY")
     private boolean isHeavy;
 
+    @Transient
+    private String fromDate;
+
+    @Transient
+    private String toDate;
+
     public JobEntry() {
     }
 
@@ -240,5 +246,21 @@ public class JobEntry implements Serializable {
     public JobEntry setHeavy(boolean heavy) {
         isHeavy = heavy;
         return this;
+    }
+
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
     }
 }
