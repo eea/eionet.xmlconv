@@ -11,12 +11,14 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryJpaService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
+import eionet.gdem.rabbitMQ.service.QueryAndQueryHistoryService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,11 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
     @Autowired
     private QueryJpaService queryJpaService;
 
+    @Autowired
+    private QueryAndQueryHistoryService queryAndQueryHistoryService;
+
+    public static final String CONVERTERS_NAME = "converters";
+
     @Override
     public void onMessage(Message message) {
         String messageBody = new String(message.getBody());
@@ -76,8 +83,6 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
             jobEntry.setJobExecutorName(response.getJobExecutorName());
 
-            findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
-
             Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
             if (response.isErrorExists()) {
                 LOGGER.info("Job with id " + script.getJobId() + " failed with error: " + response.getErrorMessage());
@@ -85,6 +90,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR);
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getJobExecutorName());
+                findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
                 workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_PROCESSING, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_READY) {
                 LOGGER.info("### Job with id=" + script.getJobId() + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
@@ -114,8 +120,12 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                     script.setMarkedHeavy(true);
                     script.setMarkedHeavyReason(HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode());
                     script.setVersion(script.getVersion() + 1);
-                    queryJpaService.save(script);
+                    QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(CONVERTERS_NAME, script.getShortName(), script.getSchemaId().toString(), script.getResultType(), script.getDescription(), script.getScriptType(), script.getUpperLimit().toString(), script.getUrl(),
+                            script.isAsynchronousExecution(), script.isActive(), script.getQueryFileName(), script.getVersion(), true, HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode(), null);
+                    queryHistoryEntry.setQueryEntry(script);
+                    queryAndQueryHistoryService.saveQueryAndQueryHistoryEntries(script, queryHistoryEntry);
                     LOGGER.info("Marked script with id " + script.getQueryId() + " as heavy because of Out of memory error");
+                    LOGGER.info("Marked script history of script with id " + script.getQueryId() + " as heavy because of Out of memory error");
                 }
             }
             List<JobExecutor> jobExecutors = jobExecutorService.findExecutorsByJobId(jobEntry.getId());
