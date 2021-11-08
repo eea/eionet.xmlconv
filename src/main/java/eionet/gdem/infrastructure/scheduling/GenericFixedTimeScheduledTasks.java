@@ -9,23 +9,17 @@ import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.jpa.Entities.*;
-import eionet.gdem.jpa.errors.DatabaseException;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
-import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.model.ContainerData;
-import eionet.gdem.rancher.model.ServiceApiRequestBody;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
-import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
@@ -33,7 +27,6 @@ import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -45,36 +38,27 @@ import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
-public class FixedTimeScheduledTasks {
+public class GenericFixedTimeScheduledTasks {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FixedTimeScheduledTasks.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericFixedTimeScheduledTasks.class);
 
     @Autowired
     private IXQJobDao xqJobDao;
     @Qualifier("jobHistoryRepository")
     @Autowired
-    JobHistoryRepository repository;
-    @Autowired
-    private ServicesRancherApiOrchestrator servicesOrchestrator;
-    @Autowired
-    private ContainersRancherApiOrchestrator containersOrchestrator;
-    @Autowired
-    private JobExecutorService jobExecutorService;
+    private JobHistoryRepository repository;
     @Autowired
     private WorkerHeartBeatMsgService workerHeartBeatMsgService;
     @Autowired
     private JobService jobService;
     @Autowired
-    private RabbitAdmin rabbitAdmin;
+    private HeartBeatMsgHandlerService heartBeatMsgHandlerService;
     @Autowired
-    HeartBeatMsgHandlerService heartBeatMsgHandlerService;
+    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
     @Autowired
-    WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
-    @Autowired
-    QueryMetadataService queryMetadataService;
+    private QueryMetadataService queryMetadataService;
 
     /**
      * Dao for getting job data.
@@ -84,7 +68,7 @@ public class FixedTimeScheduledTasks {
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
 
     @Autowired
-    public FixedTimeScheduledTasks() {
+    public GenericFixedTimeScheduledTasks() {
     }
 
     @Transactional
@@ -120,157 +104,6 @@ public class FixedTimeScheduledTasks {
             //send notifications to users via UNS
             new UNSEventSender().longRunningJobsNotifications(longRunningJobIds, Properties.LONG_RUNNING_JOBS_EVENT);
             LOGGER.info("Sent notifications for long running jobs");
-        }
-    }
-
-    /**
-     * The task runs every minute and checks how many jobs have internalScedulingStatus=2 (meaning the job has been added to rabbitmq queue and is waiting
-     * for a worker to grab it) and how many workers have status=1 (meaning they are ready to receive a job) and creates or deletes workers accordingly.
-     *
-     * @throws RancherApiException
-     */
-    @Transactional
-    @Scheduled(cron = "0 */1 * * * *")  //every minute
-    public void scheduleWorkersOrchestration() {
-        if (!Properties.enableJobExecRancherScheduledTask) {
-            return;
-        }
-        String serviceId = Properties.rancherJobExecServiceId;
-
-        try {
-            deleteFailedWorkers(serviceId);
-        } catch (RancherApiException | DatabaseException e) {
-            LOGGER.error("Error during deletion of failed workers");
-            return;
-        }
-
-        InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-        List<JobEntry> jobs = jobService.findByIntSchedulingStatus(internalStatus);
-        List<JobExecutor> readyWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_READY);
-        readyWorkers = readyWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
-        if (jobs.size() > readyWorkers.size()) {
-            Integer newWorkers = jobs.size() - readyWorkers.size();
-            try {
-                createWorkers(serviceId, newWorkers);
-            } catch (RancherApiException e) {
-                LOGGER.error("Worker creation failed.");
-                return;
-            }
-        } else if (jobs.size() < readyWorkers.size()) {
-            List<String> instances = null;
-            try {
-                instances = servicesOrchestrator.getContainerInstances(serviceId);
-            } catch (RancherApiException e) {
-                LOGGER.error("Cannot get container instances to proceed with scale down");
-                return;
-            }
-            if (instances.size() == 1) {
-                return;
-            }
-            Integer workersToDelete = readyWorkers.size() - jobs.size();
-            Integer workersDeleted = 1;
-            for (JobExecutor worker : readyWorkers) {
-                while (workersDeleted <= workersToDelete) {
-                    try {
-                        instances = servicesOrchestrator.getContainerInstances(serviceId);
-                    } catch (RancherApiException e) {
-                        LOGGER.error("cannot get instances in order to delete them later, " + e);
-                        return;
-                    }
-                    if (instances.size() == 1) {
-                        LOGGER.info("Only one worker instance found. No deletion required. Task Exiting.");
-                        return;
-                    }
-                    try {
-                        deleteFromRancherAndDatabase(worker);
-                    } catch (RancherApiException | DatabaseException e) {
-                        LOGGER.error("Error Deleting worker " + worker.getName() + ", " + e);
-                    }
-                    workersDeleted++;
-                    break;
-                }
-            }
-        }
-
-    }
-
-    /**
-     * deletes workers that have failed to run correctly
-     *
-     * @throws RancherApiException
-     */
-    void deleteFailedWorkers(String serviceId) throws RancherApiException, DatabaseException {
-        List<JobExecutor> failedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
-        failedWorkers = failedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
-        for (JobExecutor worker : failedWorkers) {
-            deleteFromRancherAndDatabase(worker);
-        }
-        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        if (instances.size()==0) {
-            ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
-            servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-        }
-    }
-
-    /**
-     * deletes worker from rancher and JOB_EXECUTOR table
-     *
-     * @param worker
-     * @throws RancherApiException
-     */
-    synchronized void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException, DatabaseException {
-        containersOrchestrator.deleteContainer(worker.getName());
-        jobExecutorService.deleteByName(worker.getName());
-        boolean queueDeleted = rabbitAdmin.deleteQueue(worker.getHeartBeatQueue());
-        if (!queueDeleted) {
-            LOGGER.error("Worker Heartbeat queue  could not be deleted:" + worker.getHeartBeatQueue());
-        }
-    }
-
-    /**
-     * increase workers so that maxJobExecutorContainersAllowed is not exceeded for JobExecutor containers
-     *
-     * @param serviceId
-     * @param newWorkers
-     * @throws RancherApiException
-     */
-    void createWorkers(String serviceId, Integer newWorkers) throws RancherApiException {
-        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
-        Integer maxJobExecutorsAllowed = Properties.maxJobExecutorContainersAllowed;
-        Integer scale = newWorkers;
-        if (instances.size() == maxJobExecutorsAllowed) {
-            return;
-        } else if (instances.size() + newWorkers > maxJobExecutorsAllowed) {
-            scale = maxJobExecutorsAllowed - instances.size();
-        }
-        ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size() + scale);
-        servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-        LOGGER.info("Created " + scale + " new worker(s)");
-    }
-
-    /**
-     * Finds jobExecutor instances in rancher that have failed to run correctly (unhealthy state) and updates their status in database
-     * with status=2 (FAILED). The task also finds jobExecutors in database that don't exist in rancher and deletes them from database.
-     *
-     * @throws RancherApiException
-     * @throws DatabaseException
-     */
-    @Scheduled(cron = "0 */2 * * * *") //Every 2 minutes
-    public void synchronizeRancherContainersAndDbEntriesByExistenceAndStatus() throws RancherApiException, DatabaseException {
-        if (!Properties.enableJobExecRancherScheduledTask) {
-            return;
-        }
-        try {
-            //Retrieve jobExecutor instances names from Rancher
-            List<String> instances = servicesOrchestrator.getContainerInstances(Properties.rancherJobExecServiceId);
-            this.updateDbContainersHealthStatusFromRancher(instances);
-
-            List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
-            List<JobExecutor> lightJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
-            this.synchronizeRancherContainersWithDbEntries(lightJobExecutors, instances);
-        } catch (RancherApiException rae) {
-            LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
-            throw rae;
         }
     }
 
@@ -313,46 +146,6 @@ public class FixedTimeScheduledTasks {
                 }
             } catch (Exception e) {
                 LOGGER.error("Error while checking heart beat messages for job with id " + jobEntry.getId());
-            }
-        }
-    }
-
-    protected void updateDbContainersHealthStatusFromRancher(List<String> instances) throws RancherApiException {
-        for (String containerId : instances) {
-            //for each instance find status
-            ContainerData data = containersOrchestrator.getContainerInfoById(containerId);
-            String healthState = data.getHealthState();
-            String state = data.getState();
-            if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue()) || state.equals(SchedulingConstants.CONTAINER_STATE_ENUM.STOPPED.getValue())) {
-                //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
-                String containerName = data.getName();
-                String heartBeatQueue = containerName + "-queue";
-                JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, heartBeatQueue);
-                try {
-                    LOGGER.info("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus: setting status of container with name " + containerName + " to WORKER_FAILED");
-                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
-                    workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-                } catch (DatabaseException e) {
-                    LOGGER.error("Task failed for jobExecutor with containerId " + containerId);
-                }
-            }
-        }
-    }
-
-    protected void synchronizeRancherContainersWithDbEntries(List<JobExecutor> jobExecutors, List<String> instances) {
-        for (JobExecutor jobExecutor : jobExecutors) {
-            if (!instances.contains(jobExecutor.getContainerId())) {
-                LOGGER.info("Container retrieved form Database  with ID:" + jobExecutor.getContainerId() + " and name:" + jobExecutor.getName() +
-                        " doesn't exist on rancher.Proceeding with deletion from Database");
-                try {
-                    jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
-                    boolean queueDeleted = rabbitAdmin.deleteQueue(jobExecutor.getHeartBeatQueue());
-                    if (!queueDeleted) {
-                        LOGGER.error("Worker Heartbeat queue  could not be deleted:" + jobExecutor.getHeartBeatQueue());
-                    }
-                } catch (DatabaseException e) {
-                    LOGGER.error("Task failed for jobExecutor with name " + jobExecutor.getName());
-                }
             }
         }
     }

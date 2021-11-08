@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 /**
  * Several settings and properties for XMLCONV application.
@@ -200,9 +199,11 @@ public class Properties {
     public static final Integer rancherJobExecutorServiceScale;
     public static final Long rancherJobExecServiceMemory;
     public static final Long rancherJobExecServiceMemoryReservation;
-    public static final String rancherJobExecServiceId;
+    public static final String rancherLightJobExecServiceId;
+    public static final String rancherHeavyJobExecServiceId;
     public static final boolean enableJobExecRancherScheduledTask;
-    public static final Integer maxJobExecutorContainersAllowed;
+    public static final Integer maxLightJobExecutorContainersAllowed;
+    public static final Integer maxHeavyJobExecutorContainersAllowed;
 
     public static boolean rabbitMqEnabled ;
     public static String rabbitMQHost;
@@ -347,9 +348,11 @@ public class Properties {
         rancherJobExecutorServiceScale = getIntProperty("env.rancher.api.jobExecutor.service.scale");
         rancherJobExecServiceMemory = getLongProperty("env.rancher.api.jobExec.service.memory");
         rancherJobExecServiceMemoryReservation = getLongProperty("env.rancher.api.jobExec.service.memoryReservation");
-        rancherJobExecServiceId = getStringProperty("env.rancher.api.jobExec.service.id");
+        rancherLightJobExecServiceId = getStringProperty("env.rancher.api.light.jobExec.service.id");
+        rancherHeavyJobExecServiceId = getStringProperty("env.rancher.api.heavy.jobExec.service.id");
         enableJobExecRancherScheduledTask = Boolean.parseBoolean(getStringProperty("env.enable.jobExecutor.rancher.scheduled.task"));
-        maxJobExecutorContainersAllowed = getIntProperty("env.max.jobExecutor.containers.allowed");
+        maxLightJobExecutorContainersAllowed = getIntProperty("env.max.light.jobExecutor.containers.allowed");
+        maxHeavyJobExecutorContainersAllowed = getIntProperty("env.max.heavy.jobExecutor.containers.allowed");
 
         rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");

@@ -18,6 +18,8 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
 
     List<JobEntry> findByIntSchedulingStatus(InternalSchedulingStatus intSchedulingStatus);
 
+    List<JobEntry> findByIntSchedulingStatusAndIsHeavy(InternalSchedulingStatus intSchedulingStatus, boolean isHeavy);
+
     @Modifying
     @Query(value = "update T_XQJOBS set N_STATUS = :nStatus, INSTANCE= :instance, TIME_STAMP= :timestamp, RETRY_COUNTER= :retryCounter where JOB_ID = :jobId", nativeQuery=true)
     void updateJobInfo(@Param("nStatus") Integer nStatus, @Param("instance") String instance, @Param("timestamp") Timestamp timestamp, @Param("retryCounter") Integer retryCounter, @Param("jobId") Integer jobId);

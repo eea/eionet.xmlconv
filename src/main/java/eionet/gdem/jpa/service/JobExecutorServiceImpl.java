@@ -80,6 +80,11 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     }
 
     @Override
+    public List<JobExecutor> findByStatusAndJobExecutorType(Integer status, JobExecutorType jobExecutorType) {
+        return jobExecutorRepository.findByStatusAndJobExecutorType(status, jobExecutorType);
+    }
+
+    @Override
     public void deleteByName(String name) throws DatabaseException {
         try {
             jobExecutorRepository.deleteByName(name);

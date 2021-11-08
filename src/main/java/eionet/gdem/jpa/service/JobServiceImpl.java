@@ -77,6 +77,11 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public List<JobEntry> findByIntSchedulingStatusAndIsHeavy(InternalSchedulingStatus intSchedulingStatus, boolean isHeavy) {
+        return jobRepository.findByIntSchedulingStatusAndIsHeavy(intSchedulingStatus, isHeavy);
+    }
+
+    @Override
     public List<JobEntry> findProcessingJobs() {
         return jobRepository.findProcessingJobs();
     }

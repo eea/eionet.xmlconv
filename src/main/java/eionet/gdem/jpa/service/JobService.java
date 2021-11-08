@@ -20,6 +20,8 @@ public interface JobService {
 
     List<JobEntry> findByIntSchedulingStatus(InternalSchedulingStatus intSchedulingStatus);
 
+    List<JobEntry> findByIntSchedulingStatusAndIsHeavy(InternalSchedulingStatus intSchedulingStatus, boolean isHeavy);
+
     List<JobEntry> findProcessingJobs();
 
     void updateWorkerRetries(Integer workerRetries, Timestamp timestamp, Integer jobId);
