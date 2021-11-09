@@ -27,15 +27,17 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     JobExecutorService jobExecutorService;
     JobExecutorHistoryService jobExecutorHistoryService;
     RabbitMQMessageSender rabbitMQMessageSender;
+    RabbitMQMessageSender heavyRabbitMQMessageSender;
 
     @Autowired
-    public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService,
-                                                JobExecutorHistoryService jobExecutorHistoryService, @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender) {
+    public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService, JobExecutorHistoryService jobExecutorHistoryService,
+                                                @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender heavyRabbitMQMessageSender) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobExecutorService = jobExecutorService;
         this.jobExecutorHistoryService = jobExecutorHistoryService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
+        this.heavyRabbitMQMessageSender = heavyRabbitMQMessageSender;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -93,11 +95,12 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage,
-                                      JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
+                                      JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory, boolean isHeavy) throws DatabaseException {
         jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), jobEntry.getId());
         this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
         this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
-        rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        if (isHeavy) heavyRabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        else rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
     }
 }
 

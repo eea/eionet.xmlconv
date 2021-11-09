@@ -231,7 +231,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             jobService.updateJob(Constants.XQ_PROCESSING, intStatus, null, new Timestamp(new Date().getTime()), jobEntry);
             LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
-            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED).setHeavy(jobEntry.isHeavy());
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {

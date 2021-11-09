@@ -95,7 +95,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage();
         doNothing().when(jobService).updateWorkerRetries(anyInt(), any(Timestamp.class), anyInt());
         doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
-        workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(Constants.MAX_SCRIPT_EXECUTION_RETRIES, Constants.XQ_FATAL_ERR, intStatus, jobEntry, workerJobRabbitMQRequestMessage, jobExecutor, jobExecutorHistory);
+        workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(Constants.MAX_SCRIPT_EXECUTION_RETRIES, Constants.XQ_FATAL_ERR, intStatus, jobEntry, workerJobRabbitMQRequestMessage, jobExecutor, jobExecutorHistory, false);
     }
 }
 

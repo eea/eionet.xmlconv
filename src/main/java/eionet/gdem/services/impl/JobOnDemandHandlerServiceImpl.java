@@ -57,17 +57,20 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
         JobEntry jobEntry = new JobEntry();
         try {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            QueryEntry query = queryJpaService.findByQueryId(scriptId);
+            boolean isHeavy = false;
+            if (query != null && query.getMarkedHeavy()) isHeavy = true;
             jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus)
                     .setRetryCounter(0).setJobType(ON_DEMAND_TYPE);
+            if (isHeavy) jobEntry.setHeavy(true);
             jobEntry = jobService.save(jobEntry);
             LOGGER.info("Job with id " + jobEntry.getId() + " has been inserted in table T_XQJOBS");
-            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED, isHeavy);
             script.setJobId(jobEntry.getId().toString());
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
 
-            QueryEntry query = queryJpaService.findByQueryId(scriptId);
-            if (query != null && query.getMarkedHeavy()) {
+            if (isHeavy) {
                 jobMessageHeavySender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
             } else {
                 jobMessageLightSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
@@ -77,17 +80,18 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());
             internalSchedulingStatus.setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
             jobService.updateJob(Constants.XQ_PROCESSING, internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry);
-            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_QUEUED);
+            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_QUEUED, isHeavy);
         } catch (Exception e) {
             throw new XMLConvException(e.getMessage());
         }
         return jobEntry;
     }
 
-    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus) {
+    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus, boolean isHeavy) {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
         jobHistoryEntry.setIntSchedulingStatus(internalStatus);
         jobHistoryEntry.setJobType(ON_DEMAND_TYPE);
+        if (isHeavy) jobHistoryEntry.setHeavy(true);
         jobHistoryService.save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
     }

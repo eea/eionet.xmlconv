@@ -50,6 +50,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
     private SchemaManager schManager = new SchemaManager();
 
     QueryService queryService;
+    private static final String NOT_HEAVY = "0";
 
     @Autowired
     public JobRequestHandlerServiceImpl() {
@@ -127,6 +128,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             String contentType = (String) query.get(QaScriptView.CONTENT_TYPE_ID);
             String scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
             String asynchronousExecutionStr = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+            String markedHeavy = (String) query.get(QaScriptView.MARKED_HEAVY);
             Boolean asynchronousExecution;
             if(asynchronousExecutionStr != null && asynchronousExecutionStr.equals("1")){
                 asynchronousExecution = true;
@@ -157,7 +159,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                 queryFile = eionet.gdem.Properties.queriesFolder + File.separator + queryFile;
             }
 
-            jobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, queryFile, resultFile, scriptType, queryId);
+            jobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, queryFile, resultFile, scriptType, queryId, markedHeavy);
 
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
@@ -201,7 +203,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         String newJobId = "-1"; // should not be returned with value -1;
 
         try {
-            newJobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, xqFile, resultFile, scriptType, null);
+            newJobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, xqFile, resultFile, scriptType, null, NOT_HEAVY);
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new XMLConvException("DB operation failed: " + sqe.toString());
@@ -217,7 +219,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         return newJobId;
     }
 
-    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId) throws URISyntaxException, XMLConvException, SQLException, CreateRabbitMQMessageException {
+    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId, String markedHeavy) throws URISyntaxException, XMLConvException, SQLException, CreateRabbitMQMessageException {
         // get the trusted URL from source file adapter
         sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
         long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
@@ -235,6 +237,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         else{
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
+            if (markedHeavy != null && markedHeavy.equals("1")) {
+                jobEntry.setHeavy(true);
+            }
             jobEntry = getJobService().save(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
@@ -245,6 +250,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
 
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType);
         jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+        if (markedHeavy != null && markedHeavy.equals("1")) {
+            jobHistoryEntry.setHeavy(true);
+        }
         getJobHistoryService().save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);

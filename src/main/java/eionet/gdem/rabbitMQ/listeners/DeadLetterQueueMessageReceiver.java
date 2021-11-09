@@ -117,7 +117,9 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), containerId, deadLetterMessage.getHeartBeatQueue());
                     JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
                     Thread.sleep(RETRY_DELAY);
-                    workerAndJobStatusHandlerService.resendMessageToWorker(retriesCnt+1, Constants.XQ_RECEIVED, internalStatus, jobEntry, deadLetterMessage, jobExecutor, jobExecutorHistory);
+                    boolean isHeavy = false;
+                    if (jobEntry.isHeavy()) isHeavy = true;
+                    workerAndJobStatusHandlerService.resendMessageToWorker(retriesCnt+1, Constants.XQ_RECEIVED, internalStatus, jobEntry, deadLetterMessage, jobExecutor, jobExecutorHistory, isHeavy);
                 }
                 else{
                     //message will be discarded
