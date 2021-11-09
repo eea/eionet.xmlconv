@@ -52,9 +52,10 @@ public interface WorkersOrchestrationSharedService {
      * finds jobExecutor instances in rancher that have failed to run correctly (unhealthy state) and updates their status in database
      * with status=2 (FAILED)
      * @param instances
+     * @param isHeavy
      * @throws RancherApiException
      */
-    void updateDbContainersHealthStatusFromRancher(List<String> instances) throws RancherApiException;
+    void updateDbContainersHealthStatusFromRancher(List<String> instances, boolean isHeavy) throws RancherApiException;
 
     /**
      * deletes from database jobExecutor instances that don't exist in rancher

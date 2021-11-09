@@ -65,7 +65,7 @@ public class HeavyWorkersScheduledTasks {
         try {
             //Retrieve jobExecutor instances names from Rancher
             List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherHeavyJobExecServiceId);
-            workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(instances);
+            workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(instances, true);
 
             List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
             List<JobExecutor> heavyJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Heavy)).collect(Collectors.toList());

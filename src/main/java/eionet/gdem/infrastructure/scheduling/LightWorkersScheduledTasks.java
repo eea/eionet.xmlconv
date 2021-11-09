@@ -66,7 +66,7 @@ public class LightWorkersScheduledTasks {
         try {
             //Retrieve jobExecutor instances names from Rancher
             List<String> instances = servicesOrchestrator.getContainerInstances(Properties.rancherLightJobExecServiceId);
-            workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(instances);
+            workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(instances, false);
 
             List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
             List<JobExecutor> lightJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());

@@ -147,7 +147,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     }
 
     @Override
-    public void updateDbContainersHealthStatusFromRancher(List<String> instances) throws RancherApiException {
+    public void updateDbContainersHealthStatusFromRancher(List<String> instances, boolean isHeavy) throws RancherApiException {
         for (String containerId : instances) {
             //for each instance find status
             ContainerData data = containersRancherApiOrchestrator.getContainerInfoById(containerId);
@@ -159,7 +159,8 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                 String heartBeatQueue = containerName + "-queue";
                 JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, heartBeatQueue);
                 try {
-                    LOGGER.info("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus: setting status of container with name " + containerName + " to WORKER_FAILED");
+                    if (isHeavy) LOGGER.info("Task synchronizeRancherHeavyContainersAndDbEntriesByExistenceAndStatus: setting status of container with name " + containerName + " to WORKER_FAILED");
+                    else LOGGER.info("Task synchronizeRancherLightContainersAndDbEntriesByExistenceAndStatus: setting status of container with name " + containerName + " to WORKER_FAILED");
                     JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 } catch (DatabaseException e) {
