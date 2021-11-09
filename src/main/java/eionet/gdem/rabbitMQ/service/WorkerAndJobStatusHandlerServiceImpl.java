@@ -81,9 +81,11 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     public void handleCancelledJob(JobEntry jobEntry, Integer workerStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
         if (jobEntry.getJobExecutorName()!=null) {
             JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-            jobExecutor.setStatus(workerStatus);
-            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), workerStatus, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-            this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
+            if (jobExecutor!=null) {
+                jobExecutor.setStatus(workerStatus);
+                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), workerStatus, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
+            }
         }
         this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
     }
