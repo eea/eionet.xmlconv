@@ -67,6 +67,7 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
             jobExecutor.setJobExecutorType(jobExecutorType);
             jobExecutorHistory.setJobExecutorType(jobExecutorType);
         }
+        if (jobExecutor.getJobExecutorType()==null) jobExecutor.setJobExecutorType(JobExecutorType.Uknown);
         jobExecutorService.saveOrUpdateJobExecutor(jobExecDb!=null, jobExecutor);
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(jobExecutorHistory);
     }
