@@ -82,13 +82,6 @@ public class QAScriptsApiController {
             throw new XMLConvException(URL_PARAM_NAME + " parameter is missing from request.");
         }
 
-        // call QueryService
-        //TODO we need Refactoring here. QueryService is not needed in the upgraded Scheduling Version.
-        // Compare with old one(master branch) and enhance RunScriptAutomaticService
-        QueryService xqs = new QueryService();
-        // set up the servlet outputstream form converter
-        xqs.setHttpResponse(methodResponse);
-        xqs.setTicket(getTicket(request));
         // execute conversion
         getRunScriptAutomaticServiceBean().runQAScript(url, scriptId,methodResponse,true);
 

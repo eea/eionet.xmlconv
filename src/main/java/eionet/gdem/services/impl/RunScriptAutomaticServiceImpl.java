@@ -23,11 +23,12 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
     }
 
     /**
-     * Remote method for running the QA script on the fly.
+     * Remote method for running the QA script on the fly and write the result in the Http Response Stream
      *
      * @param sourceUrl URL of the source XML
      * @param scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
-     * @param isHttpRequest this param(wrongly named) indicates wether the result should be placed in the HttpResponse stream or returned as json further down.
+     * @param httpResponse HttpResponse Object to write into
+     * @param isHttpRequest this param(wrongly named) indicates whether the result should be placed in the HttpResponse stream or returned as json further down.
      * @return Vector of 2 fields: content type and byte array
      * @throws XMLConvException in case of business logic error
      */
@@ -45,6 +46,14 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
 
     }
 
+
+    /**
+     * Remote method for running the QA script on the fly
+     *
+     * @param sourceUrl URL of the source XML
+     * @param scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
+     * @throws XMLConvException in case of business logic error
+     */
     @Override
     public Vector runQAScript(String sourceUrl, String scriptId ) throws XMLConvException {
 
@@ -57,6 +66,15 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
 
     }
 
+    /**
+     * Remote method for running the QA script on the fly and write the result in the Http Response Stream
+     *
+     * @param sourceUrl URL of the source XML
+     * @param scriptId XQueryScript ID or -1 (XML Schema validation) to be processed
+     * @param isHttpRequest this param(wrongly named) indicates whether the result should be placed in the HttpResponse stream or returned as json further down.
+     * @return Vector of 2 fields: content type and byte array
+     * @throws XMLConvException in case of business logic error
+     */
     @Override
     public Vector runQAScript(String sourceUrl, String scriptId ,boolean isHttpRequest) throws XMLConvException {
 
