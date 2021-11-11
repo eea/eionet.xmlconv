@@ -104,7 +104,7 @@ public class WorkqueueController {
             String jobType = list[i][9];
 
             job.setJobId(jobId);
-            /*job.setUrl(url);*/
+            job.setUrl(url);
             job.setFileName(xqLongFileName);
             job.setScriptFile(xqFile);
 
@@ -172,7 +172,7 @@ public class WorkqueueController {
                 url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
             }
             String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
-            job.setUrl(urlName);
+            job.setUrlName(urlName);
 
             //Set duration of job id status is in PROCESSING
             if (durationMs != null) {

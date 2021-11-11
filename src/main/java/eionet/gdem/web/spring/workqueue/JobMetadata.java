@@ -8,6 +8,7 @@ public class JobMetadata {
 
     private String jobId;
     private String url;
+    private String urlName;
     private String fileName;
     private String scriptFile;
     private String resultFile;
@@ -123,5 +124,13 @@ public class JobMetadata {
 
     public void setJobType(String jobType) {
         this.jobType = jobType;
+    }
+
+    public String getUrlName() {
+        return urlName;
+    }
+
+    public void setUrlName(String urlName) {
+        this.urlName = urlName;
     }
 }

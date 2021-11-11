@@ -151,7 +151,7 @@
             </c:otherwise>
           </c:choose>
           <td>
-            <a href="${job.url}" rel="nofollow">${job.url}</a>
+            <a href="${job.url}" rel="nofollow">${job.urlName}</a>
           </td>
           <td>
             <c:choose>
