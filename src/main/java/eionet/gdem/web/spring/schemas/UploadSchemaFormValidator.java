@@ -1,7 +1,7 @@
 package eionet.gdem.web.spring.schemas;
 
+import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.spring.SpringMessages;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +40,10 @@ public class UploadSchemaFormValidator implements Validator {
 
         if (maxExecutionTime!=null && maxExecutionTime == 0) {
             errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.zero.maxExecutionTime");
+        }
+
+        if (maxExecutionTime!=null && maxExecutionTime > Properties.maxSchemaExecutionTimeLimit) {
+            errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.limit.maxExecutionTime");
         }
     }
 }

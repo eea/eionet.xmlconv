@@ -126,18 +126,10 @@ public class Properties {
     public static String xgawkCommand = null;
     /** timeout for running external QA program in command line in milliseconds, default 120sec. */
     public static long qaTimeout = 120000L;
-    /** Maximum number of jobs executed in workqueue simultaneously. */
-    public static int wqMaxJobs = 20;
-    /** period for checking new jobs in the workqueue in seconds, default 20sec. */
-    public static int wqCheckInterval = 20;
-    /** interval of deleting finished jobs in SECONDS, default 2hours=7200sec. */
-    public static int wqCleanInterval = 7200;
     /** maximum age of finished workqueue job stored in the queue in HOURS, default 24 hours. */
     public static int wqJobMaxAge = 24;
     /** Maximum size (MB) of XML file sent to manual QA for XML Schema validation. */
     public static int qaValidationXmlUpperLimit = 200;
-    /** period for updating DD dataset tables data in seconds, default 1hour=3600sec */
-    public static int ddTablesUpdateInterval = 3600;
 
     /** Date pattern used for displaying date values on UI. */
     public static String dateFormatPattern = "dd MMM yyyy";
@@ -164,9 +156,6 @@ public class Properties {
     public static String PROP_UNS_REST_USERNAME = null;
     public static String PROP_UNS_REST_PASSWORD = null;
 
-
-    public static int heavyJobThreshhold;
-
     public static Long longRunningJobThreshold;
 
     public static final String SSO_LOGIN_URL;
@@ -176,6 +165,7 @@ public class Properties {
     public static final Long BASEX_XQUERY_TIME_LIMIT;
 
     public static Long maxSchemaExecutionTime;
+    public static Long maxSchemaExecutionTimeLimit;
 
     public static String jwtAudienceProperty;
     public static String jwtIssuerProperty;
@@ -270,14 +260,8 @@ public class Properties {
         // settings for incoming services from Content Registry
         crSparqlEndpoint = getStringProperty("cr.sparql.endpoint");
 
-        // period in milliseconds
-        wqCheckInterval = getIntProperty("wq.check.interval");
-        // period in seconds
-        wqCleanInterval = getIntProperty("wq.clean.job.interval");
         // period in hours
         wqJobMaxAge = getIntProperty("wq.job.max.age");
-        // maximum number of jobs executed at the same time
-        wqMaxJobs = getIntProperty("wq.max.jobs");
         interruptingJobsInterval = getIntProperty("wq.job.interrupt.interval");
         // default value of the maximum size of XML file sent to ad-hoc QA
         qaValidationXmlUpperLimit = getIntProperty("qa.validation.xml.upper_limit");
@@ -285,8 +269,6 @@ public class Properties {
         qaTimeout = getIntProperty("external.qa.timeout");
         // exteranal QA program
         xgawkCommand = getStringProperty("external.qa.command.xgawk");
-        // period in seconds
-        ddTablesUpdateInterval = getIntProperty("dd.tables.update.job.interval");
 
         dateFormatPattern = getStringProperty("date.format.pattern");
         timeFormatPattern = getStringProperty("time.format.pattern");
@@ -296,7 +278,6 @@ public class Properties {
         isRancher = getIntProperty("config.isRancher");
         rancherMetadataUrl = getStringProperty("rancher.metadata.url");
 
-        heavyJobThreshhold = getIntProperty ("config.heavy.threshold");
         longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
 
         PROP_UNS_XMLRPC_SERVER_URL = getStringProperty("env.uns.xml.rpc.server.url");
@@ -322,6 +303,7 @@ public class Properties {
         BASEX_XQUERY_TIME_LIMIT = getLongProperty("env.basex.xquery.timeLimit");
 
         maxSchemaExecutionTime = getLongProperty("env.schema.maxExecutionTime");
+        maxSchemaExecutionTimeLimit = getLongProperty("env.schema.maxExecutionTimeLimit");
 
         jwtAudienceProperty = getStringProperty("jwt.audience");
         jwtIssuerProperty = getStringProperty("jwt.issuer");
