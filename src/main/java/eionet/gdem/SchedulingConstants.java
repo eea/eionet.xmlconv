@@ -15,7 +15,8 @@ public interface SchedulingConstants {
 
         RUNNING("running"),
         STOPPING("stopping"),
-        STOPPED("stopped");
+        STOPPED("stopped"),
+        ERROR("error");
 
         private String value;
 

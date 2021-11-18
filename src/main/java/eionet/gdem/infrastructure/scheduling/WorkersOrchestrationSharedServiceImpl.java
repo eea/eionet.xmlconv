@@ -1,6 +1,5 @@
 package eionet.gdem.infrastructure.scheduling;
 
-import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
@@ -153,7 +152,8 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             ContainerData data = containersRancherApiOrchestrator.getContainerInfoById(containerId);
             String healthState = data.getHealthState();
             String state = data.getState();
-            if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue()) || state.equals(SchedulingConstants.CONTAINER_STATE_ENUM.STOPPED.getValue())) {
+            if (healthState==null || (healthState!=null && healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue()))
+                    || state.equals(SchedulingConstants.CONTAINER_STATE_ENUM.STOPPED.getValue()) || state.equals(SchedulingConstants.CONTAINER_STATE_ENUM.ERROR.getValue())) {
                 //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
                 String containerName = data.getName();
                 String heartBeatQueue = containerName + "-queue";
