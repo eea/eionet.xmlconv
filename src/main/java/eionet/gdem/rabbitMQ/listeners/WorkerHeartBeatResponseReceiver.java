@@ -44,7 +44,7 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             response = mapper.readValue(message.getBody(), WorkerHeartBeatMessageInfo.class);
 
-            LOGGER.info("Received heart beat response from worker " + response.getJobExecutorName() + " for job " + response.getJobId());
+            LOGGER.info("Received heart beat response from worker " + response.getJobExecutorName() + " for job " + response.getJobId() + ". Job status is " + response.getJobStatus());
 
             WorkerHeartBeatMsgEntry oldEntry =  workerHeartBeatMsgRepository.findOne(response.getId());
             timer.start();

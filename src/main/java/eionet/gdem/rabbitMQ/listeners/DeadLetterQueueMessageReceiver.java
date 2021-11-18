@@ -95,7 +95,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
             } else if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_READY) {
                 LOGGER.info("Job " + script.getJobId() + " has already been executed");
             } else{
-                LOGGER.info("Received message in DEAD LETTER QUEUE with unknown status: " + deadLetterMessage.getErrorStatus());
+                LOGGER.info("Received message in DEAD LETTER QUEUE for job " + script.getJobId() + " with unknown status: " + deadLetterMessage.getErrorStatus());
 
                 Integer retriesCnt = deadLetterMessage.getJobExecutionRetries();
                 if(retriesCnt < Constants.MAX_SCRIPT_EXECUTION_RETRIES){
