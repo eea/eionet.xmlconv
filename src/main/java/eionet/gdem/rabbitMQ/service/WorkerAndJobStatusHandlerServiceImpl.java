@@ -59,6 +59,8 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
 
     protected void updateJobExecutorAndJobExecutorHistory(JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         JobExecutor jobExecDb = jobExecutorService.findByName(jobExecutor.getName());
+        //check if worker sent its jobExecutorType. If worker wasn't able to find its status, find the status from database. If the worker can't be found
+        //in the database, then set its type to unknown
         if (jobExecDb!=null || jobExecutor.getJobExecutorType()!=null) {
             JobExecutorType jobExecutorType;
             if (jobExecutor.getJobExecutorType()!=null) {

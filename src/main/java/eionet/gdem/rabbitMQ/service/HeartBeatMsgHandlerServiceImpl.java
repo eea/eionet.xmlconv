@@ -8,6 +8,7 @@ import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
+import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.jpa.service.QueryMetadataService;
@@ -49,15 +50,22 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
 
     @Transactional
     @Override
-    public void updateHeartBeatJobAndQueryTables(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry, Integer jobId, Integer jobStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
-        workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
+    public void updateHeartBeatJobAndQueryTables(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry, WorkerHeartBeatMessage response, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
+        JobEntry jobEntry = jobService.findById(response.getJobId());
 
-        JobEntry jobEntry = jobService.findById(jobId);
-        if (jobEntry.getnStatus()== Constants.XQ_PROCESSING && jobStatus.equals(Constants.JOB_NOT_FOUND_IN_WORKER)) {
+        if (jobEntry.getnStatus()== Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND_IN_WORKER) &&
+                jobEntry.isHeavy() && response.getJobExecutorType().equals(JobExecutorType.Light)) {
+            //heavy job is waiting in heavy queue to be grabbed by a heavy worker, so ignore light worker's response
+            workerHeartBeatMsgEntry.setJobStatus(Constants.XQ_PROCESSING);
+            workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
+            return;
+        }
+        workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
+        if (jobEntry.getnStatus()== Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND_IN_WORKER)) {
             jobService.updateJob(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), nStatus, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType())
                     .setIntSchedulingStatus(internalStatus.getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setWorkerRetries(jobEntry.getWorkerRetries()).setJobType(jobEntry.getJobType())
-                    .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null);
+                    .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setHeavy(jobEntry.isHeavy()).setHeavyRetries(jobEntry.getHeavyRetries());
             jobHistoryService.save(jobHistoryEntry);
             Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
             queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR);

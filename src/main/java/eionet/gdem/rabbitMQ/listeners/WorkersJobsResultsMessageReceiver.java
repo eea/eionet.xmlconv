@@ -19,6 +19,7 @@ import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
 import eionet.gdem.rabbitMQ.service.QueryAndQueryHistoryService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
     @Autowired
-    JobService jobService;
+    private JobService jobService;
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkersJobsResultsMessageReceiver.class);
@@ -58,6 +59,9 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
     @Autowired
     private QueryAndQueryHistoryService queryAndQueryHistoryService;
+
+    @Autowired
+    private JobHistoryService jobHistoryService;
 
     public static final String CONVERTERS_NAME = "converters";
 

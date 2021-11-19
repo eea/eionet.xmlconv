@@ -854,4 +854,20 @@
             <column name="TIMESTAMP" type="TIMESTAMP"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-76">
+        <comment>
+            Added column HEAVY_RETRIES to T_XQJOBS table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="HEAVY_RETRIES" type="INT"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-77">
+        <comment>
+            Added column HEAVY_RETRIES to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="HEAVY_RETRIES" type="INT"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

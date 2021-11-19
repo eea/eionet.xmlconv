@@ -26,6 +26,8 @@ public interface JobService {
 
     void updateWorkerRetries(Integer workerRetries, Timestamp timestamp, Integer jobId);
 
+    void updateIsHeavyAndHeavyRetries(boolean isHeavy, Integer heavyRetries, Timestamp timestamp, Integer jobId);
+
     JobEntry save(JobEntry jobEntry);
 
     Integer getRetryCounter(Integer jobId);

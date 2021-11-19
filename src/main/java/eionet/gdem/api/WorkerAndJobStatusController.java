@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
+//this controller is called in case of GUI runscript, when user closes the window
 @RestController
 @RequestMapping("/worker")
 public class WorkerAndJobStatusController {

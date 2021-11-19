@@ -41,4 +41,8 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     @Modifying
     @Query(value = "update T_XQJOBS set WORKER_RETRIES= :workerRetries, TIME_STAMP= :timestamp where JOB_ID = :jobId", nativeQuery=true)
     void updateWorkerRetries(@Param("workerRetries") Integer workerRetries, @Param("timestamp") Timestamp timestamp, @Param("jobId") Integer jobId);
+
+    @Modifying
+    @Query(value = "update T_XQJOBS set IS_HEAVY= :isHeavy, HEAVY_RETRIES= :heavyRetries, TIME_STAMP= :timestamp where JOB_ID = :jobId", nativeQuery=true)
+    void updateHeavyRetries(@Param("isHeavy") boolean isHeavy, @Param("heavyRetries") Integer workerRetries, @Param("timestamp") Timestamp timestamp, @Param("jobId") Integer jobId);
 }

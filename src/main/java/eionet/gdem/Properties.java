@@ -233,6 +233,8 @@ public class Properties {
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
 
+    public static Long maxHeavyRetries;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -383,6 +385,8 @@ public class Properties {
 
         CONVERTERS_GRAYLOG = getStringProperty("env.converters.graylog");
         JOB_EXECUTOR_GRAYLOG = getStringProperty("env.jobExecutor.graylog");
+
+        maxHeavyRetries = getLongProperty("env.max.heavy.retries");
     }
 
     /**

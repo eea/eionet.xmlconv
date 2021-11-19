@@ -1,5 +1,7 @@
 package eionet.gdem.rabbitMQ.model;
 
+import eionet.gdem.jpa.utils.JobExecutorType;
+
 import java.sql.Timestamp;
 
 public class WorkerHeartBeatMessage extends WorkerMessage {
@@ -8,6 +10,7 @@ public class WorkerHeartBeatMessage extends WorkerMessage {
     private Integer jobId;
     private Integer jobStatus;
     private Timestamp requestTimestamp;
+    private JobExecutorType jobExecutorType;
 
     public WorkerHeartBeatMessage() {
 
@@ -57,6 +60,15 @@ public class WorkerHeartBeatMessage extends WorkerMessage {
 
     public WorkerHeartBeatMessage setRequestTimestamp(Timestamp requestTimestamp) {
         this.requestTimestamp = requestTimestamp;
+        return this;
+    }
+
+    public JobExecutorType getJobExecutorType() {
+        return jobExecutorType;
+    }
+
+    public WorkerHeartBeatMessage setJobExecutorType(JobExecutorType jobExecutorType) {
+        this.jobExecutorType = jobExecutorType;
         return this;
     }
 }

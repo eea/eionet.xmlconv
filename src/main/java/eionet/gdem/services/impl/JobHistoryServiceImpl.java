@@ -87,7 +87,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
         try {
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), nStatus, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(internalStatus).setJobExecutorName(jobEntry.getJobExecutorName()).setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setJobType(jobEntry.getJobType())
-            .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy());
+            .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy()).setHeavyRetries(jobEntry.getHeavyRetries());
             repository.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobEntry.getId() + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {

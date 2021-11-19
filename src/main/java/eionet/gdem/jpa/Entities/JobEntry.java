@@ -66,6 +66,9 @@ public class JobEntry implements Serializable {
     @Column(name = "IS_HEAVY")
     private boolean isHeavy;
 
+    @Column(name = "HEAVY_RETRIES")
+    private Integer heavyRetries;
+
     @Transient
     private String fromDate;
 
@@ -245,6 +248,15 @@ public class JobEntry implements Serializable {
 
     public JobEntry setHeavy(boolean heavy) {
         isHeavy = heavy;
+        return this;
+    }
+
+    public Integer getHeavyRetries() {
+        return heavyRetries;
+    }
+
+    public JobEntry setHeavyRetries(Integer heavyRetries) {
+        this.heavyRetries = heavyRetries;
         return this;
     }
 

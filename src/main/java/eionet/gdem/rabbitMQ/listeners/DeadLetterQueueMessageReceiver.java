@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.qa.XQScript;
@@ -62,12 +59,24 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
             LOGGER.info("Received error message in DEAD LETTER QUEUE: " + deadLetterMessage.getErrorMessage());
             XQScript script = deadLetterMessage.getScript();
+            JobEntry jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
 
             if (deadLetterMessage.getErrorStatus()==null) {
                 //We assume that a message arriving in Dead Letter queue, without error Status, has come from a worker that
                 //exploded due to memory exceptions.
+                if (jobEntry.isHeavy() && jobEntry.getHeavyRetries()!=null && jobEntry.getHeavyRetries()>=Properties.maxHeavyRetries) {
+                    //heavy worker has thrown out of memory error 3 times
+                    LOGGER.info("Heavy worker reached maximum retries for job " + script.getJobId());
+                    return;
+                }
                 LOGGER.info("Job Message didn't contain ErrorStatus, therefore, " + script.getJobId() + " was detected as heavy");
-                handleHeavyJobsService.handle(deadLetterMessage);
+                InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
+                //mark job as heavy and set column HEAVY_RETRIES before sending to heavy queue
+                jobEntry.setIntSchedulingStatus(internalStatus).setHeavy(true).setHeavyRetries(jobEntry.getHeavyRetries()!=null ? jobEntry.getHeavyRetries()+1 : 1).setJobExecutorName(null);
+                JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), jobEntry.getnStatus(), new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
+                jobHistoryEntry.setIntSchedulingStatus(jobEntry.getIntSchedulingStatus().getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setJobType(jobEntry.getJobType())
+                        .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy()).setHeavyRetries(jobEntry.getHeavyRetries());
+                handleHeavyJobsService.handle(deadLetterMessage, jobEntry, jobHistoryEntry);
                 return;
             }
 
@@ -75,8 +84,6 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
             if (Properties.enableJobExecRancherScheduledTask) {
                 containerId = containersOrchestrator.getContainerId(deadLetterMessage.getJobExecutorName());
             }
-
-            JobEntry jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
 
             if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){
                 LOGGER.info("Job " + script.getJobId() + " was cancelled by user");
