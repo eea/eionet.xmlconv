@@ -1,10 +1,17 @@
 package eionet.gdem.infrastructure.scheduling;
 
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SchedulingConstants;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
+import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.jpa.utils.JobExecutorType;
+import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestratorImpl;
 import org.slf4j.Logger;
@@ -25,13 +32,19 @@ public class HeavyWorkersScheduledTasks {
     private WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService;
     private ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator;
     private JobExecutorService jobExecutorService;
+    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
+    private QueryMetadataService queryMetadataService;
+    private JobService jobService;
 
     @Autowired
-    public HeavyWorkersScheduledTasks(WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService, ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator,
-                                      JobExecutorService jobExecutorService) {
+    public HeavyWorkersScheduledTasks(WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService, ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator, JobExecutorService jobExecutorService,
+                                       WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, QueryMetadataService queryMetadataService, JobService jobService) {
         this.workersOrchestrationSharedService = workersOrchestrationSharedService;
         this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
         this.jobExecutorService = jobExecutorService;
+        this.workerAndJobStatusHandlerService = workerAndJobStatusHandlerService;
+        this.queryMetadataService = queryMetadataService;
+        this.jobService = jobService;
     }
 
     /**
@@ -73,6 +86,26 @@ public class HeavyWorkersScheduledTasks {
         } catch (RancherApiException rae) {
             LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
             throw rae;
+        }
+    }
+
+    /**
+     * Finds heavy jobs that their heavyRetries have exceeded maxHeavyRetries (meaning the heavy worker has run out of memory maxHeavyRetries times) and marks
+     * the jobs as fatal_error (n_status=4 and internal_status=4) and the workers that have been executing them as failed (status=2)
+     */
+    @Scheduled(cron = "0 */1 * * * *")  //every minute
+    public void checkProcessingHeavyJobs() {
+        List<JobEntry> heavyProcessingJobs = jobService.findProcessingJobs().stream().filter(jobEntry -> jobEntry.isHeavy()).collect(Collectors.toList());
+        for (JobEntry jobEntry : heavyProcessingJobs) {
+            try {
+                if (jobEntry.getHeavyRetries()!=null && jobEntry.getHeavyRetries()==Properties.maxHeavyRetries.intValue()) {
+                    LOGGER.info("Setting the status of job " + jobEntry.getId() + " to " + Constants.XQ_FATAL_ERR + ", because heavy worker " + jobEntry.getJobExecutorName() + " reached maximum heavy retries");
+                    InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+                    workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.XQ_FATAL_ERR, internalStatus);
+                }
+            } catch (Exception e) {
+                LOGGER.error("Error while checking processing heavy job with id " + jobEntry.getId());
+            }
         }
     }
 }
