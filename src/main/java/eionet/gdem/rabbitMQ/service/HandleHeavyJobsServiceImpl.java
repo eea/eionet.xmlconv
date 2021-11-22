@@ -2,6 +2,7 @@ package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
@@ -36,9 +37,10 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void handle(WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage, JobEntry jobEntry, JobHistoryEntry jobHistoryEntry) {
+    public void handle(WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage, JobEntry jobEntry, JobHistoryEntry jobHistoryEntry) throws DatabaseException {
         LOGGER.info("Handling heavy job " + workerJobRabbitMQRequestMessage.getScript().getJobId());
-        jobService.updateIsHeavyAndHeavyRetries(jobEntry.isHeavy(), jobEntry.getHeavyRetriesOnFailure(), new Timestamp(new Date().getTime()), jobEntry.getId());
+        jobService.updateJob(jobEntry.getnStatus(), jobEntry.getIntSchedulingStatus(), jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
+        jobService.updateHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure(), new Timestamp(new Date().getTime()), jobEntry.getId());
         jobHistoryService.save(jobHistoryEntry);
         rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
     }

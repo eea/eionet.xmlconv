@@ -92,8 +92,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void updateIsHeavyAndHeavyRetries(boolean isHeavy, Integer heavyRetries, Timestamp timestamp, Integer jobId) {
-        jobRepository.updateHeavyRetries(isHeavy, heavyRetries, timestamp, jobId);
+    public void updateHeavyRetriesOnFailure(Integer heavyRetries, Timestamp timestamp, Integer jobId) {
+        jobRepository.updateHeavyRetriesOnFailure(heavyRetries, timestamp, jobId);
     }
 
     @Override
