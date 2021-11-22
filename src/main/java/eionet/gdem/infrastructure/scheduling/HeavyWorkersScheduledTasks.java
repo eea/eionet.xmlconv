@@ -90,7 +90,7 @@ public class HeavyWorkersScheduledTasks {
     }
 
     /**
-     * Finds heavy jobs that their heavyRetries have exceeded maxHeavyRetries (meaning the heavy worker has run out of memory maxHeavyRetries times) and marks
+     * Finds heavy jobs that their heavyRetriesOnFailure have exceeded maxHeavyRetries (meaning the heavy worker has run out of memory maxHeavyRetries times) and marks
      * the jobs as fatal_error (n_status=4 and internal_status=4) and the workers that have been executing them as failed (status=2)
      */
     @Scheduled(cron = "0 */1 * * * *")  //every minute
@@ -98,7 +98,7 @@ public class HeavyWorkersScheduledTasks {
         List<JobEntry> heavyProcessingJobs = jobService.findProcessingJobs().stream().filter(jobEntry -> jobEntry.isHeavy()).collect(Collectors.toList());
         for (JobEntry jobEntry : heavyProcessingJobs) {
             try {
-                if (jobEntry.getHeavyRetries()!=null && jobEntry.getHeavyRetries()==Properties.maxHeavyRetries.intValue()) {
+                if (jobEntry.getHeavyRetriesOnFailure()!=null && jobEntry.getHeavyRetriesOnFailure()==Properties.maxHeavyRetries.intValue()) {
                     LOGGER.info("Setting the status of job " + jobEntry.getId() + " to " + Constants.XQ_FATAL_ERR + ", because heavy worker " + jobEntry.getJobExecutorName() + " reached maximum heavy retries");
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.XQ_FATAL_ERR, internalStatus);

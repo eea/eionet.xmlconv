@@ -66,8 +66,8 @@ public class JobEntry implements Serializable {
     @Column(name = "IS_HEAVY")
     private boolean isHeavy;
 
-    @Column(name = "HEAVY_RETRIES")
-    private Integer heavyRetries;
+    @Column(name = "HEAVY_RETRIES_ON_FAILURE")
+    private Integer heavyRetriesOnFailure;
 
     @Transient
     private String fromDate;
@@ -251,12 +251,12 @@ public class JobEntry implements Serializable {
         return this;
     }
 
-    public Integer getHeavyRetries() {
-        return heavyRetries;
+    public Integer getHeavyRetriesOnFailure() {
+        return heavyRetriesOnFailure;
     }
 
-    public JobEntry setHeavyRetries(Integer heavyRetries) {
-        this.heavyRetries = heavyRetries;
+    public JobEntry setHeavyRetriesOnFailure(Integer heavyRetries) {
+        this.heavyRetriesOnFailure = heavyRetries;
         return this;
     }
 
