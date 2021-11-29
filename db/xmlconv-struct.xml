@@ -658,8 +658,6 @@
             <column name="WORKER_RETRIES" type="INT"></column>
         </addColumn>
     </changeSet>
-<<<<<<< HEAD
-=======
     <changeSet author="anthaant" id="rev-61">
         <comment>Table for storing script info</comment>
         <createTable tableName="QUERY_METADATA">
@@ -813,7 +811,6 @@
             </column>
         </addColumn>
     </changeSet>
->>>>>>> 139338_heavy_workers_scheduled_tasks
     <changeSet author="favvmary" id="rev-72">
         <comment>
             Changed HEART_BEAT_QUEUE column size in JOB_EXECUTOR table
