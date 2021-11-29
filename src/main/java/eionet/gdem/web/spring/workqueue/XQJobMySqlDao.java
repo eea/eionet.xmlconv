@@ -42,6 +42,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     public static final String INSTANCE = "INSTANCE";
     public static final String DURATION_FLD = "DURATION";
     public static final String JOB_TYPE = "JOB_TYPE";
+    public static final String JOB_EXECUTOR_NAME = "JOB_EXECUTOR_NAME";
     public static final String API_USERNAME = "USERNAME";
     public static final String API_TABLE = "T_API_USER";
     public static final String INTERNAL_STATUS_ID_FLD = "INTERNAL_STATUS_ID";
@@ -93,7 +94,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
     private static final String qEndXQJobs = "DELETE FROM " + WQ_TABLE + " WHERE " + JOB_ID_FLD + " IN ";
 
     private static final String qJobData = "SELECT " + JOB_ID_FLD + ", " + URL_FLD + "," + XQ_FILE_FLD + ", " + RESULT_FILE_FLD
-            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD +  ", " + INSTANCE +  ", " + DURATION_FLD + ", " + JOB_TYPE
+            + ", " + STATUS_FLD + ", " + TIMESTAMP_FLD + ", " + XQ_ID_FLD +  ", " + INSTANCE +  ", " + DURATION_FLD + ", " + JOB_TYPE + ", " + JOB_EXECUTOR_NAME
             + " FROM " + WQ_TABLE + " ORDER BY " + JOB_ID_FLD;
 
     private static final String qChangeJobsStatuses = "UPDATE " + WQ_TABLE + " SET " + STATUS_FLD + "= ?" + ", " + TIMESTAMP_FLD

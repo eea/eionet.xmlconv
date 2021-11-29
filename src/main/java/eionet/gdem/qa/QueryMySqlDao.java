@@ -1,7 +1,9 @@
 package eionet.gdem.qa;
 
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.database.MySqlBaseDao;
+import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +58,10 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     public static final String ACTIVE_FLD = "ACTIVE";
     public static final String JOB_RETRY_COUNTER = "RETRY_COUNTER";
     public static final String ASYNCHRONOUS_EXECUTION_FLD = "ASYNCHRONOUS_EXECUTION";
+    public static final String VERSION = "VERSION";
+    public static final String MARKED_HEAVY = "MARKED_HEAVY";
+    public static final String MARKED_HEAVY_REASON = "MARKED_HEAVY_REASON";
+    public static final String MARKED_HEAVY_REASON_OTHER = "MARKED_HEAVY_REASON_OTHER";
 
     private static final String qListQueries = "SELECT " + QUERY_TABLE + "." + QUERY_ID_FLD + ", " + SHORT_NAME_FLD + ", "
             + QUERY_FILE_FLD + ", " + QUERY_TABLE + "." + DESCR_FLD + "," + SCHEMA_TABLE + "." + SCHEMA_ID_FLD + ","
@@ -80,7 +86,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qQueryInfo = "SELECT " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "," + QUERY_FILE_FLD + ", "
             + QUERY_TABLE + "." + DESCR_FLD + "," + SHORT_NAME_FLD + ", " + SCHEMA_TABLE + "." + XML_SCHEMA_FLD + ","
             + QUERY_TABLE + "." + RESULT_TYPE_FLD + ", " + CONVTYPE_TABLE + "." + CONTENT_TYPE_FLD + "," + QUERY_TABLE + "."
-            + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD + "," + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD + ","+ QUERY_TABLE + "." + ASYNCHRONOUS_EXECUTION_FLD
+            + QUERY_SCRIPT_TYPE + "," + QUERY_TABLE + "." + UPPER_LIMIT_FLD + "," + QUERY_TABLE + "." + QUERY_URL_FLD + "," + ACTIVE_FLD + "," +
+            QUERY_TABLE + "." + ASYNCHRONOUS_EXECUTION_FLD + "," + QUERY_TABLE + "." + MARKED_HEAVY + "," +
+            QUERY_TABLE + "." + MARKED_HEAVY_REASON + "," + QUERY_TABLE + "." + MARKED_HEAVY_REASON_OTHER
             + " FROM " + QUERY_TABLE + " LEFT OUTER JOIN "
             + SCHEMA_TABLE + " ON " + QUERY_TABLE + "." + XSL_SCHEMA_ID_FLD + "=" + SCHEMA_TABLE + "." + SCHEMA_ID_FLD
             + " LEFT OUTER JOIN " + CONVTYPE_TABLE + " ON " + QUERY_TABLE + "." + RESULT_TYPE_FLD + "=" + CONVTYPE_TABLE + "."
@@ -94,8 +102,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
     private static final String qRemoveQuery = "DELETE FROM " + QUERY_TABLE + " WHERE " + QUERY_ID_FLD + "=?";
     private static final String qUpdateQuery = "UPDATE  " + QUERY_TABLE + " SET " + QUERY_FILE_FLD + "=?" + ", " + SHORT_NAME_FLD
             + "=?" + ", " + DESCR_FLD + "=?" + ", " + XSL_SCHEMA_ID_FLD + "=?" + ", " + RESULT_TYPE_FLD + "=?" + ", "
-            + QUERY_SCRIPT_TYPE + "=?" + ", " + UPPER_LIMIT_FLD + "=?" + ", " + QUERY_URL_FLD + "=?" + ", " + ASYNCHRONOUS_EXECUTION_FLD + "=?" + " WHERE "
-            + QUERY_ID_FLD + "=?";
+            + QUERY_SCRIPT_TYPE + "=?" + ", " + UPPER_LIMIT_FLD + "=?" + ", " + QUERY_URL_FLD + "=?" + ", " + ASYNCHRONOUS_EXECUTION_FLD + "=?" + ", "
+            + VERSION + "=?" + ", " + MARKED_HEAVY + "=?" + ", "  + MARKED_HEAVY_REASON + "=?" + ", "  + MARKED_HEAVY_REASON_OTHER + "=?" + " WHERE " + QUERY_ID_FLD + "=?";
 
     private static final String qInsertQuery = "INSERT INTO " + QUERY_TABLE + " ( " + XSL_SCHEMA_ID_FLD + ", " + SHORT_NAME_FLD
             + ", " + QUERY_FILE_FLD + ", " + DESCR_FLD + ", " + RESULT_TYPE_FLD + ", " + QUERY_SCRIPT_TYPE + ", "
@@ -190,7 +198,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
      */
     @Override
     public void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName,
-            String content_type, String script_type, String upperLimit, String url, Boolean asynchronousExecution) throws SQLException {
+            String content_type, String script_type, String upperLimit, String url, Boolean asynchronousExecution, Integer version,
+                            Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -213,8 +222,12 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
             pstmt.setInt(7, Integer.parseInt(upperLimit));
             pstmt.setString(8, url);
             pstmt.setBoolean(9, asynchronousExecution);
+            pstmt.setInt(10, version);
+            pstmt.setBoolean(11, markedHeavy);
+            pstmt.setObject(12, markedHeavyReason);
+            pstmt.setString(13, markedHeavyReasonOther);
 
-            pstmt.setInt(10, Integer.parseInt(query_id));
+            pstmt.setInt(14, Integer.parseInt(query_id));
 
 
             pstmt.executeUpdate();
@@ -232,6 +245,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         if (isDebugMode) {
             LOGGER.debug("Query is " + qRemoveQuery);
         }
+
+        getQueryHistoryService().updateQueryId(null, Integer.parseInt(queryId));
+
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(qRemoveQuery);
@@ -292,6 +308,9 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
                 h.put(QaScriptView.URL, r[0][9]);
                 h.put(QaScriptView.IS_ACTIVE, r[0][10]);
                 h.put(QaScriptView.ASYNCHRONOUS_EXECUTION, r[0][11]);
+                h.put(QaScriptView.MARKED_HEAVY, r[0][12]);
+                h.put(QaScriptView.MARKED_HEAVY_REASON, r[0][13]);
+                h.put(QaScriptView.MARKED_HEAVY_REASON_OTHER, r[0][14]);
             }
 
         } finally {
@@ -631,6 +650,10 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         finally {
             closeAllResources(rs, pstmt, conn);
         }
+    }
+
+    private static QueryHistoryService getQueryHistoryService() {
+        return (QueryHistoryService) SpringApplicationContext.getBean("queryHistoryServiceImpl");
     }
 
 }

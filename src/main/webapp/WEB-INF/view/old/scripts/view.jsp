@@ -11,8 +11,13 @@
         </span>
       </li>
       <li>
-        <a href="/scripts/${form.scriptId}/history" style="color: black; text-decoration: none;">
+        <a href="/new/scripts/history/${form.scriptId}" style="color: black; text-decoration: none;">
           <spring:message code="label.qascript.history"/>
+        </a>
+      </li>
+      <li>
+        <a href="/new/scripts/${form.scriptId}/executionHistory" style="color: black; text-decoration: none;">
+          <spring:message code="label.qascript.executionHistory"/>
         </a>
       </li>
     </ul>
@@ -106,6 +111,7 @@
         ${form.scriptType}
       </td>
     </tr>
+    <tr>
     <th scope="row" class="scope-row">
       <spring:message code="label.qascript.asynchronous"/>
     </th>
@@ -113,6 +119,26 @@
       ${form.asynchronousExecution}
     </td>
     </tr>
+    <tr>
+      <th scope="row" class="scope-row">
+        <spring:message code="label.qascript.heavy"/>
+      </th>
+      <td>
+        ${form.markedHeavy}
+      </td>
+    </tr>
+    <c:choose>
+      <c:when test="${form.markedHeavy}">
+        <tr>
+          <th scope="row" class="scope-row">
+            <spring:message code="label.qascript.heavy.reason"/>
+          </th>
+          <td>
+              ${form.markedHeavyReasonOther}
+          </td>
+        </tr>
+      </c:when>
+    </c:choose>
     <tr>
       <th scope="row" class="scope-row">
         <spring:message code="label.qascript.upperlimit"/>

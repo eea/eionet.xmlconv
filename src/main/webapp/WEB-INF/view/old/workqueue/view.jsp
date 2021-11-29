@@ -1,3 +1,4 @@
+<%@ page import="eionet.gdem.Properties" %>
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
@@ -83,7 +84,7 @@
 <div id="main_table">
   <form:form id="jobs" servletRelativeAction="/workqueue" method="post" modelAttribute="form">
     <form:errors path="*" cssClass="error-msg" element="div"/>
-    <table id="workqueue_table" class="datatable results" width="100%" export="true">
+    <table id="workqueue_table" class="datatable results" width="100%" export="true" style="overflow-wrap: break-word;white-space: normal;">
       <col style="width:30px; text-align:right;"/>
       <col style="width:50px; text-align:right;"/>
       <col/>
@@ -130,6 +131,7 @@
         <th scope="col" class="scope-col">Instance</th>
         <th scope="col" class="scope-col">Duration</th>
         <th scope="col" class="scope-col">Job type</th>
+        <th scope="col" class="scope-col">Worker</th>
       </tr>
       </thead>
       <tbody>
@@ -155,16 +157,11 @@
           </td>
           <td>
             <c:choose>
-              <c:when test="${job.scriptType != 'fme'}">
-                <c:if test="${fn:startsWith(job.scriptFile, 'gdem')}">
+              <c:when test="${fn:startsWith(job.scriptFile, 'gdem')}">
                   <a href="/tmp/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
-                </c:if>
-                <c:if test="${not fn:startsWith(job.scriptFile, 'gdem')}">
-                  <a href="/queries/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
-                </c:if>
               </c:when>
               <c:otherwise>
-                ${job.scriptType}
+                  <a href="/scripts/${job.scriptId}" rel="nofollow">${job.scriptFile}</a>
               </c:otherwise>
             </c:choose>
           </td>
@@ -209,6 +206,7 @@
             </c:choose>
           </td>
           <td>${job.jobType}</td>
+          <td>${job.jobExecutorName}</td>
         </tr>
       </c:forEach>
       </tbody>
@@ -236,6 +234,9 @@
       </c:if>
       <input type="hidden" name="ACTION" id="ACTION" value="delete"/>
       <input type="hidden" name="ID" value=""/>
+      <input type="hidden" id="username" value="${username}">
+      <input type="hidden" id="convGraylog" name="convertersGraylog" value="<%=Properties.CONVERTERS_GRAYLOG%>" />
+      <input type="hidden" id="jobExecGraylog" name="jobExecGraylog" value="<%=Properties.JOB_EXECUTOR_GRAYLOG%>" />
     </div>
   </form:form>
 </div>

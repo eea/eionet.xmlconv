@@ -34,6 +34,10 @@
     padding: 7px 17px;
 }
 
+.breadcrumbtrailTh{
+    height: 35px;
+}
+
 #workarea,
 .threecolumns #workarea {
     /*border-right: 1px solid #CFE3E4;	*/
@@ -147,11 +151,15 @@
     border-top: 1px solid #D5E5E6;
 }
 
-.localnav li:first-child {
+.localnav li:first-child{
     border-top: none;
 }
 
-.localnav li a {
+.hasPermMenuItem{
+    border-top: 1px solid #D5E5E6 !important;
+}
+
+.localnav li a{
     background: #ECF4F5;
     border-left: 7px solid #ECF4F5;
     padding: 10px 20px 10px 15px;
@@ -161,14 +169,16 @@
 
 .localnav li a:hover,
 .localnav li.current a,
-.localnav li.current a:hover {
+.localnav li.current a:hover
+{
     background: #CEDC32;
     border-left: 7px solid #AAAD28;
     color: #000000;
 }
 
 .localnav li.current a,
-.localnav li.current a:hover {
+.localnav li.current a:hover
+{
     font-weight: bold;
 }
 
@@ -1813,4 +1823,26 @@ table.datatable {
 
 .actionButton {
     float: left;
+}
+
+.blueButton {
+    background-color: #1779ba;
+    color: white !important;
+    border: 1px solid #1779ba;
+    border-radius: 7% !important;
+}
+
+.blueButton:hover {
+    background-color: white;
+    color: black !important;
+}
+
+.disabledButton {
+    background-color: #b0b0b0;
+    color: white !important;
+    border: 1px solid #b0b0b0;
+    border-radius: 7% !important;
+    disabled: true;
+    pointer-events: none;
+    cursor: default;
 }

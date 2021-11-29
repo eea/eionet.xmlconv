@@ -107,7 +107,7 @@ public class WorkqueueControllerTest {
         MvcResult actual = mockMvc.perform(post("/workqueue/getJobDetails/job3").accept(String.valueOf(MediaType.APPLICATION_JSON))).andReturn();
         String content = actual.getResponse().getContentAsString();
         Assert.assertThat(actual.getResponse().getStatus(), is(HttpStatus.SC_OK));
-        Assert.assertThat(content, is("[]"));
+        Assert.assertThat(content, is(""));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class WorkqueueControllerTest {
         MvcResult actual = mockMvc.perform(post("/workqueue/getJobDetails/job3").accept(String.valueOf(MediaType.APPLICATION_JSON))).andReturn();
         String content = actual.getResponse().getContentAsString();
         Assert.assertThat(actual.getResponse().getStatus(), is(HttpStatus.SC_OK));
-        Assert.assertThat(content, is("[]"));
+        Assert.assertThat(content, is(""));
     }
 
 

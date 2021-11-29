@@ -2,13 +2,21 @@ package eionet.gdem.web.spring.scripts;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.BusinessConstants;
-import eionet.gdem.qa.QAScriptManager;
+import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
 import eionet.gdem.dto.BackupDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.*;
+import eionet.gdem.jpa.repositories.QueryMetadataRepository;
+import eionet.gdem.jpa.service.QueryHistoryService;
+import eionet.gdem.jpa.service.QueryJpaService;
+import eionet.gdem.jpa.service.QueryMetadataService;
+import eionet.gdem.paging.Paged;
+import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.MessageService;
+import eionet.gdem.utils.ThymeleafUtils;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
 import eionet.gdem.web.spring.SpringMessages;
@@ -17,29 +25,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
- *
  *
  */
 @Controller
@@ -49,10 +48,16 @@ public class QAScriptsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptsController.class);
 
     private MessageService messageService;
+    private QueryHistoryService queryHistoryService;
+    private QueryJpaService queryJpaService;
+    private QueryMetadataService queryMetadataService;
 
     @Autowired
-    public QAScriptsController(MessageService messageService) {
+    public QAScriptsController(MessageService messageService, QueryHistoryService queryHistoryService, QueryJpaService queryJpaService, QueryMetadataService queryMetadataService) {
         this.messageService = messageService;
+        this.queryHistoryService = queryHistoryService;
+        this.queryJpaService = queryJpaService;
+        this.queryMetadataService = queryMetadataService;
     }
 
     @ModelAttribute
@@ -94,7 +99,11 @@ public class QAScriptsController {
         String url = form.getUrl();
         String upperLimit = form.getUpperLimit();
         Boolean asynchronousExecution = form.isAsynchronousExecution();
+        Boolean markedHeavy = form.isMarkedHeavy();
+        String markedHeavyReason = form.getMarkedHeavyReason();
+        String markedHeavyReasonOther = form.getMarkedHeavyReasonOther();
         MultipartFile scriptFile = form.getScriptFile();
+        boolean active = form.getActive();
 
 /*        // if URL is filled download from the remote source
         if (!Utils.isNullStr(url)) {
@@ -120,7 +129,8 @@ public class QAScriptsController {
 
         try {
             QAScriptManager qaScriptManager = new QAScriptManager();
-            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution);
+            qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution,
+                    active, markedHeavy, markedHeavyReason, markedHeavyReasonOther);
             messages.add(messageService.getMessage("label.qascript.inserted"));
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
@@ -135,7 +145,7 @@ public class QAScriptsController {
     }
 
 
-    @GetMapping("/{id}/history")
+    @GetMapping("/{id}/backupHistory")
     public String history(@PathVariable String id, Model model) {
 
         SpringMessages errors = new SpringMessages();
@@ -173,6 +183,16 @@ public class QAScriptsController {
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
             form.setAsynchronousExecution(qaScript.isAsynchronousExecution());
+            form.setMarkedHeavy(qaScript.getMarkedHeavy());
+
+            if(qaScript.getMarkedHeavy()){
+                if (qaScript.getMarkedHeavyReason() != HeavyScriptReasonEnum.OTHER.getCode()){
+                    form.setMarkedHeavyReasonOther(ScriptUtils.getHeavyScriptReasonTextByCode(qaScript.getMarkedHeavyReason()));
+                }
+                else{
+                    form.setMarkedHeavyReasonOther(qaScript.getMarkedHeavyReasonOther());
+                }
+            }
 
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
         } catch (DCMException e) {
@@ -203,6 +223,16 @@ public class QAScriptsController {
             form.setUrl(qaScript.getUrl());
             form.setActive(qaScript.isActive());
             form.setAsynchronousExecution(qaScript.isAsynchronousExecution());
+            form.setMarkedHeavy(qaScript.getMarkedHeavy());
+            if(qaScript.getMarkedHeavy()){
+                String markedHeavyReasonText = ScriptUtils.getHeavyScriptReasonTextByCode(qaScript.getMarkedHeavyReason());
+                if(markedHeavyReasonText != null) {
+                    form.setMarkedHeavyReason(markedHeavyReasonText);
+                    if(qaScript.getMarkedHeavyReason() == HeavyScriptReasonEnum.OTHER.getCode()){
+                        form.setMarkedHeavyReasonOther(qaScript.getMarkedHeavyReasonOther());
+                    }
+                }
+            }
 
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
 
@@ -230,7 +260,10 @@ public class QAScriptsController {
         String upperLimit = form.getUpperLimit();
         String url = form.getUrl();
         Boolean asynchronousExecution = form.isAsynchronousExecution();
-
+        boolean active = form.getActive();
+        Boolean markedHeavy = form.isMarkedHeavy();
+        String markedHeavyReason = form.getMarkedHeavyReason();
+        String markedHeavyReasonOther = form.getMarkedHeavyReasonOther();
 
         String user = (String) request.getSession().getAttribute("user");
 
@@ -241,9 +274,29 @@ public class QAScriptsController {
             return "/scripts/edit";
         }
 
+        Integer markedHeavyReasonStatus = null;
+        if(markedHeavy){
+            //Get Marked heavy reason code
+            markedHeavyReasonStatus = ScriptUtils.getHeavyScriptReasonCodeByText(markedHeavyReason);
+        }
+        if(markedHeavyReasonStatus != HeavyScriptReasonEnum.OTHER.getCode()){
+            markedHeavyReasonOther = null;
+        }
+
         try {
+            Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
             QAScriptManager qm = new QAScriptManager();
-            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, content, upperLimit, url, asynchronousExecution);
+            QueryBackupEntry queryBackupEntry = qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName,
+                    content, upperLimit, url, asynchronousExecution, active, maxVersion+1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
+
+            QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url,
+                    asynchronousExecution, active, curFileName, maxVersion+1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
+            queryHistoryEntry.setQueryEntry(queryEntry);
+            if (queryBackupEntry!=null) {
+                queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);
+            }
+            queryHistoryService.save(queryHistoryEntry);
 
             messages.add(messageService.getMessage("label.qascript.updated"));
 
@@ -261,7 +314,7 @@ public class QAScriptsController {
 
     @PostMapping(params = {"update"})
     public String update(@ModelAttribute("form") QAScriptForm form,
-                             BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+                         BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         SpringMessages messages = new SpringMessages();
 
@@ -281,6 +334,9 @@ public class QAScriptsController {
         String checksum = form.getChecksum();
         Boolean asynchronousExecution = form.isAsynchronousExecution();
         boolean active = form.getActive();
+        Boolean markedHeavy = form.isMarkedHeavy();
+        String markedHeavyReason = form.getMarkedHeavyReason();
+        String markedHeavyReasonOther = form.getMarkedHeavyReasonOther();
 
         boolean updateContent = false;
         String newChecksum = null;
@@ -308,12 +364,39 @@ public class QAScriptsController {
         if (bindingResult.hasErrors()) {
             return "/scripts/edit";
         }
+        Integer markedHeavyReasonStatus = null;
+        if(markedHeavy){
+            //Get Marked heavy reason code
+            markedHeavyReasonStatus = ScriptUtils.getHeavyScriptReasonCodeByText(markedHeavyReason);
+        }
+        if(markedHeavyReasonStatus != HeavyScriptReasonEnum.OTHER.getCode()){
+            markedHeavyReasonOther = null;
+        }
+
 
         try {
+            Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
+            Integer newVersion = maxVersion;
+
+            QueryEntry oldScript = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
+            //if the content was updated or the marked heavy field was changed, the version must be increased
+            if(updateContent || (oldScript.getMarkedHeavy() != null && oldScript.getMarkedHeavy() != markedHeavy)){
+                newVersion = maxVersion + 1;
+            }
             QAScriptManager qm = new QAScriptManager();
-            qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
-                    url, scriptContent, updateContent, asynchronousExecution);
+            QueryBackupEntry queryBackupEntry = qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
+                    url, scriptContent, updateContent, asynchronousExecution, active, newVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
             qm.activateDeactivate(user, scriptId, active);
+
+            QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url,
+                    asynchronousExecution, active, curFileName, newVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
+            queryHistoryEntry.setQueryEntry(queryEntry);
+            if (queryBackupEntry!=null) {
+                queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);
+            }
+            queryHistoryService.save(queryHistoryEntry);
+
             // clear qascript list in cache
             QAScriptListLoader.reloadList(request);
             messages.add(messageService.getMessage("label.qascript.updated"));
@@ -348,7 +431,7 @@ public class QAScriptsController {
 
     @PostMapping(params = {"delete"})
     public String deletePost(@ModelAttribute("scriptForm") QAScriptForm scriptForm, BindingResult bindingResult,
-                         HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+                             HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
 
@@ -389,6 +472,14 @@ public class QAScriptsController {
             QAScriptManager qaScriptManager = new QAScriptManager();
             qaScriptManager.activateDeactivate(user, scriptId, true);
             messages.add(messageService.getMessage("label.qascript.activated"));
+
+            QueryEntry queryEntry = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(),
+                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(),
+                    queryEntry.isActive(), queryEntry.getQueryFileName(), queryEntry.getVersion(), queryEntry.getMarkedHeavy(), queryEntry.getMarkedHeavyReason(), queryEntry.getMarkedHeavyReasonOther());
+            queryHistoryEntry.setQueryEntry(queryEntry);
+            queryHistoryService.save(queryHistoryEntry);
+
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
@@ -411,6 +502,14 @@ public class QAScriptsController {
             QAScriptManager qaScriptManager = new QAScriptManager();
             qaScriptManager.activateDeactivate(user, scriptId, false);
             messages.add(messageService.getMessage("label.qascript.deactivated"));
+
+            QueryEntry queryEntry = queryJpaService.findByQueryId(Integer.parseInt(scriptId));
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(),
+                    queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(), queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName(),
+                    queryEntry.getVersion(), queryEntry.getMarkedHeavy(), queryEntry.getMarkedHeavyReason(), queryEntry.getMarkedHeavyReasonOther());
+            queryHistoryEntry.setQueryEntry(queryEntry);
+            queryHistoryService.save(queryHistoryEntry);
+
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
@@ -447,4 +546,53 @@ public class QAScriptsController {
         return "redirect:/schemas/" + schemaId + "/scripts";
     }
 
+    @GetMapping("/{id}/executionHistory")
+    public String executionHistory(@PathVariable String id, @RequestParam(value = "historyPageNumber", required = false, defaultValue = "1") int historyPageNumber,
+                                    @RequestParam(value = "historySize", required = false, defaultValue = "10") int historySize,
+                                    @RequestParam(value = "versionPageNumber", required = false, defaultValue = "1") int versionPageNumber,
+                                    @RequestParam(value = "versionSize", required = false, defaultValue = "10") int versionSize, Model model, HttpServletRequest request) {
+
+        //Setup headerVariables
+        model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.qascript.executionHistory.title"), request);
+        //Setup breadcrumbs
+        model = ThymeleafUtils.setUpBreadCrumbsForScriptPages(model, id, Properties.getStringProperty("label.qascript.executionHistory.title"));
+
+        String changedHistoryPageSize = request.getParameter("pageHistoryEntries");
+        if(!Utils.isNullStr(changedHistoryPageSize)){
+            historySize = Integer.valueOf(changedHistoryPageSize);
+        }
+
+        String changedVersionPageSize = request.getParameter("pageVersionEntries");
+        if(!Utils.isNullStr(changedVersionPageSize)){
+            versionSize = Integer.valueOf(changedVersionPageSize);
+        }
+
+        Paged<QueryMetadataEntry> pagedVersionEntries = queryMetadataService.getQueryMetadataEntries(versionPageNumber, versionSize, Integer.valueOf(id));
+        Paged<QueryMetadataHistoryEntry> pagedHistoryEntries = queryMetadataService.getQueryMetadataHistoryEntries(historyPageNumber, historySize, Integer.valueOf(id));
+
+        model.addAttribute("versionTableSize", queryMetadataService.getCountOfEntriesByScript(Integer.valueOf(id)));
+        model.addAttribute("historyTableSize", queryMetadataService.getCountOfHistoryEntriesByScript(Integer.valueOf(id)));
+
+        model.addAttribute("versionTable", pagedVersionEntries);
+        model.addAttribute("history", pagedHistoryEntries);
+        model.addAttribute("scriptId", id);
+        model.addAttribute("pageHistoryEntries", historySize);
+        model.addAttribute("pageVersionEntries", versionSize);
+
+
+        return "scriptHistory/scriptExecutionHistory";
+    }
+
+    @GetMapping("/history/{queryId}")
+    public String getScriptsHistory(@PathVariable Integer queryId, Model model, HttpServletRequest request) {
+
+        //Setup headerVariables
+        model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.qascriptHistory.title"), request);
+        //Setup breadcrumbs
+        model = ThymeleafUtils.setUpBreadCrumbsForScriptPages(model, queryId.toString(), Properties.getStringProperty("label.qascriptHistory.title"));
+
+        //we pass queryId in html to be able to use it in the tabbed menu and in scriptInfoHistory.js vue script
+        model.addAttribute("queryId", queryId);
+        return "scriptHistory/scriptHistory";
+    }
 }

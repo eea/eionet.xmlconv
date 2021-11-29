@@ -63,6 +63,18 @@ public class JobEntry implements Serializable {
     @Column(name = "WORKER_RETRIES")
     private Integer workerRetries;
 
+    @Column(name = "IS_HEAVY")
+    private boolean isHeavy;
+
+    @Column(name = "HEAVY_RETRIES_ON_FAILURE")
+    private Integer heavyRetriesOnFailure;
+
+    @Transient
+    private String fromDate;
+
+    @Transient
+    private String toDate;
+
     public JobEntry() {
     }
 
@@ -228,5 +240,39 @@ public class JobEntry implements Serializable {
     public JobEntry setWorkerRetries(Integer workerRetries) {
         this.workerRetries = workerRetries;
         return this;
+    }
+
+    public boolean isHeavy() {
+        return isHeavy;
+    }
+
+    public JobEntry setHeavy(boolean heavy) {
+        isHeavy = heavy;
+        return this;
+    }
+
+    public Integer getHeavyRetriesOnFailure() {
+        return heavyRetriesOnFailure;
+    }
+
+    public JobEntry setHeavyRetriesOnFailure(Integer heavyRetries) {
+        this.heavyRetriesOnFailure = heavyRetries;
+        return this;
+    }
+
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
     }
 }

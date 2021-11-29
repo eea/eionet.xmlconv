@@ -1,24 +1,18 @@
 package eionet.gdem.web.spring.workqueue;
 
-import com.google.gson.JsonObject;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
-import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.repositories.JobHistoryRepository;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.MessageService;
+import eionet.gdem.services.impl.JobEntryAndJobHistoryEntriesService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
-import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +25,6 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -43,13 +36,12 @@ public class WorkqueueController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkqueueController.class);
     private MessageService messageService;
+    public JobEntryAndJobHistoryEntriesService jobEntryAndJobHistoryEntriesService;
 
     @Autowired
-    public JobHistoryService jobHistoryService;
-
-    @Autowired
-    public WorkqueueController(MessageService messageService) {
+    public WorkqueueController(MessageService messageService, JobEntryAndJobHistoryEntriesService jobEntryAndJobHistoryEntriesService) {
         this.messageService = messageService;
+        this.jobEntryAndJobHistoryEntriesService = jobEntryAndJobHistoryEntriesService;
     }
 
     @GetMapping
@@ -102,6 +94,7 @@ public class WorkqueueController {
             String instance = list[i][7];
             String durationMs = list[i][8];
             String jobType = list[i][9];
+            String jobExecutorName = list[i][10];
 
             job.setJobId(jobId);
             job.setUrl(url);
@@ -113,6 +106,7 @@ public class WorkqueueController {
             job.setScriptId(xqStringID);
             job.setInstance(instance);
             job.setJobType(jobType);
+            job.setJobExecutorName(jobExecutorName);
             int xqID = 0;
             String scriptType = "";
             try {
@@ -191,6 +185,7 @@ public class WorkqueueController {
         model.addAttribute("permissions", permissions);
         model.addAttribute("jobList", jobsList);
         model.addAttribute("form", form);
+        model.addAttribute("username", userName);
         return "/workqueue";
     }
 
@@ -263,7 +258,7 @@ public class WorkqueueController {
 
     @PostMapping(value ="/getJobDetails/{jobId}")
     @ResponseBody
-    public List<JobHistoryEntry> getJobDetails(@PathVariable String jobId) {
-        return jobHistoryService.getAdditionalInfoOfJob(jobId);
+    public JobEntryAndJobHistoryEntriesObject getJobDetails(@PathVariable String jobId) {
+        return jobEntryAndJobHistoryEntriesService.getJobEntryAndJobHistoryEntriesOfJob(jobId);
     }
 }

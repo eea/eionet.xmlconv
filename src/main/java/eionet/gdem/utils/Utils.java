@@ -1340,4 +1340,17 @@ public final class Utils {
 
         return buf.toString();
     }
+
+    /**
+     * A method to find difference between two timestamps
+     *
+     * @param t1
+     *            1st timestamp
+     * @param t2
+     *            2nd timestamp
+     * @return difference in ms
+     */
+    public static Long getDifferenceBetweenTwoTimestampsInMs(Timestamp t1, Timestamp t2){
+        return Math.abs(t1.getTime() - t2.getTime());
+    }
 }

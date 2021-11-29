@@ -50,11 +50,11 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void changeStatusesAndJobExecutorName(Integer nStatus, InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, Integer jobId) throws DatabaseException {
+    public void updateJob(Integer nStatus, InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, JobEntry jobEntry) throws DatabaseException {
         try {
-            jobRepository.updateStatusesAndJobExecutorName(nStatus, intStatus, jobExecutorName, timestamp, jobId);
+            jobRepository.updateJob(nStatus, intStatus, jobExecutorName, timestamp, jobEntry.isHeavy(), jobEntry.getId());
         } catch (Exception e) {
-            LOGGER.error("Database exception when changing internal status of job with id " + jobId + ", " + e.toString());
+            LOGGER.error("Database exception when changing internal status of job with id " + jobEntry.getId() + ", " + e.toString());
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -77,6 +77,11 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public List<JobEntry> findByIntSchedulingStatusAndIsHeavy(InternalSchedulingStatus intSchedulingStatus, boolean isHeavy) {
+        return jobRepository.findByIntSchedulingStatusAndIsHeavy(intSchedulingStatus, isHeavy);
+    }
+
+    @Override
     public List<JobEntry> findProcessingJobs() {
         return jobRepository.findProcessingJobs();
     }
@@ -84,6 +89,11 @@ public class JobServiceImpl implements JobService {
     @Override
     public void updateWorkerRetries(Integer workerRetries, Timestamp timestamp, Integer jobId) {
         jobRepository.updateWorkerRetries(workerRetries, timestamp, jobId);
+    }
+
+    @Override
+    public void updateHeavyRetriesOnFailure(Integer heavyRetries, Timestamp timestamp, Integer jobId) {
+        jobRepository.updateHeavyRetriesOnFailure(heavyRetries, timestamp, jobId);
     }
 
     @Override

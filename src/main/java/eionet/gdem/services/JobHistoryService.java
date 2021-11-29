@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface JobHistoryService {
 
-    List<JobHistoryEntry> getAdditionalInfoOfJob(String jobId);
+    List<JobHistoryEntry> getJobHistoryEntriesOfJob(String jobId);
 
-    void updateStatusesAndJobExecutorName(Integer nStatus, Integer internalStatus, JobEntry jobEntry) throws DatabaseException;
+    void updateJobHistory(Integer nStatus, Integer internalStatus, JobEntry jobEntry) throws DatabaseException;
 
     JobHistoryEntry save(JobHistoryEntry jobHistoryEntry);
 }

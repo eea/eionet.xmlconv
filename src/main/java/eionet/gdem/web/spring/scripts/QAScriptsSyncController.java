@@ -3,12 +3,16 @@ package eionet.gdem.web.spring.scripts;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.QueryBackupEntry;
+import eionet.gdem.jpa.Entities.QueryEntry;
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.jpa.service.QueryHistoryService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.listeners.AppServletContextListener;
-import eionet.gdem.web.spring.SpringMessage;
 import eionet.gdem.web.spring.SpringMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 /**
  *
@@ -37,10 +42,14 @@ public class QAScriptsSyncController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptsSyncController.class);
 
     private MessageService messageService;
+    private QueryJpaService queryJpaService;
+    private QueryHistoryService queryHistoryService;
 
     @Autowired
-    public QAScriptsSyncController(MessageService messageService) {
+    public QAScriptsSyncController(MessageService messageService, QueryJpaService queryJpaService, QueryHistoryService queryHistoryService) {
         this.messageService = messageService;
+        this.queryJpaService = queryJpaService;
+        this.queryHistoryService = queryHistoryService;
     }
 
     @ModelAttribute
@@ -81,6 +90,16 @@ public class QAScriptsSyncController {
                 syncForm.setScriptId(scriptId);
                 syncForm.setUrl(scriptUrl);
                 syncForm.setFileName(scriptFile);
+                syncForm.setDescription(form.getDescription());
+                syncForm.setShortName(form.getShortName());
+                syncForm.setFileName(form.getFileName());
+                syncForm.setSchemaId(form.getSchemaId());
+                syncForm.setResultType(form.getResultType());
+                syncForm.setScriptType(form.getScriptType());
+                syncForm.setUpperLimit(form.getUpperLimit());
+                syncForm.setUrl(form.getUrl());
+                syncForm.setActive(form.getActive());
+                syncForm.setAsynchronousExecution(form.isAsynchronousExecution());
 
                 try {
                     syncForm.setScriptFile(new String(remoteScript, "UTF-8"));
@@ -110,14 +129,23 @@ public class QAScriptsSyncController {
         }
 
         String user = (String) httpServletRequest.getSession().getAttribute("user");
+        QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
+        Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
+        queryJpaService.updateVersion(maxVersion+1, Integer.parseInt(scriptId));
+        QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(form.getDescription()).setShortName(form.getShortName()).setQueryFileName(form.getFileName())
+                .setSchemaId(Integer.parseInt(form.getSchemaId())).setResultType(form.getResultType()).setScriptType(form.getScriptType()).setUpperLimit(Integer.parseInt(form.getUpperLimit()))
+                .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(maxVersion+1).setUser(user).setDateModified(new Date()).setQueryEntry(queryEntry);
 
         try {
             QAScriptManager qm = new QAScriptManager();
+            BackupManager bum = new BackupManager();
+            QueryBackupEntry queryBackupEntry = bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user);
+            if (queryBackupEntry!=null) {
+                queryHistoryEntry.setQueryBackupEntry(queryBackupEntry);
+            }
+            queryHistoryService.save(queryHistoryEntry);
 
             qm.replaceScriptFromRemoteFile(user, url, scriptFileName);
-
-            BackupManager bum = new BackupManager();
-            bum.backupFile(Properties.queriesFolder, scriptFileName, scriptId, user);
             messages.add(messageService.getMessage("label.uplScript.cached"));
 
         } catch (DCMException e) {

@@ -1,7 +1,11 @@
 package eionet.gdem.qa.utils;
 
+import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.qa.XQScript;
+
+import java.util.Date;
 
 /**
  * QA script utility class.
@@ -40,5 +44,33 @@ public final class ScriptUtils {
         script.setStrResultFile(jobEntry.getResultFile());
         script.setScriptType(jobEntry.getScriptType());
         return script;
+    }
+
+    public static QueryHistoryEntry createQueryHistoryEntry(String user, String shortName, String schemaId, String resultType, String description, String scriptType,
+                                                            String upperLimit, String url, Boolean asynchronousExecution, boolean active, String fileName, Integer version,
+                                                                         Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther) {
+        QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(description).setShortName(shortName).setQueryFileName(fileName)
+                .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
+                .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(version).setUser(user).setDateModified(new Date())
+                .setMarkedHeavy(markedHeavy).setMarkedHeavyReason(markedHeavyReason).setMarkedHeavyReasonOther(markedHeavyReasonOther);
+        return queryHistoryEntry;
+    }
+
+    public static String getHeavyScriptReasonTextByCode(Integer code){
+        for(HeavyScriptReasonEnum heavyReason: HeavyScriptReasonEnum.values()){
+            if(heavyReason.getCode() == code){
+                return heavyReason.getText();
+            }
+        }
+        return null;
+    }
+
+    public static Integer getHeavyScriptReasonCodeByText(String text){
+        for(HeavyScriptReasonEnum heavyReason: HeavyScriptReasonEnum.values()){
+            if(heavyReason.getText().equals(text)){
+                return heavyReason.getCode();
+            }
+        }
+        return null;
     }
 }

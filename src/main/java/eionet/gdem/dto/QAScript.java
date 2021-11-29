@@ -43,6 +43,9 @@ public class QAScript implements Serializable {
     String url;
     boolean active;
     boolean asynchronousExecution;
+    Boolean markedHeavy;
+    Integer markedHeavyReason;
+    String markedHeavyReasonOther;
     
     private boolean blocker = false;
 
@@ -195,5 +198,37 @@ public class QAScript implements Serializable {
 
     public void setAsynchronousExecution(boolean asynchronousExecution) {
         this.asynchronousExecution = asynchronousExecution;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isMarkedHeavy() {
+        return markedHeavy;
+    }
+
+    public Boolean getMarkedHeavy() {
+        return markedHeavy;
+    }
+
+    public void setMarkedHeavy(Boolean markedHeavy) {
+        this.markedHeavy = markedHeavy;
+    }
+
+    public Integer getMarkedHeavyReason() {
+        return markedHeavyReason;
+    }
+
+    public void setMarkedHeavyReason(Integer markedHeavyReason) {
+        this.markedHeavyReason = markedHeavyReason;
+    }
+
+    public String getMarkedHeavyReasonOther() {
+        return markedHeavyReasonOther;
+    }
+
+    public void setMarkedHeavyReasonOther(String markedHeavyReasonOther) {
+        this.markedHeavyReasonOther = markedHeavyReasonOther;
     }
 }

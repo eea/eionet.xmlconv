@@ -8,7 +8,7 @@ import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkersStatusMessageReceiver;
-import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponse;
+import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponseMessage;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
@@ -48,14 +48,14 @@ public class WorkersStatusMessageReceiverTest {
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12452");
 
-        WorkerStateRabbitMQResponse response = new WorkerStateRabbitMQResponse("demoJobExecutor", SchedulingConstants.WORKER_READY).setHeartBeatQueue("demoJobExecutor-queue");
+        WorkerStateRabbitMQResponseMessage response = new WorkerStateRabbitMQResponseMessage("demoJobExecutor", SchedulingConstants.WORKER_READY).setHeartBeatQueue("demoJobExecutor-queue");
         Message message = convertObjectToByteArray(response);
 
         receiver.onMessage(message);
         verify(workerAndJobStatusHandlerService).saveOrUpdateJobExecutor(any(JobExecutor.class), any(JobExecutorHistory.class));
     }
 
-    private Message convertObjectToByteArray(WorkerStateRabbitMQResponse response) throws JsonProcessingException {
+    private Message convertObjectToByteArray(WorkerStateRabbitMQResponseMessage response) throws JsonProcessingException {
         ObjectMapper jsonMapper = new ObjectMapper();
         String responseObject = jsonMapper.writeValueAsString(response);
         byte[] body = responseObject.getBytes();

@@ -27,7 +27,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
 
     @Override
-    public List<JobHistoryEntry> getAdditionalInfoOfJob(String jobId){
+    public List<JobHistoryEntry> getJobHistoryEntriesOfJob(String jobId){
         List<JobHistoryEntry> entries = repository.findByJobName(jobId);
         for(JobHistoryEntry entry: entries){
             switch (entry.getStatus()) {
@@ -75,16 +75,19 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                 default:
                     entry.setFullStatusName("UNKNOWN STATUS");
             }
+            if (entry.getJobExecutorName()==null) {
+                entry.setJobExecutorName("Not defined yet");
+            }
         }
         return entries;
     }
 
     @Override
-    public void updateStatusesAndJobExecutorName(Integer nStatus, Integer internalStatus, JobEntry jobEntry) throws DatabaseException {
+    public void updateJobHistory(Integer nStatus, Integer internalStatus, JobEntry jobEntry) throws DatabaseException {
         try {
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), nStatus, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(internalStatus).setJobExecutorName(jobEntry.getJobExecutorName()).setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setJobType(jobEntry.getJobType())
-            .setWorkerRetries(jobEntry.getWorkerRetries());
+            .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());
             repository.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobEntry.getId() + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {

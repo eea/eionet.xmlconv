@@ -67,7 +67,8 @@ public class ProjectsController {
      */
     @GetMapping
     public String findAll(Model model) {
-        List<Project> projects = projectService.findAll();
+       // List<Project> projects = projectService.findAll();
+        List<Project> projects = new ArrayList<>();
         model.addAttribute("projects", projects);
         model.addAttribute("title", "Projects");
         return "projects/list";

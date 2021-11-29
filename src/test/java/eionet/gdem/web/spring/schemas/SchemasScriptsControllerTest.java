@@ -69,11 +69,6 @@ public class SchemasScriptsControllerTest {
     }
 
     @Test
-    public void scriptsNoPermissions() throws Exception {
-        //TODO check that a non-logged in user has no permissions to see "Add QA script" and "Run QA service" links in view.
-    }
-
-    @Test
     public void scriptsAdd() throws Exception {
         this.mockMvc.perform(get(SCRIPTS_ADD_URL).sessionAttr(SESSION_USER, ADMIN_USER))
                 .andExpect(model().attribute("form", instanceOf(QAScriptForm.class)))

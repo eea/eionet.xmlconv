@@ -14,8 +14,12 @@
     <mvc:annotation-driven conversion-service="conversionService"/>
     <!--<mvc:default-servlet-handler />-->
 
-    <context:component-scan base-package="eionet.gdem.web">
+    <!--<context:component-scan base-package="eionet.gdem.web">
         <context:exclude-filter type="regex" expression="eionet\.gdem\.web\.spring\..*"/>
+    </context:component-scan>-->
+
+    <context:component-scan base-package="eionet.gdem.web.spring">
+        <!--context:exclude-filter type="regex" expression="eionet\.gdem\.web\.spring\..*"/-->
     </context:component-scan>
 
     <bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
@@ -43,7 +47,7 @@
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/projects/**"/>
+            <mvc:mapping path="/*"/>
             <bean class="eionet.gdem.web.spring.interceptors.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

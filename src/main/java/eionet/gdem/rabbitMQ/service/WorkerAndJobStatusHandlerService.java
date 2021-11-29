@@ -5,7 +5,7 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 
 public interface WorkerAndJobStatusHandlerService {
 
@@ -17,5 +17,5 @@ public interface WorkerAndJobStatusHandlerService {
 
     void handleCancelledJob(JobEntry jobEntry, Integer workerStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException;
 
-    void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequest workerJobRabbitMQRequest, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException;
+    void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory, boolean isHeavy) throws DatabaseException;
 }

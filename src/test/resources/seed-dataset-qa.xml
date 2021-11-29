@@ -14,6 +14,22 @@
     <T_QUERY QUERY_ID="52" DESCRIPTION="" SHORT_NAME="test not expired html" QUERY_FILENAME="test_notexpired-html.xquery" SCHEMA_ID="88" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
     <T_QUERY QUERY_ID="53" DESCRIPTION="" SHORT_NAME="test expired xml" QUERY_FILENAME="test_expired-xml.xquery" SCHEMA_ID="89" RESULT_TYPE="XML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
     <T_QUERY QUERY_ID="54" DESCRIPTION="" SHORT_NAME="test not expired html" QUERY_FILENAME="previous.xq" SCHEMA_ID="88" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 3.0+" UPPER_LIMIT="10"/>
+
+    <QUERY_HISTORY QUERY_ID="25" DESCRIPTION="" SHORT_NAME="Summer ozone - information" QUERY_FILENAME="sum-oz_info_1920_1.xql" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="26" DESCRIPTION="" SHORT_NAME="Summer ozone - alert" QUERY_FILENAME="sum-oz_alert_1919_2.xql" SCHEMA_ID="60" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="27" DESCRIPTION="" SHORT_NAME="Summer ozone - stations" QUERY_FILENAME="sum-oz_stations_1922.xql" SCHEMA_ID="63" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="28" DESCRIPTION="" SHORT_NAME="Summer ozone - health" QUERY_FILENAME="sum-oz_health_1968_3.xql" SCHEMA_ID="59" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="44" DESCRIPTION="ä" SHORT_NAME="Article 17 - species report checks" QUERY_FILENAME="art17_species.xquery" SCHEMA_ID="86" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="46" DESCRIPTION="a" SHORT_NAME="Article 17 - habitat report" QUERY_FILENAME="art17_habitats.xquery" SCHEMA_ID="85" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="47" DESCRIPTION="Validates mandatory fields, sitecodes and their coverages and period fields" SHORT_NAME="General report" QUERY_FILENAME="art17_report.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="20"/>
+    <QUERY_HISTORY QUERY_ID="48" DESCRIPTION="Checks species names and suggest fuzzy matching alternatves if found from the list of European species" SHORT_NAME="Article 17 - General report species check" QUERY_FILENAME="art17_general_report_species.xquery" SCHEMA_ID="83" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="20"/>
+    <QUERY_HISTORY QUERY_ID="49" DESCRIPTION="" SHORT_NAME="test" QUERY_FILENAME="test.xquery" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="50" DESCRIPTION="" SHORT_NAME="test" QUERY_FILENAME="seed-qascript2.xquery" SCHEMA_ID="62" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="51" DESCRIPTION="" SHORT_NAME="test expired html" QUERY_FILENAME="test_expired-html.xquery" SCHEMA_ID="58" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="52" DESCRIPTION="" SHORT_NAME="test not expired html" QUERY_FILENAME="test_notexpired-html.xquery" SCHEMA_ID="88" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="53" DESCRIPTION="" SHORT_NAME="test expired xml" QUERY_FILENAME="test_expired-xml.xquery" SCHEMA_ID="89" RESULT_TYPE="XML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10"/>
+    <QUERY_HISTORY QUERY_ID="54" DESCRIPTION="" SHORT_NAME="test not expired html" QUERY_FILENAME="previous.xq" SCHEMA_ID="88" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 3.0+" UPPER_LIMIT="10"/>
+
     <T_SCHEMA SCHEMA_ID="58" XML_SCHEMA="http://localhost/not_existing.xsd" DESCRIPTION="Expired dummy" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" EXPIRE_DATE="2010-11-11 00:00:00.000000000" BLOCKER="0"/>
     <T_SCHEMA SCHEMA_ID="59" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1968" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Exceedance of ozone long-term objective for health protection" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
     <T_SCHEMA SCHEMA_ID="60" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone alert threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />

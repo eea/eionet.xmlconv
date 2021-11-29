@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 /**
  * Several settings and properties for XMLCONV application.
@@ -190,9 +189,11 @@ public class Properties {
     public static final Integer rancherJobExecutorServiceScale;
     public static final Long rancherJobExecServiceMemory;
     public static final Long rancherJobExecServiceMemoryReservation;
-    public static final String rancherJobExecServiceId;
+    public static final String rancherLightJobExecServiceId;
+    public static final String rancherHeavyJobExecServiceId;
     public static final boolean enableJobExecRancherScheduledTask;
-    public static final Integer maxJobExecutorContainersAllowed;
+    public static final Integer maxLightJobExecutorContainersAllowed;
+    public static final Integer maxHeavyJobExecutorContainersAllowed;
 
     public static boolean rabbitMqEnabled ;
     public static String rabbitMQHost;
@@ -213,9 +214,16 @@ public class Properties {
     public static String WORKER_STATUS_ROUTING_KEY;
     public static String WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY;
     public static String WORKERS_DEAD_LETTER_ROUTING_KEY;
+    public static String HEAVY_WORKERS_JOBS_QUEUE;
+    public static String  MAIN_XMLCONV_HEAVY_JOBS_EXCHANGE;
+    public static String HEAVY_JOBS_ROUTING_KEY;
+    public static String CONVERTERS_GRAYLOG;
+    public static String JOB_EXECUTOR_GRAYLOG;
 
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
+
+    public static Long maxHeavyRetries;
 
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
@@ -324,9 +332,11 @@ public class Properties {
         rancherJobExecutorServiceScale = getIntProperty("env.rancher.api.jobExecutor.service.scale");
         rancherJobExecServiceMemory = getLongProperty("env.rancher.api.jobExec.service.memory");
         rancherJobExecServiceMemoryReservation = getLongProperty("env.rancher.api.jobExec.service.memoryReservation");
-        rancherJobExecServiceId = getStringProperty("env.rancher.api.jobExec.service.id");
+        rancherLightJobExecServiceId = getStringProperty("env.rancher.api.light.jobExec.service.id");
+        rancherHeavyJobExecServiceId = getStringProperty("env.rancher.api.heavy.jobExec.service.id");
         enableJobExecRancherScheduledTask = Boolean.parseBoolean(getStringProperty("env.enable.jobExecutor.rancher.scheduled.task"));
-        maxJobExecutorContainersAllowed = getIntProperty("env.max.jobExecutor.containers.allowed");
+        maxLightJobExecutorContainersAllowed = getIntProperty("env.max.light.jobExecutor.containers.allowed");
+        maxHeavyJobExecutorContainersAllowed = getIntProperty("env.max.heavy.jobExecutor.containers.allowed");
 
         rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");
@@ -344,6 +354,9 @@ public class Properties {
         JOBS_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.jobs.results.routingkey");
         WORKER_STATUS_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.status.routingkey");
         WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.heartBeat.response.routingKey");
+        HEAVY_WORKERS_JOBS_QUEUE = getStringProperty("env.rabbitmq.heavy.workers.jobs.queue");
+        MAIN_XMLCONV_HEAVY_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.heavy.jobs.exchange");
+        HEAVY_JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.heavy.jobs.routingkey");
 
         jobsOnDemandLimitBeforeTimeout = getLongProperty("env.jobs.onDemand.limit.before.time.out");
         jobsOnDemandUITimeout = getLongProperty("env.jobs.onDemand.ui.time.out");
@@ -351,6 +364,11 @@ public class Properties {
         WORKERS_DEAD_LETTER_QUEUE = getStringProperty("env.rabbitmq.dead.letter.queue");
         WORKERS_DEAD_LETTER_EXCHANGE = getStringProperty("env.rabbitmq.dead.letter.exchange");
         WORKERS_DEAD_LETTER_ROUTING_KEY = getStringProperty("env.rabbitmq.dead.letter.routingKey");
+
+        CONVERTERS_GRAYLOG = getStringProperty("env.converters.graylog");
+        JOB_EXECUTOR_GRAYLOG = getStringProperty("env.jobExecutor.graylog");
+
+        maxHeavyRetries = getLongProperty("env.max.heavy.retries");
     }
 
     /**

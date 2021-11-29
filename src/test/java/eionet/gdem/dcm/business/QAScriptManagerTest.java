@@ -1,15 +1,16 @@
 package eionet.gdem.dcm.business;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
+import eionet.gdem.Properties;
+import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
+import eionet.gdem.dto.QAScript;
+import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.QAScriptManager;
+import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.scripts.QAScriptListHolder;
-import net.xqj.basex.bin.M;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,15 +21,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import eionet.gdem.Properties;
-import eionet.gdem.dto.QAScript;
-import eionet.gdem.dto.Schema;
-import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.test.DbHelper;
-import eionet.gdem.test.TestConstants;
-import eionet.gdem.test.TestUtils;
-
 import javax.sql.DataSource;
+import java.io.File;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Enriko Käsper, TietoEnator Estonia AS SchemaManagerDBTest
@@ -67,11 +63,15 @@ public class QAScriptManagerTest {
         String schema = "http://schema.xsd";
         String upperLimit = "100";
         String url = "http://url.srcippt.com";
+        String markedHeavyReason = HeavyScriptReasonEnum.OUT_OF_MEMORY.getText();
+        Integer markedHeavyReasonCode = 2;
+        String markedHeavyReasonOther = null;
 
         QAScriptManager qm = new QAScriptManager();
 
         MockMultipartFile scriptFile = new MockMultipartFile("file", queryFileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(queryFileName).getFile().getBytes());
-        String scriptId = qm.add(TestConstants.ADMIN_USER, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit, url, false);
+        String scriptId = qm.add(TestConstants.ADMIN_USER, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit, url, false, true,
+                true, markedHeavyReason, markedHeavyReasonOther);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -84,7 +84,9 @@ public class QAScriptManagerTest {
         assertEquals(upperLimit, qascript.getUpperLimit());
         assertEquals(url, qascript.getUrl());
         assertEquals(false, qascript.isAsynchronousExecution());
-
+        assertEquals(true, qascript.isMarkedHeavy());
+        assertEquals(markedHeavyReasonCode, qascript.getMarkedHeavyReason());
+        assertEquals(null, qascript.getMarkedHeavyReasonOther());
     }
 
     /**
@@ -190,7 +192,7 @@ public class QAScriptManagerTest {
         QAScriptManager qm = new QAScriptManager();
 
         // update qa script properties
-        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false, false);
+        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false, false, true, 1, false, null, null);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -202,6 +204,9 @@ public class QAScriptManagerTest {
         assertEquals(scriptType, qascript.getScriptType());
         assertEquals(upperLimit, qascript.getUpperLimit());
         assertEquals(url, qascript.getUrl());
+        assertEquals(false, qascript.isMarkedHeavy());
+        assertEquals(null, qascript.getMarkedHeavyReason());
+        assertEquals(null, qascript.getMarkedHeavyReasonOther());
 
     }
 
@@ -222,6 +227,8 @@ public class QAScriptManagerTest {
         String fileName = TestConstants.SEED_QASCRIPT_XQUERY2;
         String upperLimit = "100";
         String url = "http://blahh.script.com";
+        Integer markedHeavyReason = 3;
+        String markedHeavyReasonOther = "test";
 
         String user = TestConstants.TEST_ADMIN_USER;
 
@@ -231,7 +238,8 @@ public class QAScriptManagerTest {
         MockMultipartFile scriptFile = new MockMultipartFile("scriptFile", fileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(fileName).getFile().getBytes());
 
         QAScriptManager qm = new QAScriptManager();
-        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url, false);
+        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url,
+                false, true, 1, true, markedHeavyReason, markedHeavyReasonOther);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -243,32 +251,8 @@ public class QAScriptManagerTest {
         assertEquals(scriptType, qascript.getScriptType());
         assertEquals(upperLimit, qascript.getUpperLimit());
         assertEquals(url, qascript.getUrl());
-    }
-
-    /**
-     * The method updates QA Script content in file system
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testStoreQAScriptFromString() throws Exception {
-
-        String scriptId = "49";
-        String user = TestConstants.TEST_ADMIN_USER;
-
-        QAScriptManager qm = new QAScriptManager();
-        QAScript script = qm.getQAScript(scriptId);
-
-        String content = script.getScriptContent();
-        String newLine = "(:  This is the new line to be added :)\n";
-        StringBuffer contentBuf = new StringBuffer(newLine);
-        contentBuf.append(content);
-
-        qm.storeQAScriptFromString(user, scriptId, contentBuf.toString());
-        script = qm.getQAScript(scriptId);
-        String newContent = script.getScriptContent();
-
-        assertTrue(newContent.startsWith(newLine));
-        assertEquals(newContent.length(), content.length() + newLine.length());
+        assertEquals(true, qascript.isMarkedHeavy());
+        assertEquals(markedHeavyReason, qascript.getMarkedHeavyReason());
+        assertEquals(markedHeavyReasonOther, qascript.getMarkedHeavyReasonOther());
     }
 }

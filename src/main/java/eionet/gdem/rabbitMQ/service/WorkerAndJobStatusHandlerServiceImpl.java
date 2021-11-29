@@ -8,9 +8,11 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.jpa.utils.JobExecutorType;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,15 +27,17 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     JobExecutorService jobExecutorService;
     JobExecutorHistoryService jobExecutorHistoryService;
     RabbitMQMessageSender rabbitMQMessageSender;
+    RabbitMQMessageSender heavyRabbitMQMessageSender;
 
     @Autowired
-    public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService,
-                                                JobExecutorHistoryService jobExecutorHistoryService, RabbitMQMessageSender rabbitMQMessageSender) {
+    public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService, JobExecutorHistoryService jobExecutorHistoryService,
+                                                @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender heavyRabbitMQMessageSender) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobExecutorService = jobExecutorService;
         this.jobExecutorHistoryService = jobExecutorHistoryService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
+        this.heavyRabbitMQMessageSender = heavyRabbitMQMessageSender;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -43,8 +47,8 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     }
 
     protected void updateJobAndJobHistory(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException {
-        jobService.changeStatusesAndJobExecutorName(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry.getId());
-        jobHistoryService.updateStatusesAndJobExecutorName(nStatus, internalStatus.getId(), jobEntry);
+        jobService.updateJob(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
+        jobHistoryService.updateJobHistory(nStatus, internalStatus.getId(), jobEntry);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -54,7 +58,19 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     }
 
     protected void updateJobExecutorAndJobExecutorHistory(JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
-        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
+        JobExecutor jobExecDb = jobExecutorService.findByName(jobExecutor.getName());
+        //check if worker sent its jobExecutorType. If worker wasn't able to find its status, find the status from database. If the worker can't be found
+        //in the database, then set its type to unknown
+        if (jobExecDb!=null || jobExecutor.getJobExecutorType()!=null) {
+            JobExecutorType jobExecutorType;
+            if (jobExecutor.getJobExecutorType()!=null) {
+                jobExecutorType = jobExecutor.getJobExecutorType();
+            } else jobExecutorType = jobExecDb.getJobExecutorType();
+            jobExecutor.setJobExecutorType(jobExecutorType);
+            jobExecutorHistory.setJobExecutorType(jobExecutorType);
+        }
+        if (jobExecutor.getJobExecutorType()==null) jobExecutor.setJobExecutorType(JobExecutorType.Uknown);
+        jobExecutorService.saveOrUpdateJobExecutor(jobExecDb!=null, jobExecutor);
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(jobExecutorHistory);
     }
 
@@ -70,21 +86,24 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     public void handleCancelledJob(JobEntry jobEntry, Integer workerStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
         if (jobEntry.getJobExecutorName()!=null) {
             JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
-            jobExecutor.setStatus(workerStatus);
-            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), workerStatus, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
-            this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
+            if (jobExecutor!=null) {
+                jobExecutor.setStatus(workerStatus);
+                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), workerStatus, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
+            }
         }
         this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequest workerJobRabbitMQRequest,
-                                      JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
+    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage,
+                                      JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory, boolean isHeavy) throws DatabaseException {
         jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), jobEntry.getId());
         this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
         this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
-        rabbitMQMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
+        if (isHeavy) heavyRabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        else rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
     }
 }
 

@@ -10,12 +10,13 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.logging.Markers;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.JaxpValidationService;
@@ -28,6 +29,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,16 +50,21 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     private SchemaManager schemaManager;
     private IQueryDao queryDao;
     private JobHistoryService jobHistoryService;
-    private RabbitMQMessageSender rabbitMQMessageSender;
+    private RabbitMQMessageSender rabbitMQLightMessageSender;
+    private RabbitMQMessageSender rabbitMQHeavyMessageSender;
     private JobService jobService;
+    private QueryMetadataService queryMetadataService;
 
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
-                                      RabbitMQMessageSender rabbitMQMessageSender, JobService jobService) {
+                                      @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQLightMessageSender,
+                                      @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQHeavyMessageSender, JobService jobService, QueryMetadataService queryMetadataService) {
         this.queryDao = queryDao;
         this.jobHistoryService = jobHistoryService;
-        this.rabbitMQMessageSender = rabbitMQMessageSender;
+        this.rabbitMQLightMessageSender = rabbitMQLightMessageSender;
+        this.rabbitMQHeavyMessageSender = rabbitMQHeavyMessageSender;
         this.jobService = jobService;
+        this.queryMetadataService = queryMetadataService;
     }
 
     @Transactional(rollbackFor=Exception.class)
@@ -77,9 +84,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
 
             // Do validation
             if (queryID.equals(String.valueOf(Constants.JOB_VALIDATION))) {
+                long startTime = System.nanoTime();
+                Integer jobStatus = null;
                 try {
-                    long startTime = System.nanoTime();
-
                     // validate only the first XML Schema
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
@@ -100,11 +107,21 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     String result = vs.validateSchema(srcFile, scriptFile);
                     LOGGER.debug("Validation proceeded, now store to the result file");
                     Utils.saveStrToFile(resultFile, result, null);
-                    changeStatus(Constants.XQ_READY,jobId);
                     long stopTime = System.nanoTime();
+
+                    changeStatus(Constants.XQ_READY,jobId);
+                    jobStatus = Constants.XQ_READY;
                     LOGGER.info("### job with id: " + jobId + " has been Validated. Validation time in nanoseconds = " + (stopTime - startTime));
                 } catch (Exception e) {
+                    jobStatus = Constants.XQ_FATAL_ERR;
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true,jobEntry, jobId);
+                }
+                finally{
+                    long stopTime = System.nanoTime();
+                    Long durationOfJob = stopTime - startTime;
+                    //Store script information
+                    queryMetadataService.storeScriptInformation(Integer.valueOf(queryID), scriptFile, scriptType, durationOfJob, jobStatus);
+                    LOGGER.info("Updated tables QUERY_METADATA and QUERY_METADATA_HISTORY for script: " + scriptFile);
                 }
             } else {
 
@@ -157,13 +174,13 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     if (query != null && query.containsKey(QaScriptView.URL)) {
                         xq.setScriptSource((String) query.get(QaScriptView.URL));
                     }
-
-                    String asynchronousExecution = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
-                    if(asynchronousExecution != null && asynchronousExecution.equals("1")){
-                        xq.setAsynchronousExecution(true);
-                    }
-                    else{
-                        xq.setAsynchronousExecution(false);
+                    if(query != null) {
+                        String asynchronousExecution = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+                        if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
+                            xq.setAsynchronousExecution(true);
+                        } else {
+                            xq.setAsynchronousExecution(false);
+                        }
                     }
 
                     LOGGER.info("** FME Job will be added in queue, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
@@ -172,8 +189,19 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 }
 
                 processJob(jobEntry);
-                WorkerJobRabbitMQRequest workerJobRabbitMQRequest = new WorkerJobRabbitMQRequest(xq);
-                rabbitMQMessageSender.sendJobInfoToRabbitMQ(workerJobRabbitMQRequest);
+                WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(xq);
+                //marked heavy properties
+                if(query != null) {
+                    String markedHeavy = (String) query.get(QaScriptView.MARKED_HEAVY);
+                    if (markedHeavy != null && markedHeavy.equals("1")) {
+                        rabbitMQHeavyMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                    } else {
+                        rabbitMQLightMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                    }
+                }
+                else{
+                    rabbitMQLightMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+                }
             }
         } catch (Exception e) {
             throw new CreateRabbitMQMessageException(e.getMessage());
@@ -200,10 +228,10 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             Integer retryCounter = jobService.getRetryCounter(jobId);
             jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobId);
             InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobService.changeStatusesAndJobExecutorName(Constants.XQ_PROCESSING, intStatus, null, new Timestamp(new Date().getTime()), jobId);
+            jobService.updateJob(Constants.XQ_PROCESSING, intStatus, null, new Timestamp(new Date().getTime()), jobEntry);
             LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
-            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED).setHeavy(jobEntry.isHeavy());
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {

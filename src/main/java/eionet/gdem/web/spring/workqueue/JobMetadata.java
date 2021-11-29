@@ -20,6 +20,7 @@ public class JobMetadata {
     private String scriptType;
     private String durationInProgress;
     private String jobType;
+    private String jobExecutorName;
 
     public String getJobId() {
         return jobId;
@@ -132,5 +133,13 @@ public class JobMetadata {
 
     public void setUrlName(String urlName) {
         this.urlName = urlName;
+    }
+
+    public String getJobExecutorName() {
+        return jobExecutorName;
+    }
+
+    public void setJobExecutorName(String jobExecutorName) {
+        this.jobExecutorName = jobExecutorName;
     }
 }

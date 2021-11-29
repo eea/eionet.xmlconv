@@ -23,17 +23,24 @@ package eionet.gdem.qa;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
+import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.jpa.Entities.QueryBackupEntry;
+import eionet.gdem.jpa.Entities.QueryEntry;
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.jpa.service.QueryHistoryService;
+import eionet.gdem.jpa.service.QueryJpaService;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.web.spring.scripts.BackupManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,17 +52,24 @@ import java.util.HashMap;
 
 /**
  * QA Script manager.
+ *
  * @author Enriko Käsper, Tieto Estonia QAScriptManager
  * @author George Sofianos
  */
 
 public class QAScriptManager {
 
-    /** */
+    /**
+     *
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(QAScriptManager.class);
-    /** */
+    /**
+     *
+     */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
-    /** */
+    /**
+     *
+     */
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 
     /**
@@ -88,12 +102,28 @@ public class QAScriptManager {
                 qaScript.setUrl((String) scriptData.get(QaScriptView.URL));
                 qaScript.setActive((String) scriptData.get(QaScriptView.IS_ACTIVE));
                 String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
-                if(asynchronousExecution != null && asynchronousExecution.equals("1")){
+                if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
                     qaScript.setAsynchronousExecution(true);
-                }
-                else{
+                } else {
                     qaScript.setAsynchronousExecution(false);
                 }
+
+                //marked heavy properties
+                String markedHeavy = (String) scriptData.get(QaScriptView.MARKED_HEAVY);
+                if (markedHeavy != null && markedHeavy.equals("1")) {
+                    qaScript.setMarkedHeavy(true);
+                } else {
+                    qaScript.setMarkedHeavy(false);
+                }
+                String markedHeavyReason = (String) scriptData.get(QaScriptView.MARKED_HEAVY_REASON);
+                if(markedHeavyReason != null){
+                    qaScript.setMarkedHeavyReason(Integer.valueOf(markedHeavyReason));
+                }
+                else{
+                    qaScript.setMarkedHeavyReason(null);
+                }
+                qaScript.setMarkedHeavyReasonOther((String) scriptData.get(QaScriptView.MARKED_HEAVY_REASON_OTHER));
+
                 String queryFolder = Properties.queriesFolder;
 
                 if (!Utils.isNullStr(qaScript.getFileName())) {
@@ -139,22 +169,24 @@ public class QAScriptManager {
 
     /**
      * Update QA script record in database.
-     * @param user logged in user name.
-     * @param scriptId QA script Id.
-     * @param shortName QA script short name.
-     * @param schemaId XML Schema Id.
-     * @param resultType QA script execution result type (XML, HTML, ...).
-     * @param descr QA script textual description.
-     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
-     * @param curFileName QA script file name.
-     * @param file FormFile uploaded through web interface.
-     * @param upperLimit Maximum size of XML to be sent to ad-hoc QA.
-     * @param url URL of the QA script file if maintained in web.
+     *
+     * @param user                  logged in user name.
+     * @param scriptId              QA script Id.
+     * @param shortName             QA script short name.
+     * @param schemaId              XML Schema Id.
+     * @param resultType            QA script execution result type (XML, HTML, ...).
+     * @param descr                 QA script textual description.
+     * @param scriptType            QA script type (XQUERY, XSL, XGAWK).
+     * @param curFileName           QA script file name.
+     * @param file                  FormFile uploaded through web interface.
+     * @param upperLimit            Maximum size of XML to be sent to ad-hoc QA.
+     * @param url                   URL of the QA script file if maintained in web.
      * @param asynchronousExeuction
      * @throws DCMException if DB or file operation fails.
      */
-    public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-                       String scriptType, String curFileName, MultipartFile file, String upperLimit, String url, Boolean asynchronousExeuction) throws DCMException {
+    public QueryBackupEntry update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
+                                   String scriptType, String curFileName, MultipartFile file, String upperLimit, String url, Boolean asynchronousExeuction,
+                                   boolean active, Integer version, Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -171,6 +203,7 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
+        QueryBackupEntry queryBackupEntry = null;
         try {
             String fileName = file.getOriginalFilename().trim();
             // upload file
@@ -181,40 +214,43 @@ public class QAScriptManager {
                         throw new DCMException(BusinessConstants.EXCEPTION_QASCRIPT_FILE_EXISTS);
                     }
                 }
+
                 // create backup of existing file
                 BackupManager bum = new BackupManager();
-                bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user);
+                queryBackupEntry = bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user);
 
                 storeQAScriptFile(file, curFileName);
             }
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExeuction);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url,
+                    asynchronousExeuction, version, markedHeavy, markedHeavyReason, markedHeavyReasonOther);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
             LOGGER.error("Error updating QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
-
+        return queryBackupEntry;
     }
 
     /**
      * Update script properties.
      *
-     * @param user logged in user name.
-     * @param scriptId QA script Id.
-     * @param shortName QA script short name.
-     * @param schemaId XML Schema Id.
-     * @param resultType QA script execution result type (XML, HTML, ...).
-     * @param descr QA script textual description.
-     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
-     * @param curFileName QA script file name.
-     * @param content File content
-     * @param updateContent Update content
+     * @param user                  logged in user name.
+     * @param scriptId              QA script Id.
+     * @param shortName             QA script short name.
+     * @param schemaId              XML Schema Id.
+     * @param resultType            QA script execution result type (XML, HTML, ...).
+     * @param descr                 QA script textual description.
+     * @param scriptType            QA script type (XQUERY, XSL, XGAWK).
+     * @param curFileName           QA script file name.
+     * @param content               File content
+     * @param updateContent         Update content
      * @param asynchronousExecution
      * @throws DCMException If an error occurs.
      */
-    public void update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-            String scriptType, String curFileName, String upperLimit, String url, String content, boolean updateContent, boolean asynchronousExecution)
+    public QueryBackupEntry update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr, String scriptType,
+                                   String curFileName, String upperLimit, String url, String content, boolean updateContent,
+                                   boolean asynchronousExecution, boolean active, Integer version, Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther)
             throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
@@ -232,13 +268,14 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
+        QueryBackupEntry queryBackupEntry = null;
         try {
             if (!Utils.isNullStr(curFileName) && !Utils.isNullStr(content) && content.indexOf(Constants.FILEREAD_EXCEPTION) == -1
                     && updateContent) {
 
                 // create backup of existing file
                 BackupManager bum = new BackupManager();
-                bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user);
+                queryBackupEntry = bum.backupFile(Properties.queriesFolder, curFileName, scriptId, user);
 
                 Utils.saveStrToFile(Properties.queriesFolder + File.separator + curFileName, content, null);
             }
@@ -248,7 +285,9 @@ public class QAScriptManager {
                 curFileName = StringUtils.substringAfterLast(url, "/");
             }
 
-            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExecution);
+            queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExecution, version,
+                    markedHeavy, markedHeavyReason, markedHeavyReasonOther);
+            return queryBackupEntry;
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("Error updating QA script", e);
@@ -284,10 +323,10 @@ public class QAScriptManager {
     /**
      * Store QA script file into file system.
      *
-     * @param file FormFile object uploaded through web interface.
+     * @param file     FormFile object uploaded through web interface.
      * @param fileName File name.
      * @throws FileNotFoundException File is not found.
-     * @throws IOException file store operations failed.
+     * @throws IOException           file store operations failed.
      */
     public void storeQAScriptFile(MultipartFile file, String fileName) throws FileNotFoundException, IOException {
 
@@ -308,46 +347,9 @@ public class QAScriptManager {
     }
 
     /**
-     * Store QA script content into file system.
-     *
-     * @param user logged in user name.
-     * @param scriptId QA script Id.
-     * @param fileContent File content
-     * @throws FileNotFoundException File not found
-     * @throws IOException IO Exception
-     * @throws DCMException If an error occurs.
-     */
-    public void storeQAScriptFromString(String user, String scriptId, String fileContent) throws FileNotFoundException,
-            IOException, DCMException {
-
-        try {
-            if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
-                LOGGER.debug("You don't have permissions to update QA script!");
-                throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
-            }
-        } catch (DCMException e) {
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("Error updating QA script content", e);
-            throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
-        }
-
-        QAScript script = getQAScript(scriptId);
-
-        String sep = Properties.queriesFolder.endsWith(File.separator) ? "" : File.separator;
-        String fileName = Properties.queriesFolder + sep + script.getFileName();
-
-        // create backup of existing file
-        BackupManager bum = new BackupManager();
-        bum.backupFile(Properties.queriesFolder, script.getFileName(), scriptId, user);
-
-        Utils.saveStrToFile(fileName, fileContent, null);
-    }
-
-    /**
      * Delete the selected QA script from database and file system
      *
-     * @param user logged in user name.
+     * @param user     logged in user name.
      * @param scriptId QA script Id.
      * @throws DCMException If an error occurs.
      */
@@ -380,7 +382,6 @@ public class QAScriptManager {
             Utils.deleteFile(queriesFolder + fileName);
 
             queryDao.removeQuery(scriptId);
-
         } catch (Exception e) {
             LOGGER.error("Error deleting QA script", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
@@ -390,19 +391,19 @@ public class QAScriptManager {
     /**
      * Add a new QA script into the repository
      *
-     * @param user logged in user name.
-     * @param shortName QA script short name.
-     * @param schemaId XML Schema Id.
-     * @param resultType QA script execution result type (XML, HTML, ...).
+     * @param user        logged in user name.
+     * @param shortName   QA script short name.
+     * @param schemaId    XML Schema Id.
+     * @param resultType  QA script execution result type (XML, HTML, ...).
      * @param description QA script textual description.
-     * @param scriptType QA script type (XQUERY, XSL, XGAWK).
-     * @param schema Schema
-     * @param scriptFile QA script file
+     * @param scriptType  QA script type (XQUERY, XSL, XGAWK).
+     * @param schema      Schema
+     * @param scriptFile  QA script file
      * @return Script id
      * @throws DCMException If an error occurs.
      */
     public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
-                      String scriptType, MultipartFile scriptFile, String upperLimit, String url, Boolean asynchronousExecution) throws DCMException {
+                      String scriptType, MultipartFile scriptFile, String upperLimit, String url, Boolean asynchronousExecution, boolean active, Boolean markedHeavy, String markedHeavyReason, String markedHeavyReasonOther) throws DCMException {
 
         String scriptId = null;
         // If remote file URL and local file are specified use local file
@@ -449,8 +450,27 @@ public class QAScriptManager {
                     replaceScriptFromRemoteFile(user, url, fileName);
                 }
             }
+
+            Integer markedHeavyReasonStatus = null;
+            if(markedHeavy){
+                //Get Marked heavy reason code
+                markedHeavyReasonStatus = ScriptUtils.getHeavyScriptReasonCodeByText(markedHeavyReason);
+            }
+            if(markedHeavyReasonStatus != HeavyScriptReasonEnum.OTHER.getCode()){
+                markedHeavyReasonOther = null;
+            }
+
+
             // XXX - make sure script database entry AND local file is added
-            scriptId = queryDao.addQuery(schemaId, shortName, fileName, description, resultType, scriptType, upperLimit, url, asynchronousExecution);
+            QueryEntry queryEntry = new QueryEntry().setSchemaId(Integer.parseInt(schemaId)).setShortName(shortName)
+                    .setQueryFileName(fileName).setDescription(description).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
+                    .setUrl(url).setAsynchronousExecution(asynchronousExecution).setVersion(1).setMarkedHeavy(markedHeavy).setMarkedHeavyReason(markedHeavyReasonStatus).setMarkedHeavyReasonOther(markedHeavyReasonOther);
+            scriptId = getQueryJpaService().save(queryEntry).getQueryId().toString();
+
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, description, scriptType, upperLimit, url,
+                    asynchronousExecution, active, fileName, 1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
+            queryHistoryEntry.setQueryEntry(queryEntry);
+            getQueryHistoryService().save(queryHistoryEntry);
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -464,10 +484,10 @@ public class QAScriptManager {
     /**
      * Update schema validation and blocker flag.
      *
-     * @param user logged in username.
+     * @param user     logged in username.
      * @param schemaId XML Schema Id.
      * @param validate XML Schema validation is part of QA.
-     * @param blocker return blocker flag in QA if XML Schema validation fails.
+     * @param blocker  return blocker flag in QA if XML Schema validation fails.
      * @throws DCMException if database operation fails.
      */
     public void updateSchemaValidation(String user, String schemaId, boolean validate, boolean blocker) throws DCMException {
@@ -496,9 +516,9 @@ public class QAScriptManager {
     /**
      * Method tries to download the remote script and replace the local file. Method updates table.
      *
-     * @param user user login name.
+     * @param user      user login name.
      * @param remoteUrl where to download script file.
-     * @param fileName QA script file name.
+     * @param fileName  QA script file name.
      * @throws DCMException in case of HTTP connection or database errors.
      */
     public void replaceScriptFromRemoteFile(String user, String remoteUrl, String fileName) throws DCMException {
@@ -524,7 +544,8 @@ public class QAScriptManager {
 
     /**
      * Update QA script content from InputStream.
-     * @param fileName QA script file name stored in the system.
+     *
+     * @param fileName        QA script file name stored in the system.
      * @param fileInputStream new content of the QA script
      * @throws DCMException in case of IO or database error.
      */
@@ -552,11 +573,12 @@ public class QAScriptManager {
         }
 
     }
-    
+
     /**
-     * Set/Unset "ACTIVE" flag on a specific scriptId 
-     * @param user User
-     * @param scriptId Script id
+     * Set/Unset "ACTIVE" flag on a specific scriptId
+     *
+     * @param user      User
+     * @param scriptId  Script id
      * @param setActive Active flag
      * @throws DCMException If an error occurs.
      */
@@ -572,17 +594,16 @@ public class QAScriptManager {
             LOGGER.error("Error setting activation status for QA script.", e);
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
-        
+
         if (Utils.isNullStr(scriptId)) {
             LOGGER.error("Cannot set activation status for QA script. Script ID is empty.");
             throw new DCMException(BusinessConstants.EXCEPTION_NO_QASCRIPT_SELECTED);
         }
-        
+
         try {
-            if (setActive){
+            if (setActive) {
                 queryDao.activateQuery(scriptId);
-            }
-            else {
+            } else {
                 queryDao.deactivateQuery(scriptId);
             }
         } catch (Exception e) {
@@ -590,6 +611,14 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
 
+    }
+
+    private static QueryJpaService getQueryJpaService() {
+        return (QueryJpaService) SpringApplicationContext.getBean("queryJpaServiceImpl");
+    }
+
+    private static QueryHistoryService getQueryHistoryService() {
+        return (QueryHistoryService) SpringApplicationContext.getBean("queryHistoryServiceImpl");
     }
 
 }

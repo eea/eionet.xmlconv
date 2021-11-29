@@ -8,7 +8,7 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
-import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequest;
+import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactoryImpl;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.services.JobHistoryService;
@@ -90,10 +90,10 @@ public class RabbitMQMessageFactoryImplTest {
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
         when(jobService.getRetryCounter(anyInt())).thenReturn(0);
         doNothing().when(jobService).updateJobInfo(anyInt(), anyString(), any(Timestamp.class), anyInt(), anyInt());
-        doNothing().when(jobService).changeStatusesAndJobExecutorName(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyInt());
+        doNothing().when(jobService).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), any(JobEntry.class));
         when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryDao.getQueryInfo(anyString())).thenReturn(queryMap);
-        doNothing().when(rabbitMQMessageSender).sendJobInfoToRabbitMQ(any(WorkerJobRabbitMQRequest.class));
+        doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
         createRabbitMQMessage.createScriptAndSendMessageToRabbitMQ("627015");
         verify(queryDao).getQueryInfo(anyString());
     }

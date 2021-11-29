@@ -9,28 +9,24 @@ import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.jpa.Entities.*;
-import eionet.gdem.jpa.errors.DatabaseException;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.notifications.UNSEventSender;
-import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.model.ContainerData;
-import eionet.gdem.rancher.model.ServiceApiRequestBody;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -44,39 +40,35 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Service
-public class FixedTimeScheduledTasks {
+public class GenericFixedTimeScheduledTasks {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FixedTimeScheduledTasks.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericFixedTimeScheduledTasks.class);
 
     @Autowired
     private IXQJobDao xqJobDao;
     @Qualifier("jobHistoryRepository")
     @Autowired
-    JobHistoryRepository repository;
-    @Autowired
-    private ServicesRancherApiOrchestrator servicesOrchestrator;
-    @Autowired
-    private ContainersRancherApiOrchestrator containersOrchestrator;
-    @Autowired
-    private JobExecutorService jobExecutorService;
+    private JobHistoryRepository repository;
     @Autowired
     private WorkerHeartBeatMsgService workerHeartBeatMsgService;
     @Autowired
     private JobService jobService;
     @Autowired
-    private RabbitAdmin rabbitAdmin;
+    private HeartBeatMsgHandlerService heartBeatMsgHandlerService;
     @Autowired
-    HeartBeatMsgHandlerService heartBeatMsgHandlerService;
+    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
     @Autowired
-    WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
+    private QueryMetadataService queryMetadataService;
 
-    /** Dao for getting job data. */
+    /**
+     * Dao for getting job data.
+     */
     private WorkqueueManager jobsManager = new WorkqueueManager();
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 5;
 
     @Autowired
-    public FixedTimeScheduledTasks() {
+    public GenericFixedTimeScheduledTasks() {
     }
 
     @Transactional
@@ -116,6 +108,7 @@ public class FixedTimeScheduledTasks {
     }
 
     /**
+<<<<<<< HEAD:src/main/java/eionet/gdem/infrastructure/scheduling/FixedTimeScheduledTasks.java
      * The task runs every minute and checks how many jobs have internalScedulingStatus=2 (meaning the job has been added to rabbitmq queue and is waiting
      * for a worker to grab it) and how many workers have status=1 (meaning they are ready to receive a job) and creates or deletes workers accordingly.
      *
@@ -264,6 +257,8 @@ public class FixedTimeScheduledTasks {
     }
 
     /**
+=======
+>>>>>>> 139338_heavy_workers_scheduled_tasks:src/main/java/eionet/gdem/infrastructure/scheduling/GenericFixedTimeScheduledTasks.java
      * The task runs every minute, finds jobs that have n_status=2 (processing) and internal_status_id=3 (the job has been received by a worker)
      * and sends messages to workers asking whether they are executing a specific job. The task also saves a record with the message request in the
      * table WORKER_HEART_BEAT_MSG
@@ -273,7 +268,7 @@ public class FixedTimeScheduledTasks {
         List<JobEntry> processingJobs = jobService.findProcessingJobs();
         for (JobEntry jobEntry : processingJobs) {
             try {
-                WorkerHeartBeatMessageInfo heartBeatMsgInfo = new WorkerHeartBeatMessageInfo(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
+                WorkerHeartBeatMessage heartBeatMsgInfo = new WorkerHeartBeatMessage(jobEntry.getJobExecutorName(), jobEntry.getId(), new Timestamp(new Date().getTime()));
                 WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(jobEntry.getId(), jobEntry.getJobExecutorName(), heartBeatMsgInfo.getRequestTimestamp());
                 heartBeatMsgHandlerService.saveMsgAndSendToRabbitMQ(heartBeatMsgInfo, workerHeartBeatMsgEntry);
             } catch (Exception e) {
@@ -297,47 +292,11 @@ public class FixedTimeScheduledTasks {
                     LOGGER.info("Setting the status of job " + jobEntry.getId() + " to " + Constants.XQ_FATAL_ERR + ", because of " + heartBeatMsgList.size() + " records with null response timestamp");
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
+                    Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
+                    queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR);
                 }
             } catch (Exception e) {
                 LOGGER.error("Error while checking heart beat messages for job with id " + jobEntry.getId());
-            }
-        }
-    }
-
-    protected void updateDbContainersHealthStatusFromRancher(List<String> instances) throws RancherApiException {
-        for (String containerId : instances) {
-            //for each instance find status
-            ContainerData data = containersOrchestrator.getContainerInfoById(containerId);
-            String healthState = data.getHealthState();
-            if (healthState.equals(SchedulingConstants.CONTAINER_HEALTH_STATE_ENUM.UNHEALTHY.getValue())) {
-                //update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
-                String containerName = data.getName();
-                String heartBeatQueue = containerName + "-queue";
-                JobExecutor jobExecutor = new JobExecutor(containerName, containerId, SchedulingConstants.WORKER_FAILED, heartBeatQueue);
-                try {
-                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(containerName, containerId, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
-                    workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-                } catch (DatabaseException e) {
-                    LOGGER.error("Task failed for jobExecutor with containerId " + containerId);
-                }
-            }
-        }
-    }
-
-    protected void synchronizeRancherContainersWithDbEntries(List<JobExecutor> jobExecutors, List<String> instances) {
-        for (JobExecutor jobExecutor : jobExecutors) {
-            if (!instances.contains(jobExecutor.getContainerId())) {
-                LOGGER.info("Container retrieved form Database  with ID:" + jobExecutor.getContainerId() + " and name:" + jobExecutor.getName() +
-                        " doesn't exist on rancher.Proceeding with deletion from Database");
-                try {
-                    jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
-                    boolean queueDeleted = rabbitAdmin.deleteQueue(jobExecutor.getHeartBeatQueue());
-                    if (!queueDeleted) {
-                        LOGGER.error("Worker Heartbeat queue  could not be deleted:" + jobExecutor.getHeartBeatQueue());
-                    }
-                } catch (DatabaseException e) {
-                    LOGGER.error("Task failed for jobExecutor with name " + jobExecutor.getName());
-                }
             }
         }
     }
@@ -405,7 +364,7 @@ public class FixedTimeScheduledTasks {
      * Deletes expired finished jobs from workqueue
      **/
     @Scheduled(cron = "0 0 */3 * * *") //Every 3 hours
-    public void schedulePeriodicCleanupOfFinishedWorkqueueJobs(){
+    public void schedulePeriodicCleanupOfFinishedWorkqueueJobs() {
         LOGGER.info("Cleanup of finished workqueue jobs.");
         try {
             List<WorkqueueJob> jobs = jobsManager.getFinishedJobs();
@@ -425,8 +384,7 @@ public class FixedTimeScheduledTasks {
     /**
      * Check the job's age and return true if it is possible to delete it.
      *
-     * @param job
-     *            Workqueue job object
+     * @param job Workqueue job object
      * @return true if job can be deleted.
      */
     public static boolean canDeleteJob(WorkqueueJob job) {
@@ -448,7 +406,7 @@ public class FixedTimeScheduledTasks {
      * Updates Data Dictionary tables cache.
      **/
     @Scheduled(cron = "0 0 */1 * * *") //Every 1 hour
-    public void schedulePeriodicDDTablesCacheUpdate(){
+    public void schedulePeriodicDDTablesCacheUpdate() {
         LOGGER.info("Updating DD tables chache.");
         try {
             List<DDDatasetTable> ddTables = DDServiceClient.getDDTablesFromDD();

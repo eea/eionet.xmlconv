@@ -9,7 +9,7 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.WorkerHeartBeatMsgRepository;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.listeners.WorkerHeartBeatResponseReceiver;
-import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessageInfo;
+import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public class WorkerHeartBeatResponseReceiverTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(heartBeatMsgHandlerService).updateHeartBeatAndJobTables(any(WorkerHeartBeatMsgEntry.class), anyInt(), anyInt(), anyInt(), any(InternalSchedulingStatus.class));
+        doNothing().when(heartBeatMsgHandlerService).updateHeartBeatJobAndQueryTables(any(WorkerHeartBeatMsgEntry.class), any(WorkerHeartBeatMessage.class), anyInt(), any(InternalSchedulingStatus.class));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class WorkerHeartBeatResponseReceiverTest {
         XQScript xqScript = new XQScript(null, scriptParams, "HTML");
         xqScript.setJobId("12452");
 
-        WorkerHeartBeatMessageInfo response = new WorkerHeartBeatMessageInfo("demoJobExecutor", 12453).setJobStatus(Constants.JOB_NOT_FOUND_IN_WORKER).setId(35);
+        WorkerHeartBeatMessage response = new WorkerHeartBeatMessage("demoJobExecutor", 12453).setJobStatus(Constants.JOB_NOT_FOUND_IN_WORKER).setId(35);
         Message message = convertObjectToByteArray(response);
 
         WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(response.getJobId(), response.getJobExecutorName(), new Timestamp(new Date().getTime()));
@@ -66,7 +66,7 @@ public class WorkerHeartBeatResponseReceiverTest {
         verify(workerHeartBeatMsgRepository).findOne(anyInt());
     }
 
-    private Message convertObjectToByteArray(WorkerHeartBeatMessageInfo response) throws JsonProcessingException {
+    private Message convertObjectToByteArray(WorkerHeartBeatMessage response) throws JsonProcessingException {
         ObjectMapper jsonMapper = new ObjectMapper();
         String responseObject = jsonMapper.writeValueAsString(response);
         byte[] body = responseObject.getBytes();
