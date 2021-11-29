@@ -205,7 +205,6 @@ public class Properties {
     public static final Integer maxLightJobExecutorContainersAllowed;
     public static final Integer maxHeavyJobExecutorContainersAllowed;
 
-    public static boolean rabbitMqEnabled ;
     public static String rabbitMQHost;
     public static Integer rabbitMQPort;
     public static String rabbitMQUsername;
@@ -356,7 +355,6 @@ public class Properties {
         maxLightJobExecutorContainersAllowed = getIntProperty("env.max.light.jobExecutor.containers.allowed");
         maxHeavyJobExecutorContainersAllowed = getIntProperty("env.max.heavy.jobExecutor.containers.allowed");
 
-        rabbitMqEnabled = getBooleanProperty("env.rabbitmq.enabled");
         rabbitMQHost = getStringProperty("env.rabbitmq.host");
         rabbitMQPort = getIntProperty("env.rabbitmq.port");
         rabbitMQUsername = getStringProperty("env.rabbitmq.username");
@@ -534,7 +532,4 @@ public class Properties {
         return isRancher;
     }
 
-    public static boolean getRabbitMqEnabled() {
-        return rabbitMqEnabled;
-    }
 }
