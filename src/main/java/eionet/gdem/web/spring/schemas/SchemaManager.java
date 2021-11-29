@@ -480,10 +480,6 @@ public class SchemaManager {
                 String maxExecTime = (String) schemaHash.get("max_execution_time");
                 schema.setMaxExecutionTime(maxExecTime!=null ? Long.parseLong(maxExecTime) : Properties.maxSchemaExecutionTime);
 
-                if(schemaHash.get("max_execution_time")!=null) {
-                    schema.setMaxExecutionTime(Long.parseLong((String) schemaHash.get("max_execution_time")));
-                }
-
                 // get uploaded schema information
                 HashMap uplSchemaMap = uplSchemaDao.getUplSchemaByFkSchemaId(schemaDbId);
 

@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.schemas;
 
+import eionet.gdem.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -38,6 +39,10 @@ public class SchemaFormValidator implements Validator {
         if (maxExecutionTime!=null && maxExecutionTime == 0) {
             errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.zero.maxExecutionTime");
         }
+
+         if (maxExecutionTime!=null && maxExecutionTime > Properties.maxSchemaExecutionTimeLimit) {
+            errors.rejectValue("maxExecutionTime", "label.uplSchema.validation.limit.maxExecutionTime");
+        }
     }
 
     public void validateDelete(Object o, Errors errors) {
@@ -48,5 +53,4 @@ public class SchemaFormValidator implements Validator {
             errors.rejectValue("schemaId", "label.uplSchema.error.emptyid");
         }
     }
-
 }
