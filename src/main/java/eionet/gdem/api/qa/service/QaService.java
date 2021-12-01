@@ -44,4 +44,6 @@ public interface QaService {
     Integer getJobExternalStatus(String jobId) throws XMLConvException;
 
     LinkedHashMap<String, Object> checkIfZipFileExistsOrIsEmpty(String[] fileUrls, String jobId, LinkedHashMap<String, Object> jsonResults) throws XMLConvException;
+
+    LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results) throws XMLConvException;
 }

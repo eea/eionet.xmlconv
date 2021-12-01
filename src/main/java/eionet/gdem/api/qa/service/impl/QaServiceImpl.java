@@ -341,6 +341,24 @@ public class QaServiceImpl implements QaService {
         return jsonResults;
     }
 
+    @Override
+    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results) throws XMLConvException{
+        String htmlFileContent = (String) results.get(Constants.RESULT_VALUE_PRM);
+        String feedbackStatus = (String) results.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
+        if(feedbackStatus.equals(Constants.XQ_FEEDBACKSTATUS_UNKNOWN) && htmlFileContent.length() == 0){
+            LOGGER.info("Html file for job id " + jobId + " is not ready");
+            jsonResults.put("feedbackContent", "");
+            LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
+            executionStatusView.put("statusId", String.valueOf(Constants.JOB_NOT_READY));
+            executionStatusView.put("statusName","Not Ready");
+            jsonResults.put("executionStatus",executionStatusView);
+        }
+        else{
+            jsonResults.put("feedbackContent", htmlFileContent);
+        }
+        return jsonResults;
+    }
+
     public JobRequestHandlerService getJobRequestHandlerService() {
         return jobRequestHandlerService;
     }

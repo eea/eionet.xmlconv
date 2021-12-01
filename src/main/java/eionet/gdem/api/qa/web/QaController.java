@@ -204,13 +204,15 @@ public class QaController {
 
         LOGGER.info("For job id " + jobId + " statusId=" + (String) results.get(Constants.RESULT_CODE_PRM) + " and feedbackStatus=" + results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
 
+        //if result file is zip
         if(results.get("REMOTE_FILES")!=null){
             String[] fileUrls = (String[]) results.get("REMOTE_FILES");
             if(fileUrls[0]!=null) {
                 jsonResults = qaService.checkIfZipFileExistsOrIsEmpty(fileUrls, jobId, jsonResults);
             }
         }else{
-            jsonResults.put("feedbackContent", results.get(Constants.RESULT_VALUE_PRM));
+            //result file is html
+            jsonResults = qaService.checkIfHtmlResultIsEmpty(jobId, jsonResults, results);
         }
         return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.OK);
     }
