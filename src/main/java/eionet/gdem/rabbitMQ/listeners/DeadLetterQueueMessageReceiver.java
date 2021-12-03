@@ -71,8 +71,8 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 }
                 LOGGER.info("Job Message didn't contain ErrorStatus, therefore, " + script.getJobId() + " was detected as heavy");
                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-                //mark job as heavy and set column HEAVY_RETRIES_ON_FAILURE before sending to heavy queue
-                jobEntry.setIntSchedulingStatus(internalStatus).setHeavy(true).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure()!=null ? jobEntry.getHeavyRetriesOnFailure()+1 : 1).setJobExecutorName(null);
+                //mark job as heavy and set column HEAVY_RETRIES_ON_FAILURE and n_status=processing (in case job has been wrongfully marked as fatal_error) before sending to heavy queue
+                jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setHeavy(true).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure()!=null ? jobEntry.getHeavyRetriesOnFailure()+1 : 1).setJobExecutorName(null);
                 JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), jobEntry.getnStatus(), new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
                 jobHistoryEntry.setIntSchedulingStatus(jobEntry.getIntSchedulingStatus().getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setJobType(jobEntry.getJobType())
                         .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());
