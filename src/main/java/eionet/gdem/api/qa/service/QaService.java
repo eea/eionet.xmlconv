@@ -6,6 +6,7 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.QueryService;
 import org.w3c.dom.Document;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -46,4 +47,6 @@ public interface QaService {
     LinkedHashMap<String, Object> checkIfZipFileExistsOrIsEmpty(String[] fileUrls, String jobId, LinkedHashMap<String, Object> jsonResults) throws XMLConvException;
 
     LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results) throws XMLConvException;
+
+    LinkedHashMap<String, String> handleOnDemandJobsResults(Vector results) throws UnsupportedEncodingException;
 }

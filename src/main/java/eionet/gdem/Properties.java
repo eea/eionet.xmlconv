@@ -224,6 +224,9 @@ public class Properties {
 
     public static Long maxHeavyRetries;
 
+    public static Long timeoutToWaitForEmptyFileForOnDemandJobs;
+    public static Long maxMsToWaitForEmptyFileForOnDemandJobs;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -367,6 +370,9 @@ public class Properties {
         JOB_EXECUTOR_GRAYLOG = getStringProperty("env.jobExecutor.graylog");
 
         maxHeavyRetries = getLongProperty("env.max.heavy.retries");
+
+        timeoutToWaitForEmptyFileForOnDemandJobs = getLongProperty("env.onDemand.waitForEmptyFile.timeout.ms");
+        maxMsToWaitForEmptyFileForOnDemandJobs = getLongProperty("env.onDemand.waitForEmptyFile.max.ms");
     }
 
     /**

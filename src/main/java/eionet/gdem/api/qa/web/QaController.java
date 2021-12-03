@@ -132,6 +132,7 @@ public class QaController {
         }
 
         Vector results = qaService.runQaScript(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(),false);
+
         LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
         jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
         jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));

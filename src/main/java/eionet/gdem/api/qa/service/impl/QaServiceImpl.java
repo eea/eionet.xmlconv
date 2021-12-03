@@ -32,6 +32,7 @@ import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -342,7 +343,7 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results) throws XMLConvException{
+    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results){
         String htmlFileContent = (String) results.get(Constants.RESULT_VALUE_PRM);
         String feedbackStatus = (String) results.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
         if(feedbackStatus.equals(Constants.XQ_FEEDBACKSTATUS_UNKNOWN) && htmlFileContent.length() == 0){
@@ -357,6 +358,41 @@ public class QaServiceImpl implements QaService {
             jsonResults.put("feedbackContent", htmlFileContent);
         }
         return jsonResults;
+    }
+
+    @Override
+    public LinkedHashMap<String, String> handleOnDemandJobsResults(Vector results) throws UnsupportedEncodingException {
+        LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
+        String feedbackContent = ConvertByteArrayToString((byte[]) results.get(1));
+        Long maxMs = Properties.maxMsToWaitForEmptyFileForOnDemandJobs;
+        Long timeoutInMs = Properties.timeoutToWaitForEmptyFileForOnDemandJobs;
+        Integer retries = (int) (maxMs / timeoutInMs);
+        retries = (retries <= 0) ? 1 : retries;
+        for (int i=0; i<retries; i++){
+            if(feedbackContent.isEmpty()){
+                try {
+                    Thread.sleep(timeoutInMs);
+                } catch (InterruptedException e) {
+                    //
+                }
+            }
+            else{
+                //feedback file is not empty
+                jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
+                jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
+                jsonResults.put("feedbackContentType", results.get(0).toString());
+                jsonResults.put("feedbackContent", feedbackContent);
+                break;
+            }
+        }
+        if(feedbackContent.isEmpty()){
+            //mark as fatal error
+        }
+        return jsonResults;
+    }
+
+    public String ConvertByteArrayToString(byte[] bytes) throws UnsupportedEncodingException {
+        return new String(bytes, "UTF-8");
     }
 
     public JobRequestHandlerService getJobRequestHandlerService() {
