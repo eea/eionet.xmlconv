@@ -37,8 +37,6 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobOnDemandHandlerServiceImpl.class);
 
-    private static final String ON_DEMAND_TYPE = "ON DEMAND";
-
     @Autowired
     public JobOnDemandHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService,
                                          @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageLightSender,
@@ -61,7 +59,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             boolean isHeavy = false;
             if (query != null && query.getMarkedHeavy()) isHeavy = true;
             jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus)
-                    .setRetryCounter(0).setJobType(ON_DEMAND_TYPE);
+                    .setRetryCounter(0).setJobType(Constants.ON_DEMAND_TYPE);
             if (isHeavy) jobEntry.setHeavy(true);
             jobEntry = jobService.save(jobEntry);
             LOGGER.info("Job with id " + jobEntry.getId() + " has been inserted in table T_XQJOBS");
@@ -69,6 +67,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             script.setJobId(jobEntry.getId().toString());
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
+            workerJobRabbitMQRequestMessage.setJobType(Constants.ON_DEMAND_TYPE);
 
             if (isHeavy) {
                 jobMessageHeavySender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
@@ -90,7 +89,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
     void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus, boolean isHeavy) {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
         jobHistoryEntry.setIntSchedulingStatus(internalStatus);
-        jobHistoryEntry.setJobType(ON_DEMAND_TYPE);
+        jobHistoryEntry.setJobType(Constants.ON_DEMAND_TYPE);
         if (isHeavy) jobHistoryEntry.setHeavy(true);
         jobHistoryService.save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");

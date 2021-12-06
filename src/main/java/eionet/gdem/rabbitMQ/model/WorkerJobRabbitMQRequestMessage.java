@@ -10,6 +10,7 @@ public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
     private Integer errorStatus;
     private Integer jobExecutorStatus;
     private String heartBeatQueue;
+    private String jobType;
 
     public WorkerJobRabbitMQRequestMessage(){
     }
@@ -65,5 +66,13 @@ public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
 
     public void setHeartBeatQueue(String heartBeatQueue) {
         this.heartBeatQueue = heartBeatQueue;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
     }
 }

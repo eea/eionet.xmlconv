@@ -25,7 +25,10 @@ public class LightJobRabbitMessageSenderImpl implements RabbitMQMessageSender<Wo
         if (workerJobRequest.getJobExecutionRetries() == null) {
             workerJobRequest.setJobExecutionRetries(0);
         }
-        rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, workerJobRequest);
+        rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, workerJobRequest, message -> {
+            message.getMessageProperties().setPriority(workerJobRequest.getJobType()!=null ? 5 : 0);
+            return message;
+        });
         LOGGER.info("Job with id " + workerJobRequest.getScript().getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_QUEUE);
     }
 }

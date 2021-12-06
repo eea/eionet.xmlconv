@@ -28,6 +28,7 @@ public class SpringRabbitMqConfig {
         return QueueBuilder.durable(Properties.WORKERS_JOBS_QUEUE)
                 .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
                 .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
+                .withArgument("x-max-priority", 5)
                 .build();
     }
 
@@ -37,6 +38,7 @@ public class SpringRabbitMqConfig {
         return QueueBuilder.durable(Properties.HEAVY_WORKERS_JOBS_QUEUE)
                 .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
                 .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
+                .withArgument("x-max-priority", 5)
                 .build();
     }
 
