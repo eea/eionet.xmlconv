@@ -51,7 +51,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     @Transactional
     @Override
-    public JobEntry createJobAndSendToRabbitMQ(XQScript script, Integer scriptId) throws XMLConvException {
+    public JobEntry createJobAndSendToRabbitMQ(XQScript script, Integer scriptId, boolean isApi) throws XMLConvException {
         JobEntry jobEntry = new JobEntry();
         try {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
@@ -68,6 +68,8 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
             workerJobRabbitMQRequestMessage.setJobType(Constants.ON_DEMAND_TYPE);
+
+            if (isApi) workerJobRabbitMQRequestMessage.setApi(true);
 
             if (isHeavy) {
                 jobMessageHeavySender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);

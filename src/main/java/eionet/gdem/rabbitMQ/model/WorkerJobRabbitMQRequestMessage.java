@@ -11,6 +11,7 @@ public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
     private Integer jobExecutorStatus;
     private String heartBeatQueue;
     private String jobType;
+    private boolean isApi;
 
     public WorkerJobRabbitMQRequestMessage(){
     }
@@ -74,5 +75,13 @@ public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
 
     public void setJobType(String jobType) {
         this.jobType = jobType;
+    }
+
+    public boolean isApi() {
+        return isApi;
+    }
+
+    public void setApi(boolean api) {
+        isApi = api;
     }
 }

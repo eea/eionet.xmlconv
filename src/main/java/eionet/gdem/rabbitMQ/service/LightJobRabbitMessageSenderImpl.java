@@ -26,7 +26,12 @@ public class LightJobRabbitMessageSenderImpl implements RabbitMQMessageSender<Wo
             workerJobRequest.setJobExecutionRetries(0);
         }
         rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, workerJobRequest, message -> {
-            message.getMessageProperties().setPriority(workerJobRequest.getJobType()!=null ? 5 : 0);
+            Integer priority=0;
+            if (workerJobRequest.getJobType()!=null) {
+                if (workerJobRequest.isApi()) priority = 3;
+                else priority = 2;
+            }
+            message.getMessageProperties().setPriority(priority);
             return message;
         });
         LOGGER.info("Job with id " + workerJobRequest.getScript().getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_QUEUE);

@@ -26,7 +26,12 @@ public class HeavyJobRabbitMessageSenderImpl implements RabbitMQMessageSender<Wo
             workerJobRabbitMQRequestMessage.setJobExecutionRetries(0);
         }
         rabbitTemplate.convertAndSend(Properties.HEAVY_WORKERS_JOBS_QUEUE, workerJobRabbitMQRequestMessage, message -> {
-            message.getMessageProperties().setPriority(workerJobRabbitMQRequestMessage.getJobType()!=null ? 5 : 0);
+            Integer priority=0;
+            if (workerJobRabbitMQRequestMessage.getJobType()!=null) {
+                if (workerJobRabbitMQRequestMessage.isApi()) priority = 3;
+                else priority = 2;
+            }
+            message.getMessageProperties().setPriority(priority);
             return message;
         });
         LOGGER.info("Heavy job with id " + workerJobRabbitMQRequestMessage.getScript().getJobId() + " added in heavy rabbitmq queue " + Properties.HEAVY_WORKERS_JOBS_QUEUE);
