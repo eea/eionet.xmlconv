@@ -10,4 +10,6 @@ public interface WorkerHeartBeatMsgService {
     WorkerHeartBeatMsgEntry save(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry);
 
     List<WorkerHeartBeatMsgEntry> findUnAnsweredHeartBeatMessages(Integer jobId) throws DatabaseException;
+
+    void delete(Integer id);
 }

@@ -65,7 +65,7 @@ public class GenericFixedTimeScheduledTasks {
      */
     private WorkqueueManager jobsManager = new WorkqueueManager();
 
-    private static final Integer MIN_UNANSWERED_REQUESTS = 5;
+    private static final Integer MIN_UNANSWERED_REQUESTS = 10;
 
     @Autowired
     public GenericFixedTimeScheduledTasks() {

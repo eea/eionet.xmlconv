@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,5 +37,11 @@ public class WorkerHeartBeatMsgServiceImpl implements WorkerHeartBeatMsgService 
             LOGGER.error("Database error while searching for heart beat messages of job with id " +jobId);
             throw new DatabaseException(e.getMessage());
         }
+    }
+
+    @Transactional
+    @Override
+    public void delete(Integer id) {
+        workerHeartBeatMsgRepository.delete(id);
     }
 }

@@ -2,8 +2,10 @@ package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import org.slf4j.Logger;
@@ -15,23 +17,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
 
     private JobService jobService;
     private JobHistoryService jobHistoryService;
-    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
+    private WorkerHeartBeatMsgService workerHeartBeatMsgService;
     private RabbitMQMessageSender rabbitMQMessageSender;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HandleHeavyJobsServiceImpl.class);
 
     @Autowired
-    public HandleHeavyJobsServiceImpl(JobService jobService, JobHistoryService jobHistoryService, WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService,
+    public HandleHeavyJobsServiceImpl(JobService jobService, JobHistoryService jobHistoryService, WorkerHeartBeatMsgService workerHeartBeatMsgService,
                                       @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
-        this.workerAndJobStatusHandlerService = workerAndJobStatusHandlerService;
+        this.workerHeartBeatMsgService = workerHeartBeatMsgService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
     }
 
@@ -43,5 +46,15 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
         jobService.updateHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure(), new Timestamp(new Date().getTime()), jobEntry.getId());
         jobHistoryService.save(jobHistoryEntry);
         rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        if (jobEntry.getHeavyRetriesOnFailure()==1) {
+            clearUnansweredLightWorkerHeartBeatMessages(jobEntry.getId());
+        }
+    }
+    
+    void clearUnansweredLightWorkerHeartBeatMessages(Integer jobId) throws DatabaseException {
+        List<WorkerHeartBeatMsgEntry> messages = workerHeartBeatMsgService.findUnAnsweredHeartBeatMessages(jobId);
+        if (messages.size()>0) {
+            messages.stream().forEach(workerHeartBeatMsgEntry -> workerHeartBeatMsgService.delete(workerHeartBeatMsgEntry.getId()));
+        }
     }
 }
