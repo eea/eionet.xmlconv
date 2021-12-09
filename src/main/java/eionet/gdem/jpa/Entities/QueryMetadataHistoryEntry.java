@@ -38,6 +38,9 @@ public class QueryMetadataHistoryEntry implements Serializable {
     @Column(name = "TIMESTAMP")
     private Timestamp timestamp;
 
+    @Column(name = "JOB_ID")
+    private Integer jobId;
+
     @Transient
     private String shortFileName;
 
@@ -50,7 +53,7 @@ public class QueryMetadataHistoryEntry implements Serializable {
     public QueryMetadataHistoryEntry() {
     }
 
-    public QueryMetadataHistoryEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version, Timestamp timestamp) {
+    public QueryMetadataHistoryEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version, Timestamp timestamp, Integer jobId) {
         this.id = id;
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
@@ -60,9 +63,10 @@ public class QueryMetadataHistoryEntry implements Serializable {
         this.jobStatus = jobStatus;
         this.version = version;
         this.timestamp = timestamp;
+        this.jobId = jobId;
     }
 
-    public QueryMetadataHistoryEntry(String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version, Timestamp timestamp) {
+    public QueryMetadataHistoryEntry(String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version, Timestamp timestamp, Integer jobId) {
         this.scriptFilename = scriptFilename;
         this.queryId = queryId;
         this.scriptType = scriptType;
@@ -71,6 +75,7 @@ public class QueryMetadataHistoryEntry implements Serializable {
         this.jobStatus = jobStatus;
         this.version = version;
         this.timestamp = timestamp;
+        this.jobId = jobId;
     }
 
     public Integer getId() {
@@ -168,4 +173,13 @@ public class QueryMetadataHistoryEntry implements Serializable {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
+
+    public Integer getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Integer jobId) {
+        this.jobId = jobId;
+    }
 }
+

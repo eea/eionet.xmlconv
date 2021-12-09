@@ -870,4 +870,12 @@
             <column name="HEAVY_RETRIES_ON_FAILURE" type="INT"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-78">
+        <comment>
+            Added column JOB_ID to QUERY_METADATA_HISTORY table
+        </comment>
+        <addColumn tableName="QUERY_METADATA_HISTORY">
+            <column name="JOB_ID" type="INT"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

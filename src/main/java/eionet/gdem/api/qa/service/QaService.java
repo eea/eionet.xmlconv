@@ -48,5 +48,5 @@ public interface QaService {
 
     LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results) throws XMLConvException;
 
-    LinkedHashMap<String, String> handleOnDemandJobsResults(Vector results) throws UnsupportedEncodingException;
+    LinkedHashMap<String, String> handleOnDemandJobsResults(Vector results, String sourceXml, String scriptId) throws XMLConvException;
 }

@@ -122,7 +122,7 @@ public class QaController {
      *
      */
     @RequestMapping(value = "/qajobs", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<HashMap<String, String>> performInstantQARequestOnFile(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException, UnsupportedEncodingException {
+    public ResponseEntity<HashMap<String, String>> performInstantQARequestOnFile(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException {
 
         if (envelopeWrapper.getSourceUrl() == null) {
             throw new EmptyParameterException("sourceUrl");
@@ -132,12 +132,9 @@ public class QaController {
         }
 
         Vector results = qaService.runQaScript(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(),false);
+        //Vector results contains feedbackContentType, feedbackContent, feedbackStatus, feedbackMessage, jobId
+        LinkedHashMap<String, String> jsonResults = qaService.handleOnDemandJobsResults(results, envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId());
 
-        LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
-        jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
-        jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
-        jsonResults.put("feedbackContentType", results.get(0).toString());
-        jsonResults.put("feedbackContent", ConvertByteArrayToString((byte[]) results.get(1)));
         return new ResponseEntity<HashMap<String, String>>(jsonResults, HttpStatus.OK);
     }
 

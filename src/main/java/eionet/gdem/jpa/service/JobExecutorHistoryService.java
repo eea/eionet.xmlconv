@@ -10,4 +10,5 @@ public interface JobExecutorHistoryService {
 
     void saveJobExecutorHistoryEntry(JobExecutorHistory entry) throws DatabaseException;
     List<JobExecutorHistory> getJobExecutorHistoryEntriesById(String containerId) throws DatabaseException;
+    List<JobExecutorHistory> getJobExecutorHistoryEntriesByJobId(String jobId) throws DatabaseException;
 }

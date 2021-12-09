@@ -91,7 +91,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             if (response.isErrorExists()) {
                 LOGGER.info("Job with id " + script.getJobId() + " failed with error: " + response.getErrorMessage());
                 workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_FATAL_ERR, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
-                queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR);
+                queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId());
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getJobExecutorName());
                 findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
@@ -99,7 +99,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_READY) {
                 LOGGER.info("### Job with id=" + script.getJobId() + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
                 workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_READY, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
-                queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_READY);
+                queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_READY, jobEntry.getId());
             }
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing: ", e);

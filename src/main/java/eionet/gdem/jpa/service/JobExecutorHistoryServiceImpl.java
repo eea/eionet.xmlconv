@@ -41,4 +41,14 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
             throw new DatabaseException(e.getMessage());
         }
     }
+
+    @Override
+    public List<JobExecutorHistory> getJobExecutorHistoryEntriesByJobId(String jobId) throws DatabaseException {
+        try {
+            return repository.findByJobId(Integer.valueOf(jobId));
+        } catch (Exception e) {
+            LOGGER.error("Database exception when retrieving history for job with id " + jobId);
+            throw new DatabaseException(e.getMessage());
+        }
+    }
 }
