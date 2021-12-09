@@ -11,6 +11,9 @@ public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
     private Integer jobExecutorStatus;
     private String heartBeatQueue;
     private String jobType;
+    /**
+     * true if job is created through api, false if it's created through UI
+     */
     private boolean isApi;
 
     public WorkerJobRabbitMQRequestMessage(){

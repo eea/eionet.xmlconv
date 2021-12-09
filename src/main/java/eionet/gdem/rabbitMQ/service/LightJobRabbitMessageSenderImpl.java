@@ -14,10 +14,12 @@ public class LightJobRabbitMessageSenderImpl implements RabbitMQMessageSender<Wo
     private static final Logger LOGGER = LoggerFactory.getLogger(LightJobRabbitMessageSenderImpl.class);
 
     private RabbitTemplate rabbitTemplate;
+    private RabbitmqMsgPriorityService rabbitmqMsgPriorityService;
 
     @Autowired
-    public LightJobRabbitMessageSenderImpl(RabbitTemplate rabbitTemplate) {
+    public LightJobRabbitMessageSenderImpl(RabbitTemplate rabbitTemplate, RabbitmqMsgPriorityService rabbitmqMsgPriorityService) {
         this.rabbitTemplate = rabbitTemplate;
+        this.rabbitmqMsgPriorityService = rabbitmqMsgPriorityService;
     }
 
     @Override
@@ -26,12 +28,7 @@ public class LightJobRabbitMessageSenderImpl implements RabbitMQMessageSender<Wo
             workerJobRequest.setJobExecutionRetries(0);
         }
         rabbitTemplate.convertAndSend(Properties.WORKERS_JOBS_QUEUE, workerJobRequest, message -> {
-            Integer priority=0;
-            if (workerJobRequest.getJobType()!=null) {
-                if (workerJobRequest.isApi()) priority = 3;
-                else priority = 2;
-            }
-            message.getMessageProperties().setPriority(priority);
+            message.getMessageProperties().setPriority(rabbitmqMsgPriorityService.getMsgPriorityBasedOnJobType(workerJobRequest));
             return message;
         });
         LOGGER.info("Job with id " + workerJobRequest.getScript().getJobId() + " added in rabbitmq queue " + Properties.WORKERS_JOBS_QUEUE);
