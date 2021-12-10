@@ -64,4 +64,10 @@ public interface WorkersOrchestrationSharedService {
      * @param instances
      */
     void synchronizeRancherContainersWithDbEntries(List<JobExecutor> jobExecutors, List<String> instances);
+
+    /**
+     * deletes worker's heart beat queue from rabbitmq
+     * @param queueName
+     */
+    void deleteWorkerHeartBeatQueue(String queueName);
 }

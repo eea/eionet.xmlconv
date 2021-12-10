@@ -11,6 +11,7 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
+import eionet.gdem.rancher.model.ContainerApiResponse;
 import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
@@ -64,11 +65,29 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     }
 
     @Override
-    public void deleteFailedWorkers(String serviceId, JobExecutorType jobExecutorType) throws RancherApiException, DatabaseException {
-        List<JobExecutor> failedWorkers = jobExecutorService.findByStatusAndJobExecutorType(SchedulingConstants.WORKER_FAILED, jobExecutorType);
-        failedWorkers = failedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(jobExecutorType)).collect(Collectors.toList());
-        for (JobExecutor worker : failedWorkers) {
-            deleteFromRancherAndDatabase(worker);
+    public void deleteFailedWorkers(String serviceId, JobExecutorType jobExecutorType) throws RancherApiException {
+        List<JobExecutor> totalFailedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
+        //find failed workers by jobExecutorType
+        List<JobExecutor> failedWorkersToBeDeleted = totalFailedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(jobExecutorType)).collect(Collectors.toList());
+
+        //find jobExecutorType for workers with unknown jobExecutorType and add them in failedWorkersToBeDeleted list if they belong to rancher service with specific serviceId
+        List<JobExecutor> jobExecutorsWithUnknownType = totalFailedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Uknown)).collect(Collectors.toList());
+        for (JobExecutor jobExec : jobExecutorsWithUnknownType) {
+            ContainerApiResponse containerInfo = containersRancherApiOrchestrator.getContainerInfo(jobExec.getName());
+            if (containerInfo.getData().size()>0) {
+                String jobExecServiceId = containerInfo.getData().get(0).getServiceIds().get(0);
+                if (jobExecServiceId.equals(serviceId)) {
+                    failedWorkersToBeDeleted.add(jobExec);
+                }
+            }
+        }
+
+        for (JobExecutor worker : failedWorkersToBeDeleted) {
+            try {
+                deleteFromRancherAndDatabase(worker);
+            } catch (DatabaseException | RancherApiException e) {
+                LOGGER.error("Error during deletion of failed worker " + worker.getName());
+            }
         }
         List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
         if (instances.size()==0) {
@@ -81,17 +100,14 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     public void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException, DatabaseException {
         containersRancherApiOrchestrator.deleteContainer(worker.getName());
         jobExecutorService.deleteByName(worker.getName());
-        boolean queueDeleted = rabbitAdmin.deleteQueue(worker.getHeartBeatQueue());
-        if (!queueDeleted) {
-            LOGGER.error("Worker Heartbeat queue  could not be deleted:" + worker.getHeartBeatQueue());
-        }
+        deleteWorkerHeartBeatQueue(worker.getHeartBeatQueue());
     }
 
     @Override
     public void scheduleWorkersOrchestration(String serviceId, boolean isHeavy, JobExecutorType jobExecutorType, Integer maxJobExecutorsAllowed) {
         try {
             this.deleteFailedWorkers(serviceId, jobExecutorType);
-        } catch (RancherApiException | DatabaseException e) {
+        } catch (RancherApiException e) {
             LOGGER.error("Error during deletion of failed workers");
             return;
         }
@@ -178,14 +194,19 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                         " doesn't exist on rancher.Proceeding with deletion from Database");
                 try {
                     jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
-                    boolean queueDeleted = rabbitAdmin.deleteQueue(jobExecutor.getHeartBeatQueue());
-                    if (!queueDeleted) {
-                        LOGGER.error("Worker Heartbeat queue  could not be deleted:" + jobExecutor.getHeartBeatQueue());
-                    }
+                    deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
                 } catch (DatabaseException e) {
                     LOGGER.error("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus failed for jobExecutor with name " + jobExecutor.getName());
                 }
             }
+        }
+    }
+
+    @Override
+    public void deleteWorkerHeartBeatQueue(String queueName) {
+        boolean queueDeleted = rabbitAdmin.deleteQueue(queueName);
+        if (!queueDeleted) {
+            LOGGER.error("Worker Heartbeat queue  could not be deleted:" + queueName);
         }
     }
 }

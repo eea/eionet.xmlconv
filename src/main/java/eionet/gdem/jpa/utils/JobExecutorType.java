@@ -4,7 +4,7 @@ public enum JobExecutorType {
 
     Light(0),
     Heavy(1),
-    Uknown(3);
+    Uknown(2);
 
     private Integer id;
 
