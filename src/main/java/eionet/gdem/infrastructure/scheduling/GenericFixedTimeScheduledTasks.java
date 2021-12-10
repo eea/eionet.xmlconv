@@ -293,7 +293,7 @@ public class GenericFixedTimeScheduledTasks {
             for (JobExecutor jobExecutor : jobExecutorsWithUnknownStatus) {
                 if (!lightInstances.contains(jobExecutor.getContainerId()) && !heavyInstances.contains(jobExecutor.getContainerId())) {
                     LOGGER.info("Container retrieved form Database  with ID:" + jobExecutor.getContainerId() + " and name:" + jobExecutor.getName() +
-                            " doesn't exist on light rancher.Proceeding with deletion from Database");
+                            " doesn't exist on rancher.Proceeding with deletion from Database");
                     try {
                         jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
                         workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
