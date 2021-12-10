@@ -74,7 +74,7 @@ public class JobOnDemandHandlerServiceTest {
         when(queryJpaService.findByQueryId(0)).thenReturn(null);
         doNothing().when(jobMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
         when(jobService.getRetryCounter(anyInt())).thenReturn(0);
-        JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0);
+        JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0, false);
         Assert.assertEquals(jobEntry.getId(), jobEntryResult.getId());
     }
 

@@ -14,10 +14,12 @@ public class HeavyJobRabbitMessageSenderImpl implements RabbitMQMessageSender<Wo
     private static final Logger LOGGER = LoggerFactory.getLogger(HeavyJobRabbitMessageSenderImpl.class);
 
     private RabbitTemplate rabbitTemplate;
+    private RabbitmqMsgPriorityService rabbitmqMsgPriorityService;
 
     @Autowired
-    public HeavyJobRabbitMessageSenderImpl(RabbitTemplate rabbitTemplate) {
+    public HeavyJobRabbitMessageSenderImpl(RabbitTemplate rabbitTemplate, RabbitmqMsgPriorityService rabbitmqMsgPriorityService) {
         this.rabbitTemplate = rabbitTemplate;
+        this.rabbitmqMsgPriorityService = rabbitmqMsgPriorityService;
     }
 
     @Override
@@ -25,7 +27,10 @@ public class HeavyJobRabbitMessageSenderImpl implements RabbitMQMessageSender<Wo
         if (workerJobRabbitMQRequestMessage.getJobExecutionRetries() == null) {
             workerJobRabbitMQRequestMessage.setJobExecutionRetries(0);
         }
-        rabbitTemplate.convertAndSend(Properties.HEAVY_WORKERS_JOBS_QUEUE, workerJobRabbitMQRequestMessage);
+        rabbitTemplate.convertAndSend(Properties.HEAVY_WORKERS_JOBS_QUEUE, workerJobRabbitMQRequestMessage, message -> {
+            message.getMessageProperties().setPriority(rabbitmqMsgPriorityService.getMsgPriorityBasedOnJobType(workerJobRabbitMQRequestMessage));
+            return message;
+        });
         LOGGER.info("Heavy job with id " + workerJobRabbitMQRequestMessage.getScript().getJobId() + " added in heavy rabbitmq queue " + Properties.HEAVY_WORKERS_JOBS_QUEUE);
     }
 }

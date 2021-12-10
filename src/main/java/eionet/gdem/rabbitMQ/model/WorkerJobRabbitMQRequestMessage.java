@@ -10,6 +10,11 @@ public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
     private Integer errorStatus;
     private Integer jobExecutorStatus;
     private String heartBeatQueue;
+    private String jobType;
+    /**
+     * true if job is created through api, false if it's created through UI
+     */
+    private boolean isApi;
 
     public WorkerJobRabbitMQRequestMessage(){
     }
@@ -65,5 +70,21 @@ public class WorkerJobRabbitMQRequestMessage extends WorkerMessage {
 
     public void setHeartBeatQueue(String heartBeatQueue) {
         this.heartBeatQueue = heartBeatQueue;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
+    }
+
+    public boolean isApi() {
+        return isApi;
+    }
+
+    public void setApi(boolean api) {
+        isApi = api;
     }
 }

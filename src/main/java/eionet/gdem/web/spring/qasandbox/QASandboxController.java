@@ -534,7 +534,7 @@ public class QASandboxController {
                 xq.setStrResultFile(resultFile);
                 xq.setScriptFileName(scriptFile);
 
-                JobEntry jobEntry = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(xq, scriptId!=null ? Integer.parseInt(scriptId) : Constants.JOB_FROMSTRING);
+                JobEntry jobEntry = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(xq, scriptId!=null ? Integer.parseInt(scriptId) : Constants.JOB_FROMSTRING, false);
                 LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle runScript through GUI.");
                 session.setAttribute("jobId", jobEntry.getId());
 

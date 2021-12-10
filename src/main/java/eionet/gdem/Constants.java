@@ -154,4 +154,6 @@ public interface Constants {
 
     Integer MAX_SCRIPT_EXECUTION_RETRIES = 3;
 
+    String ON_DEMAND_TYPE = "ON DEMAND";
+
 }

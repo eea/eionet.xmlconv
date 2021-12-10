@@ -22,21 +22,27 @@ import org.springframework.context.annotation.Configuration;
 @Conditional(RabbitMqProdEnabledCondition.class)
 public class SpringRabbitMqConfig {
 
-    //Queue where converters sends script messages for workers to retrieve
+    private static final Integer X_MAX_PRIORITY = 5;
+
+    //Queue where converters sends script messages for workers to retrieve. The queue is set as priority queue, so that
+    //onDemand jobs can be marked with higher priority and take precedence over other jobs.
     @Bean
     Queue workersJobsQueue() {
         return QueueBuilder.durable(Properties.WORKERS_JOBS_QUEUE)
                 .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
                 .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
+                .withArgument("x-max-priority", X_MAX_PRIORITY)
                 .build();
     }
 
-    //Queue where converters sends script messages for heavy jobs for heavy workers to retrieve
+    //Queue where converters sends script messages for heavy jobs for heavy workers to retrieve. The queue is set as priority queue, so that
+    //onDemand jobs can be marked with higher priority and take precedence over other jobs.
     @Bean
     Queue heavyWorkersJobsQueue() {
         return QueueBuilder.durable(Properties.HEAVY_WORKERS_JOBS_QUEUE)
                 .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
                 .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
+                .withArgument("x-max-priority", X_MAX_PRIORITY)
                 .build();
     }
 
