@@ -285,6 +285,9 @@ public class GenericFixedTimeScheduledTasks {
      */
     @Scheduled(cron = "0 */2 * * * *")  //every 2 minutes
     public void synchronizeWorkersWithUnknownTypeDbEntriesAndRancher() throws DatabaseException, RancherApiException {
+        if (!Properties.enableJobExecRancherScheduledTask) {
+            return;
+        }
         try {
             List<String> lightInstances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherLightJobExecServiceId);
             List<String> heavyInstances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherHeavyJobExecServiceId);
