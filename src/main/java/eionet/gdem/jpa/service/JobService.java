@@ -33,4 +33,6 @@ public interface JobService {
     Integer getRetryCounter(Integer jobId);
 
     void updateJobInfo(Integer nStatus, String instance, Timestamp timestamp, Integer retryCounter, Integer jobId);
+
+    void changeNStatusAndInternalStatus(Integer jobId, Integer status, Integer internalStatus) throws DatabaseException;
 }

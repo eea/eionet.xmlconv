@@ -248,9 +248,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         try {
             Integer jobId = jobEntry.getId();
             LOGGER.info("Processing job with id " + jobId);
-            changeStatus(Constants.XQ_PROCESSING, jobId.toString());
+            changeJobStatusAndInternalStatus(Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING, jobId.toString());
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
-            jobHistoryEntry.setHeavy(false);
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
@@ -265,7 +265,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             LOGGER.info("Job with id " + jobId + " has finished with status " + status);
             changeStatus(status, jobId.toString());
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), status, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
-            jobHistoryEntry.setHeavy(false);
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
@@ -352,6 +352,16 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
      */
      void changeStatus(int status,String jobId) throws DatabaseException {
          jobService.changeNStatus(Integer.parseInt(jobId), status);
+    }
+
+    /**
+     * Change both job statuses in DB.
+     * @param status Job status to be stored in DB.
+     * @param internalStatus Job status to be stored in DB.
+     * @throws Exception Unable to store data into DB.
+     */
+    void changeJobStatusAndInternalStatus(int status, int internalStatus, String jobId) throws DatabaseException {
+        jobService.changeNStatusAndInternalStatus(Integer.parseInt(jobId), status, internalStatus);
     }
 
 }
