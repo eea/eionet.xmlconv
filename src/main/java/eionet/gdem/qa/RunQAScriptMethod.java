@@ -186,11 +186,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                         LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle xmlrpc/rest call.");
 
                         timer.start();
-                        while (jobEntry.getnStatus() != Constants.XQ_READY) {
-                            if (jobEntry.getnStatus() == Constants.XQ_FATAL_ERR) {
-                                LOGGER.info("Error retrieving job with id " + jobEntry.getId());
-                                throw new XMLConvException("Job with id " + jobEntry.getId() + " failed");
-                            }
+                        while (jobEntry.getnStatus() != Constants.XQ_READY && jobEntry.getnStatus() != Constants.XQ_FATAL_ERR) {
                             if (timer.getTime()>Properties.jobsOnDemandLimitBeforeTimeout) {
                                 throw new XMLConvException("Time exceeded for getting status of job with id " + jobEntry.getId());
                             }

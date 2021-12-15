@@ -539,11 +539,7 @@ public class QASandboxController {
                 session.setAttribute("jobId", jobEntry.getId());
 
                 timer.start();
-                while (jobEntry.getnStatus() != Constants.XQ_READY) {
-                    if (jobEntry.getnStatus() == Constants.XQ_FATAL_ERR) {
-                        LOGGER.info("Error retrieving job with id " + jobEntry.getId());
-                        throw new XMLConvException("Job with id " + jobEntry.getId() + " failed");
-                    }
+                while (jobEntry.getnStatus() != Constants.XQ_READY && jobEntry.getnStatus() != Constants.XQ_FATAL_ERR) {
                     if (timer.getTime()>Properties.jobsOnDemandUITimeout) {
                         throw new XMLConvException("Time exceeded for getting status of job with id " + jobEntry.getId());
                     }
