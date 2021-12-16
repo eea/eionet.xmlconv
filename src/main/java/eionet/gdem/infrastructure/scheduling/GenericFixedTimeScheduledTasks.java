@@ -11,15 +11,21 @@ import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
+import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
+import eionet.gdem.rancher.exception.RancherApiException;
+import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
@@ -38,6 +44,7 @@ import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GenericFixedTimeScheduledTasks {
@@ -59,6 +66,12 @@ public class GenericFixedTimeScheduledTasks {
     private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
     @Autowired
     private QueryMetadataService queryMetadataService;
+    @Autowired
+    private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
+    @Autowired
+    private JobExecutorService jobExecutorService;
+    @Autowired
+    private WorkersOrchestrationSharedService workersOrchestrationSharedService;
 
     /**
      * Dao for getting job data.
@@ -142,7 +155,7 @@ public class GenericFixedTimeScheduledTasks {
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
-                    queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR);
+                    queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId());
                 }
             } catch (Exception e) {
                 LOGGER.error("Error while checking heart beat messages for job with id " + jobEntry.getId());
@@ -264,6 +277,37 @@ public class GenericFixedTimeScheduledTasks {
             LOGGER.info("DD tables cache updated");
         } catch (Exception e) {
             LOGGER.error("Error when updating DD tables cache: ", e);
+        }
+    }
+
+    /**
+     * Runs every 2 minutes and checks if a worker with unknown type exists in light and heavy rancher services and if not, deletes it from database
+     */
+    @Scheduled(cron = "0 */2 * * * *")  //every 2 minutes
+    public void synchronizeWorkersWithUnknownTypeDbEntriesAndRancher() throws DatabaseException, RancherApiException {
+        if (!Properties.enableJobExecRancherScheduledTask) {
+            return;
+        }
+        try {
+            List<String> lightInstances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherLightJobExecServiceId);
+            List<String> heavyInstances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherHeavyJobExecServiceId);
+            List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
+            List<JobExecutor> jobExecutorsWithUnknownStatus = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Uknown)).collect(Collectors.toList());
+            for (JobExecutor jobExecutor : jobExecutorsWithUnknownStatus) {
+                if (!lightInstances.contains(jobExecutor.getContainerId()) && !heavyInstances.contains(jobExecutor.getContainerId())) {
+                    LOGGER.info("Container retrieved form Database  with ID:" + jobExecutor.getContainerId() + " and name:" + jobExecutor.getName() +
+                            " doesn't exist on rancher.Proceeding with deletion from Database");
+                    try {
+                        jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
+                        workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
+                    } catch (DatabaseException e) {
+                        LOGGER.error("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus failed for jobExecutor with name " + jobExecutor.getName());
+                    }
+                }
+            }
+        } catch (RancherApiException e) {
+            LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
+            throw e;
         }
     }
 

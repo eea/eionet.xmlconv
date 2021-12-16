@@ -3,7 +3,11 @@ package eionet.gdem.api.qa.service;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.service.impl.QaServiceImpl;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.jpa.service.JobExecutorHistoryService;
+import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.services.JobResultHandlerService;
 import eionet.gdem.services.RunScriptAutomaticService;
@@ -13,6 +17,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Vector;
 import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,6 +34,7 @@ import org.mockito.Mock;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,6 +56,9 @@ public class QaServiceTest {
     private QaServiceImpl qaService;
 
     @Mock
+    private QaServiceImpl qaServiceMocked;
+
+    @Mock
     private JobRequestHandlerService jobRequestHandlerService;
 
     @Mock
@@ -60,6 +70,18 @@ public class QaServiceTest {
     @Mock
     private QueryService queryServiceMock;
 
+    @Mock
+    private JobService jobService;
+
+    @Mock
+    private JobHistoryService jobHistoryService;
+
+    @Mock
+    private JobExecutorHistoryService jobExecutorHistoryService;
+
+    @Mock
+    private QueryMetadataService queryMetadataService;
+
     DocumentBuilder documentBuilder;
 
     @Autowired
@@ -68,7 +90,7 @@ public class QaServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        this.qaService = new QaServiceImpl(queryServiceMock, jobRequestHandlerService, jobResultHandlerService, runScriptAutomaticService);
+        this.qaService = new QaServiceImpl(queryServiceMock, jobRequestHandlerService, jobResultHandlerService, runScriptAutomaticService, jobService, jobHistoryService, jobExecutorHistoryService, queryMetadataService);
         DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 
@@ -101,6 +123,56 @@ public class QaServiceTest {
         Assert.assertThat(result.getSchemaLang(), is("XSD"));
         Assert.assertThat(result.isBlocker(), is(false));
         Assert.assertThat(result.getMaxExecutionTime(), is(nullValue()));
+    }
+
+    /* Test case: content is not empty */
+    @Test
+    public void testHandleOnDemandJobsResultsNotEmptyContent() throws Exception {
+        Vector results = new Vector();
+        results.add(("testContentType"));
+        results.add(("testContent").getBytes());
+        results.add(("testFeedbackStatus").getBytes());
+        results.add(("testMessage").getBytes());
+        String sourceUrl = "testXml";
+        String scriptId = "1";
+        Long maxMs = 5L;
+        Long timeoutMs = 1L;
+
+        when(qaServiceMocked.getMaxMsToWaitForEmptyFileForOnDemandJobs()).thenReturn(maxMs);
+        when(qaServiceMocked.getTimeoutToWaitForEmptyFileForOnDemandJobs()).thenReturn(timeoutMs);
+        when(qaServiceMocked.ConvertByteArrayToString(any(byte[].class))).thenCallRealMethod();
+        when(qaServiceMocked.handleOnDemandJobsResults(results, sourceUrl, scriptId)).thenCallRealMethod();
+
+        LinkedHashMap<String, String> jsonResults = qaServiceMocked.handleOnDemandJobsResults(results, sourceUrl, scriptId);
+        Assert.assertThat(jsonResults.get("feedbackStatus"), is("testFeedbackStatus"));
+        Assert.assertThat(jsonResults.get("feedbackMessage"), is("testMessage"));
+        Assert.assertThat(jsonResults.get("feedbackContent"), is("testContent"));
+        Assert.assertThat(jsonResults.get("feedbackContentType"), is("testContentType"));
+    }
+
+    /* Test case: content is empty */
+    @Test
+    public void testHandleOnDemandJobsResultsEmptyContent() throws Exception {
+        Vector results = new Vector();
+        results.add(("testContentType"));
+        results.add(("").getBytes());
+        results.add(("testFeedbackStatus").getBytes());
+        results.add(("testMessage").getBytes());
+        String sourceUrl = "testXml";
+        String scriptId = "1";
+        Long maxMs = 5L;
+        Long timeoutMs = 1L;
+
+        when(qaServiceMocked.getMaxMsToWaitForEmptyFileForOnDemandJobs()).thenReturn(maxMs);
+        when(qaServiceMocked.getTimeoutToWaitForEmptyFileForOnDemandJobs()).thenReturn(timeoutMs);
+        when(qaServiceMocked.ConvertByteArrayToString(any(byte[].class))).thenCallRealMethod();
+        when(qaServiceMocked.handleOnDemandJobsResults(results, sourceUrl, scriptId)).thenCallRealMethod();
+
+        LinkedHashMap<String, String> jsonResults = qaServiceMocked.handleOnDemandJobsResults(results, sourceUrl, scriptId);
+        Assert.assertThat(jsonResults.get("feedbackStatus"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_STATUS));
+        Assert.assertThat(jsonResults.get("feedbackMessage"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_MESSAGE));
+        Assert.assertThat(jsonResults.get("feedbackContent"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT));
+        Assert.assertThat(jsonResults.get("feedbackContentType"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT_TYPE));
     }
 
 }

@@ -16,4 +16,7 @@ public interface QueryMetadataHistoryRepository extends JpaRepository<QueryMetad
 
     @Query(value = "SELECT COUNT(ID) FROM QUERY_METADATA_HISTORY WHERE T_QUERY_ID= :queryId", nativeQuery = true)
     Integer findNumberOfEntriesByQueryId(@Param("queryId") Integer queryId);
+
+    /* Retrieves the entries by the jobId */
+    List<QueryMetadataHistoryEntry> findByJobId(Integer jobId);
 }

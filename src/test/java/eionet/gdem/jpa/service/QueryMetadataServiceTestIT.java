@@ -52,7 +52,7 @@ public class QueryMetadataServiceTestIT {
     public void testStoreScriptInformationForNewScript(){
         Integer queryID = 1;
         Long durationOfJob = Long.valueOf(324000); //5.4 minutes
-        queryMetadataService.storeScriptInformation(queryID, "testFile1", "xq", durationOfJob, Constants.XQ_READY);
+        queryMetadataService.storeScriptInformation(queryID, "testFile1", "xq", durationOfJob, Constants.XQ_READY, 1);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
@@ -91,7 +91,7 @@ public class QueryMetadataServiceTestIT {
     public void testStoreScriptInformationForExistingScript() throws Exception {
         Integer queryID = 2;
         Long durationOfJob = Long.valueOf(180000); //3 minutes
-        queryMetadataService.storeScriptInformation(queryID, "testFile2", "xq", durationOfJob, Constants.XQ_READY);
+        queryMetadataService.storeScriptInformation(queryID, "testFile2", "xq", durationOfJob, Constants.XQ_READY, 1);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
@@ -130,7 +130,7 @@ public class QueryMetadataServiceTestIT {
     public void testStoreScriptInformationForExistingScriptWithMultipleExecutions() throws Exception {
         Integer queryID = 3;
         Long durationOfJob = Long.valueOf(180000); //3 minutes
-        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY);
+        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY, 1);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
@@ -168,7 +168,7 @@ public class QueryMetadataServiceTestIT {
     public void testStoreScriptInformationForNotExistingQueryId() throws Exception {
         Integer queryID = -1;
         Long durationOfJob = Long.valueOf(180000); //3 minutes
-        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY);
+        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY, 1);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
