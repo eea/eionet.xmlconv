@@ -58,8 +58,10 @@ public class SchemasController {
         try {
             SchemaManager sm = new SchemaManager();
             UplSchemaHolder holder = sm.getAllSchemas(user);
-            for (Schema schema : holder.getSchemas()) {
-                schema.setMaxExecutionTimeUI(Utils.createFormatForMs(schema.getMaxExecutionTime()));
+            if (holder.getSchemas()!=null) {
+                for (Schema schema : holder.getSchemas()) {
+                    schema.setMaxExecutionTimeUI(Utils.createFormatForMs(schema.getMaxExecutionTime()));
+                }
             }
             model.addAttribute("schemas", holder);
         } catch (DCMException e) {
