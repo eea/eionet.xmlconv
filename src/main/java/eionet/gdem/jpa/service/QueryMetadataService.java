@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface QueryMetadataService {
 
-    void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus);
+    void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus, Integer jobId);
 
     List<QueryMetadataHistoryEntry> fillQueryHistoryMetadataAdditionalInfo(List<QueryMetadataHistoryEntry> historyEntries);
 
@@ -21,4 +21,8 @@ public interface QueryMetadataService {
     Integer getCountOfHistoryEntriesByScript(Integer scriptId);
 
     Integer getCountOfEntriesByScript(Integer scriptId);
+
+    List<QueryMetadataHistoryEntry> findByJobId(Integer jobId);
+
+    QueryMetadataHistoryEntry saveQueryMetadataHistoryEntry(QueryMetadataHistoryEntry entry);
 }

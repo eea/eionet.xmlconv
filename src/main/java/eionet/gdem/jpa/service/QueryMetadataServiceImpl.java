@@ -1,6 +1,7 @@
 package eionet.gdem.jpa.service;
 
 import eionet.gdem.Constants;
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
@@ -42,7 +43,7 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
     QueryJpaService queryJpaService;
 
     @Override
-    public void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus){
+    public void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus, Integer jobId){
         //if queryID does not exist in T_QUERY do nothing
         QueryEntry queryEntry = queryJpaService.findByQueryId(queryID);
         if(queryEntry == null){
@@ -54,7 +55,7 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
         if (Utils.isNullList(queryMetadataList)){
             QueryMetadataEntry queryMetadataEntry = new QueryMetadataEntry(scriptFile,queryID, scriptType, durationOfJob, 1, queryEntry.getMarkedHeavy(), queryEntry.getVersion(), durationOfJob);
             queryMetadataRepository.save(queryMetadataEntry);
-            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()));
+            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()), jobId);
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
         else{
@@ -76,7 +77,7 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
                 oldEntry.setAverageDuration(newAverageJobDuration);
                 queryMetadataRepository.save(oldEntry);
             }
-            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()));
+            QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()), jobId);
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
     }
@@ -156,5 +157,15 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
     @Override
     public Integer getCountOfEntriesByScript(Integer scriptId){
         return queryMetadataRepository.findNumberOfEntriesByQueryId(scriptId);
+    }
+
+    @Override
+    public List<QueryMetadataHistoryEntry> findByJobId(Integer jobId) {
+        return queryMetadataHistoryRepository.findByJobId(jobId);
+    }
+
+    @Override
+    public QueryMetadataHistoryEntry saveQueryMetadataHistoryEntry(QueryMetadataHistoryEntry entry) {
+        return queryMetadataHistoryRepository.save(entry);
     }
 }

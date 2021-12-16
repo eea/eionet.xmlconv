@@ -120,6 +120,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
         String contentType = DEFAULT_QA_CONTENT_TYPE;
         String strResult = "";
         LOGGER.debug("==xmlconv== runQAScript: id=" + scriptId + " file_url=" + sourceUrl + "; ");
+        String jobId = null;
         try {
             if (scriptId.equals(String.valueOf(Constants.JOB_VALIDATION))) {
                 ValidationService vs = new JaxpValidationService();
@@ -184,6 +185,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
 
                         JobEntry jobEntry = getJobOnDemandHandlerService().createJobAndSendToRabbitMQ(xq, Integer.parseInt(scriptId), true);
                         LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle xmlrpc/rest call.");
+                        jobId = jobEntry.getId().toString();
 
                         timer.start();
                         while (jobEntry.getnStatus() != Constants.XQ_READY && jobEntry.getnStatus() != Constants.XQ_FATAL_ERR) {
@@ -229,6 +231,8 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                 HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(strResult);
                 result.add(fbResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM).getBytes());
                 result.add((fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM).getBytes()));
+                //added JobId to the vector in order to find if result is empty. Refs #142711
+                result.add(jobId);
 
             }
         } catch (XMLConvException e) {

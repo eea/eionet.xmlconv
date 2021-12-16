@@ -6,15 +6,22 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
+import eionet.gdem.jpa.service.JobExecutorHistoryService;
+import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.QueryService;
-import eionet.gdem.services.GDEMServices;
-import eionet.gdem.services.JobRequestHandlerService;
-import eionet.gdem.services.JobResultHandlerService;
-import eionet.gdem.services.RunScriptAutomaticService;
+import eionet.gdem.services.*;
+import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.hosts.IHostDao;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +39,14 @@ import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -45,6 +54,9 @@ import java.util.*;
  */
 @Service
 public class QaServiceImpl implements QaService {
+
+    private Long maxMsToWaitForEmptyFileForOnDemandJobs = Properties.maxMsToWaitForEmptyFileForOnDemandJobs;
+    private Long timeoutToWaitForEmptyFileForOnDemandJobs = Properties.timeoutToWaitForEmptyFileForOnDemandJobs;
 
     private QueryService queryService;
     /** DAO for getting schema info. */
@@ -59,15 +71,25 @@ public class QaServiceImpl implements QaService {
 
     private IXQJobDao xqJobDao = GDEMServices.getDaoService().getXQJobDao();
 
+    private JobService jobService;
+    private JobHistoryService jobHistoryService;
+    private JobExecutorHistoryService jobExecutorHistoryService;
+    private QueryMetadataService queryMetadataService;
+
     public QaServiceImpl() {
     }
 
     @Autowired
-    public QaServiceImpl(QueryService queryService, JobRequestHandlerService jobRequestHandlerService, JobResultHandlerService jobResultHandlerService, RunScriptAutomaticService runScriptAutomaticService) {
+    public QaServiceImpl(QueryService queryService, JobRequestHandlerService jobRequestHandlerService, JobResultHandlerService jobResultHandlerService,
+                         RunScriptAutomaticService runScriptAutomaticService, JobService jobService, JobHistoryService jobHistoryService, JobExecutorHistoryService jobExecutorHistoryService, QueryMetadataService queryMetadataService) {
         this.queryService = queryService;
         this.jobRequestHandlerService = jobRequestHandlerService;
         this.jobResultHandlerService = jobResultHandlerService;
         this.runScriptAutomaticService = runScriptAutomaticService;
+        this.jobService = jobService;
+        this.jobHistoryService = jobHistoryService;
+        this.jobExecutorHistoryService = jobExecutorHistoryService;
+        this.queryMetadataService = queryMetadataService;
     }
 
     @Override
@@ -342,7 +364,7 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results) throws XMLConvException{
+    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results){
         String htmlFileContent = (String) results.get(Constants.RESULT_VALUE_PRM);
         String feedbackStatus = (String) results.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
         if(feedbackStatus.equals(Constants.XQ_FEEDBACKSTATUS_UNKNOWN) && htmlFileContent.length() == 0){
@@ -359,6 +381,117 @@ public class QaServiceImpl implements QaService {
         return jsonResults;
     }
 
+    @Override
+    public LinkedHashMap<String, String> handleOnDemandJobsResults(Vector results, String sourceXml, String scriptId) throws XMLConvException {
+        //Vector results contains feedbackContentType, feedbackContent, feedbackStatus, feedbackMessage, jobId. JobId is null for schema validation
+        String jobResultFileName = null;
+        String jobId = null;
+        Long maxMs = this.getMaxMsToWaitForEmptyFileForOnDemandJobs();
+        Long timeoutInMs = this.getTimeoutToWaitForEmptyFileForOnDemandJobs();
+        Integer retries = (int) (maxMs / timeoutInMs);
+        retries = (retries <= 0) ? 1 : retries;
+        LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
+        try {
+            String feedbackContent = ConvertByteArrayToString((byte[]) results.get(1));
+
+            if (results.size() > 4 && results.get(4) != null) {
+                jobId = (String) results.get(4);
+                LOGGER.info("Handling on demand jobs results for job with id " + jobId + " xml " + sourceXml + " and script id " + scriptId);
+            }
+
+            if (jobId != null) {
+                //Retrieve filename
+                JobEntry jobEntry = jobService.findById(Integer.valueOf(jobId));
+                jobResultFileName = jobEntry.getResultFile();
+            }
+
+            for (int i = 0; i < retries; i++) {
+                if (feedbackContent.isEmpty()) {
+                    Thread.sleep(timeoutInMs);
+                    if (jobResultFileName != null) {
+                        //Read file again
+                        File file = new File(jobResultFileName);
+                        feedbackContent = FileUtils.readFileToString(file, "UTF-8");
+                    }
+                    else{
+                        break;
+                    }
+                } else {
+                    //feedback file is not empty
+                    jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
+                    jsonResults.put("feedbackMessage", ConvertByteArrayToString((byte[]) results.get(3)));
+                    jsonResults.put("feedbackContentType", results.get(0).toString());
+                    jsonResults.put("feedbackContent", feedbackContent);
+                    String msg = "Found not empty content for on demand job ";
+                    if (jobId != null) {
+                        msg += "id " + jobId;
+                    }
+                    msg += " with xml " + sourceXml + " and script id " + scriptId + ". Retry was " + (i+1) + " of " + retries;
+                    LOGGER.info(msg);
+                    break;
+                }
+            }
+
+            if (feedbackContent.isEmpty()) {
+                //send blocker
+                jsonResults.put("feedbackStatus", Constants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_STATUS);
+                jsonResults.put("feedbackMessage", Constants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_MESSAGE);
+                jsonResults.put("feedbackContentType", Constants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT_TYPE);
+                jsonResults.put("feedbackContent", Constants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT);
+
+                //change job status to fatal error and store it in T_XQJOBS and JOB_HISTORY
+                if (jobId != null) {
+                    LOGGER.info("Updating tables for fatal error on demand job with empty content. Job id is " + jobId);
+                    try {
+                        updateJobRelatedTablesStatus(jobId, scriptId);
+                    } catch (DatabaseException e) {
+                        LOGGER.error("Could not updata job related tables status for jobId " + jobId + " Exception message is: " + e.getMessage());
+                        throw e;
+                    }
+                }
+            }
+        }
+        catch(Exception e){
+            throw new XMLConvException(e.getMessage());
+        }
+        return jsonResults;
+    }
+
+    private void updateJobRelatedTablesStatus(String jobId, String scriptId) throws DatabaseException {
+        JobEntry jobEntry = jobService.findById(Integer.valueOf(jobId));
+        jobEntry.setnStatus(Constants.XQ_FATAL_ERR);
+        jobEntry.setTimestamp(new Timestamp(new Date().getTime()));
+        jobService.save(jobEntry);
+        LOGGER.info("Changed status to FATAL ERROR in T_XQJOBS table for jobId " + jobId);
+        List<JobHistoryEntry> jobHistoryEntries = jobHistoryService.getJobHistoryEntriesOfJob(jobId);
+        if(!Utils.isNullList(jobHistoryEntries)){
+            JobHistoryEntry jobHistoryLastEntry = jobHistoryEntries.get(jobHistoryEntries.size()-1);
+            jobHistoryLastEntry.setStatus(Constants.XQ_FATAL_ERR);
+            jobHistoryService.save(jobHistoryLastEntry);
+            LOGGER.info("Changed status to FATAL ERROR in JOB_HISTORY table for jobId " + jobId + ". Job history entry id is " + jobHistoryLastEntry.getId());
+        }
+        List<JobExecutorHistory> jobExecutorHistoryEntries = jobExecutorHistoryService.getJobExecutorHistoryEntriesByJobId(jobId);
+        if(!Utils.isNullList(jobExecutorHistoryEntries)){
+            JobExecutorHistory jobExecutorHistoryLastEntry = jobExecutorHistoryEntries.get(jobExecutorHistoryEntries.size()-1);
+            jobExecutorHistoryLastEntry.setStatus(Constants.XQ_FATAL_ERR);
+            jobExecutorHistoryService.saveJobExecutorHistoryEntry(jobExecutorHistoryLastEntry);
+            LOGGER.info("Changed status to FATAL ERROR in JOB_EXECUTOR_HISTORY table for jobId " + jobId + ". Job executor history entry id is " + jobExecutorHistoryLastEntry.getId());
+        }
+        List<QueryMetadataHistoryEntry> queryMetadataHistoryEntries = queryMetadataService.findByJobId(Integer.valueOf(jobId));
+        if(!Utils.isNullList(queryMetadataHistoryEntries)){
+            QueryMetadataHistoryEntry queryMetadataHistoryLastEntry = queryMetadataHistoryEntries.get(queryMetadataHistoryEntries.size()-1);
+            queryMetadataHistoryLastEntry.setJobStatus(Constants.XQ_FATAL_ERR);
+            queryMetadataService.saveQueryMetadataHistoryEntry(queryMetadataHistoryLastEntry);
+            LOGGER.info("Changed status to FATAL ERROR in QUERY_MEATADATA_HISTORY table for jobId " + jobId + ". Query Metadata history entry id is " + queryMetadataHistoryLastEntry.getId()
+                    + " and script Id is " + scriptId);
+        }
+
+    }
+
+    public String ConvertByteArrayToString(byte[] bytes) throws UnsupportedEncodingException {
+        return new String(bytes, "UTF-8");
+    }
+
     public JobRequestHandlerService getJobRequestHandlerService() {
         return jobRequestHandlerService;
     }
@@ -369,5 +502,13 @@ public class QaServiceImpl implements QaService {
 
     public RunScriptAutomaticService getRunScriptAutomaticService() {
         return runScriptAutomaticService;
+    }
+
+    public Long getMaxMsToWaitForEmptyFileForOnDemandJobs() {
+        return maxMsToWaitForEmptyFileForOnDemandJobs;
+    }
+
+    public Long getTimeoutToWaitForEmptyFileForOnDemandJobs() {
+        return timeoutToWaitForEmptyFileForOnDemandJobs;
     }
 }

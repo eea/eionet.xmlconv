@@ -78,5 +78,11 @@ public class TestConstants {
 
     public static final String SESSION_USER = "user";
 
+    //on demand jobs handle results properties
+    public static final String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT_TYPE = "text/html;charset=UTF-8";
+    public static final String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_STATUS = "FAILED";
+    public static final String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_MESSAGE = "Script execution failed, e.g. due to memory problems or unresponsive third party web service.";
+    public static final String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT = "";
+
 
 }

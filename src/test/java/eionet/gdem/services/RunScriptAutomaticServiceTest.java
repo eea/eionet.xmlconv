@@ -1,6 +1,9 @@
 package eionet.gdem.services;
 
 import eionet.gdem.api.qa.service.impl.QaServiceImpl;
+import eionet.gdem.jpa.service.JobExecutorHistoryService;
+import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.qa.QueryService;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
@@ -41,13 +44,25 @@ public class RunScriptAutomaticServiceTest {
     @Mock
     private QueryService queryServiceMock;
 
+    @Mock
+    private JobService jobService;
+
+    @Mock
+    private JobHistoryService jobHistoryService;
+
+    @Mock
+    private JobExecutorHistoryService jobExecutorHistoryService;
+
+    @Mock
+    private QueryMetadataService queryMetadataService;
+
     @Autowired
     private DataSource db;
 
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        this.qaService = new QaServiceImpl(queryServiceMock, jobRequestHandlerService, jobResultHandlerService, runScriptAutomaticService);
+        this.qaService = new QaServiceImpl(queryServiceMock, jobRequestHandlerService, jobResultHandlerService, runScriptAutomaticService, jobService, jobHistoryService, jobExecutorHistoryService, queryMetadataService);
         DbHelper.setUpDatabase(db, TestConstants.SEED_DATASET_QA_XML);
     }
 

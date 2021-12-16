@@ -156,4 +156,10 @@ public interface Constants {
 
     String ON_DEMAND_TYPE = "ON DEMAND";
 
+    //on demand jobs handle results properties
+    String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT_TYPE = "text/html;charset=UTF-8";
+    String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_STATUS = "FAILED";
+    String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_MESSAGE = "Script execution failed, e.g. due to memory problems or unresponsive third party web service.";
+    String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT = "";
+
 }

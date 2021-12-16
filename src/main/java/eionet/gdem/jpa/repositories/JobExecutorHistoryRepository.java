@@ -10,4 +10,7 @@ public interface JobExecutorHistoryRepository extends JpaRepository<JobExecutorH
     /* Retrieves the entry by its containerId */
     List<JobExecutorHistory> findByContainerId(String containerId);
 
+    /* Retrieves the entry by its jobId */
+    List<JobExecutorHistory> findByJobId(Integer jobId);
+
 }

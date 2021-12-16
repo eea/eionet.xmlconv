@@ -33,16 +33,7 @@ public class JobServiceImpl implements JobService {
     public void changeNStatus(Integer jobId, Integer status) throws DatabaseException {
         try {
             jobRepository.updateJobNStatus(status, Properties.getHostname(), new Timestamp(new Date().getTime()), jobId);
-            if (status == 3)
-                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.JOB_READY + ".");
-            else if (status == Constants.XQ_INTERRUPTED)
-                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_INTERRUPTED + ".");
-            else if (status == Constants.CANCELLED_BY_USER)
-                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.CANCELLED_BY_USER + ".");
-            else if (status == Constants.DELETED)
-                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.DELETED + ".");
-            else
-                LOGGER.info("### Job with id=" + jobId + " has changed status to " + Constants.XQ_FATAL_ERR + ".");
+            LOGGER.info("### Job with id=" + jobId + " has changed status to " + status + ".");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing status of job with id " + jobId + ", " + e.toString());
             throw new DatabaseException(e.getMessage());
