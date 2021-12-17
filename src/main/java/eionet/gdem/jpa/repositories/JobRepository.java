@@ -32,6 +32,10 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     void updateJobNStatus(@Param("nStatus") Integer nStatus, @Param("instance") String instance, @Param("timestamp") Timestamp timestamp, @Param("jobId") Integer jobId);
 
     @Modifying
+    @Query(value = "update T_XQJOBS set N_STATUS = :nStatus, INTERNAL_STATUS_ID = :internalStatus, INSTANCE= :instance, TIME_STAMP= :timestamp where JOB_ID = :jobId", nativeQuery=true)
+    void updateJobNStatusAndInternalStatus(@Param("nStatus") Integer nStatus, @Param("internalStatus") Integer internalStatus, @Param("instance") String instance, @Param("timestamp") Timestamp timestamp, @Param("jobId") Integer jobId);
+
+    @Modifying
     @Query(value = "update T_XQJOBS set N_STATUS= :nStatus, INTERNAL_STATUS_ID= :intStatus, JOB_EXECUTOR_NAME= :jobExecutorName, TIME_STAMP= :timestamp, IS_HEAVY= :isHeavy where JOB_ID = :jobId", nativeQuery=true)
     void updateJob(@Param("nStatus") Integer nStatus, @Param("intStatus") InternalSchedulingStatus intStatus, @Param("jobExecutorName") String jobExecutorName, @Param("timestamp") Timestamp timestamp, @Param("isHeavy") boolean isHeavy, @Param("jobId") Integer jobId);
 

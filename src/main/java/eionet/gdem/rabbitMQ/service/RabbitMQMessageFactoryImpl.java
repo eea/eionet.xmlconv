@@ -91,6 +91,8 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     if (scriptFile.contains(" ")) {
                         scriptFile = StringUtils.substringBefore(scriptFile, " ");
                     }
+                    //change status to processing and add entry to job_history
+                    processValidationJob(jobEntry);
                     LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to " + resultFile);
                     ValidationService vs = new JaxpValidationService();
                     String query = StringUtils.defaultIfEmpty(new URI(srcFile).getQuery(), "");
@@ -109,11 +111,12 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     Utils.saveStrToFile(resultFile, result, null);
                     long stopTime = System.nanoTime();
 
-                    changeStatus(Constants.XQ_READY,jobId);
                     jobStatus = Constants.XQ_READY;
+                    markValidationJobAsFinished(jobEntry, jobStatus);
                     LOGGER.info("### job with id: " + jobId + " has been Validated. Validation time in nanoseconds = " + (stopTime - startTime));
                 } catch (Exception e) {
                     jobStatus = Constants.XQ_FATAL_ERR;
+                    markValidationJobAsFinished(jobEntry, jobStatus);
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true,jobEntry, jobId);
                 }
                 finally{
@@ -225,6 +228,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     void processJob(JobEntry jobEntry) throws DatabaseException {
         try {
             Integer jobId = jobEntry.getId();
+            LOGGER.info("Processing job with id " + jobId);
             Integer retryCounter = jobService.getRetryCounter(jobId);
             jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobId);
             InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
@@ -236,6 +240,36 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing job status. " + e.toString());
+            throw e;
+        }
+    }
+
+    void processValidationJob(JobEntry jobEntry) throws DatabaseException {
+        try {
+            Integer jobId = jobEntry.getId();
+            LOGGER.info("Processing job with id " + jobId);
+            changeJobStatusAndInternalStatus(Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING, jobId.toString());
+            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
+            jobHistoryService.save(jobHistoryEntry);
+            LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
+        } catch (Exception e) {
+            LOGGER.error("Database exception when processing validation job with id " + jobEntry.getId() + " Exception message is: " + e.toString());
+            throw e;
+        }
+    }
+
+    void markValidationJobAsFinished(JobEntry jobEntry, Integer status) throws DatabaseException {
+        try {
+            Integer jobId = jobEntry.getId();
+            LOGGER.info("Job with id " + jobId + " has finished with status " + status);
+            changeStatus(status, jobId.toString());
+            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), status, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
+            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
+            jobHistoryService.save(jobHistoryEntry);
+            LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
+        } catch (Exception e) {
+            LOGGER.error("Database exception when marking validation job as finished with id " + jobEntry.getId() + " Exception message is: " + e.toString());
             throw e;
         }
     }
@@ -318,6 +352,16 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
      */
      void changeStatus(int status,String jobId) throws DatabaseException {
          jobService.changeNStatus(Integer.parseInt(jobId), status);
+    }
+
+    /**
+     * Change both job statuses in DB.
+     * @param status Job status to be stored in DB.
+     * @param internalStatus Job status to be stored in DB.
+     * @throws Exception Unable to store data into DB.
+     */
+    void changeJobStatusAndInternalStatus(int status, int internalStatus, String jobId) throws DatabaseException {
+        jobService.changeNStatusAndInternalStatus(Integer.parseInt(jobId), status, internalStatus);
     }
 
 }
