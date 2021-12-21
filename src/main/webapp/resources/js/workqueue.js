@@ -41,9 +41,9 @@ function format ( row, tr ) {
             });
             additionalInfo = additionalInfo.concat('</table>');
             if (username) {
-                additionalInfo = additionalInfo.concat('<div>'+'<a href="'+convGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">Converters graylog</a>'+
+                additionalInfo = additionalInfo.concat('<div>'+'<a href="'+convGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'" target="_blank">Converters graylog</a>'+
                     ' (Display Graylog Results for Converters for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + ')' +'</div>' + '<br>' +
-                    '<div>'+'<a href="'+jobExecGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">JobExecutor graylog</a>' +
+                    '<div>'+'<a href="'+jobExecGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'" target="_blank">JobExecutor graylog</a>' +
                     ' (Display Graylog Results for JobExecutor for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + ')' +'</div>');
             }
             //show the row
