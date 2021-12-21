@@ -231,8 +231,10 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                 HashMap<String, String> fbResult = FeedbackAnalyzer.getFeedbackResultFromStr(strResult);
                 result.add(fbResult.get(Constants.RESULT_FEEDBACKSTATUS_PRM).getBytes());
                 result.add((fbResult.get(Constants.RESULT_FEEDBACKMESSAGE_PRM).getBytes()));
-                //added JobId to the vector in order to find if result is empty. Refs #142711
-                result.add(jobId);
+                if(jobId != null) {
+                    //added JobId to the vector in order to find if result is empty. Refs #142711
+                    result.add(jobId);
+                }
 
             }
         } catch (XMLConvException e) {
