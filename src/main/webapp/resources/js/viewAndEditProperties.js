@@ -89,7 +89,7 @@ var app = new Vue({
             })
         },
 
-        save() {
+        async save() {
             const data = {
                 id: this.editedItem.id,
                 name: this.editedItem.name,
@@ -97,8 +97,9 @@ var app = new Vue({
                 value: this.editedItem.value,
                 description: this.editedItem.description
             };
-            axios.post("/restapi/properties/add", data);
-            this.close()
+            await axios.post("/restapi/properties/add", data);
+            this.close();
+            this.readPropertiesEntries();
         },
 
         //Reading data from API method.
