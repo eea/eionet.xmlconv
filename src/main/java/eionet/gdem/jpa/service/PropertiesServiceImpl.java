@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class PropertiesServiceImpl implements PropertiesService {
@@ -58,6 +59,16 @@ public class PropertiesServiceImpl implements PropertiesService {
             }
         }
         return value;
+    }
+
+    @Override
+    public List<PropertiesEntry> findAll() {
+        return propertiesRepository.findAll();
+    }
+
+    @Override
+    public void save(PropertiesEntry propertiesEntry) {
+        propertiesRepository.save(propertiesEntry);
     }
 
 
