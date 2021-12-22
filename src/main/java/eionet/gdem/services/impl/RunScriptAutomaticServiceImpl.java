@@ -76,7 +76,7 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
      * @throws XMLConvException in case of business logic error
      */
     @Override
-    public Vector runQAScript(String sourceUrl, String scriptId ,boolean isHttpRequest) throws XMLConvException {
+    public Vector runQAScript(String sourceUrl, String scriptId ,boolean isHttpRequest, boolean isTrustedMode) throws XMLConvException {
 
         if (!isHTTPRequest() && LOGGER.isDebugEnabled()) {
             LOGGER.debug("ConversionService.convert method called through XML-rpc.");
@@ -84,6 +84,7 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
         RunQAScriptMethod runQaMethod = new RunQAScriptMethod();
        // setGlobalParameters(runQaMethod);
         runQaMethod.setHttpRequest(isHttpRequest);
+        runQaMethod.setTrustedMode(isTrustedMode);
         return runQaMethod.runQAScript(sourceUrl, scriptId);
 
     }

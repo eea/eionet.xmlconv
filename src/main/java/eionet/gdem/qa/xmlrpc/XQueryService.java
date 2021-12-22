@@ -133,7 +133,7 @@ public class XQueryService extends RemoteService {
      * @throws XMLConvException in case of business logic error
      */
     public static Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException {
-        return getRunScriptAutomaticService().runQAScript(sourceUrl, scriptId, false);
+        return getRunScriptAutomaticService().runQAScript(sourceUrl, scriptId, false, false);
     }
 
     public static QueryService getQueryService() {

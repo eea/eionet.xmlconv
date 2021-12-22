@@ -107,7 +107,7 @@ public class QaController {
         String fileURL = "https://" + eionet.gdem.Properties.appHost + "/tmpfile/" + uuid + "/" + dest1.getName();
 
         //we set scriptId=-1 to perform only xml validation for now
-        Vector results = qaService.runQaScript(fileURL, scriptId,false);
+        Vector results = qaService.runQaScript(fileURL, scriptId,false, false);
 
         LinkedHashMap<String, String> jsonResults = new LinkedHashMap<String, String>();
         jsonResults.put("feedbackStatus", ConvertByteArrayToString((byte[]) results.get(2)));
@@ -131,7 +131,7 @@ public class QaController {
             throw new EmptyParameterException("scriptId");
         }
 
-        Vector results = qaService.runQaScript(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(),false);
+        Vector results = qaService.runQaScript(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(),false, true);
         //Vector results contains feedbackContentType, feedbackContent, feedbackStatus, feedbackMessage, jobId
         LinkedHashMap<String, String> jsonResults = qaService.handleOnDemandJobsResults(results, envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId());
 

@@ -32,7 +32,7 @@ public interface QaService {
     
     Hashtable<String,Object> getJobResults(String jobId) throws XMLConvException;
     Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException;
-    Vector runQaScript(String sourceUrl, String scriptId,boolean setBodyInResponse) throws XMLConvException;
+    Vector runQaScript(String sourceUrl, String scriptId,boolean setBodyInResponse, boolean isTrustedMode) throws XMLConvException;
 
     List<LinkedHashMap<String,String>> listQAScripts(String schema, String active) throws XMLConvException;
 

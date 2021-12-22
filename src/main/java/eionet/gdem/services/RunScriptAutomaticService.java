@@ -12,6 +12,6 @@ public interface RunScriptAutomaticService {
 
     Vector runQAScript(String sourceUrl, String scriptId) throws XMLConvException;
 
-    Vector runQAScript(String sourceUrl, String scriptId,boolean isHttpRequest) throws XMLConvException;
+    Vector runQAScript(String sourceUrl, String scriptId,boolean isHttpRequest, boolean isTrustedMode) throws XMLConvException;
 
 }

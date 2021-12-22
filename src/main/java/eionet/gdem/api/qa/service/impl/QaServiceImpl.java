@@ -185,9 +185,9 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public Vector runQaScript(String sourceUrl, String scriptId,boolean setBodyInResponse) throws XMLConvException {
+    public Vector runQaScript(String sourceUrl, String scriptId,boolean setBodyInResponse, boolean isTrustedMode) throws XMLConvException {
         try {
-            return getRunScriptAutomaticService().runQAScript(sourceUrl, scriptId,setBodyInResponse);
+            return getRunScriptAutomaticService().runQAScript(sourceUrl, scriptId,setBodyInResponse, isTrustedMode);
         } catch (XMLConvException ex) {
             throw new XMLConvException("error running Qa Script for sourceUrl :" + sourceUrl + " and scriptId:" + scriptId, ex);
         }
