@@ -9,3 +9,11 @@
 .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr > td, .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
     border: 1px solid #cfe3e4;
 }
+
+.v-data-table-header > tr > th {
+    background-color: #306886;
+}
+
+.theme--light.v-data-table .v-data-table-header th.sortable.active {
+    color: #FFFFFF;
+}

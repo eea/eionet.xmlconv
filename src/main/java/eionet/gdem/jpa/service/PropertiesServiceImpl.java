@@ -71,5 +71,10 @@ public class PropertiesServiceImpl implements PropertiesService {
         propertiesRepository.save(propertiesEntry);
     }
 
+    @Override
+    public void delete(Integer propertyId) {
+        propertiesRepository.delete(propertyId);
+    }
+
 
 }

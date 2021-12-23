@@ -6,6 +6,15 @@ var app = new Vue({
             sortBy: "name",
             dialog: false,
             dialogDelete: false,
+            select: null,
+            loading: true,
+            types: [
+                "Integer",
+                "Long",
+                "Big_Integer",
+                "String",
+                "Date"
+            ],
             headers: [
                 { text: "Name", value: "name"},
                 { text: "Type", value: "type", sortable: false },
@@ -33,7 +42,7 @@ var app = new Vue({
     },
     computed: {
         formTitle() {
-            return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+            return this.editedIndex === -1 ? 'New Property' : 'Edit Property'
         },
     },
 
@@ -47,15 +56,7 @@ var app = new Vue({
         },
     },
 
-    created () {
-        this.initialize()
-    },
-
     methods: {
-        initialize () {
-            this.readPropertiesEntries();
-        },
-
         editItem(item) {
             this.editedIndex = this.properties.indexOf(item)
             this.editedItem = Object.assign({}, item)
@@ -68,9 +69,10 @@ var app = new Vue({
             this.dialogDelete = true
         },
 
-        deleteItemConfirm() {
-            this.properties.splice(this.editedIndex, 1)
-            this.closeDelete()
+        async deleteItemConfirm() {
+            await axios.delete("/restapi/properties/delete/" + this.editedItem.id);
+            this.closeDelete();
+            this.readPropertiesEntries();
         },
 
         close() {
@@ -90,27 +92,27 @@ var app = new Vue({
         },
 
         async save() {
-            const data = {
-                id: this.editedItem.id,
-                name: this.editedItem.name,
-                type: this.editedItem.type,
-                value: this.editedItem.value,
-                description: this.editedItem.description
-            };
-            await axios.post("/restapi/properties/add", data);
+            await axios.post("/restapi/properties/add", this.editedItem);
             this.close();
             this.readPropertiesEntries();
         },
 
         //Reading data from API method.
         readPropertiesEntries() {
+            this.loading = true;
             axios
                 .get(
-                    "/restapi/properties/all"
+                    "/restapi/properties/get/all"
                 )
                 .then((response) => {
+                    this.loading = false;
                     this.properties = response.data;
                 });
         }
     },
+
+    //this will trigger in the onReady State
+    mounted() {
+        this.readPropertiesEntries();
+    }
 })

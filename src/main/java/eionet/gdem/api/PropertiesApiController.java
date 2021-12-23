@@ -19,7 +19,7 @@ public class PropertiesApiController {
         this.propertiesService = propertiesService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/get/all")
     public List<PropertiesEntry> getAllProperties() {
         return propertiesService.findAll();
     }
@@ -29,4 +29,8 @@ public class PropertiesApiController {
         propertiesService.save(propertiesEntry);
     }
 
+    @DeleteMapping(value = "/delete/{propertyId}")
+    public void delete(@PathVariable Integer propertyId) {
+        propertiesService.delete(propertyId);
+    }
 }

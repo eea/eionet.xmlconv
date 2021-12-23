@@ -14,4 +14,6 @@ public interface PropertiesService {
     List<PropertiesEntry> findAll();
 
     void save(PropertiesEntry propertiesEntry);
+
+    void delete(Integer propertyId);
 }
