@@ -62,4 +62,13 @@ public final class ThymeleafUtils {
         model.addAttribute("breadcrumbs", breadcrumbs);
         return model;
     }
+
+    public static Model setUpBreadCrumbsForAdminPages(Model model, String pageTitle) {
+        List<BreadCrumb> breadcrumbs = new ArrayList();
+        breadcrumbs.add(new BreadCrumb(Properties.gdemURL + "/index.jsp", Properties.getStringProperty("label.gdem.title")));
+        breadcrumbs.add(new BreadCrumb(null, pageTitle));
+
+        model.addAttribute("breadcrumbs", breadcrumbs);
+        return model;
+    }
 }
