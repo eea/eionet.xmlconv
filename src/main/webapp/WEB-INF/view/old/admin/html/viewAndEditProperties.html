@@ -4,7 +4,35 @@
 <body th:include="~{fragments/properties-old :: layout(~{::div})}">
 
 <template>
-    <div class="container" id="app">
+    <div id="tabbedmenu">
+        <ul>
+            <li>
+                <a th:href="@{'/admin/purge'}" style="color: black; text-decoration: none;">
+                    <span th:text="#{label.admin.purge}"></span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{'/admin/users'}" style="color: black; text-decoration: none;">
+                    <span th:text="#{label.admin.users}"></span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{'/admin/generateJWTToken'}" style="color: black; text-decoration: none;">
+                    <span th:text="#{label.admin.generateJWTToken}"></span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{'/admin/jobExecutorInstancesView'}" style="color: black; text-decoration: none;">
+                    <span th:text="#{label.admin.jobExecutorInstancesView}"></span>
+                </a>
+            </li>
+            <li id="currenttab">
+                <span style="color: black; text-decoration: none;" th:text="#{label.admin.properties}"></span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container" id="app" style="display: flow-root">
         <v-app>
             <v-data-table
                     :headers="headers"

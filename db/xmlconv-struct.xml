@@ -878,7 +878,7 @@
             <column name="JOB_ID" type="INT"></column>
         </addColumn>
     </changeSet>
-    <changeSet author="favvmary" id="rev-79">
+    <changeSet author="favvmary" id="rev-80">
         <comment> Table for Storing properties key value pairs</comment>
         <createTable tableName="PROPERTIES">
             <column autoIncrement="true" name="ID" type="INT">
@@ -901,7 +901,7 @@
             <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
         </modifySql>
     </changeSet>
-    <changeSet author="favvmary" id="rev-80">
+    <changeSet author="favvmary" id="rev-81">
         <sql>
             INSERT INTO PROPERTIES VALUES (1,'lightJobExecutorsAllowed',0,'1','maximum number of light JobExecutor containers to run on rancher');
             INSERT INTO PROPERTIES VALUES (2,'heavyJobExecutorsAllowed',0,'1','maximum number of heavy JobExecutor containers to run on rancher');
