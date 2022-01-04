@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.nio.file.AccessDeniedException;
 
 @Controller
 @RequestMapping("/admin/viewAndEditProperties")
@@ -29,7 +28,7 @@ public class PropertiesController {
     }
 
     @GetMapping
-    public String view(Model model, HttpSession session, HttpServletRequest request) throws SignOnException, AccessDeniedException {
+    public String view(Model model, HttpSession session, HttpServletRequest request) throws SignOnException {
         //Setup headerVariables
         model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.admin.properties"), request);
         //Setup breadcrumbs
