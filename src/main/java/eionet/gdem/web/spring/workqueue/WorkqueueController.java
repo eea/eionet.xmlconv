@@ -97,7 +97,6 @@ public class WorkqueueController {
             String jobExecutorName = list[i][10];
 
             job.setJobId(jobId);
-            job.setUrl(url);
             job.setFileName(xqLongFileName);
             job.setScriptFile(xqFile);
 
@@ -165,6 +164,7 @@ public class WorkqueueController {
                 int idx = url.indexOf(Constants.SOURCE_URL_PARAM);
                 url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
             }
+            job.setUrl(url);
             String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
             job.setUrlName(urlName);
 
