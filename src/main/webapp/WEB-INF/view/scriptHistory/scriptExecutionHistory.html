@@ -125,6 +125,7 @@
                                     <th scope="col" class="scope-col">Version</th>
                                     <th scope="col" class="scope-col">Timestamp</th>
                                     <th scope="col" class="scope-col">Job Id</th>
+                                    <th th:if="${isFMEScript}" scope="col" class="scope-col">FME Job Id</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -137,6 +138,9 @@
                                     <td th:text="${entry.version}"></td>
                                     <td th:text="${entry.timestamp}"></td>
                                     <td th:text="${entry.jobId}"></td>
+                                    <td th:if="${isFMEScript}">
+                                        <a th:href="@{${fmeJobUrl} + ${entry.fmeJobId}}"><span th:text="${entry.fmeJobId}"></span></a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

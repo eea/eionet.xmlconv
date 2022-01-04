@@ -52,7 +52,7 @@ public class JobExecutorRepositoryTestIT {
     @Transactional
     @Test
     public void testUpdateStatusAndJobId() {
-        jobExecutorRepository.updateJobExecutor(0, 47, JobExecutorType.Light.getId(),"jobExecutor3");
+        jobExecutorRepository.updateJobExecutor(0, 47, JobExecutorType.Light.getId(), null,"jobExecutor3");
         JobExecutor jobExecutor = jobExecutorRepository.findByName("jobExecutor3");
         assertThat(jobExecutor.getStatus(), is(0));
     }

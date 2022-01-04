@@ -50,6 +50,9 @@ public class QueryMetadataHistoryEntry implements Serializable {
     @Transient
     private String statusName;
 
+    @Column(name = "FME_JOB_ID")
+    private Long fmeJobId;
+
     public QueryMetadataHistoryEntry() {
     }
 
@@ -180,6 +183,14 @@ public class QueryMetadataHistoryEntry implements Serializable {
 
     public void setJobId(Integer jobId) {
         this.jobId = jobId;
+    }
+
+    public Long getFmeJobId() {
+        return fmeJobId;
+    }
+
+    public void setFmeJobId(Long fmeJobId) {
+        this.fmeJobId = fmeJobId;
     }
 }
 

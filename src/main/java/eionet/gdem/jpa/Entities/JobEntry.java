@@ -69,6 +69,9 @@ public class JobEntry implements Serializable {
     @Column(name = "HEAVY_RETRIES_ON_FAILURE")
     private Integer heavyRetriesOnFailure;
 
+    @Column(name = "FME_JOB_ID")
+    private Long fmeJobId;
+
     @Transient
     private String fromDate;
 
@@ -274,5 +277,13 @@ public class JobEntry implements Serializable {
 
     public void setToDate(String toDate) {
         this.toDate = toDate;
+    }
+
+    public Long getFmeJobId() {
+        return fmeJobId;
+    }
+
+    public void setFmeJobId(Long fmeJobId) {
+        this.fmeJobId = fmeJobId;
     }
 }

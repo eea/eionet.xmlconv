@@ -58,6 +58,9 @@ public class JobHistoryEntry implements Serializable {
     @Column(name = "HEAVY_RETRIES_ON_FAILURE")
     private Integer heavyRetriesOnFailure;
 
+    @Column(name = "FME_JOB_ID")
+    private Long fmeJobId;
+
     public JobHistoryEntry() {
     }
 
@@ -199,5 +202,13 @@ public class JobHistoryEntry implements Serializable {
     public JobHistoryEntry setHeavyRetriesOnFailure(Integer heavyRetries) {
         this.heavyRetriesOnFailure = heavyRetries;
         return this;
+    }
+
+    public Long getFmeJobId() {
+        return fmeJobId;
+    }
+
+    public void setFmeJobId(Long fmeJobId) {
+        this.fmeJobId = fmeJobId;
     }
 }

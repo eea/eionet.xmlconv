@@ -43,7 +43,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     public void saveOrUpdateJobExecutor(boolean update, JobExecutor jobExecutor) throws DatabaseException {
         try {
             if (update) {
-                jobExecutorRepository.updateJobExecutor(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getJobExecutorType().getId(), jobExecutor.getName());
+                jobExecutorRepository.updateJobExecutor(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getJobExecutorType().getId(), jobExecutor.getFmeJobId(), jobExecutor.getName());
             } else {
                 jobExecutorRepository.save(jobExecutor);
             }

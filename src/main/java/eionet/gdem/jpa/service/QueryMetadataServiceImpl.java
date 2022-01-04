@@ -43,7 +43,7 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
     QueryJpaService queryJpaService;
 
     @Override
-    public void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus, Integer jobId){
+    public void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus, Integer jobId, Long fmeJobId){
         //if queryID does not exist in T_QUERY do nothing
         QueryEntry queryEntry = queryJpaService.findByQueryId(queryID);
         if(queryEntry == null){
@@ -56,6 +56,9 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
             QueryMetadataEntry queryMetadataEntry = new QueryMetadataEntry(scriptFile,queryID, scriptType, durationOfJob, 1, queryEntry.getMarkedHeavy(), queryEntry.getVersion(), durationOfJob);
             queryMetadataRepository.save(queryMetadataEntry);
             QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()), jobId);
+            if(fmeJobId != null){
+                queryMetadataHistoryEntry.setFmeJobId(fmeJobId);
+            }
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
         else{
@@ -78,6 +81,9 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
                 queryMetadataRepository.save(oldEntry);
             }
             QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()), jobId);
+            if(fmeJobId != null){
+                queryMetadataHistoryEntry.setFmeJobId(fmeJobId);
+            }
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
     }

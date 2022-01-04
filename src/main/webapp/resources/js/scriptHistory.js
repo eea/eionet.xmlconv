@@ -21,6 +21,7 @@ $(document).ready(function() {
                     csvColumns[5] = 'Version';
                     csvColumns[6] = 'Timestamp';
                     csvColumns[7] = 'Job Id';
+                    csvColumns[8] = 'FME Job Id';
                     csvRows[0] = csvColumns.join(';');
                     return csvRows.join('\n');
                 }

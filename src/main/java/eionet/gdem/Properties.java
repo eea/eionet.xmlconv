@@ -218,6 +218,7 @@ public class Properties {
     public static String HEAVY_JOBS_ROUTING_KEY;
     public static String CONVERTERS_GRAYLOG;
     public static String JOB_EXECUTOR_GRAYLOG;
+    public static String FME_JOB_URL;
 
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
@@ -368,6 +369,7 @@ public class Properties {
 
         CONVERTERS_GRAYLOG = getStringProperty("env.converters.graylog");
         JOB_EXECUTOR_GRAYLOG = getStringProperty("env.jobExecutor.graylog");
+        FME_JOB_URL = getStringProperty("env.fme.job.url");
 
         maxHeavyRetries = getLongProperty("env.max.heavy.retries");
 

@@ -9,6 +9,7 @@ function format ( row, tr ) {
     var username = document.getElementById('username').value;
     var convGraylog = document.getElementById('convGraylog').value;
     var jobExecGraylog = document.getElementById('jobExecGraylog').value;
+    var fmeJobUrl = document.getElementById('fmeJobUrl').value;
     //ajax call to get data by jobid
     $.ajax({
         async: false,
@@ -45,6 +46,11 @@ function format ( row, tr ) {
                     ' (Display Graylog Results for Converters for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + ')' +'</div>' + '<br>' +
                     '<div>'+'<a href="'+jobExecGraylog + jobId + '&from=' + jobEntry.fromDate + '.000Z' + '&to=' + jobEntry.toDate + '.000Z' +'">JobExecutor graylog</a>' +
                     ' (Display Graylog Results for JobExecutor for dates: '+ jobEntry.fromDate + ' to ' + jobEntry.toDate + ')' +'</div>');
+
+                //show fme job id with the url to fme server if it exists
+                if(jobEntry.fmeJobId != null){
+                    additionalInfo = additionalInfo.concat('<br><div><a href="' + fmeJobUrl + jobEntry.fmeJobId + '">FME job id: ' + jobEntry.fmeJobId + '</a></div>')
+                }
             }
             //show the row
             row.child(additionalInfo).show();
