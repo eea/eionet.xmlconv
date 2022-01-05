@@ -54,7 +54,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public void updateJob(Integer nStatus, InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, JobEntry jobEntry) throws DatabaseException {
         try {
-            jobRepository.updateJob(nStatus, intStatus, jobExecutorName, timestamp, jobEntry.isHeavy(), jobEntry.getId());
+            jobRepository.updateJob(nStatus, intStatus, jobExecutorName, timestamp, jobEntry.isHeavy(), jobEntry.getFmeJobId(), jobEntry.getId());
         } catch (Exception e) {
             LOGGER.error("Database exception when changing internal status of job with id " + jobEntry.getId() + ", " + e.toString());
             throw new DatabaseException(e.getMessage());

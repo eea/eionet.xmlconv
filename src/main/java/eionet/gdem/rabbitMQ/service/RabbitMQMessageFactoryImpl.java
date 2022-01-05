@@ -123,7 +123,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     long stopTime = System.nanoTime();
                     Long durationOfJob = stopTime - startTime;
                     //Store script information
-                    queryMetadataService.storeScriptInformation(Integer.valueOf(queryID), scriptFile, scriptType, durationOfJob, jobStatus, Integer.valueOf(jobId));
+                    queryMetadataService.storeScriptInformation(Integer.valueOf(queryID), scriptFile, scriptType, durationOfJob, jobStatus, Integer.valueOf(jobId), null);
                     LOGGER.info("Updated tables QUERY_METADATA and QUERY_METADATA_HISTORY for script: " + scriptFile);
                 }
             } else {

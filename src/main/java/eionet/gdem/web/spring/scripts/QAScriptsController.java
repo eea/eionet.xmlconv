@@ -557,6 +557,8 @@ public class QAScriptsController {
         //Setup breadcrumbs
         model = ThymeleafUtils.setUpBreadCrumbsForScriptPages(model, id, Properties.getStringProperty("label.qascript.executionHistory.title"));
 
+        Boolean isFMEScript = false;
+
         String changedHistoryPageSize = request.getParameter("pageHistoryEntries");
         if(!Utils.isNullStr(changedHistoryPageSize)){
             historySize = Integer.valueOf(changedHistoryPageSize);
@@ -570,6 +572,13 @@ public class QAScriptsController {
         Paged<QueryMetadataEntry> pagedVersionEntries = queryMetadataService.getQueryMetadataEntries(versionPageNumber, versionSize, Integer.valueOf(id));
         Paged<QueryMetadataHistoryEntry> pagedHistoryEntries = queryMetadataService.getQueryMetadataHistoryEntries(historyPageNumber, historySize, Integer.valueOf(id));
 
+        if(pagedHistoryEntries != null && !Utils.isNullList(pagedHistoryEntries.getPage().getContent())){
+            QueryMetadataHistoryEntry firstQueryMetadataHistoryEntry = pagedHistoryEntries.getPage().getContent().get(0);
+            if(firstQueryMetadataHistoryEntry.getScriptType().equals("fme")){
+                isFMEScript = true;
+            }
+        }
+
         model.addAttribute("versionTableSize", queryMetadataService.getCountOfEntriesByScript(Integer.valueOf(id)));
         model.addAttribute("historyTableSize", queryMetadataService.getCountOfHistoryEntriesByScript(Integer.valueOf(id)));
 
@@ -578,6 +587,8 @@ public class QAScriptsController {
         model.addAttribute("scriptId", id);
         model.addAttribute("pageHistoryEntries", historySize);
         model.addAttribute("pageVersionEntries", versionSize);
+        model.addAttribute("fmeJobUrl", Properties.FME_JOB_URL);
+        model.addAttribute("isFMEScript", isFMEScript);
 
 
         return "scriptHistory/scriptExecutionHistory";

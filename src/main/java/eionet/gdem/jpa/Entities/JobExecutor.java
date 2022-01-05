@@ -33,6 +33,9 @@ public class JobExecutor {
     @Column(name = "JOB_EXECUTOR_TYPE")
     private JobExecutorType jobExecutorType;
 
+    @Column(name = "FME_JOB_ID")
+    private Long fmeJobId;
+
     public JobExecutor() {
     }
 
@@ -118,5 +121,13 @@ public class JobExecutor {
     public JobExecutor setJobExecutorType(JobExecutorType jobExecutorType) {
         this.jobExecutorType = jobExecutorType;
         return this;
+    }
+
+    public Long getFmeJobId() {
+        return fmeJobId;
+    }
+
+    public void setFmeJobId(Long fmeJobId) {
+        this.fmeJobId = fmeJobId;
     }
 }

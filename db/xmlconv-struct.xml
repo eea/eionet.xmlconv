@@ -878,4 +878,24 @@
             <column name="JOB_ID" type="INT"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-79">
+        <comment>
+            Added column FME_JOB_ID to multiple tables
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="FME_JOB_ID" type="BIGINT"></column>
+        </addColumn>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="FME_JOB_ID" type="BIGINT"></column>
+        </addColumn>
+        <addColumn tableName="JOB_EXECUTOR">
+            <column name="FME_JOB_ID" type="BIGINT"></column>
+        </addColumn>
+        <addColumn tableName="JOB_EXECUTOR_HISTORY">
+            <column name="FME_JOB_ID" type="BIGINT"></column>
+        </addColumn>
+        <addColumn tableName="QUERY_METADATA_HISTORY">
+            <column name="FME_JOB_ID" type="BIGINT"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

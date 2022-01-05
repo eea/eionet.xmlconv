@@ -20,8 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.sql.DataSource;
 import java.util.List;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+
+import static org.hamcrest.CoreMatchers.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,7 +52,7 @@ public class QueryMetadataServiceTestIT {
     public void testStoreScriptInformationForNewScript(){
         Integer queryID = 1;
         Long durationOfJob = Long.valueOf(324000); //5.4 minutes
-        queryMetadataService.storeScriptInformation(queryID, "testFile1", "xq", durationOfJob, Constants.XQ_READY, 1);
+        queryMetadataService.storeScriptInformation(queryID, "testFile1", "xq", durationOfJob, Constants.XQ_READY, 1, null);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
@@ -83,6 +83,7 @@ public class QueryMetadataServiceTestIT {
         Assert.assertThat(queryMetadataHistoryEntry.getJobStatus(), is(3));
         Assert.assertThat(queryMetadataHistoryEntry.getMarkedHeavy(), is(false));
         Assert.assertThat(queryMetadataHistoryEntry.getVersion(), is(1));
+        Assert.assertThat(queryMetadataHistoryEntry.getFmeJobId(), is(nullValue()));
 
     }
 
@@ -91,7 +92,7 @@ public class QueryMetadataServiceTestIT {
     public void testStoreScriptInformationForExistingScript() throws Exception {
         Integer queryID = 2;
         Long durationOfJob = Long.valueOf(180000); //3 minutes
-        queryMetadataService.storeScriptInformation(queryID, "testFile2", "xq", durationOfJob, Constants.XQ_READY, 1);
+        queryMetadataService.storeScriptInformation(queryID, "testFile2", "xq", durationOfJob, Constants.XQ_READY, 1, 1000000L);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
@@ -123,6 +124,7 @@ public class QueryMetadataServiceTestIT {
         Assert.assertThat(newQueryMetadataHistoryEntry.getJobStatus(), is(3));
         Assert.assertThat(newQueryMetadataHistoryEntry.getMarkedHeavy(), is(false));
         Assert.assertThat(newQueryMetadataHistoryEntry.getVersion(), is(1));
+        Assert.assertThat(newQueryMetadataHistoryEntry.getFmeJobId(), is(1000000L));
     }
 
     /*There is an entry in QUERY_METADATA table for the given queryID and numberOfExecutions = 4*/
@@ -130,7 +132,7 @@ public class QueryMetadataServiceTestIT {
     public void testStoreScriptInformationForExistingScriptWithMultipleExecutions() throws Exception {
         Integer queryID = 3;
         Long durationOfJob = Long.valueOf(180000); //3 minutes
-        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY, 1);
+        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY, 1, 1000000L);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);
@@ -161,6 +163,7 @@ public class QueryMetadataServiceTestIT {
         Assert.assertThat(newQueryMetadataHistoryEntry.getJobStatus(), is(3));
         Assert.assertThat(newQueryMetadataHistoryEntry.getMarkedHeavy(), is(false));
         Assert.assertThat(newQueryMetadataHistoryEntry.getVersion(), is(1));
+        Assert.assertThat(newQueryMetadataHistoryEntry.getFmeJobId(), is(1000000L));
     }
 
     /*Query id does not exist */
@@ -168,7 +171,7 @@ public class QueryMetadataServiceTestIT {
     public void testStoreScriptInformationForNotExistingQueryId() throws Exception {
         Integer queryID = -1;
         Long durationOfJob = Long.valueOf(180000); //3 minutes
-        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY, 1);
+        queryMetadataService.storeScriptInformation(queryID, "testFile3", "xq", durationOfJob, Constants.XQ_READY, 1, null);
 
         //Check entry in table QUERY_METADATA
         List<QueryMetadataEntry> queryMetadataEntryList = queryMetadataRepository.findByQueryIdAndMaxVersion(queryID);

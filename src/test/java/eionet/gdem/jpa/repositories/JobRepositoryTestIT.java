@@ -63,7 +63,7 @@ public class JobRepositoryTestIT {
     @Transactional
     public void testUpdateInternalStatus() {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(2);
-        jobRepository.updateJob(3, intStatus, null, new Timestamp(new Date().getTime()), true, 1);
+        jobRepository.updateJob(3, intStatus, null, new Timestamp(new Date().getTime()), true, null, 1);
         JobEntry jobEntry = jobRepository.findById(1);
         assertThat(jobEntry.getIntSchedulingStatus().getId(), is(2));
     }
