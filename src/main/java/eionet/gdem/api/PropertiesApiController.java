@@ -30,7 +30,7 @@ public class PropertiesApiController {
     }
 
     @DeleteMapping(value = "/delete/{propertyId}")
-    public void delete(@PathVariable Integer propertyId) {
+    public void delete(@PathVariable(name = "propertyId") Integer propertyId) {
         propertiesService.delete(propertyId);
     }
 }

@@ -30,14 +30,14 @@ public class PropertiesController {
     @GetMapping
     public String view(Model model, HttpSession session, HttpServletRequest request) throws SignOnException {
         //Setup headerVariables
-        model = ThymeleafUtils.setUpTitleAndLogin(model, Properties.getStringProperty("label.admin.properties"), request);
+        model = ThymeleafUtils.setUpTitleAndLogin(model, messageService.getMessage("label.admin.properties"), request);
         //Setup breadcrumbs
-        model = ThymeleafUtils.setUpBreadCrumbsForAdminPages(model, Properties.getStringProperty("label.admin.properties"));
+        model = ThymeleafUtils.setUpBreadCrumbsForAdminPages(model, messageService.getMessage("label.admin.properties"));
 
         String user = (String) session.getAttribute("user");
         if (user==null || (user!=null && !SecurityUtil.hasPerm(user, "/" + Constants.ACL_ADMIN_PATH, "u"))) {
             model.addAttribute("reason", HttpStatus.UNAUTHORIZED.value() + " - " + messageService.getMessage("label.authorization.properties.view"));
-            return "error/error";
+            return "/error/error";
         }
         return "/old/admin/html/viewAndEditProperties";
     }
