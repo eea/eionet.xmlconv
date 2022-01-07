@@ -4,12 +4,14 @@ import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.qa.IQueryDao;
+import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.impl.JobEntryAndJobHistoryEntriesService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.SpringMessages;
+import eionet.gdem.web.spring.schemas.ISchemaDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +84,7 @@ public class WorkqueueController {
 
         // XXX: Refactor soon
         IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+        ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
         for (int i = 0; i < list.length; i++) {
             JobMetadata job = new JobMetadata();
             String jobId = list[i][0];
@@ -117,7 +121,7 @@ public class WorkqueueController {
             } catch (NumberFormatException n) {
                 xqID = 0;
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Error when retrieving script information for script " + xqStringID + " Exception message: " + e.getMessage());
             }
             job.setScriptType(scriptType);
 
@@ -173,6 +177,20 @@ public class WorkqueueController {
                 Long duration = Long.parseLong(durationMs);
                 job.setDurationInProgress(Utils.createFormatForMs(duration));
             }
+
+            if(xqStringID.equals("-1")){
+                //schema validation
+                String schemaId = null;
+                try {
+                    schemaId = schemaDao.getSchemaID(job.getFileName());
+                } catch (SQLException e) {
+                    LOGGER.error("Error when retrieving schema id for schema " + job.getFileName() + " Exception message: " + e.getMessage());
+                }
+                if(schemaId != null) {
+                    job.setScriptId(schemaId);
+                }
+            }
+
 
             jobsList.add(job);
         }

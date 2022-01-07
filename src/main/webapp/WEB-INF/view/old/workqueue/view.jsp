@@ -160,6 +160,9 @@
               <c:when test="${fn:startsWith(job.scriptFile, 'gdem')}">
                   <a href="/tmp/${job.scriptFile}" rel="nofollow">${job.scriptFile}</a>
               </c:when>
+              <c:when test="${fn:endsWith(job.scriptFile, '.xsd')}">
+                <a href="/schemas/${job.scriptId}" rel="nofollow">${job.scriptFile}</a>
+              </c:when>
               <c:otherwise>
                   <a href="/scripts/${job.scriptId}" rel="nofollow">${job.scriptFile}</a>
               </c:otherwise>
