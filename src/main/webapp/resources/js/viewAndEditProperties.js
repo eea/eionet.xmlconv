@@ -8,6 +8,7 @@ var app = new Vue({
             dialogDelete: false,
             select: null,
             loading: true,
+            readonly: false,
             types: [
                 "Integer",
                 "Long",
@@ -60,6 +61,7 @@ var app = new Vue({
         editItem(item) {
             this.editedIndex = this.properties.indexOf(item)
             this.editedItem = Object.assign({}, item)
+            this.readonly = true;
             this.dialog = true
         },
 
@@ -76,6 +78,7 @@ var app = new Vue({
         },
 
         close() {
+            this.readonly = false
             this.dialog = false
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem)
