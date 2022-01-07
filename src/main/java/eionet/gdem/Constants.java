@@ -164,5 +164,4 @@ public interface Constants {
 
     String LIGHT_JOB_EXECUTORS_ALLOWED = "lightJobExecutorsAllowed";
     String HEAVY_JOB_EXECUTORS_ALLOWED = "heavyJobExecutorsAllowed";
-    Integer MIN_JOB_EXECUTORS = 1;
 }

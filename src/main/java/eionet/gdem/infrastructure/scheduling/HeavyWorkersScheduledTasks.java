@@ -60,13 +60,13 @@ public class HeavyWorkersScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        Integer heavyJobExecutorsAllowed = Constants.MIN_JOB_EXECUTORS;
+        Integer heavyJobExecutorsAllowed = Properties.maxHeavyJobExecutorContainersAllowed;
         try {
             Integer value = (Integer) propertiesService.getValue(Constants.HEAVY_JOB_EXECUTORS_ALLOWED);
             if (value != null) heavyJobExecutorsAllowed=value;
             LOGGER.info("Max heavy jobExecutors parameter set to " + heavyJobExecutorsAllowed);
         } catch (DatabaseException e) {
-            LOGGER.error("Max heavy jobExecutors parameter set to " + heavyJobExecutorsAllowed + ", because of error");
+            LOGGER.error("Max heavy jobExecutors parameter set to " + heavyJobExecutorsAllowed + ", because of database error");
         }
         workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherHeavyJobExecServiceId, true, JobExecutorType.Heavy, heavyJobExecutorsAllowed);
     }

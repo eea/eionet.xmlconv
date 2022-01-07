@@ -51,13 +51,13 @@ public class LightWorkersScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        Integer lightJobExecutorsAllowed = Constants.MIN_JOB_EXECUTORS;
+        Integer lightJobExecutorsAllowed = Properties.maxLightJobExecutorContainersAllowed;
         try {
             Integer value = (Integer) propertiesService.getValue(Constants.LIGHT_JOB_EXECUTORS_ALLOWED);
             if (value != null) lightJobExecutorsAllowed=value;
             LOGGER.info("Max light jobExecutors parameter set to " + lightJobExecutorsAllowed);
         } catch (DatabaseException e) {
-            LOGGER.error("Max light jobExecutors parameter set to " + lightJobExecutorsAllowed + ", because of error");
+            LOGGER.error("Max light jobExecutors parameter set to " + lightJobExecutorsAllowed + ", because of database error");
         }
         workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherLightJobExecServiceId, false, JobExecutorType.Light, lightJobExecutorsAllowed);
     }
