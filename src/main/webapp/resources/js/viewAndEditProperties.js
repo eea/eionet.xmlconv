@@ -8,7 +8,6 @@ var app = new Vue({
             dialogDelete: false,
             select: null,
             loading: true,
-            readonly: false,
             types: [
                 "Integer",
                 "Long",
@@ -24,7 +23,6 @@ var app = new Vue({
                 { text: "Actions", value: "actions", sortable: false },
             ],
             properties: [],
-            editedIndex: -1,
             editedItem: {
                 id: '',
                 name: '',
@@ -41,12 +39,6 @@ var app = new Vue({
             },
         };
     },
-    computed: {
-        formTitle() {
-            return this.editedIndex === -1 ? 'New Property' : 'Edit Property'
-        },
-    },
-
     watch: {
         deep: true,
         dialog(val) {
@@ -59,14 +51,11 @@ var app = new Vue({
 
     methods: {
         editItem(item) {
-            this.editedIndex = this.properties.indexOf(item)
             this.editedItem = Object.assign({}, item)
-            this.readonly = true;
             this.dialog = true
         },
 
         deleteItem(item) {
-            this.editedIndex = this.properties.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
         },
@@ -82,7 +71,6 @@ var app = new Vue({
             this.dialog = false
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
             })
         },
 
@@ -90,7 +78,6 @@ var app = new Vue({
             this.dialogDelete = false
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
             })
         },
 

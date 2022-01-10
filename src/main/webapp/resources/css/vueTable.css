@@ -17,3 +17,18 @@
 .theme--light.v-data-table .v-data-table-header th.sortable.active {
     color: #FFFFFF;
 }
+
+.v-text-field input {
+    border: 0 none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: none;
+    margin: 0;
+}
+
+.v-text-field input:focus{
+    outline: none;
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
