@@ -902,6 +902,7 @@
         </modifySql>
     </changeSet>
     <changeSet author="favvmary" id="rev-81">
+        <comment>Added maxLightJobExecutorContainersAllowed and maxHeavyJobExecutorContainersAllowed properties</comment>
         <sql>
             INSERT INTO PROPERTIES VALUES (1,'maxLightJobExecutorContainersAllowed',0,'1','maximum number of light JobExecutor containers to run on rancher');
             INSERT INTO PROPERTIES VALUES (2,'maxHeavyJobExecutorContainersAllowed',0,'1','maximum number of heavy JobExecutor containers to run on rancher');
