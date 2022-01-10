@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class LightWorkersScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightWorkersScheduledTasks.class);
+    private static final String MAX_LIGHT_JOB_EXECUTORS_ALLOWED = "maxLightJobExecutorContainersAllowed";
 
     private ServicesRancherApiOrchestrator servicesOrchestrator;
     private JobExecutorService jobExecutorService;
@@ -53,7 +54,7 @@ public class LightWorkersScheduledTasks {
         }
         Integer lightJobExecutorsAllowed = Properties.maxLightJobExecutorContainersAllowed;
         try {
-            Integer value = (Integer) propertiesService.getValue(Constants.LIGHT_JOB_EXECUTORS_ALLOWED);
+            Integer value = (Integer) propertiesService.getValue(MAX_LIGHT_JOB_EXECUTORS_ALLOWED);
             if (value != null) lightJobExecutorsAllowed=value;
             LOGGER.info("Max light jobExecutors parameter set to " + lightJobExecutorsAllowed);
         } catch (DatabaseException e) {

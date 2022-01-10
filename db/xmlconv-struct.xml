@@ -903,8 +903,8 @@
     </changeSet>
     <changeSet author="favvmary" id="rev-81">
         <sql>
-            INSERT INTO PROPERTIES VALUES (1,'lightJobExecutorsAllowed',0,'1','maximum number of light JobExecutor containers to run on rancher');
-            INSERT INTO PROPERTIES VALUES (2,'heavyJobExecutorsAllowed',0,'1','maximum number of heavy JobExecutor containers to run on rancher');
+            INSERT INTO PROPERTIES VALUES (1,'maxLightJobExecutorContainersAllowed',0,'1','maximum number of light JobExecutor containers to run on rancher');
+            INSERT INTO PROPERTIES VALUES (2,'maxHeavyJobExecutorContainersAllowed',0,'1','maximum number of heavy JobExecutor containers to run on rancher');
         </sql>
     </changeSet>
 </databaseChangeLog>

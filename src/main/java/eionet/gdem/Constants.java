@@ -161,7 +161,4 @@ public interface Constants {
     String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_STATUS = "FAILED";
     String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_MESSAGE = "Script execution failed, e.g. due to memory problems or unresponsive third party web service.";
     String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT = "";
-
-    String LIGHT_JOB_EXECUTORS_ALLOWED = "lightJobExecutorsAllowed";
-    String HEAVY_JOB_EXECUTORS_ALLOWED = "heavyJobExecutorsAllowed";
 }

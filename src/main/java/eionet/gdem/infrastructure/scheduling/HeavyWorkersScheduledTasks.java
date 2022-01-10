@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class HeavyWorkersScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeavyWorkersScheduledTasks.class);
+    private static final String MAX_HEAVY_JOB_EXECUTORS_ALLOWED = "maxHeavyJobExecutorContainersAllowed";
 
     private WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService;
     private ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator;
@@ -62,7 +63,7 @@ public class HeavyWorkersScheduledTasks {
         }
         Integer heavyJobExecutorsAllowed = Properties.maxHeavyJobExecutorContainersAllowed;
         try {
-            Integer value = (Integer) propertiesService.getValue(Constants.HEAVY_JOB_EXECUTORS_ALLOWED);
+            Integer value = (Integer) propertiesService.getValue(MAX_HEAVY_JOB_EXECUTORS_ALLOWED);
             if (value != null) heavyJobExecutorsAllowed=value;
             LOGGER.info("Max heavy jobExecutors parameter set to " + heavyJobExecutorsAllowed);
         } catch (DatabaseException e) {
