@@ -77,6 +77,9 @@
         <a href="${form.schema}" title="${form.schema}">
           ${form.schema}
         </a>&#160;
+        <br><a href="/schemas/${form.schemaId}">
+          Go to Converters schema page
+        </a>&#160;
       </td>
     </tr>
     <tr>
