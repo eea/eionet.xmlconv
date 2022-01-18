@@ -46,11 +46,11 @@ public class QueryRepositoryTestIT {
 
     @Test
     public void testSave() {
-        QueryEntry queryEntry = new QueryEntry().setQueryId(55).setShortName("test").setQueryFileName("queryFileName").setSchemaId(100)
+        QueryEntry queryEntry = new QueryEntry().setShortName("test").setQueryFileName("queryFileName").setSchemaId(100)
                 .setResultType("HTML").setScriptType("xquery 1.0").setVersion(4).setMarkedHeavy(false);
         QueryEntry result = queryRepository.save(queryEntry);
-        assertThat(result.getQueryId(), is(55));
         assertThat(result.getShortName(), is("test"));
+        assertThat(result.getQueryFileName(), is("queryFileName"));
     }
 }
 
