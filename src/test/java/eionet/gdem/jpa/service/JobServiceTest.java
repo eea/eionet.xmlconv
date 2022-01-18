@@ -72,7 +72,7 @@ public class JobServiceTest {
 
     @Test
     public void testUpdateJob() throws DatabaseException {
-        doNothing().when(jobRepository).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyBoolean(), anyInt());
+        doNothing().when(jobRepository).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyBoolean(), anyLong(), anyInt());
         jobServiceImpl.updateJob(0, internalStatus, "demoExecutor", timestamp, jobEntry);
         verify(jobServiceImpl).updateJob(0, internalStatus, "demoExecutor", timestamp, jobEntry);
     }
