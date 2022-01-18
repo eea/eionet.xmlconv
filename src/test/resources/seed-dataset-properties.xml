@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <PROPERTIES ID="1" NAME="test1" TYPE="3" VALUE="testValue" DESCRIPTION="a string value" />
+  <PROPERTIES ID="2" NAME="test2" TYPE="0" VALUE="5" DESCRIPTION="an integer value" />
+</dataset>

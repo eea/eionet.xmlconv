@@ -1,10 +1,11 @@
 package eionet.gdem.infrastructure.scheduling;
 
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
-import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.PropertiesService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
@@ -22,17 +23,20 @@ import java.util.stream.Collectors;
 public class LightWorkersScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightWorkersScheduledTasks.class);
+    private static final String MAX_LIGHT_JOB_EXECUTORS_ALLOWED = "maxLightJobExecutorContainersAllowed";
 
     private ServicesRancherApiOrchestrator servicesOrchestrator;
     private JobExecutorService jobExecutorService;
     private WorkersOrchestrationSharedService workersOrchestrationSharedService;
+    private PropertiesService propertiesService;
 
     @Autowired
     public LightWorkersScheduledTasks(ServicesRancherApiOrchestrator servicesOrchestrator, JobExecutorService jobExecutorService,
-                                      WorkersOrchestrationSharedService workersOrchestrationSharedService) {
+                                      WorkersOrchestrationSharedService workersOrchestrationSharedService, PropertiesService propertiesService) {
         this.servicesOrchestrator = servicesOrchestrator;
         this.jobExecutorService = jobExecutorService;
         this.workersOrchestrationSharedService = workersOrchestrationSharedService;
+        this.propertiesService = propertiesService;
     }
 
     /**
@@ -48,7 +52,15 @@ public class LightWorkersScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherLightJobExecServiceId, false, JobExecutorType.Light, Properties.maxLightJobExecutorContainersAllowed);
+        Integer lightJobExecutorsAllowed = Properties.maxLightJobExecutorContainersAllowed;
+        try {
+            Integer value = (Integer) propertiesService.getValue(MAX_LIGHT_JOB_EXECUTORS_ALLOWED);
+            if (value != null) lightJobExecutorsAllowed=value;
+            LOGGER.info("Max light jobExecutors parameter set to " + lightJobExecutorsAllowed);
+        } catch (DatabaseException e) {
+            LOGGER.error("Max light jobExecutors parameter set to " + lightJobExecutorsAllowed + ", because of database error");
+        }
+        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherLightJobExecServiceId, false, JobExecutorType.Light, lightJobExecutorsAllowed);
     }
 
     /**

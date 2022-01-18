@@ -9,7 +9,7 @@ import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.jpa.service.QueryMetadataService;
+import eionet.gdem.jpa.service.PropertiesService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
@@ -28,22 +28,23 @@ import java.util.stream.Collectors;
 public class HeavyWorkersScheduledTasks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeavyWorkersScheduledTasks.class);
+    private static final String MAX_HEAVY_JOB_EXECUTORS_ALLOWED = "maxHeavyJobExecutorContainersAllowed";
 
     private WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService;
     private ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator;
     private JobExecutorService jobExecutorService;
     private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
-    private QueryMetadataService queryMetadataService;
     private JobService jobService;
+    private PropertiesService propertiesService;
 
     @Autowired
     public HeavyWorkersScheduledTasks(WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService, ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator, JobExecutorService jobExecutorService,
-                                       WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, QueryMetadataService queryMetadataService, JobService jobService) {
+                                       WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, JobService jobService, PropertiesService propertiesService) {
         this.workersOrchestrationSharedService = workersOrchestrationSharedService;
         this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
         this.jobExecutorService = jobExecutorService;
         this.workerAndJobStatusHandlerService = workerAndJobStatusHandlerService;
-        this.queryMetadataService = queryMetadataService;
+        this.propertiesService = propertiesService;
         this.jobService = jobService;
     }
 
@@ -60,7 +61,15 @@ public class HeavyWorkersScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherHeavyJobExecServiceId, true, JobExecutorType.Heavy, Properties.maxHeavyJobExecutorContainersAllowed);
+        Integer heavyJobExecutorsAllowed = Properties.maxHeavyJobExecutorContainersAllowed;
+        try {
+            Integer value = (Integer) propertiesService.getValue(MAX_HEAVY_JOB_EXECUTORS_ALLOWED);
+            if (value != null) heavyJobExecutorsAllowed=value;
+            LOGGER.info("Max heavy jobExecutors parameter set to " + heavyJobExecutorsAllowed);
+        } catch (DatabaseException e) {
+            LOGGER.error("Max heavy jobExecutors parameter set to " + heavyJobExecutorsAllowed + ", because of database error");
+        }
+        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherHeavyJobExecServiceId, true, JobExecutorType.Heavy, heavyJobExecutorsAllowed);
     }
 
     /**

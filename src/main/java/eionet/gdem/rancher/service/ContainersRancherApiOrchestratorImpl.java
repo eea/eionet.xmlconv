@@ -186,7 +186,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
                     return;
                 } catch (ContainerScalingFailedException e) {
                     LOGGER.error("Scaling down by 1 failed: " + e.getMessage());
-                    if (++scaleDownCount == maxRetries) ;
+                    if (++scaleDownCount == maxRetries) return;
                 }
             }
         } catch (Exception e) {

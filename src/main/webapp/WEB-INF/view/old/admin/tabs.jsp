@@ -1,3 +1,4 @@
+<%@ taglib prefix="th" uri="/WEB-INF/eurodyn.tld" %>
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <tiles:importAttribute name="selectedTab"/>
@@ -14,6 +15,9 @@
     </ed:tabItem>
     <ed:tabItem selectedTab="${selectedTab}" href="/admin/jobExecutorInstancesView" id="jobExecutorInstancesView" title="label.admin.jobExecutorInstancesView">
       <spring:message code="label.admin.jobExecutorInstancesView"/>
+    </ed:tabItem>
+    <ed:tabItem selectedTab="${selectedTab}" href="/new/admin/viewAndEditProperties" id="viewAndEditProperties" title="label.admin.properties">
+      <spring:message code="label.admin.properties"/>
     </ed:tabItem>
   </ul>
 </div>

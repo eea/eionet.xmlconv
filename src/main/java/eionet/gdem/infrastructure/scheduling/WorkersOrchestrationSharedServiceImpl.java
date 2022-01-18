@@ -54,7 +54,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     public void createWorkers(String serviceId, Integer newWorkers, Integer maxJobExecutorsAllowed) throws RancherApiException {
         List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
         Integer scale = newWorkers;
-        if (instances.size() == maxJobExecutorsAllowed) {
+        if (instances.size() >= maxJobExecutorsAllowed) {
             return;
         } else if (instances.size() + newWorkers > maxJobExecutorsAllowed) {
             scale = maxJobExecutorsAllowed - instances.size();
