@@ -36,7 +36,7 @@ public class JobServiceImpl implements JobService {
             LOGGER.info("### Job with id=" + jobId + " has changed status to " + status + ".");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing status of job with id " + jobId + ", " + e.toString());
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 
@@ -47,7 +47,7 @@ public class JobServiceImpl implements JobService {
             LOGGER.info("### Job with id=" + jobId + " has changed status to " + status + " and internal status to " +  internalStatus + ".");
         } catch (Exception e) {
             LOGGER.error("Database exception when changing statuses of job with id " + jobId + ", " + e.toString());
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 
@@ -57,18 +57,18 @@ public class JobServiceImpl implements JobService {
             jobRepository.updateJob(nStatus, intStatus, jobExecutorName, timestamp, jobEntry.isHeavy(), jobEntry.getFmeJobId(), jobEntry.getId());
         } catch (Exception e) {
             LOGGER.error("Database exception when changing internal status of job with id " + jobEntry.getId() + ", " + e.toString());
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public JobEntry findById(Integer id) {
+    public JobEntry findById(Integer id) throws DatabaseException {
         JobEntry jobEntry = null;
         try {
             jobEntry = jobRepository.findById(id);
         } catch (Exception e) {
-            LOGGER.info("Exception during retrieval of job with id " + id);
-            throw e;
+            LOGGER.info("Database exception during retrieval of job with id " + id);
+            throw new DatabaseException(e);
         }
         return jobEntry;
     }
@@ -89,13 +89,23 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void updateWorkerRetries(Integer workerRetries, Timestamp timestamp, Integer jobId) {
-        jobRepository.updateWorkerRetries(workerRetries, timestamp, jobId);
+    public void updateWorkerRetries(Integer workerRetries, Timestamp timestamp, Integer jobId) throws DatabaseException {
+        try {
+            jobRepository.updateWorkerRetries(workerRetries, timestamp, jobId);
+        } catch (Exception e) {
+            LOGGER.error("Database exception while trying to update worker retries for job with id " + jobId);
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public void updateHeavyRetriesOnFailure(Integer heavyRetries, Timestamp timestamp, Integer jobId) {
-        jobRepository.updateHeavyRetriesOnFailure(heavyRetries, timestamp, jobId);
+    public void updateHeavyRetriesOnFailure(Integer heavyRetries, Timestamp timestamp, Integer jobId) throws DatabaseException {
+        try {
+            jobRepository.updateHeavyRetriesOnFailure(heavyRetries, timestamp, jobId);
+        } catch (Exception e) {
+            LOGGER.error("Database exception while trying to update heavyRetriesOnFailure for job with id " + jobId);
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
@@ -104,13 +114,25 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Integer getRetryCounter(Integer jobId) {
-        return jobRepository.getRetryCounter(jobId);
+    public Integer getRetryCounter(Integer jobId) throws DatabaseException {
+        Integer result;
+        try {
+            result = jobRepository.getRetryCounter(jobId);
+        } catch (Exception e) {
+            LOGGER.error("Database exception while retrieving retryCounter for job with id " + jobId);
+            throw new DatabaseException(e);
+        }
+        return result;
     }
 
     @Override
-    public void updateJobInfo(Integer nStatus, String instance, Timestamp timestamp, Integer retryCounter, Integer jobId) {
-        jobRepository.updateJobInfo(nStatus, instance, timestamp, retryCounter, jobId);
+    public void updateJobInfo(Integer nStatus, String instance, Timestamp timestamp, Integer retryCounter, Integer jobId) throws DatabaseException {
+        try {
+            jobRepository.updateJobInfo(nStatus, instance, timestamp, retryCounter, jobId);
+        } catch (Exception e) {
+            LOGGER.error("Database exception while trying to update job information for job with id " + jobId);
+            throw new DatabaseException(e);
+        }
     }
 }
 

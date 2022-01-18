@@ -27,8 +27,8 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
         try {
             repository.save(entry);
         } catch (Exception e) {
-            LOGGER.error("Database exception when saving into JOB_EXECUTOR_HISTORY table worker with name " + entry.getName());
-            throw new DatabaseException(e.getMessage());
+            LOGGER.error("Database exception when saving into JOB_EXECUTOR_HISTORY table worker with name " + entry.getName() + " and job id " + entry.getJobId());
+            throw new DatabaseException(e);
         }
     }
 
@@ -38,7 +38,7 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
             return repository.findByContainerId(containerId);
         } catch (Exception e) {
             LOGGER.error("Database exception when retrieving history for container with id " + containerId);
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 
@@ -48,7 +48,7 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
             return repository.findByJobId(Integer.valueOf(jobId));
         } catch (Exception e) {
             LOGGER.error("Database exception when retrieving history for job with id " + jobId);
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 }

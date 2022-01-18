@@ -94,14 +94,21 @@ public class JobHistoryServiceImpl implements JobHistoryService {
             repository.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobEntry.getId() + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
-            LOGGER.error("Database exception when changing status of job with id " + jobEntry.getId() + ", " + e.toString());
-            throw new DatabaseException(e.getMessage());
+            LOGGER.error("Database exception while updating history of job with id " + jobEntry.getId() + ", " + e.toString());
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public JobHistoryEntry save(JobHistoryEntry jobHistoryEntry) {
-        return repository.save(jobHistoryEntry);
+    public JobHistoryEntry save(JobHistoryEntry jobHistoryEntry) throws DatabaseException {
+        JobHistoryEntry result;
+        try {
+            result = repository.save(jobHistoryEntry);
+        } catch (Exception e) {
+            LOGGER.error("Database exception while saving job history entry for job with id " + jobHistoryEntry.getJobName());
+            throw new DatabaseException(e);
+        }
+        return result;
     }
 }
 

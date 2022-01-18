@@ -3,8 +3,8 @@ package eionet.gdem.web.spring.workqueue;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.qa.IQueryDao;
-import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.impl.JobEntryAndJobHistoryEntriesService;
@@ -276,7 +276,7 @@ public class WorkqueueController {
 
     @PostMapping(value ="/getJobDetails/{jobId}")
     @ResponseBody
-    public JobEntryAndJobHistoryEntriesObject getJobDetails(@PathVariable String jobId) {
+    public JobEntryAndJobHistoryEntriesObject getJobDetails(@PathVariable String jobId) throws DatabaseException {
         return jobEntryAndJobHistoryEntriesService.getJobEntryAndJobHistoryEntriesOfJob(jobId);
     }
 }
