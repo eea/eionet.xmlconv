@@ -87,3 +87,7 @@ It should be set to false locally so as not to run.
 To properly configure rabbitmq stack, a file rabbitmq.conf needs to be created in the directory /etc/rabbitmq/ of the rabbitmq stack. 
 The file should contain the line "consumer_timeout = 16200000", in order to increase the default timeout value that a rabbitmq consumer 
 should ack its delivery before the channel is closed.
+
+#### Converters rancher stack configuration
+When converters is deployed for the first time, the properties maxLightJobExecutorContainersAllowed and maxHeavyJobExecutorContainersAllowed are added in database
+table "PROPERTIES". These properties should then be configured by an admin user from UI tab  "Admin tools" -> "View and Edit Properties" according to needs.
