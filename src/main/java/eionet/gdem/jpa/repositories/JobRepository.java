@@ -5,9 +5,11 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.QueryHint;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     @Query(value = "update T_XQJOBS set N_STATUS = :nStatus, INTERNAL_STATUS_ID = :internalStatus, INSTANCE= :instance, TIME_STAMP= :timestamp where JOB_ID = :jobId", nativeQuery=true)
     void updateJobNStatusAndInternalStatus(@Param("nStatus") Integer nStatus, @Param("internalStatus") Integer internalStatus, @Param("instance") String instance, @Param("timestamp") Timestamp timestamp, @Param("jobId") Integer jobId);
 
+    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="5000")})
     @Modifying
     @Query(value = "update T_XQJOBS set N_STATUS= :nStatus, INTERNAL_STATUS_ID= :intStatus, JOB_EXECUTOR_NAME= :jobExecutorName, TIME_STAMP= :timestamp, IS_HEAVY= :isHeavy , FME_JOB_ID= :fmeJobId where JOB_ID = :jobId", nativeQuery=true)
     void updateJob(@Param("nStatus") Integer nStatus, @Param("intStatus") InternalSchedulingStatus intStatus, @Param("jobExecutorName") String jobExecutorName, @Param("timestamp") Timestamp timestamp, @Param("isHeavy") boolean isHeavy, @Param("fmeJobId") Long fmeJobId, @Param("jobId") Integer jobId);
