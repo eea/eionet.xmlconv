@@ -56,7 +56,7 @@ public class JobServiceImpl implements JobService {
         try {
             jobRepository.updateJob(nStatus, intStatus, jobExecutorName, timestamp, jobEntry.isHeavy(), jobEntry.getFmeJobId(), jobEntry.getId());
         } catch (Exception e) {
-            LOGGER.error("Database exception when changing internal status of job with id " + jobEntry.getId() + ", " + e.toString());
+            LOGGER.error("Database exception when updating job with id " + jobEntry.getId() + ", " + e.toString());
             throw new DatabaseException(e);
         }
     }
