@@ -114,7 +114,8 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED_FME_JOB_ID) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received FME job id " + fmeJobId + " by worker with container name " + response.getJobExecutorName());
                 findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
-                workerAndJobStatusHandlerService.updateJobAndJobExecTables(Constants.XQ_PROCESSING, internalStatus, jobEntry, jobExecutor, jobExecutorHistory);
+                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_PROCESSING, internalStatus, jobEntry);
+                workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
             }
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing: ", e);
