@@ -4,6 +4,7 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.XQScript;
@@ -68,7 +69,7 @@ public class JobOnDemandHandlerServiceTest {
     }
 
     @Test
-    public void testCreateJobAndSendToRabbitMQ() throws XMLConvException {
+    public void testCreateJobAndSendToRabbitMQ() throws XMLConvException, DatabaseException {
         when(jobService.save(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryJpaService.findByQueryId(0)).thenReturn(null);

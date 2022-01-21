@@ -76,13 +76,6 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateJobAndJobExecTables(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
-        this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
-        this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
     public void handleCancelledJob(JobEntry jobEntry, Integer workerStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
         if (jobEntry.getJobExecutorName()!=null) {
             JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());

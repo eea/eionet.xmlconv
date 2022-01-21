@@ -8,6 +8,7 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.Entities.QueryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.QaScriptView;
@@ -88,7 +89,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
         return jobEntry;
     }
 
-    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus, boolean isHeavy) {
+    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus, boolean isHeavy) throws DatabaseException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
         jobHistoryEntry.setIntSchedulingStatus(internalStatus);
         jobHistoryEntry.setJobType(Constants.ON_DEMAND_TYPE);

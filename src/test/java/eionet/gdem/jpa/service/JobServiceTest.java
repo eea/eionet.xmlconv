@@ -78,7 +78,7 @@ public class JobServiceTest {
     }
 
     @Test
-    public void testFindById() {
+    public void testFindById() throws DatabaseException {
         when(jobRepository.findById(anyInt())).thenReturn(jobEntry);
         JobEntry result = jobServiceImpl.findById(1);
         assertThat(result.getJobExecutorName(), is("demoExecutor"));
@@ -106,14 +106,14 @@ public class JobServiceTest {
     }
 
     @Test
-    public void testUpdateWorkerRetries() {
+    public void testUpdateWorkerRetries() throws DatabaseException {
         doNothing().when(jobRepository).updateWorkerRetries(anyInt(), any(Timestamp.class), anyInt());
         jobServiceImpl.updateWorkerRetries(2, timestamp, 1);
         verify(jobServiceImpl).updateWorkerRetries(2, timestamp, 1);
     }
 
     @Test
-    public void testUpdateHeavyRetriesOnFailure() {
+    public void testUpdateHeavyRetriesOnFailure() throws DatabaseException {
         doNothing().when(jobRepository).updateHeavyRetriesOnFailure(anyInt(), any(Timestamp.class), anyInt());
         jobServiceImpl.updateHeavyRetriesOnFailure(2, timestamp, 1);
         verify(jobServiceImpl).updateHeavyRetriesOnFailure(2, timestamp, 1);
@@ -127,7 +127,7 @@ public class JobServiceTest {
     }
 
     @Test
-    public void testGetRetryCounter() {
+    public void testGetRetryCounter() throws DatabaseException {
         when(jobRepository.getRetryCounter(1)).thenReturn(2);
         Integer result = jobServiceImpl.getRetryCounter(1);
         assertThat(result, is(2));

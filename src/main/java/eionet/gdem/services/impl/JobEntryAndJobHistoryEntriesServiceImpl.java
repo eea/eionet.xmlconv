@@ -2,17 +2,13 @@ package eionet.gdem.services.impl;
 
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.web.spring.workqueue.JobEntryAndJobHistoryEntriesObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -28,7 +24,7 @@ public class JobEntryAndJobHistoryEntriesServiceImpl implements JobEntryAndJobHi
     }
 
     @Override
-    public JobEntryAndJobHistoryEntriesObject getJobEntryAndJobHistoryEntriesOfJob(String jobId) {
+    public JobEntryAndJobHistoryEntriesObject getJobEntryAndJobHistoryEntriesOfJob(String jobId) throws DatabaseException {
         JobEntry jobEntry = jobService.findById(Integer.parseInt(jobId));
         jobEntry.setFromDate(jobEntry.getTimestamp().toLocalDateTime().minusDays(1).toString());
         jobEntry.setToDate(jobEntry.getTimestamp().toLocalDateTime().plusDays(1).toString());

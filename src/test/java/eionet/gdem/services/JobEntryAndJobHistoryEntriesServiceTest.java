@@ -2,6 +2,7 @@ package eionet.gdem.services;
 
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.services.impl.JobEntryAndJobHistoryEntriesServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
@@ -45,7 +46,7 @@ public class JobEntryAndJobHistoryEntriesServiceTest {
     }
 
     @Test
-    public void testGetJobEntryAndJobHistoryEntriesOfJob() {
+    public void testGetJobEntryAndJobHistoryEntriesOfJob() throws DatabaseException {
         JobEntry jobEntry = new JobEntry().setId(4).setTimestamp(new Timestamp(new Date().getTime()));
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry();
         List<JobHistoryEntry> jobHistoryEntries = new ArrayList<>();

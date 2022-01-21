@@ -3,6 +3,7 @@ package eionet.gdem.rabbitmq.listeners;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
@@ -45,7 +46,7 @@ public class WorkersJobsResultsMessageReceiverTest {
     }
 
     @Test
-    public void testOnMessageReadyJob() throws JsonProcessingException {
+    public void testOnMessageReadyJob() throws JsonProcessingException, DatabaseException {
         XQScript xqScript = createXqScript();
 
         WorkerJobInfoRabbitMQResponseMessage response = createRabbitMQResponse(xqScript, false);
@@ -57,7 +58,7 @@ public class WorkersJobsResultsMessageReceiverTest {
     }
 
     @Test
-    public void testOnMessageJobFailure() throws JsonProcessingException {
+    public void testOnMessageJobFailure() throws JsonProcessingException, DatabaseException {
         XQScript xqScript = createXqScript();
 
         WorkerJobInfoRabbitMQResponseMessage response = createRabbitMQResponse(xqScript, true);

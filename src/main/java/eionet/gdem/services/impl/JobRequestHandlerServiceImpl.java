@@ -7,6 +7,7 @@ import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.*;
 import eionet.gdem.qa.utils.ScriptUtils;
@@ -170,6 +171,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         } catch (URISyntaxException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
+        } catch (DatabaseException e) {
+            LOGGER.error("Database exception: ", e);
+            throw new XMLConvException(e.getMessage());
         }
         return jobId;
     }
@@ -219,7 +223,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         return newJobId;
     }
 
-    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId, String markedHeavy) throws URISyntaxException, XMLConvException, SQLException, CreateRabbitMQMessageException {
+    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId, String markedHeavy) throws URISyntaxException, XMLConvException, SQLException, CreateRabbitMQMessageException, DatabaseException {
         // get the trusted URL from source file adapter
         sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
         long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());

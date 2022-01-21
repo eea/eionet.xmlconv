@@ -34,7 +34,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             jobExecutor = jobExecutorRepository.findByName(jobExecutorName);
         } catch (Exception e) {
             LOGGER.info("Database exception during retrieval of jobExecutor with name " + jobExecutorName);
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
         return jobExecutor;
     }
@@ -48,8 +48,8 @@ public class JobExecutorServiceImpl implements JobExecutorService {
                 jobExecutorRepository.save(jobExecutor);
             }
         } catch (Exception e) {
-            LOGGER.error("Database exception when updating worker with name " + jobExecutor.getName() + ", " + e.toString());
-            throw new DatabaseException(e.getMessage());
+            LOGGER.error("Database exception when updating worker with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + e.toString());
+            throw new DatabaseException(e);
         }
     }
 
@@ -59,7 +59,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             return jobExecutorRepository.findAll();
         } catch (Exception e) {
             LOGGER.error("Database exception when retrieving entries from JOB_EXECUTOR table");
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 
@@ -70,7 +70,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             this.jobExecutorRepository.deleteByContainerId(containerId);
         } catch (Exception e) {
             LOGGER.error("Database exception when deleting jobExecutor with id " + containerId);
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 
@@ -90,7 +90,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             jobExecutorRepository.deleteByName(name);
         } catch (Exception e) {
             LOGGER.error("Database exception while trying to delete jobExecutor with name " + name);
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 
@@ -100,7 +100,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             return jobExecutorRepository.findJobExecutorsByJobId(jobId);
         } catch (Exception e) {
             LOGGER.error("Database exception while trying to retrieve JOB_EXECUTOR entry for job with id " + jobId);
-            throw new DatabaseException(e.getMessage());
+            throw new DatabaseException(e);
         }
     }
 }

@@ -61,7 +61,7 @@ public class JobRepositoryTestIT {
 
     @Test
     @Transactional
-    public void testUpdateInternalStatus() {
+    public void testUpdateJob() {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(2);
         jobRepository.updateJob(3, intStatus, null, new Timestamp(new Date().getTime()), true, null, 1);
         JobEntry jobEntry = jobRepository.findById(1);
