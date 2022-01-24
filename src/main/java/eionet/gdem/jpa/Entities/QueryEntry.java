@@ -1,6 +1,7 @@
 package eionet.gdem.jpa.Entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "T_QUERY")
@@ -52,6 +53,10 @@ public class QueryEntry {
 
     @Column(name = "MARKED_HEAVY_REASON_OTHER")
     private String markedHeavyReasonOther;
+
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="RULE_ID")
+    private List<ScriptRulesEntry> rulesEntryList;
 
     public QueryEntry() {
     }
@@ -192,6 +197,15 @@ public class QueryEntry {
 
     public QueryEntry setMarkedHeavyReasonOther(String markedHeavyReasonOther) {
         this.markedHeavyReasonOther = markedHeavyReasonOther;
+        return this;
+    }
+
+    public List<ScriptRulesEntry> getRulesEntryList() {
+        return rulesEntryList;
+    }
+
+    public QueryEntry setRulesEntryList(List<ScriptRulesEntry> rulesEntryList) {
+        this.rulesEntryList = rulesEntryList;
         return this;
     }
 }

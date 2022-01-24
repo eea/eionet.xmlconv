@@ -928,4 +928,32 @@
             INSERT INTO PROPERTIES VALUES (2,'maxHeavyJobExecutorContainersAllowed',0,'1','maximum number of heavy JobExecutor containers to run on rancher');
         </sql>
     </changeSet>
+    <changeSet author="favvmary" id="rev-82">
+        <comment> Table for Storing script rules</comment>
+        <createTable tableName="SCRIPT_RULES">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="QUERY_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_QUERY_ID"
+                             references="T_QUERY(QUERY_ID)"/>
+            </column>
+            <column name="FIELD" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ENABLED" type="BOOLEAN"></column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
 </databaseChangeLog>

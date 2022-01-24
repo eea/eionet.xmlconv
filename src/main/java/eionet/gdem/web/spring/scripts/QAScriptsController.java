@@ -7,6 +7,8 @@ import eionet.gdem.dto.BackupDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.*;
+import eionet.gdem.jpa.enums.ScriptRuleField;
+import eionet.gdem.jpa.enums.ScriptRuleType;
 import eionet.gdem.jpa.repositories.QueryMetadataRepository;
 import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.jpa.service.QueryJpaService;
@@ -235,6 +237,10 @@ public class QAScriptsController {
             }
 
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
+            ScriptRulesEntry scriptRulesEntry = new ScriptRulesEntry();
+            model.addAttribute("scriptRulesEntry", scriptRulesEntry);
+            model.addAttribute("scriptRuleFieldValues", ScriptRuleField.values());
+            model.addAttribute("scriptRuleTypeValues", ScriptRuleType.values());
 
         } catch (DCMException e) {
             throw new RuntimeException("QA Script form error: " + messageService.getMessage(e.getErrorCode()));
