@@ -956,4 +956,20 @@
             <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
         </modifySql>
     </changeSet>
+    <changeSet author="favvmary" id="rev-83">
+        <comment>
+            Added column RULE_MATCH to T_QUERY table
+        </comment>
+        <addColumn tableName="T_QUERY">
+            <column name="RULE_MATCH" type="VARCHAR(20)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="favvmary" id="rev-84">
+        <comment>
+            Added column RULE_MATCH to QUERY_HISTORY table
+        </comment>
+        <addColumn tableName="QUERY_HISTORY">
+            <column name="RULE_MATCH" type="VARCHAR(20)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

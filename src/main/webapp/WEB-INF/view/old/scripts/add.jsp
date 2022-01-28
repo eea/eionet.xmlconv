@@ -108,7 +108,7 @@
     <div class="row" id="markedHeavyReason" style='display:none'>
       <div class="columns small-8">
         <form:select path="markedHeavyReason" id="selMarkedHeavyReason">
-          <form:option value="Long running script" id="longRunning" selected="true">Long running script</form:option>
+          <form:option value="Long running" id="longRunning" selected="true">Long running script</form:option>
           <form:option value="Out of memory" id="oom">Out of memory</form:option>
           <form:option value="Other" id="other">Other</form:option>
         </form:select>

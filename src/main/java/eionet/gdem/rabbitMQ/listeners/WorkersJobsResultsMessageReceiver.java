@@ -141,7 +141,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                     script.setMarkedHeavyReason(HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode());
                     script.setVersion(script.getVersion() + 1);
                     QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(CONVERTERS_NAME, script.getShortName(), script.getSchemaId().toString(), script.getResultType(), script.getDescription(), script.getScriptType(), script.getUpperLimit().toString(), script.getUrl(),
-                            script.isAsynchronousExecution(), script.isActive(), script.getQueryFileName(), script.getVersion(), true, HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode(), null);
+                            script.isAsynchronousExecution(), script.isActive(), script.getQueryFileName(), script.getVersion(), true, HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode(), null, script.getRuleMatch());
                     queryHistoryEntry.setQueryEntry(script);
                     queryAndQueryHistoryService.saveQueryAndQueryHistoryEntries(script, queryHistoryEntry);
                     LOGGER.info("Marked script with id " + script.getQueryId() + " as heavy because of Out of memory error");

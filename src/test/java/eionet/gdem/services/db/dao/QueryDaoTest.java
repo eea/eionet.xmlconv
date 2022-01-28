@@ -84,6 +84,7 @@ public class QueryDaoTest {
         String script_type = "xquery";
         String upperLimit = "100";
         String url = "http://url.com";
+        String ruleMatch = "all";
 
         // get all uploaded queries
         List queries = queryDao.listQueries(null);
@@ -120,7 +121,7 @@ public class QueryDaoTest {
         assertTrue(queryDao.checkQueryFile(queryId, queryFileName));
 
         // upadate query fileds
-        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type, upperLimit, url, false, 1, false, null, null);
+        queryDao.updateQuery(queryId, schemaID, shortName + "UPD", description + "UPD", queryFileName, content_type, script_type, upperLimit, url, false, 1, false, null, null, ruleMatch);
 
         // Get query by ID and test if all upadted fields are in DB
         query = queryDao.getQueryInfo(queryId);

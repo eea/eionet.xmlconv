@@ -34,6 +34,7 @@ public  final  class QaScriptView implements Serializable {
     public static final String MARKED_HEAVY = "markedHeavy";
     public static final String MARKED_HEAVY_REASON = "markedHeavyReason";
     public static final String MARKED_HEAVY_REASON_OTHER = "markedHeavyReasonOther";
+    public static final String RULE_MATCH = "ruleMatch";
 
     private QaScriptView() {
     }

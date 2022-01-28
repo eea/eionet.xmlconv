@@ -46,6 +46,7 @@ public class QAScript implements Serializable {
     Boolean markedHeavy;
     Integer markedHeavyReason;
     String markedHeavyReasonOther;
+    String ruleMatch;
     
     private boolean blocker = false;
 
@@ -230,5 +231,13 @@ public class QAScript implements Serializable {
 
     public void setMarkedHeavyReasonOther(String markedHeavyReasonOther) {
         this.markedHeavyReasonOther = markedHeavyReasonOther;
+    }
+
+    public String getRuleMatch() {
+        return ruleMatch;
+    }
+
+    public void setRuleMatch(String ruleMatch) {
+        this.ruleMatch = ruleMatch;
     }
 }

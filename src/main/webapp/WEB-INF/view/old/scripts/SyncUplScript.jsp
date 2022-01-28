@@ -41,6 +41,7 @@
   <form:hidden path="markedHeavy"/>
   <form:hidden path="markedHeavyReason"/>
   <form:hidden path="markedHeavyReasonOther"/>
+  <form:hidden path="ruleMatch"/>
 
 </form:form>
 

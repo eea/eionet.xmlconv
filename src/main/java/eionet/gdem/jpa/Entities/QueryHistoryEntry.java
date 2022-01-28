@@ -71,6 +71,9 @@ public class QueryHistoryEntry {
     @Column(name = "MARKED_HEAVY_REASON_OTHER")
     private String markedHeavyReasonOther;
 
+    @Column(name = "RULE_MATCH")
+    private String ruleMatch;
+
     public QueryHistoryEntry() {
     }
 
@@ -250,6 +253,15 @@ public class QueryHistoryEntry {
 
     public QueryHistoryEntry setMarkedHeavyReasonOther(String markedHeavyReasonOther) {
         this.markedHeavyReasonOther = markedHeavyReasonOther;
+        return this;
+    }
+
+    public String getRuleMatch() {
+        return ruleMatch;
+    }
+
+    public QueryHistoryEntry setRuleMatch(String ruleMatch) {
+        this.ruleMatch = ruleMatch;
         return this;
     }
 }

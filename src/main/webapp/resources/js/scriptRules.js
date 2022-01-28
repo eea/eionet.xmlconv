@@ -111,6 +111,7 @@ var app = new Vue({
             await axios.post("/restapi/scriptRules/add/" + this.queryId + "/", this.editedItem);
             this.close();
             this.readRuleEntries();
+            window.location.reload();
         },
 
         //Reading data from API method.
@@ -119,9 +120,9 @@ var app = new Vue({
             axios
                 .get("/restapi/scriptRules/get/" + this.queryId)
                 .then((response) => {
-                this.loading = false;
-                this.rules = response.data;
-            });
+                    this.loading = false;
+                    this.rules = response.data;
+                });
         }
     },
 

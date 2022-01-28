@@ -31,6 +31,7 @@ public class QAScriptSyncForm {
     private boolean markedHeavy;
     private String markedHeavyReason;
     private String markedHeavyReasonOther;
+    private String ruleMatch;
 
     /*@Override
     public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
@@ -198,7 +199,15 @@ public class QAScriptSyncForm {
         this.markedHeavyReasonOther = markedHeavyReasonOther;
     }
 
-/*    @Override
+    public String getRuleMatch() {
+        return ruleMatch;
+    }
+
+    public void setRuleMatch(String ruleMatch) {
+        this.ruleMatch = ruleMatch;
+    }
+
+    /*    @Override
     public void reset(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
         scriptId = null;
         url = null;

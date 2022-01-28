@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/view/old/taglibs.jsp" %>
 
 <style>
-  .in {
+  .borderFix {
     border-style: ridge;
   }
   .v-application > .v-application--wrap {
@@ -54,7 +54,7 @@
             ${form.schema}
         </div>
       </div>
-      <div class="row" style="display: block;">
+      <div class="row" style="display: block">
         <div class="columns small-4">
           <label class="question" for="txtShortName">
             <spring:message code="label.qascript.shortname"/>
@@ -71,29 +71,29 @@
           </label>
         </div>
         <div class="columns small-8">
-          <form:textarea class="in" path="description" rows="2" cols="30" style="width:400px" id="txtDescription"/>
+          <form:textarea class="borderFix" path="description" rows="2" cols="30" style="width:400px" id="txtDescription"/>
         </div>
       </div>
-      <div class="row" style="display: block;">
+      <div class="row" style="display: block">
         <div class="columns small-4">
           <label class="question" for="selContentType">
             <spring:message code="label.qascript.resulttype"/>
           </label>
         </div>
         <div class="columns small-8">
-          <form:select class="in" name="form" path="resultType" id="selContentType">
+          <form:select class="borderFix" name="form" path="resultType" id="selContentType">
             <form:options items="${resulttypes}" itemValue="convType" itemLabel="convType"/>
           </form:select>
         </div>
       </div>
-      <div class="row" style="display: block;">
+      <div class="row" style="display: block">
         <div class="columns small-4">
           <label class="question" for="selScriptType">
             <spring:message code="label.qascript.scripttype"/>
           </label>
         </div>
         <div class="columns small-8">
-          <form:select class="in" name="form" path="scriptType" id="selScriptType" disabled="false">
+          <form:select class="borderFix" name="form" path="scriptType" id="selScriptType" disabled="false">
             <form:options items="${scriptlangs}" itemValue="convType" itemLabel="convType"/>
           </form:select>
         </div>
@@ -124,13 +124,13 @@
 
     <fieldset class="fieldset">
       <legend><spring:message code="label.qascript.mark.heavy.section"/></legend>
-      <div class="row">
+      <div class="row" style="display: block">
         <div class="columns small-8">
           <form:radiobutton path="markedHeavy" name="heavyScript" id="light" value="false" checked="checked" onchange="hideDropdown()"/>
           <label for="light"><spring:message code="label.qascript.light"/></label>
         </div>
       </div>
-      <div class="row">
+      <div class="row" style="display:block">
         <div class="columns small-8">
           <form:radiobutton path="markedHeavy" name="heavyScript" id="heavy" value="true" onchange="showDropdown()"/>
           <label for="heavy"><spring:message code="label.qascript.heavy"/></label>
@@ -138,37 +138,49 @@
       </div>
       <c:choose>
         <c:when test="${form.markedHeavy == true}">
-          <div class="row" id="markedHeavyReason">
+          <div class="row" id="markedHeavyReason" style="display: block">
         </c:when>
         <c:otherwise>
-          <div class="row" id="markedHeavyReason" style='display:none'>
+          <div class="row" id="markedHeavyReason" style="display:none">
         </c:otherwise>
       </c:choose>
         <div class="columns small-8">
-          <form:select path="markedHeavyReason" id="selMarkedHeavyReason">
-            <form:option value="Long running script" id="longRunning" selected="true">Long running script</form:option>
+          <form:select path="markedHeavyReason" id="selMarkedHeavyReason" class="borderFix">
+            <form:option value="Long running" id="longRunning" selected="true">Long running script</form:option>
             <form:option value="Out of memory" id="oom">Out of memory</form:option>
             <form:option value="Other" id="other">Other</form:option>
           </form:select>
         </div>
       </div>
       <c:choose>
-        <c:when test="${form.markedHeavy == true}">
-          <div class="row" id="markedHeavyOtherReason">
+        <c:when test="${form.markedHeavyReason == 'Other'}">
+          <div class="row" id="markedHeavyOtherReason" style="display: block">
         </c:when>
         <c:otherwise>
-           <div class="row" id="markedHeavyOtherReason" style='display:none'>
+          <div class="row" id="markedHeavyOtherReason" style="display:none">
         </c:otherwise>
       </c:choose>
-        <div class="columns small-8">
-          <label for="markedHeavyOtherReasonTxt"><spring:message code="label.qascript.heavy.reason"/></label>
-          <form:input id="markedHeavyOtherReasonTxt" path="markedHeavyReasonOther" maxlength="200"/>
-        </div>
+      <div class="columns small-8">
+         <label for="markedHeavyOtherReasonTxt"><spring:message code="label.qascript.heavy.reason"/></label>
+         <form:input id="markedHeavyOtherReasonTxt" class="borderFix" path="markedHeavyReasonOther" maxlength="200"/>
+      </div>
       </div>
     </fieldset>
 
     <fieldset class="fieldset">
       <legend><spring:message code="label.qascript.rules.section"/></legend>
+        <div class="row">
+            <div class="columns small-8">
+                <form:radiobutton path="ruleMatch" id="allRules" value="all" checked="checked"/>
+                <label for="allRules"><spring:message code="label.qascript.rules.match.all"/></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns small-8">
+                <form:radiobutton path="ruleMatch" id="atLeastOne" value="atLeastOne"/>
+                <label for="atLeastOne"><spring:message code="label.qascript.rules.match.at.least.one"/></label>
+            </div>
+        </div>
         <div id="app">
           <v-app>
             <v-data-table
@@ -182,7 +194,7 @@
                 <v-toolbar
                         flat
                 >
-                  <v-toolbar-title>Rules</v-toolbar-title>
+                  <v-toolbar-title>Rules for handling script as heavy</v-toolbar-title>
                   <v-divider
                           class="mx-4"
                           inset
@@ -418,7 +430,7 @@
             <label class="question" for="txtUrl">
               <spring:message code="label.qascript.source"/>
             </label>
-            <form:textarea path="scriptContent" style="width: 98%;" rows="20" cols="55" id="txtFile"/>
+            <form:textarea class="borderFix" path="scriptContent" style="width: 98%;" rows="20" cols="55" id="txtFile"/>
           </div>
         </c:if>
 
@@ -551,6 +563,7 @@
         await axios.post("/restapi/scriptRules/add/" + this.queryId + "/", this.editedItem);
         this.close();
         this.readRuleEntries();
+        window.location.reload();
       },
 
       //Reading data from API method.

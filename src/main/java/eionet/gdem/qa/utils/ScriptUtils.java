@@ -48,11 +48,11 @@ public final class ScriptUtils {
 
     public static QueryHistoryEntry createQueryHistoryEntry(String user, String shortName, String schemaId, String resultType, String description, String scriptType,
                                                             String upperLimit, String url, Boolean asynchronousExecution, boolean active, String fileName, Integer version,
-                                                                         Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther) {
+                                                                         Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther, String ruleMatch) {
         QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(description).setShortName(shortName).setQueryFileName(fileName)
                 .setSchemaId(Integer.parseInt(schemaId)).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
                 .setUrl(url).setActive(active).setAsynchronousExecution(asynchronousExecution).setVersion(version).setUser(user).setDateModified(new Date())
-                .setMarkedHeavy(markedHeavy).setMarkedHeavyReason(markedHeavyReason).setMarkedHeavyReasonOther(markedHeavyReasonOther);
+                .setMarkedHeavy(markedHeavy).setMarkedHeavyReason(markedHeavyReason).setMarkedHeavyReasonOther(markedHeavyReasonOther).setRuleMatch(ruleMatch);
         return queryHistoryEntry;
     }
 

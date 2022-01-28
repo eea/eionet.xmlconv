@@ -48,7 +48,7 @@ public interface IQueryDao {
      */
     void updateQuery(String query_id, String schema_id, String short_name, String description, String fileName,
             String content_type, String script_type, String upperLimit, String url, Boolean asynchronousExecution, Integer version,
-                     Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther) throws SQLException;
+                     Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther, String ruleMatch) throws SQLException;
 
     /**
      * Remove query

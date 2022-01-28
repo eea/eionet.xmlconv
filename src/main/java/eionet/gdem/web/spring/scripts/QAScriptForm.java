@@ -23,6 +23,7 @@ public class QAScriptForm {
     private boolean markedHeavy;
     private String markedHeavyReason;
     private String markedHeavyReasonOther;
+    private String ruleMatch;
 
     public QAScriptForm() {
         upperLimit = "10";
@@ -190,5 +191,13 @@ public class QAScriptForm {
 
     public void setMarkedHeavyReasonOther(String markedHeavyReasonOther) {
         this.markedHeavyReasonOther = markedHeavyReasonOther;
+    }
+
+    public String getRuleMatch() {
+        return ruleMatch;
+    }
+
+    public void setRuleMatch(String ruleMatch) {
+        this.ruleMatch = ruleMatch;
     }
 }
