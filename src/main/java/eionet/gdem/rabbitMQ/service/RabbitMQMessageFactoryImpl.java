@@ -230,9 +230,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             Integer jobId = jobEntry.getId();
             LOGGER.info("Processing job with id " + jobId);
             Integer retryCounter = jobService.getRetryCounter(jobId);
-            jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobId);
             InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobService.updateJob(Constants.XQ_PROCESSING, intStatus, null, new Timestamp(new Date().getTime()), jobEntry);
+            jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(intStatus).setInstance(Properties.getHostname()).setTimestamp(new Timestamp(new Date().getTime())).setRetryCounter(retryCounter+1);
+            jobService.saveOrUpdate(jobEntry);
             LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED).setHeavy(jobEntry.isHeavy());
@@ -248,7 +248,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         try {
             Integer jobId = jobEntry.getId();
             LOGGER.info("Processing job with id " + jobId);
-            changeJobStatusAndInternalStatus(Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING, jobId.toString());
+            InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
+            jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalSchedulingStatus).setTimestamp(new Timestamp(new Date().getTime()));
+            jobService.saveOrUpdate(jobEntry);
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
             jobHistoryService.save(jobHistoryEntry);
@@ -352,16 +354,6 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
      */
      void changeStatus(int status,String jobId) throws DatabaseException {
          jobService.changeNStatus(Integer.parseInt(jobId), status);
-    }
-
-    /**
-     * Change both job statuses in DB.
-     * @param status Job status to be stored in DB.
-     * @param internalStatus Job status to be stored in DB.
-     * @throws Exception Unable to store data into DB.
-     */
-    void changeJobStatusAndInternalStatus(int status, int internalStatus, String jobId) throws DatabaseException {
-        jobService.changeNStatusAndInternalStatus(Integer.parseInt(jobId), status, internalStatus);
     }
 
 }

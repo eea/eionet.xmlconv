@@ -49,13 +49,6 @@ public class JobExecutorRepositoryTestIT {
         assertThat(jobExecutor.getStatus(), is(1));
     }
 
-    @Transactional
-    @Test
-    public void testUpdateStatusAndJobId() {
-        jobExecutorRepository.updateJobExecutor(0, 47, JobExecutorType.Light.getId(), null,"jobExecutor3");
-        JobExecutor jobExecutor = jobExecutorRepository.findByName("jobExecutor3");
-        assertThat(jobExecutor.getStatus(), is(0));
-    }
 }
 
 

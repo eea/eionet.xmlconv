@@ -1,7 +1,5 @@
 package eionet.gdem.rabbitmq.service;
 
-import eionet.gdem.data.scripts.Script;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
@@ -11,7 +9,6 @@ import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
-import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
 import eionet.gdem.rabbitMQ.service.HandleHeavyJobsServiceImpl;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
 import eionet.gdem.services.JobHistoryService;
@@ -26,11 +23,11 @@ import org.mockito.Spy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -56,8 +53,6 @@ public class HandleHeavyJobsServiceImplTest {
 
     @Test
     public void testHandleNoHeavyRetriesOnFailure() throws DatabaseException {
-        doNothing().when(jobService).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), any(JobEntry.class));
-        doNothing().when(jobService).updateHeavyRetriesOnFailure(anyInt(), any(Timestamp.class), anyInt());
         XQScript script = new XQScript();
         script.setJobId("44");
         WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage().setScript(script);
@@ -71,8 +66,6 @@ public class HandleHeavyJobsServiceImplTest {
 
     @Test
     public void testHandleWithHeavyRetriesOnFailure() throws DatabaseException {
-        doNothing().when(jobService).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), any(JobEntry.class));
-        doNothing().when(jobService).updateHeavyRetriesOnFailure(anyInt(), any(Timestamp.class), anyInt());
         XQScript script = new XQScript();
         script.setJobId("45");
         WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage().setScript(script);

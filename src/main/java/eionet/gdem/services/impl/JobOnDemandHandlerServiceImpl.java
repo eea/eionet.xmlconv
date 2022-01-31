@@ -11,7 +11,6 @@ import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryJpaService;
-import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
@@ -62,7 +61,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus)
                     .setRetryCounter(0).setJobType(Constants.ON_DEMAND_TYPE);
             if (isHeavy) jobEntry.setHeavy(true);
-            jobEntry = jobService.save(jobEntry);
+            jobEntry = jobService.saveOrUpdate(jobEntry);
             LOGGER.info("Job with id " + jobEntry.getId() + " has been inserted in table T_XQJOBS");
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED, isHeavy);
             script.setJobId(jobEntry.getId().toString());
@@ -79,9 +78,9 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             }
 
             Integer retryCounter = jobService.getRetryCounter(jobEntry.getId());
-            jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobEntry.getId());
             internalSchedulingStatus.setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobService.updateJob(Constants.XQ_PROCESSING, internalSchedulingStatus, null, new Timestamp(new Date().getTime()), jobEntry);
+            jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalSchedulingStatus).setInstance(Properties.getHostname()).setRetryCounter(retryCounter+1).setTimestamp(new Timestamp(new Date().getTime()));
+            jobService.saveOrUpdate(jobEntry);
             saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_QUEUED, isHeavy);
         } catch (Exception e) {
             throw new XMLConvException(e.getMessage());

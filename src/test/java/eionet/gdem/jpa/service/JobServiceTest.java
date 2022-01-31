@@ -64,20 +64,6 @@ public class JobServiceTest {
     }
 
     @Test
-    public void testChangeNStatusAndInternalStatus() throws DatabaseException {
-        doNothing().when(jobRepository).updateJobNStatusAndInternalStatus(anyInt(), anyInt(), anyString(), any(Timestamp.class), anyInt());
-        jobServiceImpl.changeNStatusAndInternalStatus(1, 0, 3);
-        verify(jobServiceImpl).changeNStatusAndInternalStatus(1, 0, 3);
-    }
-
-    @Test
-    public void testUpdateJob() throws DatabaseException {
-        doNothing().when(jobRepository).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), anyBoolean(), anyLong(), anyInt());
-        jobServiceImpl.updateJob(0, internalStatus, "demoExecutor", timestamp, jobEntry);
-        verify(jobServiceImpl).updateJob(0, internalStatus, "demoExecutor", timestamp, jobEntry);
-    }
-
-    @Test
     public void testFindById() throws DatabaseException {
         when(jobRepository.findById(anyInt())).thenReturn(jobEntry);
         JobEntry result = jobServiceImpl.findById(1);
@@ -106,24 +92,10 @@ public class JobServiceTest {
     }
 
     @Test
-    public void testUpdateWorkerRetries() throws DatabaseException {
-        doNothing().when(jobRepository).updateWorkerRetries(anyInt(), any(Timestamp.class), anyInt());
-        jobServiceImpl.updateWorkerRetries(2, timestamp, 1);
-        verify(jobServiceImpl).updateWorkerRetries(2, timestamp, 1);
-    }
-
-    @Test
-    public void testUpdateHeavyRetriesOnFailure() throws DatabaseException {
-        doNothing().when(jobRepository).updateHeavyRetriesOnFailure(anyInt(), any(Timestamp.class), anyInt());
-        jobServiceImpl.updateHeavyRetriesOnFailure(2, timestamp, 1);
-        verify(jobServiceImpl).updateHeavyRetriesOnFailure(2, timestamp, 1);
-    }
-
-    @Test
     public void testSave() {
         when(jobRepository.save(any(JobEntry.class))).thenReturn(jobEntry);
-        jobServiceImpl.save(jobEntry);
-        verify(jobServiceImpl).save(jobEntry);
+        jobServiceImpl.saveOrUpdate(jobEntry);
+        verify(jobServiceImpl).saveOrUpdate(jobEntry);
     }
 
     @Test

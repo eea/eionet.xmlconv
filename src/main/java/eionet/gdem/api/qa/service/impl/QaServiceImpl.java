@@ -461,7 +461,7 @@ public class QaServiceImpl implements QaService {
         JobEntry jobEntry = jobService.findById(Integer.valueOf(jobId));
         jobEntry.setnStatus(Constants.XQ_FATAL_ERR);
         jobEntry.setTimestamp(new Timestamp(new Date().getTime()));
-        jobService.save(jobEntry);
+        jobService.saveOrUpdate(jobEntry);
         LOGGER.info("Changed status to FATAL ERROR in T_XQJOBS table for jobId " + jobId);
         List<JobHistoryEntry> jobHistoryEntries = jobHistoryService.getJobHistoryEntriesOfJob(jobId);
         if(!Utils.isNullList(jobHistoryEntries)){

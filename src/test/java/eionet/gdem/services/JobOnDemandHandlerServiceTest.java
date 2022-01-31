@@ -70,7 +70,7 @@ public class JobOnDemandHandlerServiceTest {
 
     @Test
     public void testCreateJobAndSendToRabbitMQ() throws XMLConvException, DatabaseException {
-        when(jobService.save(any(JobEntry.class))).thenReturn(jobEntry);
+        when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryJpaService.findByQueryId(0)).thenReturn(null);
         doNothing().when(jobMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));

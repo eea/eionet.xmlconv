@@ -42,8 +42,8 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
     @Override
     public void handle(WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage, JobEntry jobEntry, JobHistoryEntry jobHistoryEntry) throws DatabaseException {
         LOGGER.info("Handling heavy job " + workerJobRabbitMQRequestMessage.getScript().getJobId());
-        jobService.updateJob(jobEntry.getnStatus(), jobEntry.getIntSchedulingStatus(), jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
-        jobService.updateHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure(), new Timestamp(new Date().getTime()), jobEntry.getId());
+        jobEntry.setTimestamp(new Timestamp(new Date().getTime()));
+        jobService.saveOrUpdate(jobEntry);
         jobHistoryService.save(jobHistoryEntry);
         rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
         if (jobEntry.getHeavyRetriesOnFailure()==1) {

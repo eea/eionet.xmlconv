@@ -1,6 +1,5 @@
 package eionet.gdem.jpa.service;
 
-import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
@@ -41,27 +40,6 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void changeNStatusAndInternalStatus(Integer jobId, Integer status, Integer internalStatus) throws DatabaseException {
-        try {
-            jobRepository.updateJobNStatusAndInternalStatus(status, internalStatus, Properties.getHostname(), new Timestamp(new Date().getTime()), jobId);
-            LOGGER.info("### Job with id=" + jobId + " has changed status to " + status + " and internal status to " +  internalStatus + ".");
-        } catch (Exception e) {
-            LOGGER.error("Database exception when changing statuses of job with id " + jobId + ", " + e.toString());
-            throw new DatabaseException(e);
-        }
-    }
-
-    @Override
-    public void updateJob(Integer nStatus, InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, JobEntry jobEntry) throws DatabaseException {
-        try {
-            jobRepository.updateJob(nStatus, intStatus, jobExecutorName, timestamp, jobEntry.isHeavy(), jobEntry.getFmeJobId(), jobEntry.getId());
-        } catch (Exception e) {
-            LOGGER.error("Database exception when updating job with id " + jobEntry.getId() + ", " + e.toString());
-            throw new DatabaseException(e);
-        }
-    }
-
-    @Override
     public JobEntry findById(Integer id) throws DatabaseException {
         JobEntry jobEntry = null;
         try {
@@ -89,27 +67,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void updateWorkerRetries(Integer workerRetries, Timestamp timestamp, Integer jobId) throws DatabaseException {
-        try {
-            jobRepository.updateWorkerRetries(workerRetries, timestamp, jobId);
-        } catch (Exception e) {
-            LOGGER.error("Database exception while trying to update worker retries for job with id " + jobId);
-            throw new DatabaseException(e);
-        }
-    }
-
-    @Override
-    public void updateHeavyRetriesOnFailure(Integer heavyRetries, Timestamp timestamp, Integer jobId) throws DatabaseException {
-        try {
-            jobRepository.updateHeavyRetriesOnFailure(heavyRetries, timestamp, jobId);
-        } catch (Exception e) {
-            LOGGER.error("Database exception while trying to update heavyRetriesOnFailure for job with id " + jobId);
-            throw new DatabaseException(e);
-        }
-    }
-
-    @Override
-    public JobEntry save(JobEntry jobEntry) {
+    public JobEntry saveOrUpdate(JobEntry jobEntry) {
         return jobRepository.save(jobEntry);
     }
 
@@ -125,15 +83,6 @@ public class JobServiceImpl implements JobService {
         return result;
     }
 
-    @Override
-    public void updateJobInfo(Integer nStatus, String instance, Timestamp timestamp, Integer retryCounter, Integer jobId) throws DatabaseException {
-        try {
-            jobRepository.updateJobInfo(nStatus, instance, timestamp, retryCounter, jobId);
-        } catch (Exception e) {
-            LOGGER.error("Database exception while trying to update job information for job with id " + jobId);
-            throw new DatabaseException(e);
-        }
-    }
 }
 
 

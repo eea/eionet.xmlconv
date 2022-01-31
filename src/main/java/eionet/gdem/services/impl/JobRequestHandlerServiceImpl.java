@@ -233,7 +233,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         if(queryId == null) {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
-            jobEntry = getJobService().save(jobEntry);
+            jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
 
@@ -244,7 +244,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             if (markedHeavy != null && markedHeavy.equals("1")) {
                 jobEntry.setHeavy(true);
             }
-            jobEntry = getJobService().save(jobEntry);
+            jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
         }

@@ -120,23 +120,21 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 if(retriesCnt < Constants.MAX_SCRIPT_EXECUTION_RETRIES){
                     deadLetterMessage.setJobExecutionRetries(retriesCnt + 1);
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-                    jobEntry.setJobExecutorName(null).setWorkerRetries(retriesCnt+1);
+                    jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setJobExecutorName(null).setWorkerRetries(retriesCnt+1).setTimestamp(new Timestamp(new Date().getTime()));
                     JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), containerId, deadLetterMessage.getHeartBeatQueue());
                     JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
                     Thread.sleep(RETRY_DELAY);
-                    boolean isHeavy = false;
-                    if (jobEntry.isHeavy()) isHeavy = true;
-                    workerAndJobStatusHandlerService.resendMessageToWorker(retriesCnt+1, Constants.XQ_RECEIVED, internalStatus, jobEntry, deadLetterMessage, jobExecutor, jobExecutorHistory, isHeavy);
+                    workerAndJobStatusHandlerService.resendMessageToWorker(jobEntry, deadLetterMessage, jobExecutor, jobExecutorHistory);
                 }
                 else{
                     //message will be discarded
                     LOGGER.info("Reached maximum retries of job execution for job: " + script.getJobId());
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                    jobEntry.setJobExecutorName(deadLetterMessage.getJobExecutorName()).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES);
+                    jobEntry.setJobExecutorName(deadLetterMessage.getJobExecutorName()).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES).setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                     JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), containerId, deadLetterMessage.getHeartBeatQueue());
                     JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
                     Thread.sleep(RETRY_DELAY);
-                    workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
+                    workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
                     queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, Integer.parseInt(script.getJobId()), null);

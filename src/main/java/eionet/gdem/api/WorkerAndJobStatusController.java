@@ -40,7 +40,8 @@ public class WorkerAndJobStatusController {
                 JobEntry jobEntry = jobService.findById(jobId);
                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                 LOGGER.info("Job with id " + jobId + " is cancelled by user " + user);
-                workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.CANCELLED_BY_USER, internalStatus);
+                jobEntry.setnStatus(Constants.CANCELLED_BY_USER).setIntSchedulingStatus(internalStatus);
+                workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED);
             } finally {
                 session.removeAttribute("jobId");
             }

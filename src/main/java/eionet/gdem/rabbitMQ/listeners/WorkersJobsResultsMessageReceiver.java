@@ -97,24 +97,28 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
             if (response.isErrorExists()) {
                 LOGGER.info("Job with id " + script.getJobId() + " failed with error: " + response.getErrorMessage());
-                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
+                jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
+                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId(), fmeJobId);
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getJobExecutorName());
                 findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
-                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_PROCESSING, internalStatus, jobEntry);
+                jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
+                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_READY) {
                 LOGGER.info("### Job with id=" + script.getJobId() + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
-                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_READY, internalStatus, jobEntry);
+                jobEntry.setnStatus(Constants.XQ_READY).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
+                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_READY, jobEntry.getId(), fmeJobId);
             }
             else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED_FME_JOB_ID) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received FME job id " + fmeJobId + " by worker with container name " + response.getJobExecutorName());
                 findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
-                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_PROCESSING, internalStatus, jobEntry);
+                jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
+                workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
             }
         } catch (Exception e) {

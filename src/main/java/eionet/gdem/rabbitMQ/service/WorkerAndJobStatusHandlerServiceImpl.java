@@ -42,13 +42,13 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateJobAndJobHistoryEntries(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException {
-        updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
+    public void updateJobAndJobHistoryEntries(JobEntry jobEntry) throws DatabaseException {
+        updateJobAndJobHistory(jobEntry);
     }
 
-    protected void updateJobAndJobHistory(Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry) throws DatabaseException {
-        jobService.updateJob(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
-        jobHistoryService.updateJobHistory(nStatus, internalStatus.getId(), jobEntry);
+    protected void updateJobAndJobHistory(JobEntry jobEntry) throws DatabaseException {
+        jobService.saveOrUpdate(jobEntry);
+        jobHistoryService.updateJobHistory(jobEntry);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -70,13 +70,13 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
             jobExecutorHistory.setJobExecutorType(jobExecutorType);
         }
         if (jobExecutor.getJobExecutorType()==null) jobExecutor.setJobExecutorType(JobExecutorType.Uknown);
-        jobExecutorService.saveOrUpdateJobExecutor(jobExecDb!=null, jobExecutor);
+        jobExecutorService.saveOrUpdateJobExecutor(jobExecutor);
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(jobExecutorHistory);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void handleCancelledJob(JobEntry jobEntry, Integer workerStatus, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
+    public void handleCancelledJob(JobEntry jobEntry, Integer workerStatus) throws DatabaseException {
         if (jobEntry.getJobExecutorName()!=null) {
             JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
             if (jobExecutor!=null) {
@@ -85,17 +85,16 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
                 this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
             }
         }
-        this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
+        this.updateJobAndJobHistory(jobEntry);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void resendMessageToWorker(Integer workerRetries, Integer nStatus, InternalSchedulingStatus internalStatus, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage,
-                                      JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory, boolean isHeavy) throws DatabaseException {
-        jobService.updateWorkerRetries(workerRetries, new Timestamp(new Date().getTime()), jobEntry.getId());
-        this.updateJobAndJobHistory(nStatus, internalStatus, jobEntry);
+    public void resendMessageToWorker(JobEntry jobEntry, WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage,
+                                      JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
+        this.updateJobAndJobHistory(jobEntry);
         this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
-        if (isHeavy) heavyRabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        if (jobEntry.isHeavy()) heavyRabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
         else rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
     }
 }

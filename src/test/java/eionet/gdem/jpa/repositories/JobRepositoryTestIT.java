@@ -1,6 +1,5 @@
 package eionet.gdem.jpa.repositories;
 
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
@@ -13,12 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-
-import java.sql.Timestamp;
-import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -57,15 +52,6 @@ public class JobRepositoryTestIT {
     @Test
     public void testGetRetryCounter() {
         assertThat(jobRepository.getRetryCounter(1), is(0));
-    }
-
-    @Test
-    @Transactional
-    public void testUpdateJob() {
-        InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(2);
-        jobRepository.updateJob(3, intStatus, null, new Timestamp(new Date().getTime()), true, null, 1);
-        JobEntry jobEntry = jobRepository.findById(1);
-        assertThat(jobEntry.getIntSchedulingStatus().getId(), is(2));
     }
 
     @Test(expected = Exception.class)

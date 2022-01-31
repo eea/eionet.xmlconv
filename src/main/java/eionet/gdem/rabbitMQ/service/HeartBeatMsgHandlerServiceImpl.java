@@ -62,7 +62,8 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
         }
         workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
         if (jobEntry.getnStatus()== Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND_IN_WORKER)) {
-            jobService.updateJob(nStatus, internalStatus, jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
+            jobEntry.setnStatus(nStatus).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
+            jobService.saveOrUpdate(jobEntry);
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), nStatus, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType())
                     .setIntSchedulingStatus(internalStatus.getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setWorkerRetries(jobEntry.getWorkerRetries()).setJobType(jobEntry.getJobType())
                     .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());

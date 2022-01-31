@@ -153,7 +153,8 @@ public class GenericFixedTimeScheduledTasks {
                 if (heartBeatMsgList.size() >= MIN_UNANSWERED_REQUESTS) {
                     LOGGER.info("Setting the status of job " + jobEntry.getId() + " to " + Constants.XQ_FATAL_ERR + ", because of " + heartBeatMsgList.size() + " records with null response timestamp");
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                    workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(Constants.XQ_FATAL_ERR, internalStatus, jobEntry);
+                    jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
+                    workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
                     queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId(), null);
                 }
@@ -196,7 +197,8 @@ public class GenericFixedTimeScheduledTasks {
                     if (jobEntry.getDuration().compareTo(BigInteger.valueOf(schemaMaxExecTime)) > 0) {
                         LOGGER.info("Interrupting job " + jobEntry.getId() + " because exceeded schema's max execution time.");
                         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                        workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.XQ_INTERRUPTED, internalStatus);
+                        jobEntry.setnStatus(Constants.XQ_INTERRUPTED).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
+                        workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED);
                     }
                 } catch (Exception e) {
                     LOGGER.error("Error while running interruptLongRunningJobs task for job with id " + jobEntry.getId() + ", " + e);

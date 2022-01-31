@@ -40,13 +40,13 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     }
 
     @Override
-    public void saveOrUpdateJobExecutor(boolean update, JobExecutor jobExecutor) throws DatabaseException {
+    public void saveOrUpdateJobExecutor(JobExecutor jobExecutor) throws DatabaseException {
         try {
-            if (update) {
-                jobExecutorRepository.updateJobExecutor(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getJobExecutorType().getId(), jobExecutor.getFmeJobId(), jobExecutor.getName());
-            } else {
-                jobExecutorRepository.save(jobExecutor);
-            }
+           JobExecutor exec = jobExecutorRepository.findByName(jobExecutor.getName());
+           if (exec!=null) {
+               jobExecutor.setId(exec.getId());
+           }
+           jobExecutorRepository.save(jobExecutor);
         } catch (Exception e) {
             LOGGER.error("Database exception when updating worker with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + e.toString());
             throw new DatabaseException(e);

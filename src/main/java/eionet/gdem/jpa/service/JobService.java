@@ -14,8 +14,6 @@ public interface JobService {
 
     void changeNStatus(Integer jobId, Integer status) throws DatabaseException;
 
-    void updateJob(Integer nStatus, InternalSchedulingStatus intStatus, String jobExecutorName, Timestamp timestamp, JobEntry jobEntry) throws DatabaseException;
-
     JobEntry findById(Integer id) throws DatabaseException;
 
     List<JobEntry> findByIntSchedulingStatus(InternalSchedulingStatus intSchedulingStatus);
@@ -24,15 +22,8 @@ public interface JobService {
 
     List<JobEntry> findProcessingJobs();
 
-    void updateWorkerRetries(Integer workerRetries, Timestamp timestamp, Integer jobId) throws DatabaseException;
-
-    void updateHeavyRetriesOnFailure(Integer heavyRetries, Timestamp timestamp, Integer jobId) throws DatabaseException;
-
-    JobEntry save(JobEntry jobEntry);
+    JobEntry saveOrUpdate(JobEntry jobEntry);
 
     Integer getRetryCounter(Integer jobId) throws DatabaseException;
 
-    void updateJobInfo(Integer nStatus, String instance, Timestamp timestamp, Integer retryCounter, Integer jobId) throws DatabaseException;
-
-    void changeNStatusAndInternalStatus(Integer jobId, Integer status, Integer internalStatus) throws DatabaseException;
 }

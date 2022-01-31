@@ -11,7 +11,7 @@ public interface JobHistoryService {
 
     List<JobHistoryEntry> getJobHistoryEntriesOfJob(String jobId);
 
-    void updateJobHistory(Integer nStatus, Integer internalStatus, JobEntry jobEntry) throws DatabaseException;
+    void updateJobHistory(JobEntry jobEntry) throws DatabaseException;
 
     JobHistoryEntry save(JobHistoryEntry jobHistoryEntry) throws DatabaseException;
 }

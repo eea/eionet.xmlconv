@@ -24,9 +24,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.sql.Timestamp;
-
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -57,39 +56,41 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         jobEntry = new JobEntry().setId(100).setJobExecutorName("demoJobExecutor");;
         jobExecutor = new JobExecutor().setContainerId("123456").setHeartBeatQueue("demoJobExecutor-queue");;
         jobExecutorHistory = new JobExecutorHistory();
-        doNothing().when(jobService).updateJob(anyInt(), any(InternalSchedulingStatus.class), anyString(), any(Timestamp.class), any(JobEntry.class));
-        doNothing().when(jobHistoryService).updateJobHistory(anyInt(), anyInt(), any(JobEntry.class));
-        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(anyBoolean(), any(JobExecutor.class));
+        doNothing().when(jobService).saveOrUpdate(any(JobEntry.class));
+        doNothing().when(jobHistoryService).updateJobHistory(any(JobEntry.class));
+        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
         doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
     }
 
     @Test
     public void testUpdateJobAndJobHistoryEntries() throws DatabaseException {
-        workerAndJobStatusHandlerServiceImpl.updateJobAndJobHistoryEntries(Constants.XQ_PROCESSING, internalStatus, jobEntry);
-        verify(jobHistoryService).updateJobHistory(anyInt(), anyInt(), any(JobEntry.class));
+        jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus);
+        workerAndJobStatusHandlerServiceImpl.updateJobAndJobHistoryEntries(jobEntry);
+        verify(jobHistoryService).updateJobHistory(any(JobEntry.class));
     }
 
     @Test
     public void testSaveOrUpdateJobExecutor() throws DatabaseException {
         workerAndJobStatusHandlerServiceImpl.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-        verify(jobExecutorService).saveOrUpdateJobExecutor(anyBoolean(), any(JobExecutor.class));
+        verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
     }
 
     @Test
     public void testHandleCancelledJob() throws DatabaseException {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+        jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(intStatus);
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
-        workerAndJobStatusHandlerServiceImpl.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_READY, Constants.XQ_FATAL_ERR, intStatus);
+        workerAndJobStatusHandlerServiceImpl.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_READY);
         verify(jobExecutorService).findByName(anyString());
     }
 
     @Test
     public void testResendMessageToWorker() throws DatabaseException {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
+        jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(intStatus).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES).setHeavy(true);
         WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage();
-        doNothing().when(jobService).updateWorkerRetries(anyInt(), any(Timestamp.class), anyInt());
         doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
-        workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(Constants.MAX_SCRIPT_EXECUTION_RETRIES, Constants.XQ_FATAL_ERR, intStatus, jobEntry, workerJobRabbitMQRequestMessage, jobExecutor, jobExecutorHistory, false);
+        workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(jobEntry, workerJobRabbitMQRequestMessage, jobExecutor, jobExecutorHistory);
     }
 }
 

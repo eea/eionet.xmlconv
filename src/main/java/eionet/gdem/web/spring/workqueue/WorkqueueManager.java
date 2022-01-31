@@ -307,9 +307,9 @@ public class WorkqueueManager {
                             JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
                             getWorkerAndJobStatusHandlerService().saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
 
-                            jobEntry.setJobExecutorName(null);
                             InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-                            getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(Constants.XQ_PROCESSING, internalStatus, jobEntry);
+                            jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setJobExecutorName(null).setTimestamp(new Timestamp(new Date().getTime()));
+                            getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(jobEntry);
                         }
                     }
                     else{
@@ -350,7 +350,8 @@ public class WorkqueueManager {
                             if (jobIdInt!=null) {
                                 JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
                                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
-                                getWorkerAndJobStatusHandlerService().handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED, Constants.DELETED, internalStatus);
+                                jobEntry.setnStatus(Constants.DELETED).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
+                                getWorkerAndJobStatusHandlerService().handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED);
                             }
                         }
                         else{
