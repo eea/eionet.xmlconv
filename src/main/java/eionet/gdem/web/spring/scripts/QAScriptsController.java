@@ -1,5 +1,9 @@
 package eionet.gdem.web.spring.scripts;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
@@ -10,6 +14,7 @@ import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.jpa.service.QueryMetadataService;
+import eionet.gdem.jpa.service.ScriptRulesService;
 import eionet.gdem.paging.Paged;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.qa.XQScript;
@@ -34,6 +39,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,13 +55,17 @@ public class QAScriptsController {
     private QueryHistoryService queryHistoryService;
     private QueryJpaService queryJpaService;
     private QueryMetadataService queryMetadataService;
+    private ScriptRulesService scriptRulesService;
+
 
     @Autowired
-    public QAScriptsController(MessageService messageService, QueryHistoryService queryHistoryService, QueryJpaService queryJpaService, QueryMetadataService queryMetadataService) {
+    public QAScriptsController(MessageService messageService, QueryHistoryService queryHistoryService, QueryJpaService queryJpaService,
+                               QueryMetadataService queryMetadataService, ScriptRulesService scriptRulesService) {
         this.messageService = messageService;
         this.queryHistoryService = queryHistoryService;
         this.queryJpaService = queryJpaService;
         this.queryMetadataService = queryMetadataService;
+        this.scriptRulesService = scriptRulesService;
     }
 
     @ModelAttribute
@@ -103,6 +113,9 @@ public class QAScriptsController {
         MultipartFile scriptFile = form.getScriptFile();
         boolean active = form.getActive();
         String ruleMatch = form.getRuleMatch();
+        String rulesString = form.getScriptRules();
+        ObjectMapper mapper = new ObjectMapper();
+        List<ScriptRulesEntry> scriptRules = new ArrayList<>();
 
 /*        // if URL is filled download from the remote source
         if (!Utils.isNullStr(url)) {
@@ -127,14 +140,17 @@ public class QAScriptsController {
         }
 
         try {
+            scriptRules = mapper.readValue(rulesString, new TypeReference<>(){});
             QAScriptManager qaScriptManager = new QAScriptManager();
             qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution,
-                    active, markedHeavy, markedHeavyReason, markedHeavyReasonOther, ruleMatch);
+                    active, markedHeavy, markedHeavyReason, markedHeavyReasonOther, ruleMatch, scriptRules);
             messages.add(messageService.getMessage("label.qascript.inserted"));
             // clear qascript list in cache
             QAScriptListLoader.reloadList(httpServletRequest);
         } catch (DCMException e) {
             throw new RuntimeException("Add QA Script error: " + messageService.getMessage(e.getErrorCode()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Add QA Script error: " + e.getMessage());
         }
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         if (!StringUtils.isEmpty(schemaId)) {
@@ -234,10 +250,15 @@ public class QAScriptsController {
                 }
             }
             form.setRuleMatch(qaScript.getRuleMatch());
+            List<ScriptRulesEntry> scriptRules = scriptRulesService.findByQueryId(Integer.parseInt(qaScript.getScriptId()));
+            ObjectMapper mapper = new ObjectMapper();
+            form.setScriptRules(mapper.writeValueAsString(scriptRules));
 
             model.addAttribute("scripts", QAScriptListLoader.getList(request));
         } catch (DCMException e) {
             throw new RuntimeException("QA Script form error: " + messageService.getMessage(e.getErrorCode()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("QA Script form error: " + e.getMessage());
         }
         return "/scripts/edit";
     }
@@ -264,7 +285,6 @@ public class QAScriptsController {
         Boolean markedHeavy = form.isMarkedHeavy();
         String markedHeavyReason = form.getMarkedHeavyReason();
         String markedHeavyReasonOther = form.getMarkedHeavyReasonOther();
-        String ruleMatch = form.getRuleMatch();
 
         String user = (String) request.getSession().getAttribute("user");
 
@@ -284,11 +304,17 @@ public class QAScriptsController {
             markedHeavyReasonOther = null;
         }
 
+        String ruleMatch = form.getRuleMatch();
+        String scriptRulesString = form.getScriptRules();
+        ObjectMapper mapper = new ObjectMapper();
+        List<ScriptRulesEntry> scriptRules = new ArrayList<>();
+
         try {
             Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
+            scriptRules = mapper.readValue(scriptRulesString, new TypeReference<>(){});
             QAScriptManager qm = new QAScriptManager();
             QueryBackupEntry queryBackupEntry = qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName,
-                    content, upperLimit, url, asynchronousExecution, active, maxVersion+1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther, ruleMatch);
+                    content, upperLimit, url, asynchronousExecution, active, maxVersion+1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther, ruleMatch, scriptRules);
 
             QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
             QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, desc, scriptType, upperLimit, url,
@@ -306,6 +332,8 @@ public class QAScriptsController {
         } catch (DCMException e) {
             LOGGER.info("Error during script file upload " + e.getMessage());
             throw new RuntimeException("Edit QA script error: " + messageService.getMessage(e.getErrorCode()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Edit QA script error: " + e.getMessage());
         }
 
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
@@ -339,6 +367,7 @@ public class QAScriptsController {
         String markedHeavyReason = form.getMarkedHeavyReason();
         String markedHeavyReasonOther = form.getMarkedHeavyReasonOther();
         String ruleMatch = form.getRuleMatch();
+        String rulesString = form.getScriptRules();
 
         boolean updateContent = false;
         String newChecksum = null;
@@ -375,6 +404,8 @@ public class QAScriptsController {
             markedHeavyReasonOther = null;
         }
 
+        ObjectMapper mapper = new ObjectMapper();
+        List<ScriptRulesEntry> scriptRules = new ArrayList<>();
 
         try {
             Integer maxVersion = queryJpaService.findMaxVersion(Integer.parseInt(scriptId));
@@ -385,9 +416,11 @@ public class QAScriptsController {
             if(updateContent || (oldScript.getMarkedHeavy() != null && oldScript.getMarkedHeavy() != markedHeavy)){
                 newVersion = maxVersion + 1;
             }
+
+            scriptRules = mapper.readValue(rulesString, new TypeReference<>(){});
             QAScriptManager qm = new QAScriptManager();
             QueryBackupEntry queryBackupEntry = qm.update(user, scriptId, shortName, schemaId, resultType, desc, scriptType, curFileName, upperLimit,
-                    url, scriptContent, updateContent, asynchronousExecution, active, newVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther, ruleMatch);
+                    url, scriptContent, updateContent, asynchronousExecution, active, newVersion, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther, ruleMatch, scriptRules);
             qm.activateDeactivate(user, scriptId, active);
 
             QueryEntry queryEntry = new QueryEntry(Integer.parseInt(scriptId));
@@ -404,6 +437,8 @@ public class QAScriptsController {
             messages.add(messageService.getMessage("label.qascript.updated"));
         } catch (DCMException e) {
             throw new RuntimeException("Edit QA script error: " + messageService.getMessage(e.getErrorCode()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Edit QA script error: " + e.getMessage());
         }
 
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);

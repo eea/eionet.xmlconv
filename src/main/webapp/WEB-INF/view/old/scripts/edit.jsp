@@ -11,12 +11,10 @@
 </style>
 <script type="text/javascript" src="/resources/js/scripts.js"></script>
 <script type="text/javascript" src="/static/webjars/vue/2.6.14/vue.min.js"></script>
-<script type="text/javascript" src="/static/webjars/axios/0.19.0/dist/axios.min.js"></script>
 <script type="text/javascript" src="/static/webjars/vuetify/2.6.1/dist/vuetify.js"></script>
 <link type="text/css" href="/static/webjars/vuetify/2.6.1/dist/vuetify.min.css" rel="stylesheet">
 <link type="text/css" href="/static/webjars/mdi__font/6.2.95/css/materialdesignicons.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/static/css/vueTable.css"/>
-<%--<script type="text/javascript" src="/resources/js/scriptRules.js"></script>--%>
 
 <div style="width:100%;">
   <div id="tabbedmenu">
@@ -122,6 +120,7 @@
       </div>
     </fieldset>
 
+  <div id="heavyLightSection">
     <fieldset class="fieldset">
       <legend><spring:message code="label.qascript.mark.heavy.section"/></legend>
       <div class="row" style="display: block">
@@ -166,7 +165,9 @@
       </div>
       </div>
     </fieldset>
+  </div>
 
+  <div id="scriptRulesSection">
     <fieldset class="fieldset">
       <legend><spring:message code="label.qascript.rules.section"/></legend>
         <div class="row">
@@ -185,9 +186,7 @@
           <v-app>
             <v-data-table
                     :headers="headers"
-                    :items="rules"
-                    :sort-by.sync="sortBy"
-                    :loading="loading"
+                    :items="scriptRules"
                     class="elevation-1"
             >
               <template v-slot:top>
@@ -233,9 +232,8 @@
                                       v-model="editedItem.field"
                                       :items="fieldValues"
                                       label="Field"
-                              >
-                                data-vv-name="select"
-                                required
+                                      @change="showProperTypeValues"
+                                      :rules="[(v) => !!v || 'Field is required']"
                                 ></v-select>
                             </v-col>
                             <v-col
@@ -247,9 +245,7 @@
                                       v-model="editedItem.type"
                                       :items="typeValues"
                                       label="Type"
-                              >
-                                data-vv-name="select"
-                                required
+                                      :rules="[(v) => !!v || 'Type is required']"
                                 ></v-select>
                             </v-col>
                             </v-col>
@@ -261,7 +257,7 @@
                               <v-text-field
                                       v-model="editedItem.value"
                                       label="Value"
-                                      required
+                                      :rules="[(v) => !!v || 'Value is required']"
                               ></v-text-field>
                             </v-col>
                             <v-col
@@ -339,6 +335,7 @@
           </v-app>
         </div>
     </fieldset>
+  </div>
 
     <fieldset class="fieldset">
       <legend>Script file properties</legend>
@@ -379,7 +376,7 @@
             &#160;
           </div>
           <div class="columns small-8">
-            <button type="submit" class="button" name="upload">
+            <button type="submit" class="button" name="upload" style="color:#ECF4F5;">
               <spring:message code="label.qascript.upload"/>
             </button>
             <input type="file" name="scriptFile" style="width:400px" size="64"/>
@@ -417,7 +414,7 @@
           </div>
           <div class="columns small-8">
             <c:if test="${!empty form.fileName}">
-              <button type="submit" class="button" name="diff">
+              <button type="submit" class="button" name="diff" style="color:#ECF4F5;">
                 <spring:message code="label.qascript.checkupdates"/>
               </button>
             </c:if>
@@ -434,13 +431,14 @@
           </div>
         </c:if>
 
-        <button type="submit" class="button" name="update">
+        <button type="submit" class="button" name="update" style="color:#ECF4F5;">
           <spring:message code="label.qascript.save"/>
         </button>
         <form:hidden path="fileName"/>
         <form:hidden path="checksum" />
         <form:hidden path="scriptId" id="queryId"/>
         <form:hidden path="schemaId" />
+        <form:hidden path="scriptRules" id="scriptRules"/>
         <%--<form:hidden path="active" />--%>
 
         <%--<input type="file" name="scriptFile" style="width:400px" size="64"/>--%>
@@ -458,17 +456,13 @@
         sortBy: "field",
         dialog: false,
         dialogDelete: false,
-        select: null,
         queryId: document.querySelector("#queryId").defaultValue,
-        loading: true,
         fieldValues: [
-          "script url",
-          "schema url",
-          "xml file",
-          "xml file size",
+          "collection path",
+          "xml file size (in MB)",
         ],
         typeValues: [
-          "match exactly",
+          "includes",
           "greater than",
           "smaller than",
         ],
@@ -480,7 +474,7 @@
           {text: "Enabled", value: "enabled", sortable: false},
           {text: "Actions", value: "actions", sortable: false},
         ],
-        rules: [],
+        scriptRules: [],
         editedIndex: -1,
         editedItem: {
           id: '',
@@ -516,31 +510,23 @@
       },
     },
 
-    created() {
-      this.initialize()
-    },
-
     methods: {
-      initialize() {
-        this.readRuleEntries();
-      },
-
       editItem(item) {
-        this.editedIndex = this.rules.indexOf(item)
+        this.editedIndex = this.scriptRules.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem(item) {
-        this.editedIndex = this.rules.indexOf(item)
+        this.editedIndex = this.scriptRules.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
-      async deleteItemConfirm() {
-        await axios.delete("/restapi/scriptRules/delete/" + this.editedItem.id);
+      deleteItemConfirm() {
+        this.scriptRules.splice(this.editedIndex, 1);
+        document.getElementById("scriptRules").value = JSON.stringify(this.scriptRules);
         this.closeDelete();
-        this.readRuleEntries();
       },
 
       close() {
@@ -559,22 +545,31 @@
         })
       },
 
-      async save() {
-        await axios.post("/restapi/scriptRules/add/" + this.queryId + "/", this.editedItem);
+      save() {
+        if (this.editedIndex === -1) {
+          this.scriptRules.push(this.editedItem);
+        } else {
+          this.scriptRules[this.editedIndex] = this.editedItem;
+        }
+        this.scriptRules = this.scriptRules.slice();
+        document.getElementById("scriptRules").value = JSON.stringify(this.scriptRules);
         this.close();
-        this.readRuleEntries();
-        window.location.reload();
+      },
+
+      showProperTypeValues() {
+        if (this.editedItem.field == 'collection path'){
+          this.typeValues = ["includes"];
+        } else if (this.editedItem.field == 'xml file size (in MB)') {
+          this.typeValues = [
+            "greater than",
+            "smaller than"
+          ];
+        }
       },
 
       //Reading data from API method.
       readRuleEntries() {
-        this.loading = true;
-        axios
-                .get("/restapi/scriptRules/get/" + this.queryId)
-                .then((response) => {
-                  this.loading = false;
-                  this.rules = response.data;
-                });
+        this.scriptRules = JSON.parse(document.getElementById("scriptRules").value);
       }
     },
 
