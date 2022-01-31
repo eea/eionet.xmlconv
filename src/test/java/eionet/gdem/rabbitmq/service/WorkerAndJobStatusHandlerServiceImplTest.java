@@ -56,7 +56,6 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         jobEntry = new JobEntry().setId(100).setJobExecutorName("demoJobExecutor");;
         jobExecutor = new JobExecutor().setContainerId("123456").setHeartBeatQueue("demoJobExecutor-queue");;
         jobExecutorHistory = new JobExecutorHistory();
-        doNothing().when(jobService).saveOrUpdate(any(JobEntry.class));
         doNothing().when(jobHistoryService).updateJobHistory(any(JobEntry.class));
         doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
         doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
@@ -65,12 +64,14 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     @Test
     public void testUpdateJobAndJobHistoryEntries() throws DatabaseException {
         jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus);
+        when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         workerAndJobStatusHandlerServiceImpl.updateJobAndJobHistoryEntries(jobEntry);
         verify(jobHistoryService).updateJobHistory(any(JobEntry.class));
     }
 
     @Test
     public void testSaveOrUpdateJobExecutor() throws DatabaseException {
+        when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         workerAndJobStatusHandlerServiceImpl.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
         verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
     }
@@ -79,6 +80,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     public void testHandleCancelledJob() throws DatabaseException {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
         jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(intStatus);
+        when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
         workerAndJobStatusHandlerServiceImpl.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_READY);
         verify(jobExecutorService).findByName(anyString());
@@ -88,6 +90,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     public void testResendMessageToWorker() throws DatabaseException {
         InternalSchedulingStatus intStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
         jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(intStatus).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES).setHeavy(true);
+        when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage();
         doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
         workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(jobEntry, workerJobRabbitMQRequestMessage, jobExecutor, jobExecutorHistory);

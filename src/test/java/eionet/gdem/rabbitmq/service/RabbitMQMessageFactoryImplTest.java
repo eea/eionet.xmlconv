@@ -3,7 +3,6 @@ package eionet.gdem.rabbitmq.service;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
@@ -90,7 +89,7 @@ public class RabbitMQMessageFactoryImplTest {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(7, "627015", 1, new Timestamp(new Date().getTime()),null, null, null , null);
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
         when(jobService.getRetryCounter(anyInt())).thenReturn(0);
-        doNothing().when(jobService).saveOrUpdate(any(JobEntry.class));
+        when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
         when(queryDao.getQueryInfo(anyString())).thenReturn(queryMap);
         doNothing().when(rabbitMQMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
