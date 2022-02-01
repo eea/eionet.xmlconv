@@ -28,6 +28,9 @@ public interface JobExecutorRepository extends JpaRepository<JobExecutor, Intege
     @Query(value = "SELECT * FROM JOB_EXECUTOR WHERE JOB_ID= :jobId", nativeQuery=true)
     List<JobExecutor> findJobExecutorsByJobId(@Param("jobId") Integer jobId);
 
+    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="5000")})
+    JobExecutor save(JobExecutor jobExecutor);
+
 }
 
 
