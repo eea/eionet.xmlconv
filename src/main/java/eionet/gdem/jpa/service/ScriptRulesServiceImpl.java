@@ -25,6 +25,10 @@ public class ScriptRulesServiceImpl implements ScriptRulesService {
 
     @Override
     public ScriptRulesEntry save(ScriptRulesEntry entry) {
+        if (entry.getValue().contains(",")) {
+            String value = entry.getValue();
+            entry.setValue(value.replace(",","."));
+        }
         return scriptRulesRepository.save(entry);
     }
 
