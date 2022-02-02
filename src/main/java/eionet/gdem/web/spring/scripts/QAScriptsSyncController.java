@@ -100,6 +100,8 @@ public class QAScriptsSyncController {
                 syncForm.setUrl(form.getUrl());
                 syncForm.setActive(form.getActive());
                 syncForm.setAsynchronousExecution(form.isAsynchronousExecution());
+                syncForm.setMarkedHeavy(form.isMarkedHeavy());
+                syncForm.setRuleMatch(form.getRuleMatch());
 
                 try {
                     syncForm.setScriptFile(new String(remoteScript, "UTF-8"));
@@ -134,7 +136,8 @@ public class QAScriptsSyncController {
         queryJpaService.updateVersion(maxVersion+1, Integer.parseInt(scriptId));
         QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry().setDescription(form.getDescription()).setShortName(form.getShortName()).setQueryFileName(form.getFileName())
                 .setSchemaId(Integer.parseInt(form.getSchemaId())).setResultType(form.getResultType()).setScriptType(form.getScriptType()).setUpperLimit(Integer.parseInt(form.getUpperLimit()))
-                .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(maxVersion+1).setUser(user).setDateModified(new Date()).setQueryEntry(queryEntry);
+                .setUrl(url).setActive(form.isActive()).setAsynchronousExecution(form.isAsynchronousExecution()).setVersion(maxVersion+1).setUser(user).setDateModified(new Date())
+                .setMarkedHeavy(form.isMarkedHeavy()).setRuleMatch(form.getRuleMatch()).setQueryEntry(queryEntry);
 
         try {
             QAScriptManager qm = new QAScriptManager();

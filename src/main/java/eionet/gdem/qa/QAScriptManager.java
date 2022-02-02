@@ -31,8 +31,10 @@ import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.QueryBackupEntry;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryHistoryEntry;
+import eionet.gdem.jpa.Entities.ScriptRulesEntry;
 import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.jpa.service.QueryJpaService;
+import eionet.gdem.jpa.service.ScriptRulesService;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.SecurityUtil;
@@ -49,6 +51,7 @@ import java.io.*;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * QA Script manager.
@@ -123,6 +126,7 @@ public class QAScriptManager {
                     qaScript.setMarkedHeavyReason(null);
                 }
                 qaScript.setMarkedHeavyReasonOther((String) scriptData.get(QaScriptView.MARKED_HEAVY_REASON_OTHER));
+                qaScript.setRuleMatch((String) scriptData.get(QaScriptView.RULE_MATCH));
 
                 String queryFolder = Properties.queriesFolder;
 
@@ -184,9 +188,9 @@ public class QAScriptManager {
      * @param asynchronousExeuction
      * @throws DCMException if DB or file operation fails.
      */
-    public QueryBackupEntry update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr,
-                                   String scriptType, String curFileName, MultipartFile file, String upperLimit, String url, Boolean asynchronousExeuction,
-                                   boolean active, Integer version, Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther) throws DCMException {
+    public QueryBackupEntry update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr, String scriptType, String curFileName, MultipartFile file,
+                                   String upperLimit, String url, Boolean asynchronousExeuction, boolean active, Integer version, Boolean markedHeavy, Integer markedHeavyReason,
+                                   String markedHeavyReasonOther, String ruleMatch, List<ScriptRulesEntry> scriptRules) throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
                 throw new DCMException(BusinessConstants.EXCEPTION_AUTORIZATION_QASCRIPT_UPDATE);
@@ -222,7 +226,13 @@ public class QAScriptManager {
                 storeQAScriptFile(file, curFileName);
             }
             queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url,
-                    asynchronousExeuction, version, markedHeavy, markedHeavyReason, markedHeavyReasonOther);
+                    asynchronousExeuction, version, markedHeavy, markedHeavyReason, markedHeavyReasonOther, ruleMatch);
+
+            deleteStoredElementsIfNotExistsInUI(scriptId, scriptRules);
+            for (ScriptRulesEntry rule : scriptRules) {
+                rule.setQueryId(Integer.parseInt(scriptId));
+                getScriptRulesService().save(rule);
+            }
         } catch (DCMException e) {
             throw e;
         } catch (Exception e) {
@@ -230,6 +240,16 @@ public class QAScriptManager {
             throw new DCMException(BusinessConstants.EXCEPTION_GENERAL);
         }
         return queryBackupEntry;
+    }
+
+    protected void deleteStoredElementsIfNotExistsInUI(String scriptId, List<ScriptRulesEntry> scriptRules) {
+        List<ScriptRulesEntry> storedRules = getScriptRulesService().findByQueryId(Integer.parseInt(scriptId));
+        for (ScriptRulesEntry storedEntry : storedRules) {
+            boolean exists = scriptRules.stream().map(ScriptRulesEntry::getId).anyMatch(storedEntry.getId()::equals);
+            if (!exists) {
+                getScriptRulesService().delete(storedEntry.getId());
+            }
+        }
     }
 
     /**
@@ -248,9 +268,9 @@ public class QAScriptManager {
      * @param asynchronousExecution
      * @throws DCMException If an error occurs.
      */
-    public QueryBackupEntry update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr, String scriptType,
-                                   String curFileName, String upperLimit, String url, String content, boolean updateContent,
-                                   boolean asynchronousExecution, boolean active, Integer version, Boolean markedHeavy, Integer markedHeavyReason, String markedHeavyReasonOther)
+    public QueryBackupEntry update(String user, String scriptId, String shortName, String schemaId, String resultType, String descr, String scriptType, String curFileName, String upperLimit,
+                                   String url, String content, boolean updateContent, boolean asynchronousExecution, boolean active, Integer version, Boolean markedHeavy, Integer markedHeavyReason,
+                                   String markedHeavyReasonOther, String ruleMatch, List<ScriptRulesEntry> scriptRules)
             throws DCMException {
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_QUERIES_PATH, "u")) {
@@ -286,7 +306,13 @@ public class QAScriptManager {
             }
 
             queryDao.updateQuery(scriptId, schemaId, shortName, descr, curFileName, resultType, scriptType, upperLimit, url, asynchronousExecution, version,
-                    markedHeavy, markedHeavyReason, markedHeavyReasonOther);
+                    markedHeavy, markedHeavyReason, markedHeavyReasonOther, ruleMatch);
+
+            deleteStoredElementsIfNotExistsInUI(scriptId, scriptRules);
+            for (ScriptRulesEntry rule : scriptRules) {
+                rule.setQueryId(Integer.parseInt(scriptId));
+                getScriptRulesService().save(rule);
+            }
             return queryBackupEntry;
         } catch (Exception e) {
             e.printStackTrace();
@@ -402,8 +428,8 @@ public class QAScriptManager {
      * @return Script id
      * @throws DCMException If an error occurs.
      */
-    public String add(String user, String shortName, String schemaId, String schema, String resultType, String description,
-                      String scriptType, MultipartFile scriptFile, String upperLimit, String url, Boolean asynchronousExecution, boolean active, Boolean markedHeavy, String markedHeavyReason, String markedHeavyReasonOther) throws DCMException {
+    public String add(String user, String shortName, String schemaId, String schema, String resultType, String description, String scriptType, MultipartFile scriptFile, String upperLimit,
+                      String url, Boolean asynchronousExecution, boolean active, Boolean markedHeavy, String markedHeavyReason, String markedHeavyReasonOther, String ruleMatch, List<ScriptRulesEntry> rules) throws DCMException {
 
         String scriptId = null;
         // If remote file URL and local file are specified use local file
@@ -464,11 +490,17 @@ public class QAScriptManager {
             // XXX - make sure script database entry AND local file is added
             QueryEntry queryEntry = new QueryEntry().setSchemaId(Integer.parseInt(schemaId)).setShortName(shortName)
                     .setQueryFileName(fileName).setDescription(description).setResultType(resultType).setScriptType(scriptType).setUpperLimit(Integer.parseInt(upperLimit))
-                    .setUrl(url).setAsynchronousExecution(asynchronousExecution).setVersion(1).setMarkedHeavy(markedHeavy).setMarkedHeavyReason(markedHeavyReasonStatus).setMarkedHeavyReasonOther(markedHeavyReasonOther);
+                    .setUrl(url).setAsynchronousExecution(asynchronousExecution).setVersion(1).setMarkedHeavy(markedHeavy).setMarkedHeavyReason(markedHeavyReasonStatus)
+                    .setMarkedHeavyReasonOther(markedHeavyReasonOther).setRuleMatch(ruleMatch);
             scriptId = getQueryJpaService().save(queryEntry).getQueryId().toString();
 
+            for (ScriptRulesEntry rule : rules) {
+                rule.setQueryId(Integer.parseInt(scriptId));
+                getScriptRulesService().save(rule);
+            }
+
             QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(user, shortName, schemaId, resultType, description, scriptType, upperLimit, url,
-                    asynchronousExecution, active, fileName, 1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther);
+                    asynchronousExecution, active, fileName, 1, markedHeavy, markedHeavyReasonStatus, markedHeavyReasonOther, ruleMatch);
             queryHistoryEntry.setQueryEntry(queryEntry);
             getQueryHistoryService().save(queryHistoryEntry);
         } catch (DCMException e) {
@@ -619,6 +651,10 @@ public class QAScriptManager {
 
     private static QueryHistoryService getQueryHistoryService() {
         return (QueryHistoryService) SpringApplicationContext.getBean("queryHistoryServiceImpl");
+    }
+
+    private static ScriptRulesService getScriptRulesService() {
+        return (ScriptRulesService) SpringApplicationContext.getBean("scriptRulesServiceImpl");
     }
 
 }

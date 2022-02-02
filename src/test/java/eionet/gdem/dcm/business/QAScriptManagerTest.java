@@ -4,6 +4,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
+import eionet.gdem.jpa.Entities.ScriptRulesEntry;
 import eionet.gdem.qa.QAScriptManager;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
@@ -23,6 +24,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -66,12 +69,15 @@ public class QAScriptManagerTest {
         String markedHeavyReason = HeavyScriptReasonEnum.OUT_OF_MEMORY.getText();
         Integer markedHeavyReasonCode = 2;
         String markedHeavyReasonOther = null;
+        String ruleMatch = "all";
+        List<ScriptRulesEntry> rules = new ArrayList<>();
+        rules.add(new ScriptRulesEntry());
 
         QAScriptManager qm = new QAScriptManager();
 
         MockMultipartFile scriptFile = new MockMultipartFile("file", queryFileName, MediaType.APPLICATION_XML_VALUE, getClass().getClassLoader().getResource(queryFileName).getFile().getBytes());
         String scriptId = qm.add(TestConstants.ADMIN_USER, shortName, schemaId, schema, resultType, description, scriptType, scriptFile, upperLimit, url, false, true,
-                true, markedHeavyReason, markedHeavyReasonOther);
+                true, markedHeavyReason, markedHeavyReasonOther, ruleMatch, rules);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -186,13 +192,16 @@ public class QAScriptManagerTest {
         String content = "The source of script file";
         String upperLimit = "1000";
         String url = "http://blahh.com";
+        String ruleMatch = "all";
+        List<ScriptRulesEntry> rules = new ArrayList<>();
+        rules.add(new ScriptRulesEntry());
 
         String user = TestConstants.TEST_ADMIN_USER;
 
         QAScriptManager qm = new QAScriptManager();
 
         // update qa script properties
-        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false, false, true, 1, false, null, null);
+        qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, upperLimit, url, content, false, false, true, 1, false, null, null, ruleMatch, rules);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);
@@ -229,6 +238,9 @@ public class QAScriptManagerTest {
         String url = "http://blahh.script.com";
         Integer markedHeavyReason = 3;
         String markedHeavyReasonOther = "test";
+        String ruleMatch = "all";
+        List<ScriptRulesEntry> rules = new ArrayList<>();
+        rules.add(new ScriptRulesEntry());
 
         String user = TestConstants.TEST_ADMIN_USER;
 
@@ -239,7 +251,7 @@ public class QAScriptManagerTest {
 
         QAScriptManager qm = new QAScriptManager();
         qm.update(user, scriptId, shortName, schemaId, resultType, description, scriptType, fileName, scriptFile, upperLimit, url,
-                false, true, 1, true, markedHeavyReason, markedHeavyReasonOther);
+                false, true, 1, true, markedHeavyReason, markedHeavyReasonOther, ruleMatch, rules);
 
         // query script by id and compare fields
         QAScript qascript = qm.getQAScript(scriptId);

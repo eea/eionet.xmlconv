@@ -1,7 +1,6 @@
 package eionet.gdem.services.impl;
 
 import eionet.gdem.Constants;
-import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
@@ -13,13 +12,12 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
-import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
+import eionet.gdem.rabbitMQ.service.DefineJobQueueAndSendToRabbitMQTemplate;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.services.JobOnDemandHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,21 +29,17 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     private JobService jobService;
     private JobHistoryService jobHistoryService;
-    private RabbitMQMessageSender jobMessageLightSender;
-    private RabbitMQMessageSender jobMessageHeavySender;
+    private DefineJobQueueAndSendToRabbitMQTemplate defineJobQueueByScriptAndScriptRules;
     private QueryJpaService queryJpaService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobOnDemandHandlerServiceImpl.class);
 
     @Autowired
-    public JobOnDemandHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService,
-                                         @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageLightSender,
-                                         @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender jobMessageHeavySender,
+    public JobOnDemandHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, DefineJobQueueAndSendToRabbitMQTemplate defineJobQueueByScriptAndScriptRules,
                                          QueryJpaService queryJpaService) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
-        this.jobMessageLightSender = jobMessageLightSender;
-        this.jobMessageHeavySender = jobMessageHeavySender;
+        this.defineJobQueueByScriptAndScriptRules = defineJobQueueByScriptAndScriptRules;
         this.queryJpaService = queryJpaService;
     }
 
@@ -55,15 +49,11 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
         JobEntry jobEntry = new JobEntry();
         try {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
-            QueryEntry query = queryJpaService.findByQueryId(scriptId);
-            boolean isHeavy = false;
-            if (query != null && query.getMarkedHeavy()) isHeavy = true;
             jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus)
                     .setRetryCounter(0).setJobType(Constants.ON_DEMAND_TYPE);
-            if (isHeavy) jobEntry.setHeavy(true);
             jobEntry = jobService.saveOrUpdate(jobEntry);
             LOGGER.info("Job with id " + jobEntry.getId() + " has been inserted in table T_XQJOBS");
-            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED, isHeavy);
+            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             script.setJobId(jobEntry.getId().toString());
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
@@ -71,28 +61,21 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
             if (isApi) workerJobRabbitMQRequestMessage.setApi(true);
 
-            if (isHeavy) {
-                jobMessageHeavySender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
-            } else {
-                jobMessageLightSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+            QueryEntry queryEntry=null;
+            if (jobEntry.getQueryId()!=0) {
+                queryEntry = queryJpaService.findByQueryId(jobEntry.getQueryId());
             }
-
-            Integer retryCounter = jobService.getRetryCounter(jobEntry.getId());
-            internalSchedulingStatus.setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalSchedulingStatus).setInstance(Properties.getHostname()).setRetryCounter(retryCounter+1).setTimestamp(new Timestamp(new Date().getTime()));
-            jobService.saveOrUpdate(jobEntry);
-            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_QUEUED, isHeavy);
+            defineJobQueueByScriptAndScriptRules.execute(queryEntry, jobEntry, workerJobRabbitMQRequestMessage);
         } catch (Exception e) {
             throw new XMLConvException(e.getMessage());
         }
         return jobEntry;
     }
 
-    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus, boolean isHeavy) throws DatabaseException {
+    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus) throws DatabaseException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
         jobHistoryEntry.setIntSchedulingStatus(internalStatus);
         jobHistoryEntry.setJobType(Constants.ON_DEMAND_TYPE);
-        if (isHeavy) jobHistoryEntry.setHeavy(true);
         jobHistoryService.save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
     }

@@ -1,6 +1,9 @@
 package eionet.gdem.jpa.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "T_QUERY")
@@ -52,6 +55,14 @@ public class QueryEntry {
 
     @Column(name = "MARKED_HEAVY_REASON_OTHER")
     private String markedHeavyReasonOther;
+
+    @JsonIgnore
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="QUERY_ID")
+    private List<ScriptRulesEntry> rulesEntryList;
+
+    @Column(name = "RULE_MATCH")
+    private String ruleMatch;
 
     public QueryEntry() {
     }
@@ -192,6 +203,24 @@ public class QueryEntry {
 
     public QueryEntry setMarkedHeavyReasonOther(String markedHeavyReasonOther) {
         this.markedHeavyReasonOther = markedHeavyReasonOther;
+        return this;
+    }
+
+    public List<ScriptRulesEntry> getRulesEntryList() {
+        return rulesEntryList;
+    }
+
+    public QueryEntry setRulesEntryList(List<ScriptRulesEntry> rulesEntryList) {
+        this.rulesEntryList = rulesEntryList;
+        return this;
+    }
+
+    public String getRuleMatch() {
+        return ruleMatch;
+    }
+
+    public QueryEntry setRuleMatch(String ruleMatch) {
+        this.ruleMatch = ruleMatch;
         return this;
     }
 }
