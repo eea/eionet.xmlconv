@@ -5,21 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
-import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
-import eionet.gdem.jpa.Entities.*;
+import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
+import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.JobExecutor;
+import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
-import eionet.gdem.rabbitMQ.service.QueryAndQueryHistoryService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,17 +51,6 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
     @Autowired
     private QueryMetadataService queryMetadataService;
-
-    @Autowired
-    private QueryJpaService queryJpaService;
-
-    @Autowired
-    private QueryAndQueryHistoryService queryAndQueryHistoryService;
-
-    @Autowired
-    private JobHistoryService jobHistoryService;
-
-    public static final String CONVERTERS_NAME = "converters";
 
     @Override
     public void onMessage(Message message) {
@@ -133,21 +120,6 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
     private void findIfJobIsHeavyBasedOnWorkerType(WorkerJobInfoRabbitMQResponseMessage response, JobEntry jobEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         if (response.getJobExecutorType().equals(JobExecutorType.Heavy)) {  //the response came from a heavy worker, so the job is heavy
             jobEntry.setHeavy(true);
-            QueryEntry script = queryJpaService.findByQueryId(jobEntry.getQueryId());
-            if(script != null){
-                //if script is not heavy, mark it as heavy, set reason Out of memory and increase version
-                if(script.getMarkedHeavy() != true){
-                    script.setMarkedHeavy(true);
-                    script.setMarkedHeavyReason(HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode());
-                    script.setVersion(script.getVersion() + 1);
-                    QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(CONVERTERS_NAME, script.getShortName(), script.getSchemaId().toString(), script.getResultType(), script.getDescription(), script.getScriptType(), script.getUpperLimit().toString(), script.getUrl(),
-                            script.isAsynchronousExecution(), script.isActive(), script.getQueryFileName(), script.getVersion(), true, HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode(), null, script.getRuleMatch());
-                    queryHistoryEntry.setQueryEntry(script);
-                    queryAndQueryHistoryService.saveQueryAndQueryHistoryEntries(script, queryHistoryEntry);
-                    LOGGER.info("Marked script with id " + script.getQueryId() + " as heavy because of Out of memory error");
-                    LOGGER.info("Marked script history of script with id " + script.getQueryId() + " as heavy because of Out of memory error");
-                }
-            }
             List<JobExecutor> jobExecutors = jobExecutorService.findExecutorsByJobId(jobEntry.getId());
             //find light workers that may have grabbed the job before the job was sent to heavy queue and set their status to failed in order for them to be deleted later by the responsible scheduled Task.
             jobExecutors = jobExecutors.stream().filter(j -> j.getJobExecutorType() == JobExecutorType.Light).collect(Collectors.toList());

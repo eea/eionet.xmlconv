@@ -120,227 +120,231 @@
       </div>
     </fieldset>
 
-  <div id="heavyLightSection">
-    <fieldset class="fieldset">
-      <legend><spring:message code="label.qascript.mark.heavy.section"/></legend>
-      <div class="row" style="display: block">
-        <div class="columns small-8">
-          <form:radiobutton path="markedHeavy" name="heavyScript" id="light" value="false" checked="checked" onchange="hideDropdown()"/>
-          <label for="light"><spring:message code="label.qascript.light"/></label>
-        </div>
-      </div>
-      <div class="row" style="display:block">
-        <div class="columns small-8">
-          <form:radiobutton path="markedHeavy" name="heavyScript" id="heavy" value="true" onchange="showDropdown()"/>
-          <label for="heavy"><spring:message code="label.qascript.heavy"/></label>
-        </div>
-      </div>
-      <c:choose>
-        <c:when test="${form.markedHeavy == true}">
+    <c:if test="${form.scriptType != 'fme'}">
+      <div id="heavyLightSection">
+        <fieldset class="fieldset">
+          <legend><spring:message code="label.qascript.mark.heavy.section"/></legend>
+          <div class="row" style="display: block">
+            <div class="columns small-8">
+              <form:radiobutton path="markedHeavy" name="heavyScript" id="light" value="false" checked="checked" onchange="hideDropdown()"/>
+              <label for="light"><spring:message code="label.qascript.light"/></label>
+            </div>
+          </div>
+          <div class="row" style="display:block">
+            <div class="columns small-8">
+              <form:radiobutton path="markedHeavy" name="heavyScript" id="heavy" value="true" onchange="showDropdown()"/>
+              <label for="heavy"><spring:message code="label.qascript.heavy"/></label>
+            </div>
+          </div>
+          <c:choose>
+          <c:when test="${form.markedHeavy == true}">
           <div class="row" id="markedHeavyReason" style="display: block">
-        </c:when>
-        <c:otherwise>
-          <div class="row" id="markedHeavyReason" style="display:none">
-        </c:otherwise>
-      </c:choose>
-        <div class="columns small-8">
-          <form:select path="markedHeavyReason" id="selMarkedHeavyReason" class="borderFix">
-            <form:option value="Long running" id="longRunning" selected="true">Long running script</form:option>
-            <form:option value="Out of memory" id="oom">Out of memory</form:option>
-            <form:option value="Other" id="other">Other</form:option>
-          </form:select>
-        </div>
+            </c:when>
+            <c:otherwise>
+            <div class="row" id="markedHeavyReason" style="display:none">
+              </c:otherwise>
+              </c:choose>
+              <div class="columns small-8">
+                <form:select path="markedHeavyReason" id="selMarkedHeavyReason" class="borderFix">
+                  <form:option value="Long running" id="longRunning" selected="true">Long running script</form:option>
+                  <form:option value="Out of memory" id="oom">Out of memory</form:option>
+                  <form:option value="Other" id="other">Other</form:option>
+                </form:select>
+              </div>
+            </div>
+            <c:choose>
+            <c:when test="${form.markedHeavyReason == 'Other'}">
+            <div class="row" id="markedHeavyOtherReason" style="display: block">
+              </c:when>
+              <c:otherwise>
+              <div class="row" id="markedHeavyOtherReason" style="display:none">
+                </c:otherwise>
+                </c:choose>
+                <div class="columns small-8">
+                  <label for="markedHeavyOtherReasonTxt"><spring:message code="label.qascript.heavy.reason"/></label>
+                  <form:input id="markedHeavyOtherReasonTxt" class="borderFix" path="markedHeavyReasonOther" maxlength="200"/>
+                </div>
+              </div>
+        </fieldset>
       </div>
-      <c:choose>
-        <c:when test="${form.markedHeavyReason == 'Other'}">
-          <div class="row" id="markedHeavyOtherReason" style="display: block">
-        </c:when>
-        <c:otherwise>
-          <div class="row" id="markedHeavyOtherReason" style="display:none">
-        </c:otherwise>
-      </c:choose>
-      <div class="columns small-8">
-         <label for="markedHeavyOtherReasonTxt"><spring:message code="label.qascript.heavy.reason"/></label>
-         <form:input id="markedHeavyOtherReasonTxt" class="borderFix" path="markedHeavyReasonOther" maxlength="200"/>
-      </div>
-      </div>
-    </fieldset>
-  </div>
+    </c:if>
 
-  <div id="scriptRulesSection">
-    <fieldset class="fieldset">
-      <legend><spring:message code="label.qascript.rules.section"/></legend>
-        <div class="row">
+    <c:if test="${!form.markedHeavy || form.scriptType != 'fme'}">
+      <div id="scriptRulesSection">
+        <fieldset class="fieldset">
+          <legend><spring:message code="label.qascript.rules.section"/></legend>
+          <div class="row">
             <div class="columns small-8">
-                <form:radiobutton path="ruleMatch" id="allRules" value="all" checked="checked"/>
-                <label for="allRules"><spring:message code="label.qascript.rules.match.all"/></label>
+              <form:radiobutton path="ruleMatch" id="allRules" value="all" checked="checked"/>
+              <label for="allRules"><spring:message code="label.qascript.rules.match.all"/></label>
             </div>
-        </div>
-        <div class="row">
+          </div>
+          <div class="row">
             <div class="columns small-8">
-                <form:radiobutton path="ruleMatch" id="atLeastOne" value="atLeastOne"/>
-                <label for="atLeastOne"><spring:message code="label.qascript.rules.match.at.least.one"/></label>
+              <form:radiobutton path="ruleMatch" id="atLeastOne" value="atLeastOne"/>
+              <label for="atLeastOne"><spring:message code="label.qascript.rules.match.at.least.one"/></label>
             </div>
-        </div>
-        <div id="app">
-          <v-app>
-            <v-data-table
-                    :headers="headers"
-                    :items="scriptRules"
-                    class="elevation-1"
-            >
-              <template v-slot:top>
-                <v-toolbar
-                        flat
-                >
-                  <v-toolbar-title>Rules for handling script as heavy</v-toolbar-title>
-                  <v-divider
-                          class="mx-4"
-                          inset
-                          vertical
-                  ></v-divider>
-                  <v-spacer></v-spacer>
-                  <v-dialog
-                          v-model="dialog"
-                          max-width="500px"
+          </div>
+          <div id="app">
+            <v-app>
+              <v-data-table
+                      :headers="headers"
+                      :items="scriptRules"
+                      class="elevation-1"
+              >
+                <template v-slot:top>
+                  <v-toolbar
+                          flat
                   >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                              color="primary"
-                              dark
-                              class="mb-2"
-                              v-bind="attrs"
-                              v-on="on"
-                      >
-                        New Rule
-                      </v-btn>
-                    </template>
-                    <v-card>
-                      <v-card-title>
-                        <span class="text-h5">{{ formTitle }}</span>
-                      </v-card-title>
-
-                      <v-card-text>
-                        <v-container>
-                          <v-row>
-                            <v-col
-                                    cols="12"
-                                    sm="12"
-                                    md="12"
-                            >
-                              <v-select
-                                      v-model="editedItem.field"
-                                      :items="fieldValues"
-                                      label="Field"
-                                      @change="showProperTypeValues"
-                                      :rules="[(v) => !!v || 'Field is required']"
-                                ></v-select>
-                            </v-col>
-                            <v-col
-                                    cols="12"
-                                    sm="12"
-                                    md="12"
-                            >
-                              <v-select
-                                      v-model="editedItem.type"
-                                      :items="typeValues"
-                                      label="Type"
-                                      :rules="[(v) => !!v || 'Type is required']"
-                                ></v-select>
-                            </v-col>
-                            </v-col>
-                            <v-col
-                                    cols="12"
-                                    sm="12"
-                                    md="12"
-                            >
-                              <v-text-field
-                                      v-model="editedItem.value"
-                                      label="Value"
-                                      :rules="[(v) => !!v || 'Value is required']"
-                              ></v-text-field>
-                            </v-col>
-                            <v-col
-                                    cols="12"
-                                    sm="12"
-                                    md="12"
-                            >
-                              <v-text-field
-                                      v-model="editedItem.description"
-                                      label="Description"
-                              ></v-text-field>
-                            </v-col>
-                            <v-col
-                                    cols="12"
-                                    sm="12"
-                                    md="12"
-                            >
-                              <v-checkbox
-                                      v-model="editedItem.enabled"
-                                      :label="`Enabled`"
-                              ></v-checkbox>
-                            </v-col>
-                          </v-row>
-                        </v-container>
-                      </v-card-text>
-
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
+                    <v-toolbar-title>Rules for handling script as heavy</v-toolbar-title>
+                    <v-divider
+                            class="mx-4"
+                            inset
+                            vertical
+                    ></v-divider>
+                    <v-spacer></v-spacer>
+                    <v-dialog
+                            v-model="dialog"
+                            max-width="500px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="close"
+                                color="primary"
+                                dark
+                                class="mb-2"
+                                v-bind="attrs"
+                                v-on="on"
                         >
-                          Cancel
+                          New Rule
                         </v-btn>
-                        <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="save"
-                        >
-                          Save
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                  <v-dialog v-model="dialogDelete" max-width="500px">
-                    <v-card>
-                      <v-card-title class="text-h5">Are you sure you want to delete this rule?</v-card-title>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                        <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-toolbar>
-              </template>
-              <template v-slot:item.actions="{ item }">
-                <v-icon
-                        small
-                        class="mr-2"
-                        @click="editItem(item)"
-                >
-                  mdi-pencil
-                </v-icon>
-                <v-icon
-                        small
-                        @click="deleteItem(item)"
-                >
-                  mdi-delete
-                </v-icon>
-              </template>
-            </v-data-table>
-          </v-app>
-        </div>
-    </fieldset>
-  </div>
+                      </template>
+                      <v-card>
+                        <v-card-title>
+                          <span class="text-h5">{{ formTitle }}</span>
+                        </v-card-title>
+
+                        <v-card-text>
+                          <v-container>
+                            <v-row>
+                              <v-col
+                                      cols="12"
+                                      sm="12"
+                                      md="12"
+                              >
+                                <v-select
+                                        v-model="editedItem.field"
+                                        :items="fieldValues"
+                                        label="Field"
+                                        @change="showProperTypeValues"
+                                        :rules="[(v) => !!v || 'Field is required']"
+                                ></v-select>
+                              </v-col>
+                              <v-col
+                                      cols="12"
+                                      sm="12"
+                                      md="12"
+                              >
+                                <v-select
+                                        v-model="editedItem.type"
+                                        :items="typeValues"
+                                        label="Type"
+                                        :rules="[(v) => !!v || 'Type is required']"
+                                ></v-select>
+                              </v-col>
+                              </v-col>
+                              <v-col
+                                      cols="12"
+                                      sm="12"
+                                      md="12"
+                              >
+                                <v-text-field
+                                        v-model="editedItem.value"
+                                        label="Value"
+                                        :rules="[(v) => !!v || 'Value is required']"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col
+                                      cols="12"
+                                      sm="12"
+                                      md="12"
+                              >
+                                <v-text-field
+                                        v-model="editedItem.description"
+                                        label="Description"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col
+                                      cols="12"
+                                      sm="12"
+                                      md="12"
+                              >
+                                <v-checkbox
+                                        v-model="editedItem.enabled"
+                                        :label="`Enabled`"
+                                ></v-checkbox>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-card-text>
+
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                                  color="blue darken-1"
+                                  text
+                                  @click="close"
+                          >
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                                  color="blue darken-1"
+                                  text
+                                  @click="save"
+                          >
+                            Save
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                    <v-dialog v-model="dialogDelete" max-width="500px">
+                      <v-card>
+                        <v-card-title class="text-h5">Are you sure you want to delete this rule?</v-card-title>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                          <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                          <v-spacer></v-spacer>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-toolbar>
+                </template>
+                <template v-slot:item.actions="{ item }">
+                  <v-icon
+                          small
+                          class="mr-2"
+                          @click="editItem(item)"
+                  >
+                    mdi-pencil
+                  </v-icon>
+                  <v-icon
+                          small
+                          @click="deleteItem(item)"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </template>
+              </v-data-table>
+            </v-app>
+          </div>
+        </fieldset>
+      </div>
+    </c:if>
 
     <fieldset class="fieldset">
       <legend>Script file properties</legend>
 
-      <div class="row">
+      <div class="row" style="display: block">
         <div class="columns small-4">
           <label class="question" for="txtFile">
             <spring:message code="label.qascript.fileName"/>

@@ -1,11 +1,12 @@
 package eionet.gdem.rabbitMQ.service;
 
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
+import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
+import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import org.slf4j.Logger;
@@ -26,16 +27,22 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
     private JobHistoryService jobHistoryService;
     private WorkerHeartBeatMsgService workerHeartBeatMsgService;
     private RabbitMQMessageSender rabbitMQMessageSender;
+    private QueryAndQueryHistoryService queryAndQueryHistoryService;
+    private QueryJpaService queryJpaService;
 
+    public static final String CONVERTERS_NAME = "converters";
     private static final Logger LOGGER = LoggerFactory.getLogger(HandleHeavyJobsServiceImpl.class);
 
     @Autowired
     public HandleHeavyJobsServiceImpl(JobService jobService, JobHistoryService jobHistoryService, WorkerHeartBeatMsgService workerHeartBeatMsgService,
-                                      @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender) {
+                                      @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, QueryAndQueryHistoryService queryAndQueryHistoryService,
+                                      QueryJpaService queryJpaService) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.workerHeartBeatMsgService = workerHeartBeatMsgService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
+        this.queryAndQueryHistoryService = queryAndQueryHistoryService;
+        this.queryJpaService = queryJpaService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -45,12 +52,28 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
         jobService.updateJob(jobEntry.getnStatus(), jobEntry.getIntSchedulingStatus(), jobEntry.getJobExecutorName(), new Timestamp(new Date().getTime()), jobEntry);
         jobService.updateHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure(), new Timestamp(new Date().getTime()), jobEntry.getId());
         jobHistoryService.save(jobHistoryEntry);
+        markScriptHeavy(jobEntry.getQueryId());
         rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
         if (jobEntry.getHeavyRetriesOnFailure()==1) {
             clearUnansweredLightWorkerHeartBeatMessages(jobEntry.getId());
         }
     }
-    
+
+    private void markScriptHeavy(Integer queryId) {
+        QueryEntry queryEntry = queryJpaService.findByQueryId(queryId);
+        if (queryEntry!=null) {
+            queryEntry.setMarkedHeavy(true);
+            queryEntry.setMarkedHeavyReason(HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode());
+            queryEntry.setVersion(queryEntry.getVersion() + 1);
+            QueryHistoryEntry queryHistoryEntry = ScriptUtils.createQueryHistoryEntry(CONVERTERS_NAME, queryEntry.getShortName(), queryEntry.getSchemaId().toString(), queryEntry.getResultType(), queryEntry.getDescription(), queryEntry.getScriptType(), queryEntry.getUpperLimit().toString(), queryEntry.getUrl(),
+                    queryEntry.isAsynchronousExecution(), queryEntry.isActive(), queryEntry.getQueryFileName(), queryEntry.getVersion(), true, HeavyScriptReasonEnum.OUT_OF_MEMORY.getCode(), null, queryEntry.getRuleMatch());
+            queryHistoryEntry.setQueryEntry(queryEntry);
+            queryAndQueryHistoryService.saveQueryAndQueryHistoryEntries(queryEntry, queryHistoryEntry);
+            LOGGER.info("Marked script with id " + queryEntry.getQueryId() + " as heavy because of Out of memory error");
+            LOGGER.info("Marked script history of script with id " + queryEntry.getQueryId() + " as heavy because of Out of memory error");
+        }
+    }
+
     void clearUnansweredLightWorkerHeartBeatMessages(Integer jobId) throws DatabaseException {
         List<WorkerHeartBeatMsgEntry> messages = workerHeartBeatMsgService.findUnAnsweredHeartBeatMessages(jobId);
         if (messages.size()>0) {

@@ -5,11 +5,12 @@ import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.JobNotFoundException;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.logging.Markers;
 import eionet.gdem.qa.IQueryDao;
@@ -29,7 +30,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,19 +50,18 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     private SchemaManager schemaManager;
     private IQueryDao queryDao;
     private JobHistoryService jobHistoryService;
-    private RabbitMQMessageSender rabbitMQLightMessageSender;
-    private RabbitMQMessageSender rabbitMQHeavyMessageSender;
     private JobService jobService;
     private QueryMetadataService queryMetadataService;
+    private QueryJpaService queryJpaService;
+    private DefineJobQueueAndSendToRabbitMQTemplate defineJobQueueByScriptAndScriptRules;
 
     @Autowired
-    public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService,
-                                      @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQLightMessageSender,
-                                      @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQHeavyMessageSender, JobService jobService, QueryMetadataService queryMetadataService) {
+    public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService, JobService jobService, QueryMetadataService queryMetadataService, QueryJpaService queryJpaService,
+                                      DefineJobQueueAndSendToRabbitMQTemplate defineJobQueueByScriptAndScriptRules) {
         this.queryDao = queryDao;
         this.jobHistoryService = jobHistoryService;
-        this.rabbitMQLightMessageSender = rabbitMQLightMessageSender;
-        this.rabbitMQHeavyMessageSender = rabbitMQHeavyMessageSender;
+        this.queryJpaService = queryJpaService;
+        this.defineJobQueueByScriptAndScriptRules = defineJobQueueByScriptAndScriptRules;
         this.jobService = jobService;
         this.queryMetadataService = queryMetadataService;
     }
@@ -191,20 +190,12 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     LOGGER.info("** XQuery Job will be added in queue, ID=" + jobId + " params: " + xqParam[0] + " result will be stored to " + resultFile);
                 }
 
-                processJob(jobEntry);
                 WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(xq);
-                //marked heavy properties
-                if(query != null) {
-                    String markedHeavy = (String) query.get(QaScriptView.MARKED_HEAVY);
-                    if (markedHeavy != null && markedHeavy.equals("1")) {
-                        rabbitMQHeavyMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
-                    } else {
-                        rabbitMQLightMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
-                    }
+                QueryEntry queryEntry = null;
+                if (jobEntry.getQueryId()!=0) {
+                    queryEntry = queryJpaService.findByQueryId(Integer.parseInt(queryID));
                 }
-                else{
-                    rabbitMQLightMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
-                }
+                defineJobQueueByScriptAndScriptRules.execute(queryEntry, jobEntry, workerJobRabbitMQRequestMessage);
             }
         } catch (Exception e) {
             throw new CreateRabbitMQMessageException(e.getMessage());
@@ -222,25 +213,6 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
         } catch (Exception e) {
             handleError("Error getting WQ data from the DB: " + e.toString(), true,null, jobId);
             return null;
-        }
-    }
-
-    void processJob(JobEntry jobEntry) throws DatabaseException {
-        try {
-            Integer jobId = jobEntry.getId();
-            LOGGER.info("Processing job with id " + jobId);
-            Integer retryCounter = jobService.getRetryCounter(jobId);
-            jobService.updateJobInfo(Constants.XQ_PROCESSING, Properties.getHostname(), new Timestamp(new Date().getTime()), retryCounter + 1, jobId);
-            InternalSchedulingStatus intStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
-            jobService.updateJob(Constants.XQ_PROCESSING, intStatus, null, new Timestamp(new Date().getTime()), jobEntry);
-            LOGGER.info("Updating job information of job with id " + jobId + " in table T_XQJOBS");
-            JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
-            jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED).setHeavy(jobEntry.isHeavy());
-            jobHistoryService.save(jobHistoryEntry);
-            LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
-        } catch (Exception e) {
-            LOGGER.error("Database exception when changing job status. " + e.toString());
-            throw e;
         }
     }
 

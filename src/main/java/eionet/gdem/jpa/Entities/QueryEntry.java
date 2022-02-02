@@ -58,7 +58,7 @@ public class QueryEntry {
 
     @JsonIgnore
     @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name="RULE_ID")
+    @JoinColumn(name="QUERY_ID")
     private List<ScriptRulesEntry> rulesEntryList;
 
     @Column(name = "RULE_MATCH")
