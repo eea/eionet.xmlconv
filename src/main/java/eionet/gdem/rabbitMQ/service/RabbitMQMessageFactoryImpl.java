@@ -196,6 +196,8 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 if (jobEntry.getQueryId()!=0) {
                     queryEntry = queryJpaService.findByQueryId(Integer.parseInt(queryID));
                 }
+                //set jobExecutor=null in case job is restarted
+                jobEntry.setJobExecutorName(null);
                 defineJobQueueByScriptAndScriptRules.execute(queryEntry, jobEntry, workerJobRabbitMQRequestMessage);
             }
         } catch (Exception e) {
