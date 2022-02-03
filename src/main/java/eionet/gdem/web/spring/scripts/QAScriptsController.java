@@ -140,7 +140,9 @@ public class QAScriptsController {
         }
 
         try {
-            scriptRules = mapper.readValue(rulesString, new TypeReference<>(){});
+            if (StringUtils.isNotEmpty(rulesString)) {
+                scriptRules = mapper.readValue(rulesString, new TypeReference<>(){});
+            }
             QAScriptManager qaScriptManager = new QAScriptManager();
             qaScriptManager.add(user, shortName, schemaId, schema, resultType, desc, scriptType, scriptFile, upperLimit, url, asynchronousExecution,
                     active, markedHeavy, markedHeavyReason, markedHeavyReasonOther, ruleMatch, scriptRules);
