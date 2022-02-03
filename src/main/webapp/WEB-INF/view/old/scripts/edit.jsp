@@ -120,7 +120,6 @@
       </div>
     </fieldset>
 
-    <c:if test="${form.scriptType != 'fme'}">
       <div id="heavyLightSection">
         <fieldset class="fieldset">
           <legend><spring:message code="label.qascript.mark.heavy.section"/></legend>
@@ -167,9 +166,7 @@
               </div>
         </fieldset>
       </div>
-    </c:if>
 
-    <c:if test="${!form.markedHeavy && form.scriptType != 'fme'}">
       <div id="scriptRulesSection">
         <fieldset class="fieldset">
           <legend><spring:message code="label.qascript.rules.section"/></legend>
@@ -339,7 +336,6 @@
           </div>
         </fieldset>
       </div>
-    </c:if>
 
     <fieldset class="fieldset">
       <legend>Script file properties</legend>
