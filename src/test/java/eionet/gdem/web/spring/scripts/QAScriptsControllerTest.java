@@ -1,11 +1,12 @@
 package eionet.gdem.web.spring.scripts;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eionet.gdem.jpa.Entities.ScriptRulesEntry;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.WebContextConfig;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,19 +19,16 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 import static eionet.gdem.test.TestConstants.ADMIN_USER;
 import static eionet.gdem.test.TestConstants.SESSION_USER;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.hamcrest.Matchers.*;
-
-import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  *
@@ -52,10 +50,17 @@ public class QAScriptsControllerTest {
 
     private MockMvc mockMvc;
 
+    private String scriptRulesString;
+
     @Before
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         DbHelper.setUpDatabase(dataSource, TestConstants.SEED_DATASET_QA_XML);
+        ObjectMapper mapper = new ObjectMapper();
+        List<ScriptRulesEntry> rules = new ArrayList<>();
+        ScriptRulesEntry rule = new ScriptRulesEntry().setField("collection path").setType("includes").setValue("test");
+        rules.add(rule);
+        scriptRulesString = mapper.writeValueAsString(rules);
     }
 
     @Test
@@ -82,6 +87,7 @@ public class QAScriptsControllerTest {
                 .param("add", "")
                 .param("schema", "http://localhost/not_existing2.xsd")
                 .param("schemaId", "88")
+                .param("scriptRules", scriptRulesString)
                 .param("shortName", "test"))
                 .andExpect(status().is3xxRedirection());
     }
@@ -119,6 +125,7 @@ public class QAScriptsControllerTest {
                 .param("shortName", "test")
                 .param("scriptId", "54")
                 .param("fileName", "previous.xq")
+                .param("scriptRules", scriptRulesString)
                 .param("scriptType", XQScript.SCRIPT_LANG_XQUERY3))
                 .andExpect(status().is3xxRedirection());
     }
@@ -132,6 +139,7 @@ public class QAScriptsControllerTest {
             .param("schemaId", "62")
             .param("shortName", "test")
             .param("scriptType", XQScript.SCRIPT_LANG_XQUERY3)
+            .param("scriptRules", scriptRulesString)
             .param("fileName", "sum-oz_info_1920_1.xql"))
             .andExpect(model().hasNoErrors())
             .andExpect(status().is3xxRedirection());

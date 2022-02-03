@@ -169,7 +169,7 @@
       </div>
     </c:if>
 
-    <c:if test="${!form.markedHeavy || form.scriptType != 'fme'}">
+    <c:if test="${!form.markedHeavy && form.scriptType != 'fme'}">
       <div id="scriptRulesSection">
         <fieldset class="fieldset">
           <legend><spring:message code="label.qascript.rules.section"/></legend>

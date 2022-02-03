@@ -3,7 +3,9 @@ package eionet.gdem.qa;
 import eionet.gdem.Properties;
 import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.database.MySqlBaseDao;
+import eionet.gdem.jpa.Entities.ScriptRulesEntry;
 import eionet.gdem.jpa.service.QueryHistoryService;
+import eionet.gdem.jpa.service.ScriptRulesService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import static eionet.gdem.web.spring.conversions.ConvTypeMySqlDao.CONTENT_TYPE_FLD;
@@ -250,6 +253,8 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
         }
 
         getQueryHistoryService().updateQueryId(null, Integer.parseInt(queryId));
+        List<ScriptRulesEntry> scriptRules = getScriptRulesService().findByQueryId(Integer.parseInt(queryId));
+        scriptRules.forEach(scriptRulesEntry -> getScriptRulesService().delete(scriptRulesEntry.getId()));
 
         try {
             conn = getConnection();
@@ -658,6 +663,10 @@ public class QueryMySqlDao extends MySqlBaseDao implements IQueryDao {
 
     private static QueryHistoryService getQueryHistoryService() {
         return (QueryHistoryService) SpringApplicationContext.getBean("queryHistoryServiceImpl");
+    }
+
+    private static ScriptRulesService getScriptRulesService() {
+        return (ScriptRulesService) SpringApplicationContext.getBean("scriptRulesServiceImpl");
     }
 
 }

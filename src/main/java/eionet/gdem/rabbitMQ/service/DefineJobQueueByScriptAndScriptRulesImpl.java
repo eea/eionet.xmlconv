@@ -60,7 +60,7 @@ public class DefineJobQueueByScriptAndScriptRulesImpl implements DefineJobQueueA
         if (jobEntry.getQueryId() == 0) return;
         if (!jobEntry.isHeavy()) {
             List<ScriptRulesEntry> scriptRulesEntries = queryEntry.getRulesEntryList().stream().filter(e -> e.isEnabled()).collect(Collectors.toList());
-            if (queryEntry.getRuleMatch().equals(ScriptRuleMatch.ALL.getValue())) {
+            if (queryEntry.getRuleMatch()!=null && queryEntry.getRuleMatch().equals(ScriptRuleMatch.ALL.getValue())) {
                 for (ScriptRulesEntry rule : scriptRulesEntries) {
                     if (rule.getType().equals(ScriptRuleType.INCLUDES.getValue())) {
                         collectionPathRule = true;
@@ -82,7 +82,7 @@ public class DefineJobQueueByScriptAndScriptRulesImpl implements DefineJobQueueA
                 if (collectionPath && xmlFileSizeGreater && xmlFileSizeSmaller) {
                     jobEntry.setHeavy(true);
                 }
-            } else if (queryEntry.getRuleMatch().equals(ScriptRuleMatch.AT_LEAST_ONE.getValue())) {
+            } else if (queryEntry.getRuleMatch()!=null && queryEntry.getRuleMatch().equals(ScriptRuleMatch.AT_LEAST_ONE.getValue())) {
                 for (ScriptRulesEntry rule : scriptRulesEntries) {
                     if (rule.getField().equals(ScriptRuleField.COLLECTION_PATH.getValue())) {
                         if (checkCollectionPath(jobEntry.getUrl(), rule.getValue())) {
@@ -139,7 +139,7 @@ public class DefineJobQueueByScriptAndScriptRulesImpl implements DefineJobQueueA
      * @return
      * @throws XMLConvException
      */
-    private long getXmlFileSize(String url) throws XMLConvException {
+    public long getXmlFileSize(String url) throws XMLConvException {
         int index = url.indexOf("https");
         String finalUrl = url.substring(index);
         long sourceSize = HttpFileManager.getSourceURLSize(null, finalUrl, true);

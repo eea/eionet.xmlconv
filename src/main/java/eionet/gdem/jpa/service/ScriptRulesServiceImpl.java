@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service("scriptRulesServiceImpl")
 public class ScriptRulesServiceImpl implements ScriptRulesService {
 
     private ScriptRulesRepository scriptRulesRepository;

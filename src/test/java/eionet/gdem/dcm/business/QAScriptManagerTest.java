@@ -71,7 +71,8 @@ public class QAScriptManagerTest {
         String markedHeavyReasonOther = null;
         String ruleMatch = "all";
         List<ScriptRulesEntry> rules = new ArrayList<>();
-        rules.add(new ScriptRulesEntry());
+        ScriptRulesEntry rule = new ScriptRulesEntry().setField("collection path").setType("includes").setValue("test");
+        rules.add(rule);
 
         QAScriptManager qm = new QAScriptManager();
 
@@ -194,7 +195,8 @@ public class QAScriptManagerTest {
         String url = "http://blahh.com";
         String ruleMatch = "all";
         List<ScriptRulesEntry> rules = new ArrayList<>();
-        rules.add(new ScriptRulesEntry());
+        ScriptRulesEntry rule = new ScriptRulesEntry().setField("collection path").setType("includes").setValue("test");
+        rules.add(rule);
 
         String user = TestConstants.TEST_ADMIN_USER;
 
@@ -240,7 +242,8 @@ public class QAScriptManagerTest {
         String markedHeavyReasonOther = "test";
         String ruleMatch = "all";
         List<ScriptRulesEntry> rules = new ArrayList<>();
-        rules.add(new ScriptRulesEntry());
+        ScriptRulesEntry rule = new ScriptRulesEntry().setField("collection path").setType("includes").setValue("test");
+        rules.add(rule);
 
         String user = TestConstants.TEST_ADMIN_USER;
 

@@ -97,6 +97,24 @@
     <QUERY_HISTORY QUERY_ID="76" DESCRIPTION="" SHORT_NAME="Nid_water 2008 NVZ_POT_GIS" QUERY_FILENAME="nid_nvz_pot_08_4946.xquery" SCHEMA_ID="122" RESULT_TYPE="HTML"/>
     <QUERY_HISTORY QUERY_ID="77" DESCRIPTION="" SHORT_NAME="Nid_water 2008 WTA RiskAreas" QUERY_FILENAME="nid_wta_riskareas_08_4943.xquery" SCHEMA_ID="123" RESULT_TYPE="HTML"/>
 
+    <SCRIPT_RULES ID="1" QUERY_ID="1" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="2" QUERY_ID="3" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="3" QUERY_ID="5" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="4" QUERY_ID="6" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="5" QUERY_ID="7" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="6" QUERY_ID="8" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="7" QUERY_ID="11" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="8" QUERY_ID="12" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="9" QUERY_ID="13" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="10" QUERY_ID="14" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="11" QUERY_ID="15" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="12" QUERY_ID="16" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="13" QUERY_ID="17" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="14" QUERY_ID="18" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="15" QUERY_ID="20" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="16" QUERY_ID="21" FIELD="collection path" TYPE="includes" VALUE="test" />
+    <SCRIPT_RULES ID="17" QUERY_ID="22" FIELD="collection path" TYPE="includes" VALUE="test" />
+
     <T_SCHEMA SCHEMA_ID="1" XML_SCHEMA="http://roddev.eionet.eu.int/waterdemo/water_measurements.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
     <T_SCHEMA SCHEMA_ID="14" XML_SCHEMA="http://roddev.eionet.eu.int/eper/eper_examples.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
     <T_SCHEMA SCHEMA_ID="20" XML_SCHEMA="http://www.lisa.org/tmx/tmx14.dtd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <T_QUERY QUERY_ID="100" DESCRIPTION="test1" SHORT_NAME="test1" QUERY_FILENAME="testFile1" SCHEMA_ID="1" RESULT_TYPE="HTML"/>
+
+  <QUERY_HISTORY QUERY_ID="100" DESCRIPTION="test1" SHORT_NAME="test1" QUERY_FILENAME="testFile1" SCHEMA_ID="1" RESULT_TYPE="HTML"/>
+
+  <SCRIPT_RULES ID="1" QUERY_ID="100" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+  <SCRIPT_RULES ID="2" QUERY_ID="100" FIELD="xml file size (in MB)" TYPE="greater than" VALUE="40" ENABLED="1" />
+</dataset>

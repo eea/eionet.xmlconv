@@ -4,12 +4,13 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
+import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
-import eionet.gdem.rabbitMQ.service.RabbitMQMessageSender;
+import eionet.gdem.rabbitMQ.service.DefineJobQueueAndSendToRabbitMQTemplate;
 import eionet.gdem.services.impl.JobOnDemandHandlerServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
 import org.junit.Assert;
@@ -41,10 +42,10 @@ public class JobOnDemandHandlerServiceTest {
     private JobHistoryService jobHistoryService;
 
     @Mock
-    private RabbitMQMessageSender jobMessageSender;
+    private QueryJpaService queryJpaService;
 
     @Mock
-    private QueryJpaService queryJpaService;
+    DefineJobQueueAndSendToRabbitMQTemplate defineJobQueueAndSendToRabbitMQ;
 
     @InjectMocks
     private JobOnDemandHandlerServiceImpl jobOnDemandHandlerService;
@@ -72,9 +73,9 @@ public class JobOnDemandHandlerServiceTest {
     public void testCreateJobAndSendToRabbitMQ() throws XMLConvException, DatabaseException {
         when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobHistoryService.save(any(JobHistoryEntry.class))).thenReturn(jobHistoryEntry);
-        when(queryJpaService.findByQueryId(0)).thenReturn(null);
-        doNothing().when(jobMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
-        when(jobService.getRetryCounter(anyInt())).thenReturn(0);
+        QueryEntry queryEntry = new QueryEntry().setQueryId(1).setShortName("shortName").setSchemaId(742).setResultType("HTML").setScriptType("xquery 3.0+").setUrl("test").setUpperLimit(10).setActive(true).setVersion(1);
+        when(queryJpaService.findByQueryId(anyInt())).thenReturn(queryEntry);
+        doNothing().when(defineJobQueueAndSendToRabbitMQ).execute(any(QueryEntry.class), any(JobEntry.class), any(WorkerJobRabbitMQRequestMessage.class));
         JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0, false);
         Assert.assertEquals(jobEntry.getId(), jobEntryResult.getId());
     }

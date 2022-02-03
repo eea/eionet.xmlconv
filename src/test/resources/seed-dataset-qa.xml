@@ -30,6 +30,21 @@
     <QUERY_HISTORY QUERY_ID="53" DESCRIPTION="" SHORT_NAME="test expired xml" QUERY_FILENAME="test_expired-xml.xquery" SCHEMA_ID="89" RESULT_TYPE="XML" SCRIPT_TYPE="xquery 1.0" UPPER_LIMIT="10" VERSION="1"/>
     <QUERY_HISTORY QUERY_ID="54" DESCRIPTION="" SHORT_NAME="test not expired html" QUERY_FILENAME="previous.xq" SCHEMA_ID="88" RESULT_TYPE="HTML" SCRIPT_TYPE="xquery 3.0+" UPPER_LIMIT="10" VERSION="1"/>
 
+    <SCRIPT_RULES ID="1" QUERY_ID="25" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="2" QUERY_ID="26" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="3" QUERY_ID="27" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="4" QUERY_ID="28" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="5" QUERY_ID="44" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="6" QUERY_ID="46" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="7" QUERY_ID="47" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="8" QUERY_ID="48" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="9" QUERY_ID="49" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="10" QUERY_ID="50" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="11" QUERY_ID="51" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="12" QUERY_ID="52" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="13" QUERY_ID="53" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+    <SCRIPT_RULES ID="14" QUERY_ID="54" FIELD="collection path" TYPE="includes" VALUE="test1" ENABLED="1" />
+
     <T_SCHEMA SCHEMA_ID="58" XML_SCHEMA="http://localhost/not_existing.xsd" DESCRIPTION="Expired dummy" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" EXPIRE_DATE="2010-11-11 00:00:00.000000000" BLOCKER="0"/>
     <T_SCHEMA SCHEMA_ID="59" XML_SCHEMA="http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1968" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -  Exceedance of ozone long-term objective for health protection" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0"/>
     <T_SCHEMA SCHEMA_ID="60" XML_SCHEMA="http://dd.eionet.europa.eu/namespace.jsp?ns_id=200 http://dd.eionet.europa.eu/GetSchema?id=TBL1919" DESCRIPTION="Summer ozone exceedances (2002/3/EC) -   Exceedance of ozone alert threshold values" DTD_PUBLIC_ID="" VALIDATE="0" SCHEMA_LANG="XSD" BLOCKER="0" />
