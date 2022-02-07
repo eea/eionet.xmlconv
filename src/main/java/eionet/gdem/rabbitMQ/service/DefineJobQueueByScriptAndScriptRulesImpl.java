@@ -140,9 +140,9 @@ public class DefineJobQueueByScriptAndScriptRulesImpl implements DefineJobQueueA
      * @throws XMLConvException
      */
     public long getXmlFileSize(String url) throws XMLConvException {
-        int index = url.indexOf("https");
+        int index = url.indexOf("http", url.indexOf("http")+1);
         if (index==-1) {
-            index = url.indexOf("http", url.indexOf("http")+1);
+            index = url.indexOf("http");
         }
         String finalUrl = url.substring(index);
         long sourceSize = HttpFileManager.getSourceURLSize(null, finalUrl, true);
