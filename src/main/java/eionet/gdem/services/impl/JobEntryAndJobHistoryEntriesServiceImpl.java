@@ -6,9 +6,11 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.web.spring.workqueue.JobEntryAndJobHistoryEntriesObject;
+import eionet.gdem.web.spring.workqueue.JobMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -31,6 +33,11 @@ public class JobEntryAndJobHistoryEntriesServiceImpl implements JobEntryAndJobHi
         List<JobHistoryEntry> jobHistoryEntries = jobHistoryService.getJobHistoryEntriesOfJob(jobId);
         JobEntryAndJobHistoryEntriesObject jobEntryAndJobHistoryEntriesObject = new JobEntryAndJobHistoryEntriesObject(jobEntry, jobHistoryEntries);
         return jobEntryAndJobHistoryEntriesObject;
+    }
+
+    @Override
+    public List<JobMetadata> retrieveAllJobsWithMetadata() throws SQLException {
+        return jobService.retrieveAllJobsWithMetadata();
     }
 }
 

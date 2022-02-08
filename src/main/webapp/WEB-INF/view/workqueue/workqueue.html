@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm"
+      xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<head th:replace="~{fragments/head-old :: head}"/>
+<body th:include="~{fragments/workqueue-old :: layout(~{::div})}">
+
+<template>
+    <div class="container" id="workqueueApp" style="display: flow-root">
+        <v-app>
+            <v-main>
+                <v-card>
+                    <v-card-title>
+                        Search
+                        <v-spacer></v-spacer>
+                        <v-text-field
+                                v-model="search"
+                                append-icon="mdi-magnify"
+                                single-line
+                                hide-details
+                        ></v-text-field>
+                    </v-card-title>
+                    <v-data-table
+                            v-model="selected"
+                            item-key="jobId"
+                            show-select
+                            :headers="headers"
+                            :items="jobEntries"
+                            :sort-by.sync="sortBy"
+                            :search="search"
+                            :options.sync="options"
+                            :loading="loading"
+                            :expanded.sync="expanded"
+                            show-expand
+                            class="elevation-1"
+                    >
+                    </v-data-table>
+                </v-card>
+            </v-main>
+        </v-app>
+    </div>
+</template>
+
+</body>
+</html>
