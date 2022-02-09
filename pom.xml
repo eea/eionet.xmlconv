@@ -1163,6 +1163,12 @@
                 <artifactId>mdi__font</artifactId>
                 <version>6.2.95</version>
             </dependency>
+
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-spring</artifactId>
+                <version>1.7.1</version>
+            </dependency>
         </dependencies>
 
 

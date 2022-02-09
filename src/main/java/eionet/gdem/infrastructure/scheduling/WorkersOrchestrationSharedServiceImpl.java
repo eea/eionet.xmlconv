@@ -16,6 +16,7 @@ import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -38,16 +39,18 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     private JobService jobService;
     private RabbitAdmin rabbitAdmin;
     private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
+    private CircuitBreaker circuitBreaker;
 
     @Autowired
     public WorkersOrchestrationSharedServiceImpl(ServicesRancherApiOrchestrator servicesRancherApiOrchestrator, ContainersRancherApiOrchestrator containersRancherApiOrchestrator,
-                    JobExecutorService jobExecutorService, JobService jobService, RabbitAdmin rabbitAdmin, WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService) {
+                    JobExecutorService jobExecutorService, JobService jobService, RabbitAdmin rabbitAdmin, WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, CircuitBreaker circuitBreaker) {
         this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
         this.containersRancherApiOrchestrator = containersRancherApiOrchestrator;
         this.jobExecutorService = jobExecutorService;
         this.jobService = jobService;
         this.rabbitAdmin = rabbitAdmin;
         this.workerAndJobStatusHandlerService = workerAndJobStatusHandlerService;
+        this.circuitBreaker = circuitBreaker;
     }
 
     @Override
@@ -60,7 +63,15 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             scale = maxJobExecutorsAllowed - instances.size();
         }
         ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size() + scale);
-        servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+        Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
+            try {
+                servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            } catch (RancherApiException e) {
+               LOGGER.error("Error during rancher functionality: " + e.getMessage());
+               throw new RuntimeException(e.getMessage());
+            }
+        });
+        decorateRunnable.run();
         LOGGER.info("Created " + scale + " new worker(s)");
     }
 
@@ -85,20 +96,37 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
         for (JobExecutor worker : failedWorkersToBeDeleted) {
             try {
                 deleteFromRancherAndDatabase(worker);
-            } catch (DatabaseException | RancherApiException e) {
+            } catch (DatabaseException e) {
                 LOGGER.error("Error during deletion of failed worker " + worker.getName());
             }
         }
         List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
         if (instances.size()==0) {
             ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
-            servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
+                try {
+                    servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+                } catch (RancherApiException e) {
+                    LOGGER.error("Error during rancher functionality: " + e.getMessage());
+                    throw new RuntimeException(e.getMessage());
+                }
+            });
+            decorateRunnable.run();
         }
     }
 
     @Override
-    public void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException, DatabaseException {
-        containersRancherApiOrchestrator.deleteContainer(worker.getName());
+    public void deleteFromRancherAndDatabase(JobExecutor worker) throws DatabaseException {
+        Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
+            try {
+                containersRancherApiOrchestrator.deleteContainer(worker.getName());
+            } catch (RancherApiException e) {
+                LOGGER.error("Error during rancher functionality: " + e.getMessage());
+                throw new RuntimeException(e.getMessage());
+            }
+        });
+        decorateRunnable.run();
+
         jobExecutorService.deleteByName(worker.getName());
         deleteWorkerHeartBeatQueue(worker.getHeartBeatQueue());
     }
@@ -151,7 +179,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                     }
                     try {
                         this.deleteFromRancherAndDatabase(worker);
-                    } catch (RancherApiException | DatabaseException e) {
+                    } catch (DatabaseException e) {
                         LOGGER.error("Error Deleting worker " + worker.getName() + ", " + e);
                     }
                     workersDeleted++;

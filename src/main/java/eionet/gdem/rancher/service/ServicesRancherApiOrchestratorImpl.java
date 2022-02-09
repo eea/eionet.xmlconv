@@ -69,8 +69,10 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
             timer.start();
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.PUT, entity, ServiceApiResponse.class);
             String state = getServiceInfo(serviceId).getState();
-            while (!state.equals("active")) {
+            String healthState = getServiceInfo(serviceId).getHealthState();
+            while (!state.equals("active") || !healthState.equals("healthy")) {
                 state = getServiceInfo(serviceId).getState();
+                healthState = getServiceInfo(serviceId).getHealthState();
                 if (timer.getTime()>TIME_LIMIT) {
                     throw new RancherApiTimoutException("Time exceeded for getting service info of service " + serviceId);
                 }

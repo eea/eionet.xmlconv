@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.StringBufferInputStream;
 import java.util.List;
 
 @Service
@@ -28,15 +29,13 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     private String rancherApiUrl;
     private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
 
-    @Autowired
-    private ServicesRancherApiOrchestrator servicesOrchestrator;
-
     /**
      * time in milliseconds
      */
     private static final Integer TIME_LIMIT = 60000;
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainersRancherApiOrchestratorImpl.class);
 
+    @Autowired
     public ContainersRancherApiOrchestratorImpl(RestTemplate restTemplate, ServicesRancherApiOrchestrator servicesRancherApiOrchestrator) {
         this.restTemplate = restTemplate;
         rancherApiUrl = Properties.rancherApiUrl + "/containers";
@@ -161,12 +160,14 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             //THis happens because rancher has already in mind a scale number which we haven't yet touched, so it tries to replace what we delete.
             newContainerReplacingTheJustDeletedOne = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.DELETE, entity, ContainerData.class);
             String state = newContainerReplacingTheJustDeletedOne.getBody().getState();
+            String healthState = newContainerReplacingTheJustDeletedOne.getBody().getHealthState();
             LOGGER.info("Deleting container with id " + containerId + " for container with name " + containerName);
-            while (!state.equals("running")) {
+            while (!state.equals("running") || !healthState.equals("healthy")) {
                 try {
                     containerApiResponse = getContainerInfo(containerName);
                     if (containerApiResponse.getData().size() > 0) {
                         state = containerApiResponse.getData().get(0).getState();
+                        healthState = containerApiResponse.getData().get(0).getHealthState();
                     }
                 } catch (RancherApiException e) {
                     LOGGER.error("Error getting information for container " + containerName + ", " + e);
@@ -200,13 +201,13 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     @Override
     public void synchronizeRancherScaleAndActualContainers(String serviceId) throws RancherApiException {
         LOGGER.info("Attempting to synchronize Rancher Scale number and actual containers ");
-        ServiceApiResponse serviceInfo = servicesOrchestrator.getServiceInfo(serviceId);
-        List<String> instances = servicesOrchestrator.getContainerInstances(serviceId);
+        ServiceApiResponse serviceInfo = servicesRancherApiOrchestrator.getServiceInfo(serviceId);
+        List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
         if (serviceInfo.getScale() < instances.size()) {
             Integer newScale = instances.size() - serviceInfo.getScale();
             ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(serviceInfo.getScale() + newScale);
             LOGGER.info("Scaling up again because of error");
-            servicesOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
+            servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         }
     }
 
