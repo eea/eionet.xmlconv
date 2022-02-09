@@ -1,14 +1,10 @@
 package eionet.gdem.rancher.config;
 
 import eionet.gdem.Properties;
-import eionet.gdem.rancher.model.ServiceApiRequestBody;
-import eionet.gdem.rancher.model.ServiceApiResponse;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 @Configuration
 public class TemplateConfig {
@@ -49,13 +44,14 @@ public class TemplateConfig {
 
     @Bean
     public CircuitBreaker circuitBreaker() {
-        CircuitBreakerConfig config = CircuitBreakerConfig.custom()  //αν αποτύχουν 3 requests, το circuit breaker θα ανοίξει
+        CircuitBreakerConfig config = CircuitBreakerConfig.custom()
                 .waitDurationInOpenState(Duration.ofMinutes(3))
-                .minimumNumberOfCalls(3)
+                .minimumNumberOfCalls(3)     //αν αποτύχουν 3 requests, το circuit breaker θα ανοίξει
                 .permittedNumberOfCallsInHalfOpenState(1)
                 .build();
         CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config);
         CircuitBreaker circuitBreaker = registry.circuitBreaker("rancherCircuitBreaker");
+        circuitBreaker.getEventPublisher().onCallNotPermitted(event -> System.out.println("CALL NOT PERMITTED"));
         return circuitBreaker;
     }
 
