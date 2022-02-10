@@ -63,14 +63,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             scale = maxJobExecutorsAllowed - instances.size();
         }
         ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(instances.size() + scale);
-        Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
-            try {
-                servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-            } catch (RancherApiException e) {
-               LOGGER.error("Error during rancher functionality: " + e.getMessage());
-            }
-        });
-        decorateRunnable.run();
+        servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         LOGGER.info("Created " + scale + " new worker(s)");
     }
 
@@ -102,14 +95,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
         List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
         if (instances.size()==0) {
             ServiceApiRequestBody serviceApiRequestBody = new ServiceApiRequestBody().setScale(1);
-            Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
-                try {
-                    servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
-                } catch (RancherApiException e) {
-                    LOGGER.error("Error during rancher functionality: " + e.getMessage());
-                }
-            });
-            decorateRunnable.run();
+            servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
         }
     }
 
