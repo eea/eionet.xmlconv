@@ -14,9 +14,9 @@ var app = new Vue({
             loading: true,
             headers: [
                 {text: "Job Id", value: "jobId", sortable: true},
-                {text: "Document URL", value: "urlName", sortable: true},
-                {text: "Query script", value: "scriptFile", sortable: true},
-                {text: "Job Result", value: "resultFile", sortable: true},
+                {text: "Document URL", value: "url", sortable: true},
+                {text: "Query script", value: "script_file", sortable: true},
+                {text: "Job Result", value: "result_file", sortable: true},
                 {text: "Status", value: "statusName", sortable: true},
                 {text: "Started at", value: "timestamp", sortable: true},
                 {text: "Instance", value: "instance", sortable: true},

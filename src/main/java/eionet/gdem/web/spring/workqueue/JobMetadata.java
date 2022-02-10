@@ -6,12 +6,15 @@ package eionet.gdem.web.spring.workqueue;
  */
 public class JobMetadata {
 
+    /*Some variables were changed from camel case to snake case to be used properly in vue.js */
+
     private String jobId;
     private String url;
     private String urlName;
     private String fileName;
-    private String scriptFile;
-    private String resultFile;
+    private String script_file;
+    private String script_url;
+    private String result_file;
     private int status;
     private String statusName;
     private String timestamp;
@@ -46,13 +49,12 @@ public class JobMetadata {
         this.fileName = fileName;
     }
 
-
-    public String getResultFile() {
-        return resultFile;
+    public String getResult_file() {
+        return result_file;
     }
 
-    public void setResultFile(String resultFile) {
-        this.resultFile = resultFile;
+    public void setResult_file(String result_file) {
+        this.result_file = result_file;
     }
 
     public int getStatus() {
@@ -87,12 +89,13 @@ public class JobMetadata {
         this.instance = instance;
     }
 
-    public String getScriptFile() {
-        return scriptFile;
+
+    public String getScript_file() {
+        return script_file;
     }
 
-    public void setScriptFile(String scriptFile) {
-        this.scriptFile = scriptFile;
+    public void setScript_file(String script_file) {
+        this.script_file = script_file;
     }
 
     public String getScriptId() {
@@ -141,5 +144,13 @@ public class JobMetadata {
 
     public void setJobExecutorName(String jobExecutorName) {
         this.jobExecutorName = jobExecutorName;
+    }
+
+    public String getScript_url() {
+        return script_url;
+    }
+
+    public void setScript_url(String script_url) {
+        this.script_url = script_url;
     }
 }

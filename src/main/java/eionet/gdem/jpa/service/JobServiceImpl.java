@@ -127,8 +127,7 @@ public class JobServiceImpl implements JobService {
 
             job.setJobId(jobId);
             job.setFileName(xqLongFileName);
-            job.setScriptFile(xqFile);
-
+            job.setScript_file(xqFile);
             job.setStatus(status);
             job.setTimestamp(timeStamp);
             job.setScriptId(xqStringID);
@@ -161,11 +160,14 @@ public class JobServiceImpl implements JobService {
                 xqFileURL = queriesFolder + xqFile;
             }
 
-
             if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING ||
-                    status == Constants.XQ_INTERRUPTED || status == Constants.CANCELLED_BY_USER || status == Constants.DELETED)
+                    status == Constants.XQ_INTERRUPTED || status == Constants.CANCELLED_BY_USER || status == Constants.DELETED) {
                 resultFile = null;
-            job.setResultFile(resultFile);
+            }
+            else{
+                resultFile = Properties.gdemURL + "/tmp/" + resultFile;
+            }
+            job.setResult_file(resultFile);
 
             String statusName = "-- Unknown --";
 
@@ -204,9 +206,9 @@ public class JobServiceImpl implements JobService {
                 job.setDurationInProgress(Utils.createFormatForMs(duration));
             }
 
+            String schemaId = null;
             if(xqStringID.equals("-1")){
                 //schema validation
-                String schemaId = null;
                 try {
                     schemaId = schemaDao.getSchemaID(job.getFileName());
                 } catch (SQLException e) {
@@ -214,6 +216,18 @@ public class JobServiceImpl implements JobService {
                 }
                 if(schemaId != null) {
                     job.setScriptId(schemaId);
+                }
+            }
+            /*set up script page url*/
+            if(xqFile != null){
+                if(xqFile.startsWith("gdem")){
+                    job.setScript_url(Properties.gdemURL + "/tmp/" + xqFile);
+                }
+                else if(xqFile.endsWith(".xsd")){
+                    job.setScript_url(Properties.gdemURL + "/schemas/" + schemaId);
+                }
+                else{
+                    job.setScript_url(Properties.gdemURL + "/scripts/" + job.getScriptId());
                 }
             }
             jobsList.add(job);

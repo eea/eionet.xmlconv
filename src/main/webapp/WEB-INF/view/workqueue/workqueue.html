@@ -33,6 +33,26 @@
                             show-expand
                             class="elevation-1"
                     >
+                        <template #item.url="{ value }">
+                            <a target="_blank" :href="value">
+                                {{ value }}
+                            </a>
+                        </template>
+                        <template #item.script_file="{ value }">
+                            <a target="_blank" :href="item.script_url">
+                                {{ value }}
+                            </a>
+                        </template>
+                        <template #item.result_file="{ value }">
+                            <div v-if="value">
+                                <a target="_blank" :href="value">
+                                    Job Result
+                                </a>
+                            </div>
+                            <div v-else>
+                                *** Not ready ***
+                            </div>
+                        </template>
                     </v-data-table>
                 </v-card>
             </v-main>
