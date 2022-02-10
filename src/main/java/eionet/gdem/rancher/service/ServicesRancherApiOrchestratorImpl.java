@@ -27,6 +27,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     private RancherApiNewServiceRequestBodyCreator rancherApiNewServiceRequestBodyCreator;
     private String rancherApiUrl;
     private static final Integer TIME_LIMIT = 60000;
+    private static final long TIME_WAITING_BETWEEN_RANCHER_API_CALLS = 3000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServicesRancherApiOrchestratorImpl.class);
 
@@ -69,8 +70,13 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
             timer.start();
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.PUT, entity, ServiceApiResponse.class);
             String state = getServiceInfo(serviceId).getState();
-            while (!state.equals("active")) {
+            String healthState = getServiceInfo(serviceId).getHealthState();
+            LOGGER.info("Statuses for service " + serviceId + " while scaling up/down container instances are, state: " + state + ", healthState: " + healthState);
+            while (!state.equals("active") || !healthState.equals("healthy")) {
+                Thread.sleep(TIME_WAITING_BETWEEN_RANCHER_API_CALLS);
                 state = getServiceInfo(serviceId).getState();
+                healthState = getServiceInfo(serviceId).getHealthState();
+                LOGGER.info("Statuses for service " + serviceId + " while scaling up/down container instances are, state: " + state + ", healthState: " + healthState);
                 if (timer.getTime()>TIME_LIMIT) {
                     throw new RancherApiTimoutException("Time exceeded for getting service info of service " + serviceId);
                 }
