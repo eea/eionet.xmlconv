@@ -33,6 +33,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
      * time in milliseconds
      */
     private static final Integer TIME_LIMIT = 60000;
+    private static final long TIME_WAITING_BETWEEN_RANCHER_API_CALLS = 3000;
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainersRancherApiOrchestratorImpl.class);
 
     @Autowired
@@ -162,12 +163,15 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             String state = newContainerReplacingTheJustDeletedOne.getBody().getState();
             String healthState = newContainerReplacingTheJustDeletedOne.getBody().getHealthState();
             LOGGER.info("Deleting container with id " + containerId + " for container with name " + containerName);
+            LOGGER.info("Statuses for new container with name " + containerName + " are, state: " + state + ", healthState: " + healthState);
             while (!state.equals("running") || !healthState.equals("healthy")) {
+                Thread.sleep(TIME_WAITING_BETWEEN_RANCHER_API_CALLS);
                 try {
                     containerApiResponse = getContainerInfo(containerName);
                     if (containerApiResponse.getData().size() > 0) {
                         state = containerApiResponse.getData().get(0).getState();
                         healthState = containerApiResponse.getData().get(0).getHealthState();
+                        LOGGER.info("Statuses for new container with name " + containerName + " are, state: " + state + ", healthState: " + healthState);
                     }
                 } catch (RancherApiException e) {
                     LOGGER.error("Error getting information for container " + containerName + ", " + e);

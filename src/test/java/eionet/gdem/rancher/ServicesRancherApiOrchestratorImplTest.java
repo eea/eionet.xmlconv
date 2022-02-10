@@ -56,6 +56,7 @@ public class ServicesRancherApiOrchestratorImplTest {
         instanceIds.add("1i1644182");
         response.setInstanceIds(instanceIds);
         response.setState("active");
+        response.setHealthState("healthy");
     }
 
     @Test

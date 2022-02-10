@@ -45,7 +45,7 @@ public class TemplateConfig {
     @Bean
     public CircuitBreaker circuitBreaker() {
         CircuitBreakerConfig config = CircuitBreakerConfig.custom()
-                .minimumNumberOfCalls(3)     //if 3 calls fail, circuit breaker will open
+                .minimumNumberOfCalls(2)     //if 2 calls fail, circuit breaker will open
                 .waitDurationInOpenState(Duration.ofMinutes(3)) //circuit breaker will remain in open state for 3 minutes and no calls will be permitted
                 .permittedNumberOfCallsInHalfOpenState(1)  //after 3 minutes in open state, circuit breaker gets half open state. In half open state only 1 call is permitted and if the call fails, circuit breaker opens again. If the call succeeds, circuit breaker gets closed state
                 .build();

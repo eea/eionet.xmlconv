@@ -68,7 +68,6 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                 servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
             } catch (RancherApiException e) {
                LOGGER.error("Error during rancher functionality: " + e.getMessage());
-               throw new RuntimeException(e.getMessage());
             }
         });
         decorateRunnable.run();
@@ -108,7 +107,6 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                     servicesRancherApiOrchestrator.scaleUpOrDownContainerInstances(serviceId, serviceApiRequestBody);
                 } catch (RancherApiException e) {
                     LOGGER.error("Error during rancher functionality: " + e.getMessage());
-                    throw new RuntimeException(e.getMessage());
                 }
             });
             decorateRunnable.run();
@@ -122,7 +120,6 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                 containersRancherApiOrchestrator.deleteContainer(worker.getName());
             } catch (RancherApiException e) {
                 LOGGER.error("Error during rancher functionality: " + e.getMessage());
-                throw new RuntimeException(e.getMessage());
             }
         });
         decorateRunnable.run();
