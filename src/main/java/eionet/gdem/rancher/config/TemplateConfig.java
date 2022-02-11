@@ -53,7 +53,7 @@ public class TemplateConfig {
                 .build();
         CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config);
         CircuitBreaker circuitBreaker = registry.circuitBreaker("rancherCircuitBreaker");
-        circuitBreaker.getEventPublisher().onCallNotPermitted(event -> System.out.println("CALL NOT PERMITTED"));
+        circuitBreaker.getEventPublisher().onCallNotPermitted(event -> System.out.println(event));
         return circuitBreaker;
     }
 
