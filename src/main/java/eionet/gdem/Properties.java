@@ -154,6 +154,10 @@ public class Properties {
     public static String PROP_UNS_REST_SEND_NOTIFICATION = null;
     public static String PROP_UNS_REST_USERNAME = null;
     public static String PROP_UNS_REST_PASSWORD = null;
+    public static String PROP_UNS_RANCHER_CIRCUIT_BREAKER_PREDICATE = null;
+    public static String PROP_UNS_RANCHER_CIRCUIT_BREAKER_EVENTTYPE_PREDICATE = null;
+    public static final String RANCHER_CIRCUIT_BREAKER_EVENT = "Rancher malfunctions";
+    public static String PROP_UNS_RANCHER_CIRCUIT_BREAKER_CHANNEL_NAME;
 
     public static Long longRunningJobThreshold;
 
@@ -306,6 +310,9 @@ public class Properties {
         PROP_UNS_REST_SEND_NOTIFICATION = getStringProperty("uns.sendNotification.method");
         PROP_UNS_REST_USERNAME = getStringProperty("uns.rest.username");
         PROP_UNS_REST_PASSWORD = getStringProperty("uns.rest.password");
+        PROP_UNS_RANCHER_CIRCUIT_BREAKER_PREDICATE = getStringProperty("env.uns.rancher.circuitBreaker.predicate");
+        PROP_UNS_RANCHER_CIRCUIT_BREAKER_EVENTTYPE_PREDICATE = getStringProperty("env.uns.rancher.circuitBreaker.eventtype.predicate");
+        PROP_UNS_RANCHER_CIRCUIT_BREAKER_CHANNEL_NAME = getStringProperty("env.uns.rancher.circuitBreaker.channel.name");
 
         SSO_LOGIN_URL = getStringProperty(CASFilter.LOGIN_INIT_PARAM);
 

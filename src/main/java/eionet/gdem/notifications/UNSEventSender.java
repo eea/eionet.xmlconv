@@ -43,6 +43,9 @@ public class UNSEventSender {
     private String sendNotificationRest = null;
     private String restUserNameProperty = null;
     private String restPasswordProperty = null;
+    private String rancherCircuitBreakerEventTypePredicateProperty = null;
+    private String rancherCircuitBreakerPredicateProperty = null;
+    private String rancherCircuitBreakerChannelName = null;
 
     public UNSEventSender() {
     }
@@ -69,7 +72,26 @@ public class UNSEventSender {
         objects.add(jobIds);
         predicateObjects.put(getLongRunningJobsPredicateProperty(), objects);
 
-        sendEvent(predicateObjects);
+        sendEvent(predicateObjects, UnsEventTypes.LONG_RUNNING_JOBS.getId());
+    }
+
+    public void rancherCircuitBreakerOpenNotification(String message, String eventType) throws GeneralSecurityException {
+        if (message==null || eventType==null) {
+            return;
+        }
+
+        setupProperties();
+
+        Hashtable predicateObjects = new Hashtable();
+        Vector objects = new Vector();
+        objects.add(eventType);
+        predicateObjects.put(getRancherCircuitBreakerEventTypePredicateProperty(), objects);
+
+        objects = new Vector();
+        objects.add(message);
+        predicateObjects.put(getRancherCircuitBreakerPredicateProperty(), objects);
+
+        sendEvent(predicateObjects, UnsEventTypes.RANCHER_CIRCUIT_BREAKER.getId());
     }
 
     /**
@@ -103,16 +125,16 @@ public class UNSEventSender {
      *
      * @param predicateObjects
      */
-    protected void sendEvent(Hashtable predicateObjects) throws GeneralSecurityException {
+    protected void sendEvent(Hashtable predicateObjects, Integer findChannel) throws GeneralSecurityException {
 
         if (predicateObjects == null || predicateObjects.size() == 0) {
             return;
         }
 
-        Vector notificationTriples = prepareTriples(predicateObjects);
+        Vector notificationTriples = prepareTriples(predicateObjects, findChannel);
         logTriples(notificationTriples);
         //makeCall(notificationTriples);
-        makeRestCall(notificationTriples);
+        makeRestCall(notificationTriples, findChannel);
     }
 
     /**
@@ -149,13 +171,18 @@ public class UNSEventSender {
         }
     }
 
-    protected void makeRestCall(Object rdfTriples) {
+    protected void makeRestCall(Object rdfTriples, Integer findChannel) {
         try {
             if (isSendingDisabled()) {
                 return;
             }
 
-            String channelName = getChannelNameProperty();
+            String channelName = null;
+            if (findChannel==UnsEventTypes.LONG_RUNNING_JOBS.getId()) {
+                channelName = getChannelNameProperty();
+            } else if (findChannel==UnsEventTypes.RANCHER_CIRCUIT_BREAKER.getId()) {
+                channelName = getRancherCircuitBreakerChannelName();
+            }
             String userName = getRestUserNameProperty();
             String password = getRestPasswordProperty();
 
@@ -200,7 +227,7 @@ public class UNSEventSender {
      * @param predicateObjects
      * @return
      */
-    protected Vector prepareTriples (Hashtable predicateObjects) throws GeneralSecurityException {
+    protected Vector prepareTriples (Hashtable predicateObjects, Integer findChannel) throws GeneralSecurityException {
 
         Vector notificationTriples = new Vector();
         NotificationTriple triple = new NotificationTriple();
@@ -218,7 +245,11 @@ public class UNSEventSender {
         eventID = getEventsNamespaceProperty() + eventID;
 
         triple.setSubject(eventID);
-        triple.setProperty(getLongRunningJobsPredicateProperty());
+        if (findChannel==UnsEventTypes.LONG_RUNNING_JOBS.getId()) {
+            triple.setProperty(getLongRunningJobsPredicateProperty());
+        } else if (findChannel==UnsEventTypes.RANCHER_CIRCUIT_BREAKER.getId()) {
+            triple.setProperty(getRancherCircuitBreakerPredicateProperty());
+        }
         triple.setValue("Converters event");
         notificationTriples.add(triple.toVector());
 
@@ -323,6 +354,18 @@ public class UNSEventSender {
         return restPasswordProperty;
     }
 
+    public String getRancherCircuitBreakerEventTypePredicateProperty() {
+        return rancherCircuitBreakerEventTypePredicateProperty;
+    }
+
+    public String getRancherCircuitBreakerPredicateProperty() {
+        return rancherCircuitBreakerPredicateProperty;
+    }
+
+    public String getRancherCircuitBreakerChannelName() {
+        return rancherCircuitBreakerChannelName;
+    }
+
     protected void setupProperties () {
         eventTypePredicateProperty = Properties.PROP_UNS_EVENTTYPE_PREDICATE;
         longRunningJobsPredicateProperty = Properties.PROP_UNS_LONG_RUNNING_JOBS_PREDICATE;
@@ -337,6 +380,9 @@ public class UNSEventSender {
         sendNotificationRest = Properties.PROP_UNS_REST_SEND_NOTIFICATION;
         restUserNameProperty = Properties.PROP_UNS_REST_USERNAME;
         restPasswordProperty = Properties.PROP_UNS_REST_PASSWORD;
+        rancherCircuitBreakerPredicateProperty = Properties.PROP_UNS_RANCHER_CIRCUIT_BREAKER_PREDICATE;
+        rancherCircuitBreakerEventTypePredicateProperty = Properties.PROP_UNS_RANCHER_CIRCUIT_BREAKER_EVENTTYPE_PREDICATE;
+        rancherCircuitBreakerChannelName = Properties.PROP_UNS_RANCHER_CIRCUIT_BREAKER_CHANNEL_NAME;
     }
 
 }
