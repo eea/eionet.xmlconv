@@ -196,9 +196,8 @@ public class JobServiceImpl implements JobService {
                 url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
             }
             job.setUrl(url);
-            //TODO remove this ?
-            //String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
-            job.setUrlName(url);
+            String urlName = (url.length() > Constants.URL_TEXT_LEN ? url.substring(0, Constants.URL_TEXT_LEN) + "..." : url);
+            job.setUrl_name(urlName);
 
             //Set duration of job id status is in PROCESSING
             if (durationMs != null) {

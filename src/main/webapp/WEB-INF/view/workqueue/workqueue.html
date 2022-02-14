@@ -8,12 +8,15 @@
     <div class="container" id="workqueueApp" style="display: flow-root">
         <v-app>
             <v-main>
+                <div v-if="infoMessage" class="system-msg">
+                    <p>{{ infoMessage }}</p>
+                </div>
                 <v-card>
                     <v-card-title>
                         Search
                         <v-spacer></v-spacer>
                         <v-text-field
-                                v-model="search"
+                                v-model="search"F
                                 append-icon="mdi-magnify"
                                 single-line
                                 hide-details
@@ -31,16 +34,15 @@
                             :loading="loading"
                             :expanded.sync="expanded"
                             show-expand
-                            class="elevation-1"
-                    >
-                        <template #item.url="{ value }">
-                            <a target="_blank" :href="value">
-                                {{ value }}
+                            class="elevation-1">
+                        <template #item.url="{ item }">
+                            <a target="_blank" :href="item.url">
+                                {{ item.url_name }}
                             </a>
                         </template>
-                        <template #item.script_file="{ value }">
+                        <template #item.script_file="{ item }">
                             <a target="_blank" :href="item.script_url">
-                                {{ value }}
+                                {{ item.script_file }}
                             </a>
                         </template>
                         <template #item.result_file="{ value }">
@@ -55,6 +57,22 @@
                         </template>
                     </v-data-table>
                 </v-card>
+                <div class="pt-2">
+                    <v-btn
+                            color="primary"
+                            class="mr-2"
+                            @click="deleteJobs"
+                    >
+                        Delete
+                    </v-btn>
+                    <v-btn
+                            color="primary"
+                            class="mr-2"
+                            @click="restartJobs"
+                    >
+                        Restart
+                    </v-btn>
+                </div>
             </v-main>
         </v-app>
     </div>

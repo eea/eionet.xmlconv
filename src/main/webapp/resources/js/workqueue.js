@@ -9,6 +9,7 @@ var app = new Vue({
             expanded: [],
             selected: [],
             item: null,
+            infoMessage : null,
             options: {},
             search: '',
             loading: true,
@@ -33,7 +34,7 @@ var app = new Vue({
                 this.getJobEntries();
             },
         },
-        deep: true,
+        deep: true
     },
     //    this one will populate new data set when user changes current page.
     methods: {
@@ -47,7 +48,36 @@ var app = new Vue({
                 .then((response) => {
                     this.loading = false;
                     this.jobEntries = response.data;
+                    this.selected = [];
                 });
+        },
+        async restartJobs () {
+            if(this.selected.length == 0){
+                this.infoMessage = "No jobs were selected";
+                return;
+            }
+            if(confirm("Are you sure you want to restart the selected jobs?")) {
+                //call java method to restart jobs
+                axios.post("/restapi/workqueueData/restart", this.selected)
+                    .then((response) => {
+                        this.infoMessage = response.data;
+                        this.getJobEntries();
+                    });
+            }
+        },
+        async deleteJobs () {
+            if(this.selected.length == 0){
+                this.infoMessage = "No jobs were selected";
+                return;
+            }
+            if(confirm("Are you sure you want to delete the selected jobs?")) {
+                //call java method to delete jobs
+                axios.post("/restapi/workqueueData/delete", this.selected)
+                    .then((response) => {
+                        this.infoMessage = response.data;
+                        this.getJobEntries();
+                    });
+            }
         }
     },
     //this will trigger in the onReady State

@@ -10,7 +10,7 @@ public class JobMetadata {
 
     private String jobId;
     private String url;
-    private String urlName;
+    private String url_name;
     private String fileName;
     private String script_file;
     private String script_url;
@@ -130,12 +130,12 @@ public class JobMetadata {
         this.jobType = jobType;
     }
 
-    public String getUrlName() {
-        return urlName;
+    public String getUrl_name() {
+        return url_name;
     }
 
-    public void setUrlName(String urlName) {
-        this.urlName = urlName;
+    public void setUrl_name(String url_name) {
+        this.url_name = url_name;
     }
 
     public String getJobExecutorName() {
