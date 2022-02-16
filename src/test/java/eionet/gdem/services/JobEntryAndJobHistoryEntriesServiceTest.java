@@ -7,6 +7,7 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.services.impl.JobEntryAndJobHistoryEntriesServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.web.spring.workqueue.JobEntryAndJobHistoryEntriesObject;
+import eionet.gdem.web.spring.workqueue.JobHistoryMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,8 +54,8 @@ public class JobEntryAndJobHistoryEntriesServiceTest {
         jobHistoryEntries.add(jobHistoryEntry);
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
         when(jobHistoryService.getJobHistoryEntriesOfJob(anyString())).thenReturn(jobHistoryEntries);
-        JobEntryAndJobHistoryEntriesObject jobEntryAndJobHistoryEntriesObject = jobEntryAndJobHistoryEntriesServiceImpl.getJobEntryAndJobHistoryEntriesOfJob("1");
-        assertThat(jobEntryAndJobHistoryEntriesObject.getJobEntry().getId(), is(4));
+        List<JobHistoryMetadata> jobHistoryMetadataList = jobEntryAndJobHistoryEntriesServiceImpl.getJobHistoryMetadata("1");
+        assertThat(jobHistoryMetadataList.size(), is(1));
     }
 }
 

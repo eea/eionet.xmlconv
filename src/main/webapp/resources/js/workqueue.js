@@ -6,12 +6,14 @@ var app = new Vue({
             sortBy: "jobId",
             sortDesc: false,
             jobEntries: [],
-            expanded: [],
             selected: [],
+            expanded: [],
             item: null,
             infoMessage : null,
             options: {},
             search: '',
+            permissions: null,
+            username: null,
             loading: true,
             headers: [
                 {text: "Job Id", value: "jobId", sortable: true},
@@ -31,7 +33,7 @@ var app = new Vue({
     watch: {
         options: {
             handler() {
-                this.getJobEntries();
+                this.getWorkqueuePageInfo();
             },
         },
         deep: true
@@ -39,19 +41,21 @@ var app = new Vue({
     //    this one will populate new data set when user changes current page.
     methods: {
         //Reading data from API method.
-        getJobEntries() {
+        getWorkqueuePageInfo() {
             this.loading = true;
             axios
                 .get(
-                    "/restapi/workqueueData/getAllJobs"
+                    "/restapi/workqueueData/getWorkqueuePageInfo"
                 )
                 .then((response) => {
                     this.loading = false;
-                    this.jobEntries = response.data;
+                    this.jobEntries = response.data.jobMetadataList;
+                    this.permissions = response.data.workqueuePermissions;
+                    this.username = response.data.username;
                     this.selected = [];
                 });
         },
-        async restartJobs () {
+        restartJobs () {
             if(this.selected.length == 0){
                 this.infoMessage = "No jobs were selected";
                 return;
@@ -61,11 +65,11 @@ var app = new Vue({
                 axios.post("/restapi/workqueueData/restart", this.selected)
                     .then((response) => {
                         this.infoMessage = response.data;
-                        this.getJobEntries();
+                        this.getWorkqueuePageInfo();
                     });
             }
         },
-        async deleteJobs () {
+        deleteJobs () {
             if(this.selected.length == 0){
                 this.infoMessage = "No jobs were selected";
                 return;
@@ -75,13 +79,37 @@ var app = new Vue({
                 axios.post("/restapi/workqueueData/delete", this.selected)
                     .then((response) => {
                         this.infoMessage = response.data;
-                        this.getJobEntries();
+                        this.getWorkqueuePageInfo();
                     });
+            }
+        },
+        csvExport() {
+            axios.post("/restapi/workqueueData/exportToCsv", this.jobEntries, {responseType: 'blob'})
+                .then((response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute("download", "QA jobs workqueue.csv");
+                    document.body.appendChild(link);
+                    link.click();
+                })
+        },
+        onExpand({ item, value }) {
+            if(value){
+                //item is expanded
+                let jobId = item.jobId;
+                if(item.job_history_metadata_list == null) {
+                    axios.get("/restapi/workqueueData/getJobDetails/" + jobId)
+                        .then((response) => {
+                            item.job_history_metadata_list = response.data;
+                        })
+                }
+
             }
         }
     },
     //this will trigger in the onReady State
     mounted() {
-        this.getJobEntries();
+        this.getWorkqueuePageInfo();
     }
 })

@@ -1,5 +1,7 @@
 package eionet.gdem.web.spring.workqueue;
 
+import java.util.List;
+
 /**
  *
  *
@@ -24,6 +26,7 @@ public class JobMetadata {
     private String durationInProgress;
     private String jobType;
     private String jobExecutorName;
+    private List<JobHistoryMetadata> job_history_metadata_list;
 
     public String getJobId() {
         return jobId;
@@ -152,5 +155,13 @@ public class JobMetadata {
 
     public void setScript_url(String script_url) {
         this.script_url = script_url;
+    }
+
+    public List<JobHistoryMetadata> getJob_history_metadata_list() {
+        return job_history_metadata_list;
+    }
+
+    public void setJob_history_metadata_list(List<JobHistoryMetadata> job_history_metadata_list) {
+        this.job_history_metadata_list = job_history_metadata_list;
     }
 }

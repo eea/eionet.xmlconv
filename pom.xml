@@ -1158,6 +1158,13 @@
                 <artifactId>mdi__font</artifactId>
                 <version>6.2.95</version>
             </dependency>
+
+            <!-- Csv export dependency -->
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>5.5.2</version>
+            </dependency>
         </dependencies>
 
 

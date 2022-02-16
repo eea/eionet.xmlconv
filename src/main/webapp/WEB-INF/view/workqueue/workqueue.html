@@ -8,6 +8,9 @@
     <div class="container" id="workqueueApp" style="display: flow-root">
         <v-app>
             <v-main>
+                <h1>Jobs</h1>
+
+                <p>Currently there are following jobs in the queue...</p>
                 <div v-if="infoMessage" class="system-msg">
                     <p>{{ infoMessage }}</p>
                 </div>
@@ -22,6 +25,7 @@
                                 hide-details
                         ></v-text-field>
                     </v-card-title>
+                    <a href="#" @click="csvExport" class="mb-2 ml-2">Export to CSV</a>
                     <v-data-table
                             v-model="selected"
                             item-key="jobId"
@@ -34,6 +38,7 @@
                             :loading="loading"
                             :expanded.sync="expanded"
                             show-expand
+                            @item-expanded="onExpand"
                             class="elevation-1">
                         <template #item.url="{ item }">
                             <a target="_blank" :href="item.url">
@@ -55,17 +60,33 @@
                                 *** Not ready ***
                             </div>
                         </template>
+                        <template v-slot:expanded-item="{ headers, item }">
+                            <td v-if="item.job_history_metadata_list" colspan="4">
+                                <table>
+                                    <tr>
+                                        <th style="text-align: left">Job status</th>
+                                        <th style="text-align: left">Date that status was modified</th>
+                                        <th style="text-align: left">Job Executor Name</th>
+                                    </tr>
+                                    <tr v-for="expanded_item in item.job_history_metadata_list">
+                                        <td>{{ expanded_item.status_name }}</td>
+                                        <td>{{ expanded_item.date_added }}</td>
+                                        <td>{{ expanded_item.job_executor_name }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </template>
                     </v-data-table>
                 </v-card>
                 <div class="pt-2">
-                    <v-btn
+                    <v-btn v-if="permissions.wqdPrm || permissions.wquPrm"
                             color="primary"
                             class="mr-2"
                             @click="deleteJobs"
                     >
                         Delete
                     </v-btn>
-                    <v-btn
+                    <v-btn v-if="permissions.wquPrm"
                             color="primary"
                             class="mr-2"
                             @click="restartJobs"

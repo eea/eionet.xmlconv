@@ -1,11 +1,17 @@
 package eionet.gdem.api;
 
+import com.google.gson.JsonObject;
+import com.opencsv.CSVWriter;
+import eionet.acl.SignOnException;
+import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.jpa.Entities.PropertiesEntry;
+import eionet.gdem.jpa.errors.DatabaseException;
+import eionet.gdem.web.spring.workqueue.*;
+import org.apache.commons.io.FileUtils;
+import org.springframework.security.access.AccessDeniedException;
 import eionet.gdem.services.impl.JobEntryAndJobHistoryEntriesService;
-import eionet.gdem.web.spring.workqueue.JobMetadata;
-import eionet.gdem.web.spring.workqueue.WorkqueueManager;
+import eionet.gdem.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/workqueueData")
@@ -31,30 +39,55 @@ public class WorkqueueRestController {
         this.jobEntryAndJobHistoryEntriesService = jobEntryAndJobHistoryEntriesService;
     }
 
-    @GetMapping("/getAllJobs")
-    public List<JobMetadata> getAllJobs() {
+    @GetMapping("/getWorkqueuePageInfo")
+    public WorkqueuePageInfo getWorkqueuePageInfo(HttpSession session) {
+        String userName = null;
+        if(session.getAttribute("user") != null){
+            userName = session.getAttribute("user").toString();
+        }
+        boolean wqdPrm = false;
+        boolean wquPrm = false;
+        boolean wqvPrm = false;
+        boolean logvPrm = false;
         try {
-            return jobEntryAndJobHistoryEntriesService.retrieveAllJobsWithMetadata();
+            if (userName != null) {
+                wqdPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_WQ_PATH, "d");
+                wquPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_WQ_PATH, "u");
+                wqvPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_WQ_PATH, "v");
+                logvPrm = SecurityUtil.hasPerm(userName, "/" + Constants.ACL_LOGFILE_PATH, "v");
+            }
+        } catch (SignOnException e) {
+            LOGGER.error("Error with permissions. Exception message: " + e.getMessage());
+        }
+
+        WorkqueuePermissions permissions = new WorkqueuePermissions();
+        permissions.setWqdPrm(wqdPrm);
+        permissions.setWquPrm(wquPrm);
+        permissions.setWqvPrm(wqvPrm);
+        permissions.setLogvPrm(logvPrm);
+        try {
+            List<JobMetadata> allJobs = jobEntryAndJobHistoryEntriesService.retrieveAllJobsWithMetadata();
+            WorkqueuePageInfo workqueuePageInfo = new WorkqueuePageInfo(allJobs, permissions, userName);
+            return workqueuePageInfo;
         } catch (SQLException e) {
             LOGGER.error("Could not retrieve jobs from T_XQJOBS table. Exception message: " + e.getMessage());
         }
-        return new ArrayList<>();
+        return null;
     }
 
     @RequestMapping(value = "restart", method = RequestMethod.POST)
-    public String restart(HttpServletRequest request, HttpServletResponse response, @RequestBody JobMetadata[] selectedJobs) {
+    public String restart(HttpSession session, @RequestBody JobMetadata[] selectedJobs) {
         //check permissions
-        /*
+
         String user = (String) session.getAttribute("user");
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "u")) {
                 throw new AccessDeniedException("Access denied for qa job restart action");
             }
         } catch (SignOnException e) {
-            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+            throw new RuntimeException(Properties.getMessage("label.exception.unknown"));
         }
 
-         */
         WorkqueueManager workqueueManager = new WorkqueueManager();
         try {
             String[] jobIds = new String[selectedJobs.length];
@@ -69,18 +102,17 @@ public class WorkqueueRestController {
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public String delete(HttpServletRequest request, HttpServletResponse response, @RequestBody JobMetadata[] selectedJobs) {
+    public String delete(HttpSession session, @RequestBody JobMetadata[] selectedJobs) {
         //check permissions
-        /*
         String user = (String) session.getAttribute("user");
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "u")) {
-                throw new AccessDeniedException("Access denied for qa job restart action");
+                throw new AccessDeniedException("Access denied for qa job delete action");
             }
         } catch (SignOnException e) {
-            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
+            throw new RuntimeException(Properties.getMessage("label.exception.unknown"));
         }
-         */
+
         WorkqueueManager workqueueManager = new WorkqueueManager();
         try {
             String[] jobIds = new String[selectedJobs.length];
@@ -92,5 +124,42 @@ public class WorkqueueRestController {
             throw new RuntimeException("Could not delete jobs! " + e.getMessage());
         }
         return Properties.getMessage("label.workqueue.jobdeleted");
+    }
+
+    @RequestMapping(value = "exportToCsv", method = RequestMethod.POST)
+    public void exportToCsv(HttpServletRequest request, HttpServletResponse response, @RequestBody JobMetadata[] jobEntries) throws IOException {
+        List<String[]> csvData = new ArrayList<>();
+        String[] header = {"Job ID", "Document URL", "XQuery script", "Job Result", "Status", "Started at", "Instance", "Duration", "Job type", "Worker"};
+        csvData.add(header);
+        for(JobMetadata entry: jobEntries){
+            String[] row = {entry.getJobId(), entry.getUrl(), entry.getScript_file(), (entry.getResult_file() != null) ? entry.getResult_file() : "*** Not ready ***",
+                    entry.getStatusName(), entry.getTimestamp(), (entry.getInstance()!= null) ? entry.getInstance() : "",
+                    (entry.getDurationInProgress() != null) ? entry.getDurationInProgress() : "", (entry.getJobType() != null) ? entry.getJobType() : "",
+                    (entry.getJobExecutorName() != null) ? entry.getJobExecutorName() : ""};
+            csvData.add(row);
+        }
+
+        // default all fields are enclosed in double quotes
+        // default separator is a comma
+        // init stream writer
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+        CSVWriter writer = new CSVWriter(osw);
+        writer.writeAll(csvData);
+
+        // set response content type
+        response.setContentType("text/csv; charset=UTF-8");
+        response.addHeader("Content-Disposition", "attachment; filename=QA jobs workqueue.csv");
+
+        // flush and close stream writer
+        writer.flush();
+        osw.flush();
+        writer.close();
+        osw.close();
+    }
+
+    @GetMapping(value ="/getJobDetails/{jobId}")
+    @ResponseBody
+    public List<JobHistoryMetadata> getJobDetails(@PathVariable String jobId) throws DatabaseException {
+        return jobEntryAndJobHistoryEntriesService.getJobHistoryMetadata(jobId);
     }
 }
