@@ -57,7 +57,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         jobExecutor = new JobExecutor().setContainerId("123456").setHeartBeatQueue("demoJobExecutor-queue");;
         jobExecutorHistory = new JobExecutorHistory();
         doNothing().when(jobHistoryService).updateJobHistory(any(JobEntry.class));
-        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
+        doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(anyBoolean(), any(JobExecutor.class));
         doNothing().when(jobExecutorHistoryService).saveJobExecutorHistoryEntry(any(JobExecutorHistory.class));
     }
 
@@ -73,7 +73,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
     public void testSaveOrUpdateJobExecutor() throws DatabaseException {
         when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         workerAndJobStatusHandlerServiceImpl.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-        verify(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
+        verify(jobExecutorService).saveOrUpdateJobExecutor(anyBoolean(), any(JobExecutor.class));
     }
 
     @Test

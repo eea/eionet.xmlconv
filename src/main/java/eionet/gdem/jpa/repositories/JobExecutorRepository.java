@@ -29,7 +29,9 @@ public interface JobExecutorRepository extends JpaRepository<JobExecutor, Intege
     List<JobExecutor> findJobExecutorsByJobId(@Param("jobId") Integer jobId);
 
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="5000")})
-    JobExecutor save(JobExecutor jobExecutor);
+    @Modifying
+    @Query(value = "update JOB_EXECUTOR set STATUS= :status, JOB_ID= :jobId, JOB_EXECUTOR_TYPE= :jobExecutorType, FME_JOB_ID= :fmeJobId where NAME= :name", nativeQuery=true)
+    void updateJobExecutor(@Param("status") Integer status, @Param("jobId") Integer jobId, @Param("jobExecutorType") Integer jobExecutorType, @Param("fmeJobId") Long fmeJobId, @Param("name") String name);
 
 }
 
