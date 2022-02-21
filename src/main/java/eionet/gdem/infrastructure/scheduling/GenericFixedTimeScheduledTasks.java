@@ -9,16 +9,11 @@ import eionet.gdem.datadict.DDServiceClient;
 import eionet.gdem.dto.DDDatasetTable;
 import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.Entities.WorkerHeartBeatMsgEntry;
+import eionet.gdem.jpa.Entities.*;
+import eionet.gdem.jpa.enums.AlertSeverity;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
-import eionet.gdem.jpa.service.JobExecutorService;
-import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.jpa.service.QueryMetadataService;
-import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
+import eionet.gdem.jpa.service.*;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
@@ -31,6 +26,8 @@ import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
+import io.github.resilience4j.circuitbreaker.event.CircuitBreakerEvent;
+import io.github.resilience4j.consumer.CircularEventConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +69,10 @@ public class GenericFixedTimeScheduledTasks {
     private JobExecutorService jobExecutorService;
     @Autowired
     private WorkersOrchestrationSharedService workersOrchestrationSharedService;
+    @Autowired
+    private AlertService alertService;
+    @Autowired
+    private CircularEventConsumer circularEventConsumer;
 
     /**
      * Dao for getting job data.
@@ -105,7 +106,7 @@ public class GenericFixedTimeScheduledTasks {
 
     @Transactional
     @Scheduled(cron = "0 0 */4 * * *") //Every 4 hours
-    public void schedulePeriodicNotificationsForLongRunningJobs() throws SQLException, GeneralSecurityException {
+    public void schedulePeriodicNotificationsForLongRunningJobs() throws Exception {
         //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2, INTERNAL_STATUS_ID=3) and duration more than Properties.LONG_RUNNING_JOBS_EVENT
         String[] jobsIds = xqJobDao.getLongRunningJobs(Properties.longRunningJobThreshold, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING);
         if (jobsIds == null || jobsIds.length == 0) {
@@ -310,6 +311,27 @@ public class GenericFixedTimeScheduledTasks {
         } catch (RancherApiException e) {
             LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
             throw e;
+        }
+    }
+
+    @Scheduled(cron = "0 */1 * * * *")  //every minute
+    public void sendRancherCircuitBreakerEventsToUns() {
+        io.vavr.collection.List<CircuitBreakerEvent> bufferedEvents = circularEventConsumer.getBufferedEvents();
+        bufferedEvents.forEach(event -> {
+            AlertEntry alertEntry =  new AlertEntry().setSeverity(AlertSeverity.CRITICAL.getId()).setDescription("JobExecutor rancher orchestration malfunctions, circuit breaker is open")
+                    .setOccurrenceDate(Timestamp.valueOf(event.getCreationTime().toLocalDateTime()));
+            try {
+                new UNSEventSender().rancherCircuitBreakerOpenNotification(event.getCreationTime() + ", Time exceeded for rancher proper functionality", Properties.RANCHER_CIRCUIT_BREAKER_EVENT);
+                alertEntry.setNotificationSentToUns(true);
+            } catch (Exception e) {
+                LOGGER.error("Error sending rancher circuit breaker event to uns");
+                alertEntry.setNotificationSentToUns(false);
+            } finally {
+                alertService.save(alertEntry);
+            }
+        });
+        if (!bufferedEvents.isEmpty()) {
+            circularEventConsumer = new CircularEventConsumer(10);
         }
     }
 

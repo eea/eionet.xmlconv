@@ -1,13 +1,12 @@
 package eionet.gdem.rancher.config;
 
 import eionet.gdem.Properties;
-import eionet.gdem.notifications.UNSEventSender;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.circuitbreaker.event.CircuitBreakerEvent;
+import io.github.resilience4j.consumer.CircularEventConsumer;
 import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -26,8 +24,7 @@ public class TemplateConfig {
      * time in seconds, corresponds to 2 minutes
      */
     private final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(120);
-    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateConfig.class);
-    
+
     @Bean
     public RestTemplate restTemplate() {
         HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
@@ -48,6 +45,13 @@ public class TemplateConfig {
     }
 
     @Bean
+    CircularEventConsumer circularEventConsumer() {
+        CircularEventConsumer<CircuitBreakerEvent> circularEventConsumer =
+                new CircularEventConsumer<>(10);
+        return circularEventConsumer;
+    }
+
+    @Bean
     public CircuitBreaker circuitBreaker() {
         CircuitBreakerConfig config = CircuitBreakerConfig.custom()
                 .minimumNumberOfCalls(1)     //if 1 call fails in the last 60 seconds, circuit breaker will open
@@ -58,13 +62,7 @@ public class TemplateConfig {
                 .build();
         CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config);
         CircuitBreaker circuitBreaker = registry.circuitBreaker("rancherCircuitBreaker");
-        circuitBreaker.getEventPublisher().onCallNotPermitted(event -> {
-            try {
-                new UNSEventSender().rancherCircuitBreakerOpenNotification(event.getCreationTime() + ", Time exceeded for rancher proper functionality", Properties.RANCHER_CIRCUIT_BREAKER_EVENT);
-            } catch (GeneralSecurityException e) {
-                LOGGER.error("Error sending rancher circuit breaker event");
-            }
-        });
+        circuitBreaker.getEventPublisher().onCallNotPermitted(circularEventConsumer());
         return circuitBreaker;
     }
 

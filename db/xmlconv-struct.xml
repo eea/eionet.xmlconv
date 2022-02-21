@@ -972,4 +972,25 @@
             <column name="RULE_MATCH" type="VARCHAR(20)"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="favvmary" id="rev-85">
+        <comment> Table for Storing alerts</comment>
+        <createTable tableName="ALERTS">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="SEVERITY" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NOTIFICATION_SENT_TO_UNS" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OCCURRENCE_DATE" type="TIMESTAMP"/>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
 </databaseChangeLog>

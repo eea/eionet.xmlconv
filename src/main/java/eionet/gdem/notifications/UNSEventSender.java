@@ -55,7 +55,7 @@ public class UNSEventSender {
      * @param jobIds
      * @param eventType
      */
-    public void longRunningJobsNotifications (List<String> jobIds, String eventType) throws GeneralSecurityException {
+    public void longRunningJobsNotifications (List<String> jobIds, String eventType) throws Exception {
 
         if (jobIds == null || eventType == null) {
             return;
@@ -75,7 +75,7 @@ public class UNSEventSender {
         sendEvent(predicateObjects, UnsEventTypes.LONG_RUNNING_JOBS.getId());
     }
 
-    public void rancherCircuitBreakerOpenNotification(String message, String eventType) throws GeneralSecurityException {
+    public void rancherCircuitBreakerOpenNotification(String message, String eventType) throws Exception {
         if (message==null || eventType==null) {
             return;
         }
@@ -125,7 +125,7 @@ public class UNSEventSender {
      *
      * @param predicateObjects
      */
-    protected void sendEvent(Hashtable predicateObjects, Integer findChannel) throws GeneralSecurityException {
+    protected void sendEvent(Hashtable predicateObjects, Integer findChannel) throws Exception {
 
         if (predicateObjects == null || predicateObjects.size() == 0) {
             return;
@@ -171,7 +171,7 @@ public class UNSEventSender {
         }
     }
 
-    protected void makeRestCall(Object rdfTriples, Integer findChannel) {
+    protected void makeRestCall(Object rdfTriples, Integer findChannel) throws Exception {
         try {
             if (isSendingDisabled()) {
                 return;
@@ -219,6 +219,7 @@ public class UNSEventSender {
 
         } catch (Exception e) {
             LOGGER.error("Could not send notification to uns: " + e.getMessage());
+            throw e;
         }
     }
 
