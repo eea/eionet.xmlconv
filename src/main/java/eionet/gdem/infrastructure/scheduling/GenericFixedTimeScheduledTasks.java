@@ -317,6 +317,10 @@ public class GenericFixedTimeScheduledTasks {
         }
     }
 
+    /**
+     * The task runs every minute, finds if there are events created by circuit breaker and saves them as alerts in ALERTS table.
+     * Only not_permitted events are buffered in circularEventConsumer.
+     */
     @Scheduled(cron = "0 */1 * * * *")  //every minute
     public void sendRancherCircuitBreakerEventsToUns() {
         io.vavr.collection.List<CircuitBreakerEvent> bufferedEvents = circularEventConsumer.getBufferedEvents();
