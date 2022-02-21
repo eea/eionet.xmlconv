@@ -26,6 +26,7 @@ import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.web.spring.workqueue.WorkqueueManager;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.event.CircuitBreakerEvent;
 import io.github.resilience4j.consumer.CircularEventConsumer;
 import org.slf4j.Logger;
@@ -73,6 +74,8 @@ public class GenericFixedTimeScheduledTasks {
     private AlertService alertService;
     @Autowired
     private CircularEventConsumer circularEventConsumer;
+    @Autowired
+    private CircuitBreaker circuitBreaker;
 
     /**
      * Dao for getting job data.
@@ -332,6 +335,7 @@ public class GenericFixedTimeScheduledTasks {
         });
         if (!bufferedEvents.isEmpty()) {
             circularEventConsumer = new CircularEventConsumer(10);
+            circuitBreaker.getEventPublisher().onCallNotPermitted(circularEventConsumer);
         }
     }
 
