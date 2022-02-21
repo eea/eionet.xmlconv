@@ -19,6 +19,9 @@
     <ed:tabItem selectedTab="${selectedTab}" href="/new/admin/viewAndEditProperties" id="viewAndEditProperties" title="label.admin.properties">
       <spring:message code="label.admin.properties"/>
     </ed:tabItem>
+    <ed:tabItem selectedTab="${selectedTab}" href="/new/admin/alerts" id="alerts" title="label.admin.alerts">
+      <spring:message code="label.admin.alerts"/>
+    </ed:tabItem>
   </ul>
 </div>
 <div id="tabbedmenuend"></div>

@@ -25,6 +25,9 @@ public class AlertEntry implements Serializable {
     @Column(name = "OCCURRENCE_DATE")
     private Timestamp occurrenceDate;
 
+    @Transient
+    private String occurrenceDateMod;
+
     public AlertEntry() {
     }
 
@@ -71,6 +74,14 @@ public class AlertEntry implements Serializable {
     public AlertEntry setOccurrenceDate(Timestamp occurrenceDate) {
         this.occurrenceDate = occurrenceDate;
         return this;
+    }
+
+    public String getOccurrenceDateMod() {
+        return occurrenceDateMod;
+    }
+
+    public void setOccurrenceDateMod(String occurrenceDateMod) {
+        this.occurrenceDateMod = occurrenceDateMod;
     }
 
     @Override
