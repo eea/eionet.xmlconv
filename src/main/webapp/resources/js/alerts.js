@@ -57,7 +57,7 @@ var app = new Vue({
         async deleteItemConfirm() {
             await axios.delete("/restapi/alerts/delete/" + this.editedItem.id);
             this.closeDelete();
-            this.readPropertiesEntries();
+            this.readAlertsEntries();
         },
 
         close() {
@@ -78,11 +78,11 @@ var app = new Vue({
         async save() {
             await axios.post("/restapi/alerts/add", this.editedItem);
             this.close();
-            this.readPropertiesEntries();
+            this.readAlertsEntries();
         },
 
         //Reading data from API method.
-        readPropertiesEntries() {
+        readAlertsEntries() {
             this.loading = true;
             axios
                 .get(
@@ -97,6 +97,6 @@ var app = new Vue({
 
     //this will trigger in the onReady State
     mounted() {
-        this.readPropertiesEntries();
+        this.readAlertsEntries();
     }
 })
