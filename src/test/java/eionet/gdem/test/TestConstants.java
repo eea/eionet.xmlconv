@@ -29,6 +29,7 @@ public class TestConstants {
     public static final String SEED_DATASET_QUERY_METADATA_XML = "seed-dataset-query-metadata.xml";
     public static final String SEED_DATASET_PROPERTIES_XML = "seed-dataset-properties.xml";
     public static final String SEED_DATASET_SCRIPT_RULES_XML = "seed-dataset-script-rules.xml";
+    public static final String SEED_ALERTS_XML = "seed-alerts.xml";
 
     // SEED FILES for conversions
     public static final String SEED_READER_XLS = "seed-reader.xls";
