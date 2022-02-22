@@ -323,7 +323,7 @@ public class GenericFixedTimeScheduledTasks {
      */
     @Scheduled(cron = "0 */1 * * * *")  //every minute
     public void sendRancherCircuitBreakerEventsToUns() {
-        LOGGER.info("Task for finding creating and sending alerts is running");
+        LOGGER.info("Task for creating and sending alerts is running");
         io.vavr.collection.List<CircuitBreakerEvent> bufferedEvents = circularEventConsumer.getBufferedEvents();
         bufferedEvents.forEach(event -> {
             AlertEntry alertEntry =  new AlertEntry().setSeverity(AlertSeverity.CRITICAL.getId()).setDescription("JobExecutor rancher orchestration malfunctions, circuit breaker is open")
