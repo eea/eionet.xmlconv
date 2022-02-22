@@ -22,12 +22,17 @@ public class JobMetadata {
     private String timestamp;
     private String scriptId;
     private String instance;
-    private String scriptType;
+    private String script_type;
     private String durationInProgress;
     private String jobType;
     private String jobExecutorName;
+    private String fme_job_id;
+    private String fme_job_url;
+    private String converters_graylog_url;
+    private String job_executor_graylog_url;
+    private String from_date;
+    private String to_date;
     private List<JobHistoryMetadata> job_history_metadata_list;
-
     public String getJobId() {
         return jobId;
     }
@@ -109,12 +114,12 @@ public class JobMetadata {
         this.scriptId = scriptId;
     }
 
-    public String getScriptType() {
-        return scriptType;
+    public String getScript_type() {
+        return script_type;
     }
 
-    public void setScriptType(String scriptType) {
-        this.scriptType = scriptType;
+    public void setScript_type(String script_type) {
+        this.script_type = script_type;
     }
 
     public String getDurationInProgress() {
@@ -155,6 +160,54 @@ public class JobMetadata {
 
     public void setScript_url(String script_url) {
         this.script_url = script_url;
+    }
+
+    public String getFme_job_url() {
+        return fme_job_url;
+    }
+
+    public void setFme_job_url(String fme_job_url) {
+        this.fme_job_url = fme_job_url;
+    }
+
+    public String getConverters_graylog_url() {
+        return converters_graylog_url;
+    }
+
+    public void setConverters_graylog_url(String converters_graylog_url) {
+        this.converters_graylog_url = converters_graylog_url;
+    }
+
+    public String getJob_executor_graylog_url() {
+        return job_executor_graylog_url;
+    }
+
+    public void setJob_executor_graylog_url(String job_executor_graylog_url) {
+        this.job_executor_graylog_url = job_executor_graylog_url;
+    }
+
+    public String getFme_job_id() {
+        return fme_job_id;
+    }
+
+    public void setFme_job_id(String fme_job_id) {
+        this.fme_job_id = fme_job_id;
+    }
+
+    public String getFrom_date() {
+        return from_date;
+    }
+
+    public void setFrom_date(String from_date) {
+        this.from_date = from_date;
+    }
+
+    public String getTo_date() {
+        return to_date;
+    }
+
+    public void setTo_date(String to_date) {
+        this.to_date = to_date;
     }
 
     public List<JobHistoryMetadata> getJob_history_metadata_list() {

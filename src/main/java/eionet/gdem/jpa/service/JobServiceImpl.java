@@ -2,11 +2,13 @@ package eionet.gdem.jpa.service;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.data.scripts.ScriptType;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.IQueryDao;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
@@ -97,77 +99,33 @@ public class JobServiceImpl implements JobService {
     public List<JobMetadata> retrieveAllJobsWithMetadata() throws SQLException {
         List<JobMetadata> jobsList = new ArrayList<>();
 
-        String[][] list = null;
-        try {
-            IXQJobDao jobDao = GDEMServices.getDaoService().getXQJobDao();
-            list = jobDao.getJobData();
-        } catch (Exception e) {
-            LOGGER.error("Could not retrieve jobs from T_XQJOBS table. Exception message: " + e.getMessage());
-            throw e;
-        }
-        String tmpFolder = Constants.TMP_FOLDER;
-        String queriesFolder = Constants.QUERIES_FOLDER;
-
-        IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
+        List<JobEntry> allEntries = jobRepository.findAll();
         ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
-        for (int i = 0; i < list.length; i++) {
+
+        for( JobEntry entry: allEntries){
             JobMetadata job = new JobMetadata();
-            String jobId = list[i][0];
-            String url = list[i][1];
-            String xqLongFileName = list[i][2];
-            String xqFile = list[i][2].substring(list[i][2].lastIndexOf(File.separatorChar) + 1);
-            String resultFile = list[i][3].substring(list[i][3].lastIndexOf(File.separatorChar) + 1);
-            int status = Integer.parseInt(list[i][4]);
-            String timeStamp = list[i][5];
-            String xqStringID = list[i][6];
-            String instance = list[i][7];
-            String durationMs = list[i][8];
-            String jobType = list[i][9];
-            String jobExecutorName = list[i][10];
-
-            job.setJobId(jobId);
-            job.setFileName(xqLongFileName);
-            job.setScript_file(xqFile);
-            job.setStatus(status);
-            job.setTimestamp(timeStamp);
-            job.setScriptId(xqStringID);
-            job.setInstance(instance);
-            job.setJobType(jobType);
-            job.setJobExecutorName(jobExecutorName);
-            int xqID = 0;
-            String scriptType = "";
-            try {
-                xqID = Integer.parseInt(xqStringID);
-                java.util.HashMap query = queryDao.getQueryInfo(xqStringID);
-                if (query != null) {
-                    scriptType = (String) query.get("script_type");
-                }
-            } catch (NumberFormatException n) {
-                xqID = 0;
-            } catch (Exception e) {
-                LOGGER.error("Error when retrieving script information for script " + xqStringID + " Exception message: " + e.getMessage());
-            }
-            job.setScriptType(scriptType);
-
-            String xqFileURL = "";
-            String xqText = "Show script";
-            if (xqID == Constants.JOB_VALIDATION) {
-                xqText = "Show XML Schema";
-                xqFileURL = xqLongFileName;
-            } else if (xqID == Constants.JOB_FROMSTRING) {
-                xqFileURL = tmpFolder + xqFile;
-            } else {
-                xqFileURL = queriesFolder + xqFile;
-            }
-
+            job.setJobId(entry.getId().toString());
+            job.setFileName(entry.getSrcFile());
+            job.setScript_file(entry.getFile().substring(entry.getFile().lastIndexOf(File.separatorChar) + 1));
+            job.setStatus(entry.getnStatus());
+            job.setTimestamp(entry.getTimestamp().toString());
+            job.setScriptId(entry.getQueryId().toString());
+            job.setInstance(entry.getInstance());
+            job.setJobType(entry.getJobType());
+            job.setJobExecutorName(entry.getJobExecutorName());
+            job.setScript_type(entry.getScriptType());
+            Integer status = job.getStatus();
             if (status == Constants.XQ_RECEIVED || status == Constants.XQ_DOWNLOADING_SRC || status == Constants.XQ_PROCESSING ||
                     status == Constants.XQ_INTERRUPTED || status == Constants.CANCELLED_BY_USER || status == Constants.DELETED) {
-                resultFile = null;
+                job.setResult_file(null);
             }
             else{
-                resultFile = Properties.gdemURL + "/tmp/" + resultFile;
+                job.setResult_file(entry.getResultFile());
             }
-            job.setResult_file(resultFile);
+            if(entry.getFmeJobId() != null){
+                job.setFme_job_url(Properties.FME_JOB_URL + entry.getFmeJobId().toString());
+                job.setFme_job_id(entry.getFmeJobId().toString());
+            }
 
             String statusName = "-- Unknown --";
 
@@ -191,6 +149,8 @@ public class JobServiceImpl implements JobService {
                 statusName = "DELETED";
 
             job.setStatusName(statusName);
+
+            String url = entry.getUrl();
             if (url.indexOf(Constants.GETSOURCE_URL) > 0 && url.indexOf(Constants.SOURCE_URL_PARAM) > 0) {
                 int idx = url.indexOf(Constants.SOURCE_URL_PARAM);
                 url = url.substring(idx + Constants.SOURCE_URL_PARAM.length() + 1);
@@ -200,36 +160,44 @@ public class JobServiceImpl implements JobService {
             job.setUrl_name(urlName);
 
             //Set duration of job id status is in PROCESSING
-            if (durationMs != null) {
-                Long duration = Long.parseLong(durationMs);
+            if (entry.getDuration() != null) {
+                Long duration = Long.parseLong(entry.getDuration().toString());
                 job.setDurationInProgress(Utils.createFormatForMs(duration));
             }
 
             String schemaId = null;
-            if(xqStringID.equals("-1")){
+            if(job.getScriptId().equals("-1")) {
                 //schema validation
                 try {
                     schemaId = schemaDao.getSchemaID(job.getFileName());
                 } catch (SQLException e) {
                     LOGGER.error("Error when retrieving schema id for schema " + job.getFileName() + " Exception message: " + e.getMessage());
                 }
-                if(schemaId != null) {
+                if (schemaId != null) {
                     job.setScriptId(schemaId);
                 }
             }
+
             /*set up script page url*/
-            if(xqFile != null){
-                if(xqFile.startsWith("gdem")){
-                    job.setScript_url(Properties.gdemURL + "/tmp/" + xqFile);
+            if(job.getScript_file() != null){
+                if(job.getScript_file().startsWith("gdem")){
+                    job.setScript_url(Properties.gdemURL + "/tmp/" + job.getScript_file());
                 }
-                else if(xqFile.endsWith(".xsd")){
+                else if(job.getScript_file().endsWith(".xsd")){
                     job.setScript_url(Properties.gdemURL + "/schemas/" + schemaId);
                 }
                 else{
                     job.setScript_url(Properties.gdemURL + "/scripts/" + job.getScriptId());
                 }
             }
+
+            job.setFrom_date(entry.getTimestamp().toLocalDateTime().minusDays(1).toString());
+            job.setTo_date(entry.getTimestamp().toLocalDateTime().plusDays(1).toString());
+            job.setJob_executor_graylog_url(Properties.CONVERTERS_GRAYLOG + job.getJobId() + "&from=" + job.getFrom_date() + ".000Z&to=" + job.getTo_date() + ".000Z");
+            job.setConverters_graylog_url(Properties.JOB_EXECUTOR_GRAYLOG + job.getJobId() + "&from=" + job.getFrom_date() + ".000Z&to=" + job.getTo_date() + ".000Z");
+
             jobsList.add(job);
+
         }
         return jobsList;
     }

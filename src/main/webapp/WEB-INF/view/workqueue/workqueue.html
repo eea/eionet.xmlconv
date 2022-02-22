@@ -74,19 +74,29 @@
                                         <td>{{ expanded_item.job_executor_name }}</td>
                                     </tr>
                                 </table>
+                                <div v-if="username">
+                                    <a :href="item.converters_graylog_url" target="_blank">Converters graylog</a> (Display Graylog Results for Converters for dates: {{ item.from_date }} to {{ item.to_date }} )
+                                    <br>
+                                    <a :href="item.job_executor_graylog_url" target="_blank">Job Executor graylog</a> (Display Graylog Results for JobExecutor for dates: {{ item.from_date }} to {{ item.to_date }} )
+                                    <br>
+                                    <div v-if="item.fme_job_id">
+                                        <a :href="item.fme_job_url">FME job id: {{ item.fme_job_id }}</a>
+                                    </div>
+                                    <br>
+                                </div>
                             </td>
                         </template>
                     </v-data-table>
                 </v-card>
                 <div class="pt-2">
-                    <v-btn v-if="permissions.wqdPrm || permissions.wquPrm"
+                    <v-btn v-if="permissions && (permissions.wqdPrm || permissions.wquPrm)"
                             color="primary"
                             class="mr-2"
                             @click="deleteJobs"
                     >
                         Delete
                     </v-btn>
-                    <v-btn v-if="permissions.wquPrm"
+                    <v-btn v-if="permissions && permissions.wquPrm"
                             color="primary"
                             class="mr-2"
                             @click="restartJobs"
