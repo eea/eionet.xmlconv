@@ -43,9 +43,9 @@ public class UNSEventSender {
     private String sendNotificationRest = null;
     private String restUserNameProperty = null;
     private String restPasswordProperty = null;
-    private String rancherCircuitBreakerEventTypePredicateProperty = null;
-    private String rancherCircuitBreakerPredicateProperty = null;
-    private String rancherCircuitBreakerChannelName = null;
+    private String alertsEventTypePredicateProperty = null;
+    private String alertsPredicateProperty = null;
+    private String alertsChannelName = null;
 
     public UNSEventSender() {
     }
@@ -75,7 +75,7 @@ public class UNSEventSender {
         sendEvent(predicateObjects, UnsEventTypes.LONG_RUNNING_JOBS.getId());
     }
 
-    public void rancherCircuitBreakerOpenNotification(String message, String eventType) throws Exception {
+    public void alertsNotification(String message, String eventType) throws Exception {
         if (message==null || eventType==null) {
             return;
         }
@@ -85,13 +85,13 @@ public class UNSEventSender {
         Hashtable predicateObjects = new Hashtable();
         Vector objects = new Vector();
         objects.add(eventType);
-        predicateObjects.put(getRancherCircuitBreakerEventTypePredicateProperty(), objects);
+        predicateObjects.put(getAlertsEventTypePredicateProperty(), objects);
 
         objects = new Vector();
         objects.add(message);
-        predicateObjects.put(getRancherCircuitBreakerPredicateProperty(), objects);
+        predicateObjects.put(getAlertsPredicateProperty(), objects);
 
-        sendEvent(predicateObjects, UnsEventTypes.RANCHER_CIRCUIT_BREAKER.getId());
+        sendEvent(predicateObjects, UnsEventTypes.ALERTS.getId());
     }
 
     /**
@@ -180,8 +180,8 @@ public class UNSEventSender {
             String channelName = null;
             if (findChannel==UnsEventTypes.LONG_RUNNING_JOBS.getId()) {
                 channelName = getChannelNameProperty();
-            } else if (findChannel==UnsEventTypes.RANCHER_CIRCUIT_BREAKER.getId()) {
-                channelName = getRancherCircuitBreakerChannelName();
+            } else if (findChannel==UnsEventTypes.ALERTS.getId()) {
+                channelName = getAlertsChannelName();
             }
             String userName = getRestUserNameProperty();
             String password = getRestPasswordProperty();
@@ -248,8 +248,8 @@ public class UNSEventSender {
         triple.setSubject(eventID);
         if (findChannel==UnsEventTypes.LONG_RUNNING_JOBS.getId()) {
             triple.setProperty(getLongRunningJobsPredicateProperty());
-        } else if (findChannel==UnsEventTypes.RANCHER_CIRCUIT_BREAKER.getId()) {
-            triple.setProperty(getRancherCircuitBreakerPredicateProperty());
+        } else if (findChannel==UnsEventTypes.ALERTS.getId()) {
+            triple.setProperty(getAlertsPredicateProperty());
         }
         triple.setValue("Converters event");
         notificationTriples.add(triple.toVector());
@@ -355,16 +355,16 @@ public class UNSEventSender {
         return restPasswordProperty;
     }
 
-    public String getRancherCircuitBreakerEventTypePredicateProperty() {
-        return rancherCircuitBreakerEventTypePredicateProperty;
+    public String getAlertsEventTypePredicateProperty() {
+        return alertsEventTypePredicateProperty;
     }
 
-    public String getRancherCircuitBreakerPredicateProperty() {
-        return rancherCircuitBreakerPredicateProperty;
+    public String getAlertsPredicateProperty() {
+        return alertsPredicateProperty;
     }
 
-    public String getRancherCircuitBreakerChannelName() {
-        return rancherCircuitBreakerChannelName;
+    public String getAlertsChannelName() {
+        return alertsChannelName;
     }
 
     protected void setupProperties () {
@@ -381,9 +381,9 @@ public class UNSEventSender {
         sendNotificationRest = Properties.PROP_UNS_REST_SEND_NOTIFICATION;
         restUserNameProperty = Properties.PROP_UNS_REST_USERNAME;
         restPasswordProperty = Properties.PROP_UNS_REST_PASSWORD;
-        rancherCircuitBreakerPredicateProperty = Properties.PROP_UNS_RANCHER_CIRCUIT_BREAKER_PREDICATE;
-        rancherCircuitBreakerEventTypePredicateProperty = Properties.PROP_UNS_RANCHER_CIRCUIT_BREAKER_EVENTTYPE_PREDICATE;
-        rancherCircuitBreakerChannelName = Properties.PROP_UNS_RANCHER_CIRCUIT_BREAKER_CHANNEL_NAME;
+        alertsPredicateProperty = Properties.ALERTS_PREDICATE;
+        alertsEventTypePredicateProperty = Properties.ALERTS_EVENTTYPE_PREDICATE;
+        alertsChannelName = Properties.ALERTS_CHANNEL_NAME;
     }
 
 }

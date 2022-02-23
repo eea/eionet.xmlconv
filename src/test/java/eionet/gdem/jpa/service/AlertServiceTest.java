@@ -41,7 +41,7 @@ public class AlertServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        alertEntry = new AlertEntry().setId(1).setSeverity(AlertSeverity.LOW.getId()).setDescription("error").setNotificationSentToUns(false)
+        alertEntry = new AlertEntry().setId(1).setSeverity(AlertSeverity.LOW).setDescription("error").setNotificationSentToUns(false)
                 .setOccurrenceDate(new Timestamp(new Date().getTime()));
         alertEntryList = new ArrayList<>();
         alertEntryList.add(alertEntry);

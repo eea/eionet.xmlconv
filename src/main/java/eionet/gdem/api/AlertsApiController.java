@@ -27,7 +27,7 @@ public class AlertsApiController {
     }
 
     @GetMapping("/get/all")
-    public List<AlertEntry> getAllProperties() {
+    public List<AlertEntry> getAllAlerts() {
         return alertService.findAll();
     }
 

@@ -46,7 +46,7 @@ public class AlertRepositoryTestIT {
 
     @Test
     public void testSave() {
-        AlertEntry alertEntry = new AlertEntry().setId(3).setSeverity(AlertSeverity.MEDIUM.getId()).setDescription("alert3").setNotificationSentToUns(false)
+        AlertEntry alertEntry = new AlertEntry().setId(3).setSeverity(AlertSeverity.MEDIUM).setDescription("alert3").setNotificationSentToUns(false)
                 .setOccurrenceDate(new Timestamp(new Date().getTime()));
         AlertEntry result = alertRepository.save(alertEntry);
         assertThat(result.getDescription(), is(alertEntry.getDescription()));
@@ -55,7 +55,7 @@ public class AlertRepositoryTestIT {
 
     @Test
     public void testDelete() {
-        AlertEntry alertEntry = new AlertEntry().setId(4).setSeverity(AlertSeverity.CRITICAL.getId()).setDescription("alert4").setNotificationSentToUns(false)
+        AlertEntry alertEntry = new AlertEntry().setId(4).setSeverity(AlertSeverity.CRITICAL).setDescription("alert4").setNotificationSentToUns(false)
                 .setOccurrenceDate(new Timestamp(new Date().getTime()));
         alertRepository.save(alertEntry);
         alertRepository.delete(alertEntry.getId());

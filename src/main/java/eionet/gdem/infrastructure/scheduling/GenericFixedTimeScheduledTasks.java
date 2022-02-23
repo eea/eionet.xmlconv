@@ -326,10 +326,10 @@ public class GenericFixedTimeScheduledTasks {
         LOGGER.info("Task for creating and sending alerts is running");
         io.vavr.collection.List<CircuitBreakerEvent> bufferedEvents = circularEventConsumer.getBufferedEvents();
         bufferedEvents.forEach(event -> {
-            AlertEntry alertEntry =  new AlertEntry().setSeverity(AlertSeverity.CRITICAL.getId()).setDescription("JobExecutor rancher orchestration malfunctions, circuit breaker is open")
+            AlertEntry alertEntry =  new AlertEntry().setSeverity(AlertSeverity.CRITICAL).setDescription("JobExecutor rancher orchestration malfunctions, circuit breaker is open")
                     .setOccurrenceDate(Timestamp.valueOf(event.getCreationTime().toLocalDateTime()));
             try {
-                new UNSEventSender().rancherCircuitBreakerOpenNotification(event.getCreationTime() + ", Time exceeded for rancher proper functionality", Properties.RANCHER_CIRCUIT_BREAKER_EVENT);
+                new UNSEventSender().alertsNotification(event.getCreationTime() + ", Time exceeded for rancher proper functionality", Properties.ALERTS_EVENT);
                 alertEntry.setNotificationSentToUns(true);
             } catch (Exception e) {
                 LOGGER.error("Error sending rancher circuit breaker event to uns");

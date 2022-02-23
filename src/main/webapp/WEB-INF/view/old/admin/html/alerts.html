@@ -75,10 +75,11 @@
                                                     sm="12"
                                                     md="12"
                                             >
-                                                <v-text-field
+                                                <v-select
                                                         v-model="editedItem.severity"
+                                                        :items="severityValues"
                                                         label="Severity"
-                                                ></v-text-field>
+                                                ></v-select>
                                             </v-col>
                                             <v-col
                                                     cols="12"

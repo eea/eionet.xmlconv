@@ -45,7 +45,7 @@ public class AlertsApiControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        alertEntry = new AlertEntry().setId(1).setSeverity(AlertSeverity.LOW.getId()).setDescription("alert").setNotificationSentToUns(false);
+        alertEntry = new AlertEntry().setId(1).setSeverity(AlertSeverity.LOW).setDescription("alert").setNotificationSentToUns(false);
         alertEntry.setOccurrenceDateMod("2022-02-21 13:56:00");
         alertEntryList = new ArrayList<>();
         alertEntryList.add(alertEntry);

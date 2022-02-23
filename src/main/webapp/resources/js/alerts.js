@@ -3,17 +3,18 @@ var app = new Vue({
     vuetify: new Vuetify(),
     data() {
         return {
-            sortBy: "severity",
+            sortBy: "severity.id",
             sortDesc: true,
             dialog: false,
             dialogDelete: false,
             select: null,
             loading: true,
+            severityValues: ["LOW","MEDIUM","CRITICAL"],
             headers: [
                 { text: "Severity", value: "severity"},
                 { text: "Description", value: "description", sortable: false },
                 { text: "Notification sent to uns", value: "notificationSentToUns", sortable: false },
-                { text: "Occurrence date", value: "occurrenceDateMod", sortable: false },
+                { text: "Occurrence date", value: "occurrenceDateMod", sortable: true },
                 { text: "Actions", value: "actions", sortable: false },
             ],
             alerts: [],

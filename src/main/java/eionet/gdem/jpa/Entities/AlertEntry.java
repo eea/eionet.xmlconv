@@ -1,5 +1,8 @@
 package eionet.gdem.jpa.Entities;
 
+import eionet.gdem.jpa.enums.AlertSeverity;
+import eionet.gdem.jpa.enums.AlertSeverityTypeConverter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -13,8 +16,9 @@ public class AlertEntry implements Serializable {
     @Column(name = "ID")
     private Integer id;
 
+    @Convert(converter = AlertSeverityTypeConverter.class)
     @Column(name = "SEVERITY")
-    private Integer severity;
+    private AlertSeverity severity;
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -40,11 +44,11 @@ public class AlertEntry implements Serializable {
         return this;
     }
 
-    public Integer getSeverity() {
+    public AlertSeverity getSeverity() {
         return severity;
     }
 
-    public AlertEntry setSeverity(Integer severity) {
+    public AlertEntry setSeverity(AlertSeverity severity) {
         this.severity = severity;
         return this;
     }
