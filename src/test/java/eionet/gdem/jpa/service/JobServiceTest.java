@@ -65,7 +65,7 @@ public class JobServiceTest {
 
     @Test
     public void testFindById() throws DatabaseException {
-        when(jobRepository.findById(anyInt())).thenReturn(jobEntry);
+        when(jobRepository.findById(anyInt()).get()).thenReturn(jobEntry);
         JobEntry result = jobServiceImpl.findById(1);
         assertThat(result.getJobExecutorName(), is("demoExecutor"));
     }

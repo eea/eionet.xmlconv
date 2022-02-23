@@ -62,7 +62,7 @@ public class WorkerHeartBeatMsgServiceTest {
 
     @Test
     public void testDelete() {
-        doNothing().when(workerHeartBeatMsgRepository).delete(anyInt());
+        doNothing().when(workerHeartBeatMsgRepository).delete(any());
         workerHeartBeatMsgService.delete(1);
         verify(workerHeartBeatMsgService).delete(1);
     }

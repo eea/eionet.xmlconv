@@ -51,7 +51,7 @@ public class PropertiesRepositoryTestIT {
     public void testDelete() {
         PropertiesEntry propertiesEntry = new PropertiesEntry().setId(4).setName("test4").setType(PropertiesEntryType.Long).setValue("200").setDescription("a long value");
         propertiesRepository.save(propertiesEntry);
-        propertiesRepository.delete(4);
+        propertiesRepository.delete(propertiesEntry);
         PropertiesEntry result = propertiesRepository.findByName("test4");
         assertNull(result);
     }

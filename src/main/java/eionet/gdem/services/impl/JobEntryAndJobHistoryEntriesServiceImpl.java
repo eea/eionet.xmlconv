@@ -38,8 +38,15 @@ public class JobEntryAndJobHistoryEntriesServiceImpl implements JobEntryAndJobHi
     }
 
     @Override
-    public List<JobMetadata> retrieveAllJobsWithMetadata() throws SQLException {
-        return jobService.retrieveAllJobsWithMetadata();
+    public List<JobMetadata> getSortedJobsForPage(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc) {
+        //use page and itemsPerPage to get specific jobs
+        List<JobEntry> jobEntries = jobService.getPagedAndSortedEntries(page, itemsPerPage, sortBy, sortDesc);
+        return jobService.getJobsMetadata(jobEntries);
+    }
+
+    @Override
+    public Integer getNumberOfTotalJobs() {
+        return jobService.getNumberOfTotalJobs();
     }
 }
 

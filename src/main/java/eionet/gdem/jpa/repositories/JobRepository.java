@@ -5,16 +5,18 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Repository("jobRepository")
-public interface JobRepository extends JpaRepository<JobEntry, Integer> {
+public interface JobRepository extends JpaRepository<JobEntry, Integer>, PagingAndSortingRepository<JobEntry, Integer> {
 
-    JobEntry findById(Integer id);
+    Optional<JobEntry> findById(Integer id);
 
     List<JobEntry> findByIntSchedulingStatus(InternalSchedulingStatus intSchedulingStatus);
 

@@ -2,22 +2,22 @@ package eionet.gdem.jpa.service;
 
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
-import eionet.gdem.data.scripts.ScriptType;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobRepository;
-import eionet.gdem.qa.IQueryDao;
-import eionet.gdem.qa.XQScript;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
-import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import eionet.gdem.web.spring.workqueue.JobMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -26,6 +26,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service("jobService")
 public class JobServiceImpl implements JobService {
@@ -53,14 +54,19 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobEntry findById(Integer id) throws DatabaseException {
-        JobEntry jobEntry = null;
         try {
-            jobEntry = jobRepository.findById(id);
+            Optional<JobEntry> jobEntry = jobRepository.findById(id);
+            if(jobEntry.isPresent()){
+                return jobEntry.get();
+            }
+            else{
+                LOGGER.info("Could not find entry of job with id " + id);
+                return null;
+            }
         } catch (Exception e) {
             LOGGER.info("Database exception during retrieval of job with id " + id);
             throw new DatabaseException(e);
         }
-        return jobEntry;
     }
 
     @Override
@@ -74,8 +80,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobEntry> findProcessingJobs() {
-        return jobRepository.findProcessingJobs();
+    public Integer getNumberOfTotalJobs() {
+        return Math.toIntExact(jobRepository.count());
     }
 
     @Override
@@ -96,13 +102,30 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobMetadata> retrieveAllJobsWithMetadata() throws SQLException {
+    public List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc) {
+        Pageable pageRequest = null;
+        if(sortDesc){
+            pageRequest = PageRequest.of(page, itemsPerPage, Sort.by(sortBy).descending());
+        }
+        else{
+            pageRequest = PageRequest.of(page, itemsPerPage, Sort.by(sortBy));
+        }
+        Page<JobEntry> pagedPage = jobRepository.findAll(pageRequest);
+        return pagedPage.getContent();
+    }
+
+    @Override
+    public List<JobEntry> findProcessingJobs() {
+        return jobRepository.findProcessingJobs();
+    }
+
+    @Override
+    public List<JobMetadata> getJobsMetadata(List<JobEntry> jobEntries){
         List<JobMetadata> jobsList = new ArrayList<>();
 
-        List<JobEntry> allEntries = jobRepository.findAll();
         ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
 
-        for( JobEntry entry: allEntries){
+        for( JobEntry entry: jobEntries){
             JobMetadata job = new JobMetadata();
             job.setJobId(entry.getId().toString());
             job.setFileName(entry.getSrcFile());

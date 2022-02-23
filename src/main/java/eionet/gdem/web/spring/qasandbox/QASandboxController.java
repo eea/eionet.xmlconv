@@ -61,6 +61,7 @@ import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -544,8 +545,12 @@ public class QASandboxController {
                         throw new XMLConvException("Time exceeded for getting status of job with id " + jobEntry.getId());
                     }
                     Thread.sleep(TIME_INTERVAL_FOR_JOB_STATUS);
-                    jobEntry = jobRepository.findById(jobEntry.getId());
-                    if (jobEntry==null) {
+                    Optional<JobEntry> jobEntryOptional = jobRepository.findById(jobEntry.getId());
+                    if(jobEntryOptional.isPresent()){
+                        jobEntry = jobEntryOptional.get();
+                    }
+                    else{
+                        jobEntry = null;
                         throw new XMLConvException("Error getting data from DB");
                     }
                 }

@@ -72,7 +72,7 @@
       <ed:menuItem action="/validation" title="Validate XML">
         <spring:message code="label.conversion.tab.validation"/>
       </ed:menuItem>
-      <ed:menuItem action="/workqueue" title="QA jobs">
+      <ed:menuItem action="/new/workqueue" title="QA jobs">
         <spring:message code="label.menu.QAJobs"/>
       </ed:menuItem>
       <ed:menuItem action="/scripts" title="QA Scripts">

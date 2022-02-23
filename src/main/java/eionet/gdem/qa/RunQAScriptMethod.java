@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Vector;
 
 /**
@@ -193,8 +194,12 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                                 throw new XMLConvException("Time exceeded for getting status of job with id " + jobEntry.getId());
                             }
                             Thread.sleep(TIME_INTERVAL_FOR_JOB_STATUS);
-                            jobEntry = getJobRepository().findById(jobEntry.getId());
-                            if (jobEntry==null) {
+                            Optional<JobEntry> jobEntryOptional = getJobRepository().findById(jobEntry.getId());
+                            if(jobEntryOptional.isPresent()){
+                                jobEntry = jobEntryOptional.get();
+                            }
+                            else{
+                                jobEntry = null;
                                 throw new XMLConvException("Error getting data from DB");
                             }
                         }

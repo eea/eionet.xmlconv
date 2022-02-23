@@ -60,7 +60,7 @@ public class ScriptRulesServiceTest {
 
     @Test
     public void testDelete() {
-        doNothing().when(scriptRulesRepository).delete(anyInt());
+        doNothing().when(scriptRulesRepository).delete(any());
         scriptRulesService.delete(1);
         verify(scriptRulesService).delete(1);
     }

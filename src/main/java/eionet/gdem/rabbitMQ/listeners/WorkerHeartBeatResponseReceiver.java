@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class WorkerHeartBeatResponseReceiver implements MessageListener {
@@ -46,11 +47,21 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
 
             LOGGER.info("Received heart beat response from worker " + response.getJobExecutorName() + " for job " + response.getJobId() + ". Job status is " + response.getJobStatus());
 
-            WorkerHeartBeatMsgEntry oldEntry =  workerHeartBeatMsgRepository.findOne(response.getId());
+            WorkerHeartBeatMsgEntry oldEntry = null;
+            Optional<WorkerHeartBeatMsgEntry> workerHeartBeatMsgEntryOptional = workerHeartBeatMsgRepository.findById(response.getId());
+            if(workerHeartBeatMsgEntryOptional.isPresent()){
+                oldEntry = workerHeartBeatMsgEntryOptional.get();
+            }
             timer.start();
             while (oldEntry==null) {
                 LOGGER.error("Could not retrieve heart beat message entry with id " + response.getId());
-                oldEntry = workerHeartBeatMsgRepository.findOne(response.getId());
+                workerHeartBeatMsgEntryOptional = workerHeartBeatMsgRepository.findById(response.getId());
+                if(workerHeartBeatMsgEntryOptional.isPresent()){
+                    oldEntry = workerHeartBeatMsgEntryOptional.get();
+                }
+                else{
+                    oldEntry = null;
+                }
                 if (timer.getTime()>TIME_LIMIT) {
                     LOGGER.error("Could not update heart beat message entry with id " + response.getId());
                     return;

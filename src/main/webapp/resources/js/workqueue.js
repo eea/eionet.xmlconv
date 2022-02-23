@@ -6,6 +6,7 @@ var app = new Vue({
             sortBy: "jobId",
             sortDesc: false,
             jobEntries: [],
+            totalJobEntries: 0,
             selected: [],
             expanded: [],
             item: null,
@@ -43,13 +44,15 @@ var app = new Vue({
         //Reading data from API method.
         getWorkqueuePageInfo() {
             this.loading = true;
+            const { sortBy, sortDesc, page, itemsPerPage } = this.options
             axios
                 .get(
-                    "/restapi/workqueueData/getWorkqueuePageInfo"
+                    "/restapi/workqueueData/getWorkqueuePageInfo?page=" + page + "&itemsPerPage=" + itemsPerPage + "&sortBy=" + sortBy + "&sortDesc=" + sortDesc
                 )
                 .then((response) => {
                     this.loading = false;
                     this.jobEntries = response.data.jobMetadataList;
+                    this.totalJobEntries = response.data.totalJobEntries;
                     this.permissions = response.data.workqueuePermissions;
                     this.username = response.data.username;
                     this.selected = [];

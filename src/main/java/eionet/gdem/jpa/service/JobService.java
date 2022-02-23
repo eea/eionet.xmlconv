@@ -28,6 +28,10 @@ public interface JobService {
 
     Integer getRetryCounter(Integer jobId) throws DatabaseException;
 
-    List<JobMetadata> retrieveAllJobsWithMetadata() throws SQLException;
+    List<JobMetadata> getJobsMetadata(List<JobEntry> jobEntries);
+
+    Integer getNumberOfTotalJobs();
+
+    List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc);
 
 }

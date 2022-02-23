@@ -40,7 +40,8 @@ public class WorkqueueRestController {
     }
 
     @GetMapping("/getWorkqueuePageInfo")
-    public WorkqueuePageInfo getWorkqueuePageInfo(HttpSession session) {
+    public WorkqueuePageInfo getWorkqueuePageInfo(HttpSession session, @RequestParam(value = "page") Integer page, @RequestParam(value = "itemsPerPage") Integer itemsPerPage,
+                                                  @RequestParam(value = "sortBy") String sortBy, @RequestParam(value = "sortDesc") Boolean sortDesc) {
         String userName = null;
         if(session.getAttribute("user") != null){
             userName = session.getAttribute("user").toString();
@@ -65,20 +66,15 @@ public class WorkqueueRestController {
         permissions.setWquPrm(wquPrm);
         permissions.setWqvPrm(wqvPrm);
         permissions.setLogvPrm(logvPrm);
-        try {
-            List<JobMetadata> allJobs = jobEntryAndJobHistoryEntriesService.retrieveAllJobsWithMetadata();
-            WorkqueuePageInfo workqueuePageInfo = new WorkqueuePageInfo(allJobs, permissions, userName);
-            return workqueuePageInfo;
-        } catch (SQLException e) {
-            LOGGER.error("Could not retrieve jobs from T_XQJOBS table. Exception message: " + e.getMessage());
-        }
-        return null;
+        List<JobMetadata> jobsForPage = jobEntryAndJobHistoryEntriesService.getSortedJobsForPage(page, itemsPerPage, sortBy, sortDesc);
+        Integer numberOfTotalJobs = jobEntryAndJobHistoryEntriesService.getNumberOfTotalJobs();
+        WorkqueuePageInfo workqueuePageInfo = new WorkqueuePageInfo(jobsForPage, numberOfTotalJobs, permissions, userName);
+        return workqueuePageInfo;
     }
 
     @RequestMapping(value = "restart", method = RequestMethod.POST)
     public String restart(HttpSession session, @RequestBody JobMetadata[] selectedJobs) {
         //check permissions
-
         String user = (String) session.getAttribute("user");
         try {
             if (!SecurityUtil.hasPerm(user, "/" + Constants.ACL_WQ_PATH, "u")) {

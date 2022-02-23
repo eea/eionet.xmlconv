@@ -38,7 +38,7 @@ public class JobRepositoryTestIT {
 
     @Test
     public void testFindById() {
-        JobEntry jobEntry = jobRepository.findById(1);
+        JobEntry jobEntry = jobRepository.findById(1).get();
         assertThat(jobEntry.getId(), is(1));
         assertThat(jobEntry.getUrl(), is("http://test.dev/test.xml"));
         assertThat(jobEntry.getFile(), is("test.xq"));

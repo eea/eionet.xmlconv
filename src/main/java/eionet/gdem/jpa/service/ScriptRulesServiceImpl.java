@@ -34,6 +34,9 @@ public class ScriptRulesServiceImpl implements ScriptRulesService {
 
     @Override
     public void delete(Integer ruleId) {
-        scriptRulesRepository.delete(ruleId);
+        ScriptRulesEntry entryToBeDeleted = scriptRulesRepository.getById(ruleId);
+        if(entryToBeDeleted != null) {
+            scriptRulesRepository.delete(entryToBeDeleted);
+        }
     }
 }
