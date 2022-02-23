@@ -3,7 +3,7 @@ var app = new Vue({
     vuetify: new Vuetify(),
     data() {
         return {
-            sortBy: "severity.id",
+            sortBy: "occurrenceDateMod",
             sortDesc: true,
             dialog: false,
             dialogDelete: false,
@@ -14,7 +14,7 @@ var app = new Vue({
                 { text: "Severity", value: "severity"},
                 { text: "Description", value: "description", sortable: false },
                 { text: "Notification sent to uns", value: "notificationSentToUns", sortable: false },
-                { text: "Occurrence date", value: "occurrenceDateMod", sortable: true },
+                { text: "Occurrence date", value: "occurrenceDateMod" },
                 { text: "Actions", value: "actions", sortable: false },
             ],
             alerts: [],
