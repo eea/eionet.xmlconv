@@ -38,6 +38,10 @@
                             :server-items-length="totalJobEntries"
                             :loading="loading"
                             :expanded.sync="expanded"
+                            :footer-props="{
+                                'items-per-page-options': [10, 25, 50, 75, 100, -1]
+                              }"
+                            :items-per-page="25"
                             show-expand
                             @item-expanded="onExpand"
                             class="elevation-1">

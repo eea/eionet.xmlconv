@@ -52,21 +52,15 @@ public class JobServiceImpl implements JobService {
         }
     }
 
-    @Override
     public JobEntry findById(Integer id) throws DatabaseException {
+        JobEntry jobEntry = null;
         try {
-            Optional<JobEntry> jobEntry = jobRepository.findById(id);
-            if(jobEntry.isPresent()){
-                return jobEntry.get();
-            }
-            else{
-                LOGGER.info("Could not find entry of job with id " + id);
-                return null;
-            }
+            jobEntry = jobRepository.findById(id);
         } catch (Exception e) {
             LOGGER.info("Database exception during retrieval of job with id " + id);
             throw new DatabaseException(e);
         }
+        return jobEntry;
     }
 
     @Override
@@ -101,17 +95,51 @@ public class JobServiceImpl implements JobService {
         return result;
     }
 
+    private String getSortParameter(String sortParameter){
+        String jobEntrySortParameter = null;
+        if (sortParameter.equals("jobId")){
+            jobEntrySortParameter = "id";
+        } else if (sortParameter.equals("url")){
+            jobEntrySortParameter = "url";
+        } else if (sortParameter.equals("script_file")){
+            jobEntrySortParameter = "file";
+        } else if (sortParameter.equals("result_file")){
+            jobEntrySortParameter = "resultFile";
+        } else if (sortParameter.equals("statusName")){
+            jobEntrySortParameter = "nStatus";
+        } else if (sortParameter.equals("timestamp")){
+            jobEntrySortParameter = "timestamp";
+        } else if (sortParameter.equals("instance")){
+            jobEntrySortParameter = "instance";
+        } else if (sortParameter.equals("durationInProgress")){
+            jobEntrySortParameter = "duration";
+        } else if (sortParameter.equals("jobType")){
+            jobEntrySortParameter = "jobType";
+        } else if (sortParameter.equals("jobExecutorName")){
+            jobEntrySortParameter = "jobExecutorName";
+        }
+        return jobEntrySortParameter;
+    }
+
     @Override
     public List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc) {
         Pageable pageRequest = null;
+        //paging is zero based
+        if(page > 0){
+            page--;
+        }
+        String jobEntrySortParameter = getSortParameter(sortBy);
         if(sortDesc){
-            pageRequest = PageRequest.of(page, itemsPerPage, Sort.by(sortBy).descending());
+            pageRequest = new PageRequest(page, itemsPerPage, new Sort(Sort.Direction.DESC, jobEntrySortParameter));
         }
         else{
-            pageRequest = PageRequest.of(page, itemsPerPage, Sort.by(sortBy));
+            pageRequest = new PageRequest(page, itemsPerPage, new Sort(Sort.Direction.ASC, jobEntrySortParameter));
         }
         Page<JobEntry> pagedPage = jobRepository.findAll(pageRequest);
-        return pagedPage.getContent();
+        if(pagedPage != null && !Utils.isNullList(pagedPage.getContent())){
+            return pagedPage.getContent();
+        }
+        return new ArrayList<JobEntry>();
     }
 
     @Override

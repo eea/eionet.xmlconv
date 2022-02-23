@@ -1,54 +1,8 @@
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    padding: 12px 16px;
-    z-index: 1;
+.v-data-table-header__icon {
+    opacity: 0.5 !important;
+    color: #ffffff !important;
 }
 
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.dropdown-list {
-    text-align: left;
-}
-
-.dropdown-list ul {
-    margin: 10px 0;
-    max-height: 200px;
-    overflow: hidden;
-    white-space: nowrap;
-    line-height: 1.2em;
-}
-.dropdown-list ul input[type="checkbox"] {
-    position: relative;
-    top: 2px;
-}
-
-.fa-filter {
-    color: #ffffff;
-}
-
-.fa-filter::after {
-    color: #ffffff;
-}
-
-.fa-filter::before {
-    color: #ffffff;
-}
-
-.dataTables_filter{
-    display: none;
-}
-
-#workqueue_table{
-    width: 1250px;
-    table-layout: fixed;
-}
-
-#selectableJobId{
-    cursor:pointer;
+.sortable.active{
+    color: #000000 !important;
 }

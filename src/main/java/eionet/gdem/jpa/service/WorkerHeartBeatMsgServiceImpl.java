@@ -42,9 +42,6 @@ public class WorkerHeartBeatMsgServiceImpl implements WorkerHeartBeatMsgService 
     @Transactional
     @Override
     public void delete(Integer id) {
-        WorkerHeartBeatMsgEntry entryToBeDeleted = workerHeartBeatMsgRepository.getById(id);
-        if(entryToBeDeleted != null){
-            workerHeartBeatMsgRepository.delete(entryToBeDeleted);
-        }
+        workerHeartBeatMsgRepository.delete(id);
     }
 }

@@ -5,18 +5,16 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 @Repository("jobRepository")
-public interface JobRepository extends JpaRepository<JobEntry, Integer>, PagingAndSortingRepository<JobEntry, Integer> {
+public interface JobRepository extends JpaRepository<JobEntry, Integer> {
 
-    Optional<JobEntry> findById(Integer id);
+    JobEntry findById(Integer id);
 
     List<JobEntry> findByIntSchedulingStatus(InternalSchedulingStatus intSchedulingStatus);
 
@@ -32,4 +30,4 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer>, PagingA
     @Query(value = "SELECT * FROM T_XQJOBS WHERE N_STATUS=2 AND INTERNAL_STATUS_ID=3", nativeQuery = true)
     List<JobEntry> findProcessingJobs();
 
-   }
+}

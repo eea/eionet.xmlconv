@@ -26,7 +26,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -62,9 +61,9 @@ public class WorkerHeartBeatResponseReceiverTest {
         Message message = convertObjectToByteArray(response);
 
         WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry = new WorkerHeartBeatMsgEntry(response.getJobId(), response.getJobExecutorName(), new Timestamp(new Date().getTime()));
-        when(workerHeartBeatMsgRepository.findById(anyInt())).thenReturn(Optional.of(workerHeartBeatMsgEntry));
+        when(workerHeartBeatMsgRepository.findOne(anyInt())).thenReturn(workerHeartBeatMsgEntry);
         receiver.onMessage(message);
-        verify(workerHeartBeatMsgRepository).findById(anyInt());
+        verify(workerHeartBeatMsgRepository).findOne(anyInt());
     }
 
     private Message convertObjectToByteArray(WorkerHeartBeatMessage response) throws JsonProcessingException {
@@ -76,23 +75,4 @@ public class WorkerHeartBeatResponseReceiverTest {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -74,7 +74,7 @@ public class PropertiesServiceTest {
 
     @Test
     public void testDelete() {
-        doNothing().when(propertiesRepository).delete(any());
+        doNothing().when(propertiesRepository).delete(anyInt());
         propertiesService.delete(1);
         verify(propertiesService).delete(1);
     }

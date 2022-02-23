@@ -73,10 +73,7 @@ public class PropertiesServiceImpl implements PropertiesService {
 
     @Override
     public void delete(Integer propertyId) {
-        PropertiesEntry entryToBeDeleted = propertiesRepository.getById(propertyId);
-        if(entryToBeDeleted != null) {
-            propertiesRepository.delete(entryToBeDeleted);
-        }
+        propertiesRepository.delete(propertyId);
     }
 
 

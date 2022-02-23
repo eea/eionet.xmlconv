@@ -61,7 +61,6 @@ import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 /**
  *
@@ -394,7 +393,7 @@ public class QASandboxController {
         String rawAuthenticationToken = request.getHeader(this.tokenHeader);
         if (!Utils.isNullStr(rawAuthenticationToken)) {
 
-        try {
+            try {
                 String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
                 if (parsedAuthenticationToken != null) {
                     String username = verifier.verify(parsedAuthenticationToken);
@@ -545,12 +544,8 @@ public class QASandboxController {
                         throw new XMLConvException("Time exceeded for getting status of job with id " + jobEntry.getId());
                     }
                     Thread.sleep(TIME_INTERVAL_FOR_JOB_STATUS);
-                    Optional<JobEntry> jobEntryOptional = jobRepository.findById(jobEntry.getId());
-                    if(jobEntryOptional.isPresent()){
-                        jobEntry = jobEntryOptional.get();
-                    }
-                    else{
-                        jobEntry = null;
+                    jobEntry = jobRepository.findById(jobEntry.getId());
+                    if (jobEntry==null) {
                         throw new XMLConvException("Error getting data from DB");
                     }
                 }
@@ -618,20 +613,20 @@ public class QASandboxController {
 
     @PostMapping(params = {"manualUrl"})
     public String manualUrl(@ModelAttribute("form") QASandboxForm cForm, Model model,
-                           HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+                            HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Schema schema = cForm.getSchema();
         schema.setCrfiles(null);
         return "/qaSandbox/view";
     }
-        /**
-         * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
-         * in the session, then create it
-         *
-         * @param httpServletRequest Request
-         * @param schema             Schema
-         * @return True if schema exists.
-         * @throws DCMException If an error occurs.
-         */
+    /**
+     * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
+     * in the session, then create it
+     *
+     * @param httpServletRequest Request
+     * @param schema             Schema
+     * @return True if schema exists.
+     * @throws DCMException If an error occurs.
+     */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
         QAScriptListHolder schemasInSession = QAScriptListLoader.getList(httpServletRequest);
         boolean exists = schemasInSession.getQascripts().stream().anyMatch(o -> o.getSchema().equals(schema));
