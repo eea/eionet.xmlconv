@@ -34,7 +34,7 @@ var app = new Vue({
     watch: {
         options: {
             handler() {
-                this.getWorkqueuePageInfo();
+                this.getWorkqueuePageInfo("");
             },
         },
         deep: true
@@ -42,12 +42,12 @@ var app = new Vue({
     //    this one will populate new data set when user changes current page.
     methods: {
         //Reading data from API method.
-        getWorkqueuePageInfo() {
+        getWorkqueuePageInfo(keyword) {
             this.loading = true;
             const { sortBy, sortDesc, page, itemsPerPage } = this.options
             axios
                 .get(
-                    "/restapi/workqueueData/getWorkqueuePageInfo?page=" + page + "&itemsPerPage=" + itemsPerPage + "&sortBy=" + sortBy + "&sortDesc=" + sortDesc
+                    "/restapi/workqueueData/getWorkqueuePageInfo?page=" + page + "&itemsPerPage=" + itemsPerPage + "&sortBy=" + sortBy + "&sortDesc=" + sortDesc+"&keyword=" + keyword
                 )
                 .then((response) => {
                     this.loading = false;
@@ -68,7 +68,7 @@ var app = new Vue({
                 axios.post("/restapi/workqueueData/restart", this.selected)
                     .then((response) => {
                         this.infoMessage = response.data;
-                        this.getWorkqueuePageInfo();
+                        this.getWorkqueuePageInfo("");
                     });
             }
         },
@@ -82,7 +82,7 @@ var app = new Vue({
                 axios.post("/restapi/workqueueData/delete", this.selected)
                     .then((response) => {
                         this.infoMessage = response.data;
-                        this.getWorkqueuePageInfo();
+                        this.getWorkqueuePageInfo("");
                     });
             }
         },
@@ -109,10 +109,13 @@ var app = new Vue({
                 }
 
             }
+        },
+        search() {
+            this.getWorkqueuePageInfo(this.search);
         }
     },
     //this will trigger in the onReady State
     mounted() {
-        this.getWorkqueuePageInfo();
+        this.getWorkqueuePageInfo("");
     }
 })

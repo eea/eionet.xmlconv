@@ -32,6 +32,6 @@ public interface JobService {
 
     Integer getNumberOfTotalJobs();
 
-    List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc);
+    List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String keyword);
 
 }

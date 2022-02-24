@@ -41,7 +41,8 @@ public class WorkqueueRestController {
 
     @GetMapping("/getWorkqueuePageInfo")
     public WorkqueuePageInfo getWorkqueuePageInfo(HttpSession session, @RequestParam(value = "page") Integer page, @RequestParam(value = "itemsPerPage") Integer itemsPerPage,
-                                                  @RequestParam(value = "sortBy") String sortBy, @RequestParam(value = "sortDesc") Boolean sortDesc) {
+                                                  @RequestParam(value = "sortBy") String sortBy, @RequestParam(value = "sortDesc") Boolean sortDesc,
+                                                  @RequestParam(value = "keyword") String keyword) {
         String userName = null;
         if(session.getAttribute("user") != null){
             userName = session.getAttribute("user").toString();
@@ -66,8 +67,12 @@ public class WorkqueueRestController {
         permissions.setWquPrm(wquPrm);
         permissions.setWqvPrm(wqvPrm);
         permissions.setLogvPrm(logvPrm);
-        List<JobMetadata> jobsForPage = jobEntryAndJobHistoryEntriesService.getSortedJobsForPage(page, itemsPerPage, sortBy, sortDesc);
         Integer numberOfTotalJobs = jobEntryAndJobHistoryEntriesService.getNumberOfTotalJobs();
+        if(itemsPerPage < 0){
+            //show all results
+            itemsPerPage = numberOfTotalJobs;
+        }
+        List<JobMetadata> jobsForPage = jobEntryAndJobHistoryEntriesService.getSortedJobsForPage(page, itemsPerPage, sortBy, sortDesc, keyword);
         WorkqueuePageInfo workqueuePageInfo = new WorkqueuePageInfo(jobsForPage, numberOfTotalJobs, permissions, userName);
         return workqueuePageInfo;
     }

@@ -32,14 +32,14 @@
                             show-select
                             :headers="headers"
                             :items="jobEntries"
+                            :server-items-length="totalJobEntries"
                             :sort-by.sync="sortBy"
                             :search="search"
                             :options.sync="options"
-                            :server-items-length="totalJobEntries"
                             :loading="loading"
                             :expanded.sync="expanded"
                             :footer-props="{
-                                'items-per-page-options': [10, 25, 50, 75, 100, -1]
+                                'items-per-page-options': [5, 10, 25, 50, 75, 100, -1]
                               }"
                             :items-per-page="25"
                             show-expand

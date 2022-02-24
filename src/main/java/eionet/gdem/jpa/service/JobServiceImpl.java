@@ -122,7 +122,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc) {
+    public List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String keyword) {
         Pageable pageRequest = null;
         //paging is zero based
         if(page > 0){
@@ -135,7 +135,14 @@ public class JobServiceImpl implements JobService {
         else{
             pageRequest = new PageRequest(page, itemsPerPage, new Sort(Sort.Direction.ASC, jobEntrySortParameter));
         }
-        Page<JobEntry> pagedPage = jobRepository.findAll(pageRequest);
+        Page<JobEntry> pagedPage = null;
+        if(Utils.isNullStr(keyword)){
+            pagedPage = jobRepository.findAll(pageRequest);
+        }
+        else{
+            pagedPage = null;
+        }
+
         if(pagedPage != null && !Utils.isNullList(pagedPage.getContent())){
             return pagedPage.getContent();
         }
