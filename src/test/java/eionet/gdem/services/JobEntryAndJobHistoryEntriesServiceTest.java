@@ -49,13 +49,17 @@ public class JobEntryAndJobHistoryEntriesServiceTest {
     @Test
     public void testGetJobEntryAndJobHistoryEntriesOfJob() throws DatabaseException {
         JobEntry jobEntry = new JobEntry().setId(4).setTimestamp(new Timestamp(new Date().getTime()));
-        JobHistoryEntry jobHistoryEntry = new JobHistoryEntry();
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+        JobHistoryEntry jobHistoryEntry = new JobHistoryEntry().setFullStatusName("READY").setDateAdded(timestamp).setJobExecutorName("testExecutor");
         List<JobHistoryEntry> jobHistoryEntries = new ArrayList<>();
         jobHistoryEntries.add(jobHistoryEntry);
         when(jobService.findById(anyInt())).thenReturn(jobEntry);
         when(jobHistoryService.getJobHistoryEntriesOfJob(anyString())).thenReturn(jobHistoryEntries);
-        List<JobHistoryMetadata> jobHistoryMetadataList = jobEntryAndJobHistoryEntriesServiceImpl.getJobHistoryMetadata("1");
+        List<JobHistoryMetadata> jobHistoryMetadataList = jobEntryAndJobHistoryEntriesServiceImpl.getJobHistoryMetadata("4");
         assertThat(jobHistoryMetadataList.size(), is(1));
+        assertThat(jobHistoryMetadataList.get(0).getStatus_name(), is("READY"));
+        assertThat(jobHistoryMetadataList.get(0).getDate_added(), is(timestamp.toString()));
+        assertThat(jobHistoryMetadataList.get(0).getJob_executor_name(), is("testExecutor"));
     }
 }
 
