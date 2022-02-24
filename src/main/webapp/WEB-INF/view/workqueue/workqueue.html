@@ -57,9 +57,10 @@
                         </template>
                         <template #item.result_file="{ value }">
                             <div v-if="value">
-                                <a target="_blank" :href="value">
+                                <a v-if="username" target="_blank" :href="value">
                                     Job Result
                                 </a>
+                                <span v-else="!username">Job Result</span>
                             </div>
                             <div v-else>
                                 *** Not ready ***
