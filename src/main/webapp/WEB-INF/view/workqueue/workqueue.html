@@ -15,16 +15,45 @@
                     <p>{{ infoMessage }}</p>
                 </div>
                 <v-card>
-                    <v-card-title>
-                        Search
-                        <v-spacer></v-spacer>
-                        <v-text-field
-                                v-model="search"F
-                                append-icon="mdi-magnify"
-                                single-line
-                                hide-details
-                        ></v-text-field>
-                    </v-card-title>
+                    <v-expansion-panels focusable>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>Search filters</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <form>
+                                    <v-container
+                                            class="px-0"
+                                            fluid
+                                    >
+                                        <v-radio-group
+                                                v-model="radioGroup"
+                                                mandatory>
+                                            <v-radio
+                                                v-for="item in headers"
+                                                v-if="item.value != 'timestamp' && item.value != 'durationInProgress'"
+                                                :key="item.value"
+                                                :label="item.text"
+                                                :value="item.value" >
+                                            </v-radio>
+                                        </v-radio-group>
+                                        <v-text-field
+                                                v-model="keyword"
+                                                label="Keyword"
+                                                required
+                                        ></v-text-field>
+                                        <v-btn
+                                               class="mr-2"
+                                               @click="search"
+                                        >
+                                            Search
+                                        </v-btn>
+                                    </v-container>
+                                </form>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-card>
+                <br>
+                <v-card>
                     <a href="#" @click="csvExport" class="mb-2 ml-2">Export to CSV</a>
                     <v-data-table
                             v-model="selected"
@@ -96,16 +125,16 @@
                 </v-card>
                 <div class="pt-2">
                     <v-btn v-if="permissions && (permissions.wqdPrm || permissions.wquPrm)"
-                            color="primary"
-                            class="mr-2"
-                            @click="deleteJobs"
+                           color="primary"
+                           class="mr-2"
+                           @click="deleteJobs"
                     >
                         Delete
                     </v-btn>
                     <v-btn v-if="permissions && permissions.wquPrm"
-                            color="primary"
-                            class="mr-2"
-                            @click="restartJobs"
+                           color="primary"
+                           class="mr-2"
+                           @click="restartJobs"
                     >
                         Restart
                     </v-btn>

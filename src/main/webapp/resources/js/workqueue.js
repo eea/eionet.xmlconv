@@ -3,6 +3,7 @@ var app = new Vue({
     vuetify: new Vuetify(),
     data() {
         return {
+            radioGroup: 1,
             sortBy: "jobId",
             sortDesc: false,
             jobEntries: [],
@@ -12,7 +13,8 @@ var app = new Vue({
             item: null,
             infoMessage : null,
             options: {},
-            search: '',
+            keyword: '',
+            searchedKeyword: '',
             permissions: null,
             username: null,
             loading: true,
@@ -34,7 +36,8 @@ var app = new Vue({
     watch: {
         options: {
             handler() {
-                this.getWorkqueuePageInfo("");
+                const { sortBy, sortDesc, page, itemsPerPage } = this.options
+                this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, this.radioGroup, this.searchedKeyword);
             },
         },
         deep: true
@@ -42,12 +45,11 @@ var app = new Vue({
     //    this one will populate new data set when user changes current page.
     methods: {
         //Reading data from API method.
-        getWorkqueuePageInfo(keyword) {
+        getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, searchParameter, searchKeyword) {
             this.loading = true;
-            const { sortBy, sortDesc, page, itemsPerPage } = this.options
             axios
                 .get(
-                    "/restapi/workqueueData/getWorkqueuePageInfo?page=" + page + "&itemsPerPage=" + itemsPerPage + "&sortBy=" + sortBy + "&sortDesc=" + sortDesc+"&keyword=" + keyword
+                    "/restapi/workqueueData/getWorkqueuePageInfo?page=" + page + "&itemsPerPage=" + itemsPerPage + "&sortBy=" + sortBy + "&sortDesc=" + sortDesc +"&searchParam=" + searchParameter +"&keyword=" + searchKeyword
                 )
                 .then((response) => {
                     this.loading = false;
@@ -68,7 +70,11 @@ var app = new Vue({
                 axios.post("/restapi/workqueueData/restart", this.selected)
                     .then((response) => {
                         this.infoMessage = response.data;
-                        this.getWorkqueuePageInfo("");
+                        this.sortBy = "jobId";
+                        this.sortDesc = false;
+                        this.page = 1;
+                        this.itemsPerPage = 25;
+                        this.getWorkqueuePageInfo(this.sortBy, this.sortDesc, this.page, this.itemsPerPage, "", "");
                     });
             }
         },
@@ -82,7 +88,11 @@ var app = new Vue({
                 axios.post("/restapi/workqueueData/delete", this.selected)
                     .then((response) => {
                         this.infoMessage = response.data;
-                        this.getWorkqueuePageInfo("");
+                        this.sortBy = "jobId";
+                        this.sortDesc = false;
+                        this.page = 1;
+                        this.itemsPerPage = 25;
+                        this.getWorkqueuePageInfo(this.sortBy, this.sortDesc, this.page, this.itemsPerPage, "", "");
                     });
             }
         },
@@ -111,11 +121,17 @@ var app = new Vue({
             }
         },
         search() {
-            this.getWorkqueuePageInfo(this.search);
+            this.searchedKeyword = this.keyword;
+            this.sortBy = "jobId";
+            this.sortDesc = false;
+            this.page = 1;
+            this.itemsPerPage = 25;
+            this.getWorkqueuePageInfo(this.sortBy, this.sortDesc, this.page, this.itemsPerPage, this.radioGroup, this.searchedKeyword);
         }
     },
     //this will trigger in the onReady State
     mounted() {
-        this.getWorkqueuePageInfo("");
+        const { sortBy, sortDesc, page, itemsPerPage } = this.options
+        this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "");
     }
 })

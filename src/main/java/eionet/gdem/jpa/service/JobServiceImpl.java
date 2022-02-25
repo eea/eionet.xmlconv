@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service("jobService")
 public class JobServiceImpl implements JobService {
@@ -121,7 +119,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String keyword) {
+    public List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword) {
         Pageable pageRequest = null;
         //paging is zero based
         if(page > 0){
@@ -135,17 +133,82 @@ public class JobServiceImpl implements JobService {
             pageRequest = new PageRequest(page, itemsPerPage, new Sort(Sort.Direction.ASC, jobEntrySortParameter));
         }
         Page<JobEntry> pagedPage = null;
-        if(Utils.isNullStr(keyword)){
+        if(Utils.isNullStr(searchParam) || Utils.isNullStr(keyword)){
             pagedPage = jobRepository.findAll(pageRequest);
         }
         else{
-            pagedPage = null;
+            pagedPage = getPagedEntriesWithKeyword(pageRequest, searchParam, keyword);
         }
 
         if(pagedPage != null && !Utils.isNullList(pagedPage.getContent())){
             return pagedPage.getContent();
         }
         return new ArrayList<JobEntry>();
+    }
+
+    private Page<JobEntry> getPagedEntriesWithKeyword(Pageable pageRequest, String searchParam, String keyword){
+        Page<JobEntry> pagedPage = null;
+        LOGGER.info("Searching in T_XQJOBS table for keyword " + keyword + " for parameter " + searchParam);
+        if (searchParam.equals("jobId")){
+            try{
+                int number = Integer.parseInt(keyword);
+                pagedPage = jobRepository.findById(number, pageRequest);
+            }
+            catch (NumberFormatException ex){
+                LOGGER.error("Could not transform keyword " + keyword + " to integer. Exception message: " + ex.getMessage());
+            }
+        } else if (searchParam.equals("url")){
+            pagedPage = jobRepository.findByUrlContaining(keyword, pageRequest);
+        } else if (searchParam.equals("script_file")){
+            pagedPage = jobRepository.findByFileContaining(keyword, pageRequest);
+        } else if (searchParam.equals("result_file")){
+            if("*** Not ready ***".contains(keyword)){
+                Set<Integer> statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_RECEIVED, Constants.XQ_DOWNLOADING_SRC, Constants.XQ_PROCESSING,
+                        Constants.XQ_INTERRUPTED, Constants.CANCELLED_BY_USER, Constants.DELETED));
+                pagedPage = jobRepository.findByNStatusIn(statuses, pageRequest);
+            }
+            else{
+                pagedPage = jobRepository.findByResultFileContaining(keyword, pageRequest);
+            }
+        }
+        else if (searchParam.equals("statusName")){
+            Integer status = -1;
+            if("JOB RECEIVED".contains(keyword)){
+                status = Constants.XQ_RECEIVED;
+            }
+            else if("DOWNLOADING SOURCE".contains(keyword)){
+                status = Constants.XQ_DOWNLOADING_SRC;
+            }
+            else if("PROCESSING".contains(keyword)){
+                status = Constants.XQ_PROCESSING;
+            }
+            else if("READY".contains(keyword)){
+                status = Constants.XQ_READY;
+            }
+            else if("FATAL ERROR".contains(keyword)){
+                status = Constants.XQ_FATAL_ERR;
+            }
+            else if("RECOVERABLE ERROR".contains(keyword)){
+                status = Constants.XQ_LIGHT_ERR;
+            }
+            else if("INTERRUPTED".contains(keyword)){
+                status = Constants.XQ_INTERRUPTED;
+            }
+            else if("CANCELLED BY USER".contains(keyword)){
+                status = Constants.CANCELLED_BY_USER;
+            }
+            else if("DELETED".contains(keyword)){
+                status = Constants.DELETED;
+            }
+            pagedPage = jobRepository.findByNStatus(status, pageRequest);
+        } else if (searchParam.equals("instance")){
+            pagedPage = jobRepository.findByInstanceContaining(keyword, pageRequest);
+        }  else if (searchParam.equals("jobType")){
+            pagedPage = jobRepository.findByJobTypeContaining(keyword, pageRequest);
+        } else if (searchParam.equals("jobExecutorName")){
+            pagedPage = jobRepository.findByJobExecutorNameContaining(keyword, pageRequest);
+        }
+        return pagedPage;
     }
 
     @Override
@@ -162,7 +225,7 @@ public class JobServiceImpl implements JobService {
         for( JobEntry entry: jobEntries){
             JobMetadata job = new JobMetadata();
             job.setJobId(entry.getId().toString());
-            job.setFileName(entry.getSrcFile());
+            job.setFileName(entry.getFile());
             job.setScript_file(entry.getFile().substring(entry.getFile().lastIndexOf(File.separatorChar) + 1));
             job.setStatus(entry.getnStatus());
             job.setTimestamp(entry.getTimestamp().toString());
