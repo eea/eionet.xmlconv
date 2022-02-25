@@ -17,6 +17,7 @@
     border-left: 1px solid #CFE3E4;
     border-right: 1px solid #CFE3E4;
     box-sizing: border-box;
+    max-width: 120em !important;
 }
 
 #workarea {
@@ -54,6 +55,7 @@
     padding: 15px 20px;
     border-left: 1px solid #cedc32;
     border-right: 1px solid #cedc32;
+    max-width: 120em !important;
 }
 
 #pagefoot p {
