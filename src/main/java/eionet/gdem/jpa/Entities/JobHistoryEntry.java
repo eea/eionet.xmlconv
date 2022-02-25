@@ -111,6 +111,30 @@ public class JobHistoryEntry implements Serializable {
         return dateAdded;
     }
 
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public JobHistoryEntry setDateAdded(Timestamp dateAdded) {
+        this.dateAdded = dateAdded;
+        return this;
+    }
+
+    public JobHistoryEntry setXqFile(String xqFile) {
+        this.xqFile = xqFile;
+        return this;
+    }
+
+    public JobHistoryEntry setResultFile(String resultFile) {
+        this.resultFile = resultFile;
+        return this;
+    }
+
+    public JobHistoryEntry setXqType(String xqType) {
+        this.xqType = xqType;
+        return this;
+    }
+
     public String getUrl() {
         return url;
     }

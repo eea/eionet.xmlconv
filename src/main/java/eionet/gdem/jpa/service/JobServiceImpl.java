@@ -26,7 +26,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service("jobService")
 public class JobServiceImpl implements JobService {
@@ -178,7 +177,7 @@ public class JobServiceImpl implements JobService {
                 job.setResult_file(null);
             }
             else{
-                job.setResult_file(entry.getResultFile());
+                job.setResult_file("/tmp/" + entry.getResultFile().substring(entry.getResultFile().lastIndexOf(File.separatorChar) + 1));
             }
             if(entry.getFmeJobId() != null){
                 job.setFme_job_url(Properties.FME_JOB_URL + entry.getFmeJobId().toString());
