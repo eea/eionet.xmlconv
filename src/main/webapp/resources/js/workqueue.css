@@ -6,3 +6,9 @@
 .sortable.active{
     color: #000000 !important;
 }
+
+.v-data-table__wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    height: 600px;
+}
