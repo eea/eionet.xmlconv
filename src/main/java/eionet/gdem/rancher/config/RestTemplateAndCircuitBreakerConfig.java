@@ -18,7 +18,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class TemplateConfig {
+public class RestTemplateAndCircuitBreakerConfig {
 
     /**
      * time in seconds, corresponds to 2 minutes

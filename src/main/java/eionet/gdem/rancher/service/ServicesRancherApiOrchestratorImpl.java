@@ -1,7 +1,7 @@
 package eionet.gdem.rancher.service;
 
 import eionet.gdem.Properties;
-import eionet.gdem.rancher.config.TemplateConfig;
+import eionet.gdem.rancher.config.RestTemplateAndCircuitBreakerConfig;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.exception.RancherApiTimoutException;
 import eionet.gdem.rancher.model.RancherApiNewServiceRequestBody;
@@ -50,7 +50,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
 
     @Override
     public ServiceApiResponse getServiceInfo(String serviceId) throws RancherApiException {
-        HttpEntity<ServiceApiResponse> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+        HttpEntity<ServiceApiResponse> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.GET, entity, ServiceApiResponse.class);
@@ -63,7 +63,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
 
     @Override
     public synchronized ServiceApiResponse scaleUpOrDownContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException {
-        HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, TemplateConfig.getHeaders());
+        HttpEntity<ServiceApiRequestBody> entity = new HttpEntity<>(serviceApiRequestBody, RestTemplateAndCircuitBreakerConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         StopWatch timer = new StopWatch();
         try {
@@ -93,7 +93,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     @Override
     public ServiceApiResponse createService(String serviceName) throws RancherApiException {
         RancherApiNewServiceRequestBody rancherApiNewServiceRequestBody = rancherApiNewServiceRequestBodyCreator.buildBody(serviceName, Properties.rancherJobExecutorStackId);
-        HttpEntity<RancherApiNewServiceRequestBody> entity = new HttpEntity<>(rancherApiNewServiceRequestBody, TemplateConfig.getHeaders());
+        HttpEntity<RancherApiNewServiceRequestBody> entity = new HttpEntity<>(rancherApiNewServiceRequestBody, RestTemplateAndCircuitBreakerConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl, HttpMethod.POST, entity, ServiceApiResponse.class);
@@ -106,7 +106,7 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
 
     @Override
     public ServiceApiResponse deleteService(String serviceId) throws RancherApiException {
-        HttpEntity<ServiceApiResponse> entity = new HttpEntity<>(TemplateConfig.getHeaders());
+        HttpEntity<ServiceApiResponse> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerConfig.getHeaders());
         ResponseEntity<ServiceApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + serviceId, HttpMethod.DELETE, entity, ServiceApiResponse.class);
