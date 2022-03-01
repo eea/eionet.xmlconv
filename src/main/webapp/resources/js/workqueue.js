@@ -5,7 +5,7 @@ var app = new Vue({
         return {
             radioGroup: 1,
             sortBy: ["jobId"],
-            sortDesc: [false],
+            sortDesc: [true],
             jobEntries: [],
             totalJobEntries: 0,
             selected: [],
@@ -71,7 +71,7 @@ var app = new Vue({
                     .then((response) => {
                         this.infoMessage = response.data;
                         this.options.sortBy = ["jobId"];
-                        this.options.sortDesc = [false];
+                        this.options.sortDesc = [true];
                         this.options.page = 1;
                         this.options.itemsPerPage = 25;
                         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
@@ -90,7 +90,7 @@ var app = new Vue({
                     .then((response) => {
                         this.infoMessage = response.data;
                         this.options.sortBy = ["jobId"];
-                        this.options.sortDesc = [false];
+                        this.options.sortDesc = [true];
                         this.options.page = 1;
                         this.options.itemsPerPage = 25;
                         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
@@ -125,7 +125,7 @@ var app = new Vue({
         search() {
             this.searchedKeyword = this.keyword;
             this.options.sortBy = ["jobId"];
-            this.options.sortDesc = [false];
+            this.options.sortDesc = [true];
             this.options.page = 1;
             this.options.itemsPerPage = 25;
             const { sortBy, sortDesc, page, itemsPerPage } = this.options;
