@@ -7,8 +7,10 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.services.GDEMServices;
+import eionet.gdem.utils.StatusUtils;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
+import eionet.gdem.web.spring.workqueue.EntriesForPageObject;
 import eionet.gdem.web.spring.workqueue.JobMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,12 +121,26 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobEntry> getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword) {
+    public EntriesForPageObject getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword) {
+        EntriesForPageObject entriesForPageObject = new EntriesForPageObject();
         Pageable pageRequest = null;
         //paging is zero based
         if(page > 0){
             page--;
         }
+        Integer totalNumberOfEntries = 0;
+        if(Utils.isNullStr(searchParam) || Utils.isNullStr(keyword)){
+            totalNumberOfEntries = getNumberOfTotalJobs();
+        }
+        else{
+            totalNumberOfEntries = getTotalNumberOfSearchedEntries(searchParam, keyword);
+        }
+
+        if(itemsPerPage < 0){
+            //show all results
+            itemsPerPage = totalNumberOfEntries;
+        }
+
         String jobEntrySortParameter = getSortParameter(sortBy);
         if(sortDesc){
             pageRequest = new PageRequest(page, itemsPerPage, new Sort(Sort.Direction.DESC, jobEntrySortParameter));
@@ -139,11 +155,56 @@ public class JobServiceImpl implements JobService {
         else{
             pagedPage = getPagedEntriesWithKeyword(pageRequest, searchParam, keyword);
         }
+        entriesForPageObject.setTotalNumberOfJobEntries(totalNumberOfEntries);
 
         if(pagedPage != null && !Utils.isNullList(pagedPage.getContent())){
-            return pagedPage.getContent();
+            entriesForPageObject.setJobEntriesForPage(pagedPage.getContent());
         }
-        return new ArrayList<JobEntry>();
+        else{
+            entriesForPageObject.setJobEntriesForPage(new ArrayList<JobEntry>());
+        }
+            return entriesForPageObject;
+    }
+
+    private Integer getTotalNumberOfSearchedEntries(String searchParam, String keyword){
+        Long totalNumberOfEntries = 0L;
+        LOGGER.info("Searching in T_XQJOBS table for total number of entries for keyword " + keyword + " and parameter " + searchParam);
+        if (searchParam.equals("jobId")){
+            try{
+                int number = Integer.parseInt(keyword);
+                totalNumberOfEntries = jobRepository.countById(number);
+            }
+            catch (NumberFormatException ex){
+                LOGGER.error("Could not transform keyword " + keyword + " to integer. Exception message: " + ex.getMessage());
+            }
+        } else if (searchParam.equals("url")){
+            totalNumberOfEntries = jobRepository.countByUrlContaining(keyword);
+        } else if (searchParam.equals("script_file")){
+            totalNumberOfEntries = jobRepository.countByFileContaining(keyword);
+        } else if (searchParam.equals("result_file")){
+            Set<Integer> statuses;
+            if ("*** Not ready ***".contains(keyword)){
+                statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_RECEIVED, Constants.XQ_DOWNLOADING_SRC, Constants.XQ_PROCESSING,
+                        Constants.XQ_INTERRUPTED, Constants.CANCELLED_BY_USER, Constants.DELETED));
+                totalNumberOfEntries = jobRepository.countByNStatusIn(statuses);
+            }
+            else if("Job Result".contains(keyword) ){
+                statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_READY, Constants.XQ_FATAL_ERR, Constants.XQ_LIGHT_ERR));
+                totalNumberOfEntries = jobRepository.countByNStatusIn(statuses);
+            }
+        }
+        else if (searchParam.equals("statusName")){
+            Integer status = StatusUtils.getNumberOfStatusBasedOnContainedString(keyword);
+            totalNumberOfEntries = jobRepository.countByNStatus(status);
+        } else if (searchParam.equals("instance")){
+            totalNumberOfEntries = jobRepository.countByInstanceContaining(keyword);
+        }  else if (searchParam.equals("jobType")){
+            totalNumberOfEntries = jobRepository.countByJobTypeContaining(keyword);
+        } else if (searchParam.equals("jobExecutorName")){
+            totalNumberOfEntries = jobRepository.countByJobExecutorNameContaining(keyword);
+        }
+        LOGGER.info("For keyword " + keyword + " and parameter " + searchParam + " there are " + totalNumberOfEntries + " entries in the database.");
+        return Math.toIntExact(totalNumberOfEntries);
     }
 
     private Page<JobEntry> getPagedEntriesWithKeyword(Pageable pageRequest, String searchParam, String keyword){
@@ -162,44 +223,19 @@ public class JobServiceImpl implements JobService {
         } else if (searchParam.equals("script_file")){
             pagedPage = jobRepository.findByFileContaining(keyword, pageRequest);
         } else if (searchParam.equals("result_file")){
-            if("*** Not ready ***".contains(keyword)){
-                Set<Integer> statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_RECEIVED, Constants.XQ_DOWNLOADING_SRC, Constants.XQ_PROCESSING,
+            Set<Integer> statuses;
+            if ("*** Not ready ***".contains(keyword)){
+                statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_RECEIVED, Constants.XQ_DOWNLOADING_SRC, Constants.XQ_PROCESSING,
                         Constants.XQ_INTERRUPTED, Constants.CANCELLED_BY_USER, Constants.DELETED));
                 pagedPage = jobRepository.findByNStatusIn(statuses, pageRequest);
             }
-            else{
-                pagedPage = jobRepository.findByResultFileContaining(keyword, pageRequest);
+            else if("Job Result".contains(keyword) ){
+                statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_READY, Constants.XQ_FATAL_ERR, Constants.XQ_LIGHT_ERR));
+                pagedPage = jobRepository.findByNStatusIn(statuses, pageRequest);
             }
         }
         else if (searchParam.equals("statusName")){
-            Integer status = -1;
-            if("JOB RECEIVED".contains(keyword)){
-                status = Constants.XQ_RECEIVED;
-            }
-            else if("DOWNLOADING SOURCE".contains(keyword)){
-                status = Constants.XQ_DOWNLOADING_SRC;
-            }
-            else if("PROCESSING".contains(keyword)){
-                status = Constants.XQ_PROCESSING;
-            }
-            else if("READY".contains(keyword)){
-                status = Constants.XQ_READY;
-            }
-            else if("FATAL ERROR".contains(keyword)){
-                status = Constants.XQ_FATAL_ERR;
-            }
-            else if("RECOVERABLE ERROR".contains(keyword)){
-                status = Constants.XQ_LIGHT_ERR;
-            }
-            else if("INTERRUPTED".contains(keyword)){
-                status = Constants.XQ_INTERRUPTED;
-            }
-            else if("CANCELLED BY USER".contains(keyword)){
-                status = Constants.CANCELLED_BY_USER;
-            }
-            else if("DELETED".contains(keyword)){
-                status = Constants.DELETED;
-            }
+            Integer status = StatusUtils.getNumberOfStatusBasedOnContainedString(keyword);
             pagedPage = jobRepository.findByNStatus(status, pageRequest);
         } else if (searchParam.equals("instance")){
             pagedPage = jobRepository.findByInstanceContaining(keyword, pageRequest);

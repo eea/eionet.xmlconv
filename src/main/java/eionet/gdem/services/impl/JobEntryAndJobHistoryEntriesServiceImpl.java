@@ -5,6 +5,7 @@ import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.services.JobHistoryService;
+import eionet.gdem.web.spring.workqueue.EntriesForPageObject;
 import eionet.gdem.web.spring.workqueue.JobEntryAndJobHistoryEntriesObject;
 import eionet.gdem.web.spring.workqueue.JobHistoryMetadata;
 import eionet.gdem.web.spring.workqueue.JobMetadata;
@@ -38,10 +39,12 @@ public class JobEntryAndJobHistoryEntriesServiceImpl implements JobEntryAndJobHi
     }
 
     @Override
-    public List<JobMetadata> getSortedJobsForPage(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword) {
+    public EntriesForPageObject getSortedJobsForPage(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword) {
         //use page and itemsPerPage to get specific jobs
-        List<JobEntry> jobEntries = jobService.getPagedAndSortedEntries(page, itemsPerPage, sortBy, sortDesc, searchParam, keyword);
-        return jobService.getJobsMetadata(jobEntries);
+        EntriesForPageObject entriesForPageObject = jobService.getPagedAndSortedEntries(page, itemsPerPage, sortBy, sortDesc, searchParam, keyword);
+        List<JobMetadata> jobMetadataList = jobService.getJobsMetadata(entriesForPageObject.getJobEntriesForPage());
+        entriesForPageObject.setJobMetadataEntriesForPage(jobMetadataList);
+        return entriesForPageObject;
     }
 
     @Override

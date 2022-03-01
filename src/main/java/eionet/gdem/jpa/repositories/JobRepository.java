@@ -35,19 +35,37 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
 
     Page<JobEntry> findById(Integer id, Pageable pageable);
 
+    Long countById(Integer id);
+
     Page<JobEntry> findByUrlContaining(String url, Pageable pageable);
+
+    Long countByUrlContaining(String url);
 
     Page<JobEntry> findByFileContaining(String file, Pageable pageable);
 
+    Long countByFileContaining(String file);
+
     Page<JobEntry> findByResultFileContaining(String resultFile, Pageable pageable);
+
+    Long countByResultFileContaining(String resultFile);
 
     Page<JobEntry> findByInstanceContaining(String instance, Pageable pageable);
 
+    Long countByInstanceContaining(String instance);
+
     Page<JobEntry> findByJobTypeContaining(String jobType, Pageable pageable);
+
+    Long countByJobTypeContaining(String jobType);
 
     Page<JobEntry> findByJobExecutorNameContaining(String jobExecutorName, Pageable pageable);
 
+    Long countByJobExecutorNameContaining(String jobExecutorName);
+
     Page<JobEntry> findByNStatus(Integer nStatus, Pageable pageable);
 
+    Long countByNStatus(Integer nStatus);
+
     Page<JobEntry> findByNStatusIn(Set<Integer> nStatus, Pageable pageable);
+
+    Long countByNStatusIn(Set<Integer> nStatus);
 }

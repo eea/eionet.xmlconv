@@ -67,13 +67,8 @@ public class WorkqueueRestController {
         permissions.setWquPrm(wquPrm);
         permissions.setWqvPrm(wqvPrm);
         permissions.setLogvPrm(logvPrm);
-        Integer numberOfTotalJobs = jobEntryAndJobHistoryEntriesService.getNumberOfTotalJobs();
-        if(itemsPerPage < 0){
-            //show all results
-            itemsPerPage = numberOfTotalJobs;
-        }
-        List<JobMetadata> jobsForPage = jobEntryAndJobHistoryEntriesService.getSortedJobsForPage(page, itemsPerPage, sortBy, sortDesc, searchParam, keyword);
-        WorkqueuePageInfo workqueuePageInfo = new WorkqueuePageInfo(jobsForPage, numberOfTotalJobs, permissions, userName);
+        EntriesForPageObject entriesForPageObject = jobEntryAndJobHistoryEntriesService.getSortedJobsForPage(page, itemsPerPage, sortBy, sortDesc, searchParam, keyword);
+        WorkqueuePageInfo workqueuePageInfo = new WorkqueuePageInfo(entriesForPageObject.getJobMetadataEntriesForPage(), entriesForPageObject.getTotalNumberOfJobEntries(), permissions, userName);
         return workqueuePageInfo;
     }
 
