@@ -12,6 +12,7 @@ import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.web.spring.workqueue.EntriesForPageObject;
 import eionet.gdem.web.spring.workqueue.JobMetadata;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,7 +164,7 @@ public class JobServiceImpl implements JobService {
         else{
             entriesForPageObject.setJobEntriesForPage(new ArrayList<JobEntry>());
         }
-            return entriesForPageObject;
+        return entriesForPageObject;
     }
 
     private Integer getTotalNumberOfSearchedEntries(String searchParam, String keyword){
@@ -178,30 +179,30 @@ public class JobServiceImpl implements JobService {
                 LOGGER.error("Could not transform keyword " + keyword + " to integer. Exception message: " + ex.getMessage());
             }
         } else if (searchParam.equals("url")){
-            totalNumberOfEntries = jobRepository.countByUrlContaining(keyword);
+            totalNumberOfEntries = jobRepository.countByUrlContainingIgnoreCase(keyword);
         } else if (searchParam.equals("script_file")){
-            totalNumberOfEntries = jobRepository.countByFileContaining(keyword);
+            totalNumberOfEntries = jobRepository.countByFileContainingIgnoreCase(keyword);
         } else if (searchParam.equals("result_file")){
             Set<Integer> statuses;
-            if ("*** Not ready ***".contains(keyword)){
+            if (StringUtils.containsIgnoreCase("*** Not ready ***", keyword)){
                 statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_RECEIVED, Constants.XQ_DOWNLOADING_SRC, Constants.XQ_PROCESSING,
                         Constants.XQ_INTERRUPTED, Constants.CANCELLED_BY_USER, Constants.DELETED));
                 totalNumberOfEntries = jobRepository.countByNStatusIn(statuses);
             }
-            else if("Job Result".contains(keyword) ){
+            else if(StringUtils.containsIgnoreCase("Job Result", keyword)){
                 statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_READY, Constants.XQ_FATAL_ERR, Constants.XQ_LIGHT_ERR));
                 totalNumberOfEntries = jobRepository.countByNStatusIn(statuses);
             }
         }
         else if (searchParam.equals("statusName")){
-            Integer status = StatusUtils.getNumberOfStatusBasedOnContainedString(keyword);
+            Integer status = StatusUtils.getNumberOfStatusBasedOnContainedStringIgnoreCase(keyword);
             totalNumberOfEntries = jobRepository.countByNStatus(status);
         } else if (searchParam.equals("instance")){
-            totalNumberOfEntries = jobRepository.countByInstanceContaining(keyword);
+            totalNumberOfEntries = jobRepository.countByInstanceContainingIgnoreCase(keyword);
         }  else if (searchParam.equals("jobType")){
-            totalNumberOfEntries = jobRepository.countByJobTypeContaining(keyword);
+            totalNumberOfEntries = jobRepository.countByJobTypeContainingIgnoreCase(keyword);
         } else if (searchParam.equals("jobExecutorName")){
-            totalNumberOfEntries = jobRepository.countByJobExecutorNameContaining(keyword);
+            totalNumberOfEntries = jobRepository.countByJobExecutorNameContainingIgnoreCase(keyword);
         }
         LOGGER.info("For keyword " + keyword + " and parameter " + searchParam + " there are " + totalNumberOfEntries + " entries in the database.");
         return Math.toIntExact(totalNumberOfEntries);
@@ -219,30 +220,30 @@ public class JobServiceImpl implements JobService {
                 LOGGER.error("Could not transform keyword " + keyword + " to integer. Exception message: " + ex.getMessage());
             }
         } else if (searchParam.equals("url")){
-            pagedPage = jobRepository.findByUrlContaining(keyword, pageRequest);
+            pagedPage = jobRepository.findByUrlContainingIgnoreCase(keyword, pageRequest);
         } else if (searchParam.equals("script_file")){
-            pagedPage = jobRepository.findByFileContaining(keyword, pageRequest);
+            pagedPage = jobRepository.findByFileContainingIgnoreCase(keyword, pageRequest);
         } else if (searchParam.equals("result_file")){
             Set<Integer> statuses;
-            if ("*** Not ready ***".contains(keyword)){
+            if (StringUtils.containsIgnoreCase("*** Not ready ***", keyword)){
                 statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_RECEIVED, Constants.XQ_DOWNLOADING_SRC, Constants.XQ_PROCESSING,
                         Constants.XQ_INTERRUPTED, Constants.CANCELLED_BY_USER, Constants.DELETED));
                 pagedPage = jobRepository.findByNStatusIn(statuses, pageRequest);
             }
-            else if("Job Result".contains(keyword) ){
+            else if(StringUtils.containsIgnoreCase("Job Result", keyword)){
                 statuses = new HashSet<Integer>(Arrays.asList(Constants.XQ_READY, Constants.XQ_FATAL_ERR, Constants.XQ_LIGHT_ERR));
                 pagedPage = jobRepository.findByNStatusIn(statuses, pageRequest);
             }
         }
         else if (searchParam.equals("statusName")){
-            Integer status = StatusUtils.getNumberOfStatusBasedOnContainedString(keyword);
+            Integer status = StatusUtils.getNumberOfStatusBasedOnContainedStringIgnoreCase(keyword);
             pagedPage = jobRepository.findByNStatus(status, pageRequest);
         } else if (searchParam.equals("instance")){
-            pagedPage = jobRepository.findByInstanceContaining(keyword, pageRequest);
+            pagedPage = jobRepository.findByInstanceContainingIgnoreCase(keyword, pageRequest);
         }  else if (searchParam.equals("jobType")){
-            pagedPage = jobRepository.findByJobTypeContaining(keyword, pageRequest);
+            pagedPage = jobRepository.findByJobTypeContainingIgnoreCase(keyword, pageRequest);
         } else if (searchParam.equals("jobExecutorName")){
-            pagedPage = jobRepository.findByJobExecutorNameContaining(keyword, pageRequest);
+            pagedPage = jobRepository.findByJobExecutorNameContainingIgnoreCase(keyword, pageRequest);
         }
         return pagedPage;
     }

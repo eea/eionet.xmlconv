@@ -37,29 +37,29 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
 
     Long countById(Integer id);
 
-    Page<JobEntry> findByUrlContaining(String url, Pageable pageable);
+    Page<JobEntry> findByUrlContainingIgnoreCase(String url, Pageable pageable);
 
-    Long countByUrlContaining(String url);
+    Long countByUrlContainingIgnoreCase(String url);
 
-    Page<JobEntry> findByFileContaining(String file, Pageable pageable);
+    Page<JobEntry> findByFileContainingIgnoreCase(String file, Pageable pageable);
 
-    Long countByFileContaining(String file);
+    Long countByFileContainingIgnoreCase(String file);
 
-    Page<JobEntry> findByResultFileContaining(String resultFile, Pageable pageable);
+    Page<JobEntry> findByResultFileContainingIgnoreCase(String resultFile, Pageable pageable);
 
-    Long countByResultFileContaining(String resultFile);
+    Long countByResultFileContainingIgnoreCase(String resultFile);
 
-    Page<JobEntry> findByInstanceContaining(String instance, Pageable pageable);
+    Page<JobEntry> findByInstanceContainingIgnoreCase(String instance, Pageable pageable);
 
-    Long countByInstanceContaining(String instance);
+    Long countByInstanceContainingIgnoreCase(String instance);
 
-    Page<JobEntry> findByJobTypeContaining(String jobType, Pageable pageable);
+    Page<JobEntry> findByJobTypeContainingIgnoreCase(String jobType, Pageable pageable);
 
-    Long countByJobTypeContaining(String jobType);
+    Long countByJobTypeContainingIgnoreCase(String jobType);
 
-    Page<JobEntry> findByJobExecutorNameContaining(String jobExecutorName, Pageable pageable);
+    Page<JobEntry> findByJobExecutorNameContainingIgnoreCase(String jobExecutorName, Pageable pageable);
 
-    Long countByJobExecutorNameContaining(String jobExecutorName);
+    Long countByJobExecutorNameContainingIgnoreCase(String jobExecutorName);
 
     Page<JobEntry> findByNStatus(Integer nStatus, Pageable pageable);
 
