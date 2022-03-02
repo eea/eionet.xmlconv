@@ -76,7 +76,7 @@
                             @item-expanded="onExpand"
                             class="elevation-1">
                         <template #item.url="{ item }">
-                            <a target="_blank" :href="item.url">
+                            <a target="_blank" :href="item.url" style="word-break:break-all">
                                 {{ item.url_name }}
                             </a>
                         </template>
@@ -97,7 +97,7 @@
                             </div>
                         </template>
                         <template v-slot:expanded-item="{ headers, item }">
-                            <td v-if="item.job_history_metadata_list" colspan="4">
+                            <td v-if="item.job_history_metadata_list" colspan="12">
                                 <table>
                                     <tr>
                                         <th style="text-align: left">Job status</th>
