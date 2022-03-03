@@ -92,7 +92,9 @@ should ack its delivery before the channel is closed.
 When converters is deployed for the first time, the properties maxLightJobExecutorContainersAllowed and maxHeavyJobExecutorContainersAllowed are added in database
 table "PROPERTIES". These properties should then be configured by an admin user from UI tab  "Admin tools" -> "View and Edit Properties" according to needs.
 
-#### logback RollingFile appender configuration
-- Add an environment variable logFilePath with value a path to a folder where log files will be stored. The variable is used in logback-spring.xml.
-- Add an environment variable queryLogRetentionDays with value the duration in days for which log files will be retained. Log files older than the specified duration will be deleted. The variable is used in logback-spring.xml.
+#### log4j2 RollingFile appender configuration
+Add the following environment variables that will be used in log4j2.xml:
+- A variable logFilePath with value a path to a folder where log files will be stored. 
+- A variable with name queryLogRetainAll and value=false if log files should be deleted, true otherwise. 
+- A variable queryLogRetentionDays with value the duration in days (e.g P20D) for which log files will be retained. Log files older than the specified duration will be deleted.
 
