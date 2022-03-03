@@ -1,10 +1,36 @@
 <Configuration>
+  <Properties>
+    <Property name="basePath">${env:logFilePath}/logs</Property>
+  </Properties>
+
   <Appenders>
     <Console name="console">
       <PatternLayout>
         <Pattern>[%d{yyyy-MM-dd HH:mm:ss}] %p - %c:%L - %m%n</Pattern>
       </PatternLayout>
     </Console>
+
+    <RollingFile name="fileLogger"
+                 fileName="${basePath}/xmlconvLogs.log"
+                 filePattern="${basePath}/xmlconvLogs_%d{yyyy-MM-dd}-%i.log.gz"
+                 ignoreExceptions="false">
+
+      <PatternLayout>
+        <pattern>[%d{yyyy-MM-dd HH:mm:ss}] %p - %c:%L - %m%n
+        </pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1"/>
+        <SizeBasedTriggeringPolicy size="5000KB" />
+      </Policies>
+      <DefaultRolloverStrategy>
+        <!--    testMode - boolean - If true, files are not deleted but instead a message is printed to the status -->
+        <Delete basePath="${basePath}" maxDepth="1" testMode="${env:queryLogRetainAll}">
+          <IfFileName glob="xmlconvLogs_*.log.gz"/>
+          <IfLastModified age="${env:queryLogRetentionDays}"/>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
   </Appenders>
   <Loggers>
     <logger name="eionet" level="info"/>
@@ -13,6 +39,7 @@
     <logger name="org.basex" level="info"/>
     <Root level="INFO">
       <AppenderRef ref="console" />
+      <AppenderRef ref="fileLogger" level="info" />
     </Root>
   </Loggers>
 </Configuration>

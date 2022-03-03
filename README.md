@@ -91,3 +91,8 @@ should ack its delivery before the channel is closed.
 #### Converters rancher stack configuration
 When converters is deployed for the first time, the properties maxLightJobExecutorContainersAllowed and maxHeavyJobExecutorContainersAllowed are added in database
 table "PROPERTIES". These properties should then be configured by an admin user from UI tab  "Admin tools" -> "View and Edit Properties" according to needs.
+
+#### logback RollingFile appender configuration
+- Add an environment variable logFilePath with value a path to a folder where log files will be stored. The variable is used in logback-spring.xml.
+- Add an environment variable queryLogRetentionDays with value the duration in days for which log files will be retained. Log files older than the specified duration will be deleted. The variable is used in logback-spring.xml.
+
