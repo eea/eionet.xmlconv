@@ -25,7 +25,7 @@
       </Policies>
       <DefaultRolloverStrategy>
         <!--    testMode - boolean - If true, files are not deleted but instead a message is printed to the status -->
-        <Delete basePath="${env:logFilePath}/logs" maxDepth="1" testMode="${env:queryLogRetainAll}">
+        <Delete basePath="${env:logFilePath}/logs/" maxDepth="1" testMode="${env:queryLogRetainAll}">
           <IfFileName glob="xmlconvLogs_*.log.gz"/>
           <IfLastModified age="${env:queryLogRetentionDays}"/>
         </Delete>
