@@ -12,6 +12,6 @@ import java.util.List;
 public interface JobEntryAndJobHistoryEntriesService {
 
     List<JobHistoryMetadata> getJobHistoryMetadata(String jobId) throws DatabaseException;
-    EntriesForPageObject getSortedJobsForPage(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword);
+    EntriesForPageObject getSortedJobsForPage(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword, String[] searchedStatuses);
     Integer getNumberOfTotalJobs();
 }

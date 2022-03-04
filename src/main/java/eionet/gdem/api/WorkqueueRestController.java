@@ -42,7 +42,8 @@ public class WorkqueueRestController {
     @GetMapping("/getWorkqueuePageInfo")
     public WorkqueuePageInfo getWorkqueuePageInfo(HttpSession session, @RequestParam(value = "page") Integer page, @RequestParam(value = "itemsPerPage") Integer itemsPerPage,
                                                   @RequestParam(value = "sortBy") String sortBy, @RequestParam(value = "sortDesc") Boolean sortDesc,
-                                                  @RequestParam(value = "searchParam") String searchParam, @RequestParam(value = "keyword") String keyword) {
+                                                  @RequestParam(value = "searchParam") String searchParam, @RequestParam(value = "keyword") String keyword,
+                                                  @RequestParam(value = "statuses") String[] searchedStatuses, HttpServletRequest request) {
         String userName = null;
         if(session.getAttribute("user") != null){
             userName = session.getAttribute("user").toString();
@@ -67,7 +68,7 @@ public class WorkqueueRestController {
         permissions.setWquPrm(wquPrm);
         permissions.setWqvPrm(wqvPrm);
         permissions.setLogvPrm(logvPrm);
-        EntriesForPageObject entriesForPageObject = jobEntryAndJobHistoryEntriesService.getSortedJobsForPage(page, itemsPerPage, sortBy, sortDesc, searchParam, keyword);
+        EntriesForPageObject entriesForPageObject = jobEntryAndJobHistoryEntriesService.getSortedJobsForPage(page, itemsPerPage, sortBy, sortDesc, searchParam, keyword, searchedStatuses);
         WorkqueuePageInfo workqueuePageInfo = new WorkqueuePageInfo(entriesForPageObject.getJobMetadataEntriesForPage(), entriesForPageObject.getTotalNumberOfJobEntries(), permissions, userName);
         return workqueuePageInfo;
     }

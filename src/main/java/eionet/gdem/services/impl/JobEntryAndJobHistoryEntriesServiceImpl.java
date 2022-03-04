@@ -39,9 +39,9 @@ public class JobEntryAndJobHistoryEntriesServiceImpl implements JobEntryAndJobHi
     }
 
     @Override
-    public EntriesForPageObject getSortedJobsForPage(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword) {
+    public EntriesForPageObject getSortedJobsForPage(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword, String[] searchedStatuses) {
         //use page and itemsPerPage to get specific jobs
-        EntriesForPageObject entriesForPageObject = jobService.getPagedAndSortedEntries(page, itemsPerPage, sortBy, sortDesc, searchParam, keyword);
+        EntriesForPageObject entriesForPageObject = jobService.getPagedAndSortedEntries(page, itemsPerPage, sortBy, sortDesc, searchParam, keyword, searchedStatuses);
         List<JobMetadata> jobMetadataList = jobService.getJobsMetadata(entriesForPageObject.getJobEntriesForPage());
         entriesForPageObject.setJobMetadataEntriesForPage(jobMetadataList);
         return entriesForPageObject;

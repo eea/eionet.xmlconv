@@ -3,6 +3,9 @@ package eionet.gdem.utils;
 import eionet.gdem.Constants;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public final class StatusUtils {
 
     /**
@@ -10,6 +13,14 @@ public final class StatusUtils {
      */
     private StatusUtils() {
         // do nothing
+    }
+
+    public static Set<Integer> getStatusIdsBasedOnStatusNames(String[] statusNames){
+        Set<Integer> statusIds = new HashSet<>();
+        for(String statusName: statusNames){
+            statusIds.add(getNumberOfStatusBasedOnContainedStringIgnoreCase(statusName));
+        }
+        return statusIds;
     }
 
     public static Integer getNumberOfStatusBasedOnContainedStringIgnoreCase(String keyword){

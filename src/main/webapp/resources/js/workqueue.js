@@ -9,6 +9,8 @@ var app = new Vue({
             jobEntries: [],
             totalJobEntries: 0,
             selected: [],
+            selectedStatusesForSearch: [],
+            searchedStatuses: [],
             expanded: [],
             item: null,
             infoMessage : null,
@@ -18,6 +20,7 @@ var app = new Vue({
             permissions: null,
             username: null,
             loading: true,
+            statuses: ['DOWNLOADING SOURCE', 'JOB RECEIVE', 'PROCESSING', 'READY', 'FATAL ERROR', 'RECOVERABLE ERROR', 'INTERRUPTED', 'CANCELLED BY USER', 'DELETED'],
             headers: [
                 {text: "Job Id", value: "jobId", sortable: true},
                 {text: "Document URL", value: "url", sortable: true},
@@ -37,7 +40,7 @@ var app = new Vue({
         options: {
             handler() {
                 const { sortBy, sortDesc, page, itemsPerPage } = this.options
-                this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, this.radioGroup, this.searchedKeyword);
+                this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, this.radioGroup, this.searchedKeyword, this.searchedStatuses);
             },
         },
         deep: true
@@ -45,11 +48,12 @@ var app = new Vue({
     //    this one will populate new data set when user changes current page.
     methods: {
         //Reading data from API method.
-        getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, searchParameter, searchKeyword) {
+        getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, searchParameter, searchKeyword, searchedStatuses) {
             this.loading = true;
             axios
                 .get(
                     "/restapi/workqueueData/getWorkqueuePageInfo?page=" + page + "&itemsPerPage=" + itemsPerPage + "&sortBy=" + sortBy + "&sortDesc=" + sortDesc +"&searchParam=" + searchParameter +"&keyword=" + searchKeyword
+                +"&statuses=" + searchedStatuses
                 )
                 .then((response) => {
                     this.loading = false;
@@ -75,7 +79,7 @@ var app = new Vue({
                         this.options.page = 1;
                         this.options.itemsPerPage = 25;
                         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-                        this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "");
+                        this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "", []);
                     });
             }
         },
@@ -94,7 +98,7 @@ var app = new Vue({
                         this.options.page = 1;
                         this.options.itemsPerPage = 25;
                         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-                        this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "");
+                        this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "", []);
                     });
             }
         },
@@ -124,17 +128,18 @@ var app = new Vue({
         },
         search() {
             this.searchedKeyword = this.keyword;
+            this.searchedStatuses = this.selectedStatusesForSearch;
             this.options.sortBy = ["jobId"];
             this.options.sortDesc = [true];
             this.options.page = 1;
             this.options.itemsPerPage = 25;
             const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-            this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, this.radioGroup, this.searchedKeyword);
+            this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, this.radioGroup, this.searchedKeyword, this.searchedStatuses);
         }
     },
     //this will trigger in the onReady State
     mounted() {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-        this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "");
+        this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "", []);
     }
 })

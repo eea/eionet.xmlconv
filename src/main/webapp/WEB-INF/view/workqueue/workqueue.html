@@ -35,11 +35,19 @@
                                                 :value="item.value" >
                                             </v-radio>
                                         </v-radio-group>
-                                        <v-text-field
+                                        <v-text-field v-show="radioGroup != 'statusName'"
                                                 v-model="keyword"
                                                 label="Keyword"
                                                 required
                                         ></v-text-field>
+                                        <v-select v-show="radioGroup === 'statusName'"
+                                                v-model="selectedStatusesForSearch"
+                                                :items="statuses"
+                                                label="Select statuses"
+                                                multiple
+                                                chips
+                                                persistent-hint
+                                        ></v-select>
                                         <v-btn
                                                class="mr-2"
                                                @click="search"

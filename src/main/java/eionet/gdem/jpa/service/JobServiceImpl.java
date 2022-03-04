@@ -122,7 +122,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public EntriesForPageObject getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword) {
+    public EntriesForPageObject getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword, String[] searchedStatuses) {
         EntriesForPageObject entriesForPageObject = new EntriesForPageObject();
         Pageable pageRequest = null;
         //paging is zero based
@@ -130,11 +130,11 @@ public class JobServiceImpl implements JobService {
             page--;
         }
         Integer totalNumberOfEntries = 0;
-        if(Utils.isNullStr(searchParam) || Utils.isNullStr(keyword)){
+        if(Utils.isNullStr(searchParam) || (!searchParam.equals("statusName") && Utils.isNullStr(keyword) ) || (searchParam.equals("statusName") && searchedStatuses.length == 0)){
             totalNumberOfEntries = getNumberOfTotalJobs();
         }
         else{
-            totalNumberOfEntries = getTotalNumberOfSearchedEntries(searchParam, keyword);
+            totalNumberOfEntries = getTotalNumberOfSearchedEntries(searchParam, keyword, searchedStatuses);
         }
 
         if(itemsPerPage < 0){
@@ -150,11 +150,11 @@ public class JobServiceImpl implements JobService {
             pageRequest = new PageRequest(page, itemsPerPage, new Sort(Sort.Direction.ASC, jobEntrySortParameter));
         }
         Page<JobEntry> pagedPage = null;
-        if(Utils.isNullStr(searchParam) || Utils.isNullStr(keyword)){
+        if(Utils.isNullStr(searchParam) || (!searchParam.equals("statusName") && Utils.isNullStr(keyword) ) || (searchParam.equals("statusName") && searchedStatuses.length == 0)){
             pagedPage = jobRepository.findAll(pageRequest);
         }
         else{
-            pagedPage = getPagedEntriesWithKeyword(pageRequest, searchParam, keyword);
+            pagedPage = getPagedEntriesWithKeyword(pageRequest, searchParam, keyword, searchedStatuses);
         }
         entriesForPageObject.setTotalNumberOfJobEntries(totalNumberOfEntries);
 
@@ -167,7 +167,7 @@ public class JobServiceImpl implements JobService {
         return entriesForPageObject;
     }
 
-    private Integer getTotalNumberOfSearchedEntries(String searchParam, String keyword){
+    private Integer getTotalNumberOfSearchedEntries(String searchParam, String keyword, String[] searchedStatuses){
         Long totalNumberOfEntries = 0L;
         LOGGER.info("Searching in T_XQJOBS table for total number of entries for keyword " + keyword + " and parameter " + searchParam);
         if (searchParam.equals("jobId")){
@@ -195,8 +195,9 @@ public class JobServiceImpl implements JobService {
             }
         }
         else if (searchParam.equals("statusName")){
-            Integer status = StatusUtils.getNumberOfStatusBasedOnContainedStringIgnoreCase(keyword);
-            totalNumberOfEntries = jobRepository.countByNStatus(status);
+            //use searchedStatuses
+            Set<Integer> statusIds = StatusUtils.getStatusIdsBasedOnStatusNames(searchedStatuses);
+            totalNumberOfEntries = jobRepository.countByNStatusIn(statusIds);
         } else if (searchParam.equals("instance")){
             totalNumberOfEntries = jobRepository.countByInstanceContainingIgnoreCase(keyword);
         }  else if (searchParam.equals("jobType")){
@@ -208,7 +209,7 @@ public class JobServiceImpl implements JobService {
         return Math.toIntExact(totalNumberOfEntries);
     }
 
-    private Page<JobEntry> getPagedEntriesWithKeyword(Pageable pageRequest, String searchParam, String keyword){
+    private Page<JobEntry> getPagedEntriesWithKeyword(Pageable pageRequest, String searchParam, String keyword, String[] searchedStatuses){
         Page<JobEntry> pagedPage = null;
         LOGGER.info("Searching in T_XQJOBS table for keyword " + keyword + " for parameter " + searchParam);
         if (searchParam.equals("jobId")){
@@ -236,8 +237,9 @@ public class JobServiceImpl implements JobService {
             }
         }
         else if (searchParam.equals("statusName")){
-            Integer status = StatusUtils.getNumberOfStatusBasedOnContainedStringIgnoreCase(keyword);
-            pagedPage = jobRepository.findByNStatus(status, pageRequest);
+            //use searchedStatuses
+            Set<Integer> statusIds = StatusUtils.getStatusIdsBasedOnStatusNames(searchedStatuses);
+            pagedPage = jobRepository.findByNStatusIn(statusIds, pageRequest);
         } else if (searchParam.equals("instance")){
             pagedPage = jobRepository.findByInstanceContainingIgnoreCase(keyword, pageRequest);
         }  else if (searchParam.equals("jobType")){
