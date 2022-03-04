@@ -20,7 +20,7 @@ var app = new Vue({
             permissions: null,
             username: null,
             loading: true,
-            statuses: ['DOWNLOADING SOURCE', 'JOB RECEIVE', 'PROCESSING', 'READY', 'FATAL ERROR', 'RECOVERABLE ERROR', 'INTERRUPTED', 'CANCELLED BY USER', 'DELETED'],
+            statuses: ['DOWNLOADING SOURCE', 'JOB RECEIVED', 'PROCESSING', 'READY', 'FATAL ERROR', 'RECOVERABLE ERROR', 'INTERRUPTED', 'CANCELLED BY USER', 'DELETED'],
             headers: [
                 {text: "Job Id", value: "jobId", sortable: true},
                 {text: "Document URL", value: "url", sortable: true},
