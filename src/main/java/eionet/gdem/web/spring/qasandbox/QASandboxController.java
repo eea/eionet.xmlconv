@@ -77,7 +77,7 @@ public class QASandboxController {
     /**
      * time in milliseconds (2 minutes)
      */
-    private static final int TIME_INTERVAL_FOR_JOB_STATUS = 120000;
+    private static final int TIME_INTERVAL_FOR_JOB_STATUS = 15000;
 
     private AuthTokenService authTokenService;
 

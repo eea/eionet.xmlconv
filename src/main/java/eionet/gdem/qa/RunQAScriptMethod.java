@@ -103,7 +103,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
     /**
      * time in milliseconds (2 minutes)
      */
-    private static final int TIME_INTERVAL_FOR_JOB_STATUS = 120000;
+    private static final int TIME_INTERVAL_FOR_JOB_STATUS = 15000;
 
     /**
      * Remote method for running the QA script on the fly.
