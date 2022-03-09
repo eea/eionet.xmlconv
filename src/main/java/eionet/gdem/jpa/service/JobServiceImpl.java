@@ -352,8 +352,8 @@ public class JobServiceImpl implements JobService {
 
             job.setFrom_date(entry.getTimestamp().toLocalDateTime().minusDays(1).toString());
             job.setTo_date(entry.getTimestamp().toLocalDateTime().plusDays(1).toString());
-            job.setJob_executor_graylog_url(Properties.CONVERTERS_GRAYLOG + job.getJobId() + "&from=" + job.getFrom_date() + ".000Z&to=" + job.getTo_date() + ".000Z");
-            job.setConverters_graylog_url(Properties.JOB_EXECUTOR_GRAYLOG + job.getJobId() + "&from=" + job.getFrom_date() + ".000Z&to=" + job.getTo_date() + ".000Z");
+            job.setConverters_graylog_url(Properties.CONVERTERS_GRAYLOG + job.getJobId() + "&from=" + job.getFrom_date() + ".000Z&to=" + job.getTo_date() + ".000Z");
+            job.setJob_executor_graylog_url(Properties.JOB_EXECUTOR_GRAYLOG + job.getJobId() + "&from=" + job.getFrom_date() + ".000Z&to=" + job.getTo_date() + ".000Z");
 
             jobsList.add(job);
 
