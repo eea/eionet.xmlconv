@@ -57,7 +57,7 @@ public class QueryEntry {
     private String markedHeavyReasonOther;
 
     @JsonIgnore
-    @OneToMany(fetch=FetchType.LAZY)
+    @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name="QUERY_ID")
     private List<ScriptRulesEntry> rulesEntryList;
 
