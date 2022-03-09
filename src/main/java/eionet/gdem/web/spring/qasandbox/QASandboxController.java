@@ -393,7 +393,7 @@ public class QASandboxController {
         String rawAuthenticationToken = request.getHeader(this.tokenHeader);
         if (!Utils.isNullStr(rawAuthenticationToken)) {
 
-        try {
+            try {
                 String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, this.authenticationTokenSchema);
                 if (parsedAuthenticationToken != null) {
                     String username = verifier.verify(parsedAuthenticationToken);
@@ -613,20 +613,20 @@ public class QASandboxController {
 
     @PostMapping(params = {"manualUrl"})
     public String manualUrl(@ModelAttribute("form") QASandboxForm cForm, Model model,
-                           HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+                            HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Schema schema = cForm.getSchema();
         schema.setCrfiles(null);
         return "/qaSandbox/view";
     }
-        /**
-         * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
-         * in the session, then create it
-         *
-         * @param httpServletRequest Request
-         * @param schema             Schema
-         * @return True if schema exists.
-         * @throws DCMException If an error occurs.
-         */
+    /**
+     * check if schema passed as request parameter exists in the list of schemas stored in the session. If there is no schema list
+     * in the session, then create it
+     *
+     * @param httpServletRequest Request
+     * @param schema             Schema
+     * @return True if schema exists.
+     * @throws DCMException If an error occurs.
+     */
     private boolean schemaExists(HttpServletRequest httpServletRequest, String schema) throws DCMException {
         QAScriptListHolder schemasInSession = QAScriptListLoader.getList(httpServletRequest);
         boolean exists = schemasInSession.getQascripts().stream().anyMatch(o -> o.getSchema().equals(schema));

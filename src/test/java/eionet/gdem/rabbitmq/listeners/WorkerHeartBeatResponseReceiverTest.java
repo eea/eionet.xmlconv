@@ -76,22 +76,3 @@ public class WorkerHeartBeatResponseReceiverTest {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

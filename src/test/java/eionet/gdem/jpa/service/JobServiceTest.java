@@ -4,7 +4,11 @@ import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobRepository;
+import eionet.gdem.services.GDEMServices;
 import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.web.spring.schemas.ISchemaDao;
+import eionet.gdem.web.spring.schemas.SchemaMySqlDao;
+import eionet.gdem.web.spring.workqueue.JobMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -23,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -103,6 +109,49 @@ public class JobServiceTest {
         when(jobRepository.getRetryCounter(1)).thenReturn(2);
         Integer result = jobServiceImpl.getRetryCounter(1);
         assertThat(result, is(2));
+    }
+
+    @Test
+    public void testGetNumberOfTotalJobs() {
+        when(jobRepository.count()).thenReturn(3L);
+        assertThat(jobServiceImpl.getNumberOfTotalJobs(), is(3));
+    }
+
+    @Test
+    public void testGetNumberOfTotalJobsForZero() {
+        when(jobRepository.count()).thenReturn(0L);
+        assertThat(jobServiceImpl.getNumberOfTotalJobs(), is(0));
+    }
+
+    @Test
+    public void testGetJobsMetadata() {
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+
+        jobEntry.setTimestamp(timestamp);
+        jobEntry.setSrcFile("test");
+        jobEntry.setFile("test");
+        jobEntry.setnStatus(2);
+        jobEntry.setQueryId(3);
+        jobEntry.setInstance("test");
+        jobEntry.setJobType("test");
+        jobEntry.setResultFile("test");
+        jobEntry.setUrl("test");
+
+        List<JobMetadata> jobMetadataListResult = jobServiceImpl.getJobsMetadata(jobEntries);
+        assertThat(jobMetadataListResult.size(), is(1));
+        assertThat(jobMetadataListResult.get(0).getJobId(), is("1"));
+        assertThat(jobMetadataListResult.get(0).getJobExecutorName(), is("demoExecutor"));
+        assertThat(jobMetadataListResult.get(0).getTimestamp(), is(jobEntry.getTimestamp().toString()));
+        assertThat(jobMetadataListResult.get(0).getFileName(), is("test"));
+        assertThat(jobMetadataListResult.get(0).getScript_file(), is("test"));
+        assertThat(jobMetadataListResult.get(0).getStatus(), is(2));
+        assertThat(jobMetadataListResult.get(0).getStatusName(), is("PROCESSING"));
+        assertThat(jobMetadataListResult.get(0).getScriptId(), is("3"));
+        assertThat(jobMetadataListResult.get(0).getInstance(), is("test"));
+        assertThat(jobMetadataListResult.get(0).getJobType(), is("test"));
+        assertThat(jobMetadataListResult.get(0).getResult_file(), is(nullValue()));
+        assertThat(jobMetadataListResult.get(0).getUrl(), is("test"));
+        assertThat(jobMetadataListResult.get(0).getUrl_name(), is("test"));
     }
 }
 

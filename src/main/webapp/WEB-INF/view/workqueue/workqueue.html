@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:perm="http://perm"
+      xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<head th:replace="~{fragments/head-old :: head}"/>
+<body th:include="~{fragments/workqueue-old :: layout(~{::div})}">
+
+<template>
+    <div class="container" id="workqueueApp" style="display: flow-root">
+        <v-app>
+            <v-main>
+                <h1>Jobs</h1>
+
+                <p>Currently there are following jobs in the queue...</p>
+                <div v-if="infoMessage" class="system-msg">
+                    <p>{{ infoMessage }}</p>
+                </div>
+                <v-card>
+                    <v-expansion-panels focusable>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>Search filters</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <form>
+                                    <v-container
+                                            class="px-0"
+                                            fluid
+                                    >
+                                        <v-radio-group
+                                                v-model="radioGroup"
+                                                mandatory>
+                                            <v-radio
+                                                v-for="item in headers"
+                                                v-if="item.value != 'timestamp' && item.value != 'durationInProgress'"
+                                                :key="item.value"
+                                                :label="item.text"
+                                                :value="item.value" >
+                                            </v-radio>
+                                        </v-radio-group>
+                                        <v-text-field v-show="radioGroup != 'statusName'"
+                                                v-model="keyword"
+                                                label="Keyword"
+                                                required
+                                        ></v-text-field>
+                                        <v-select v-show="radioGroup === 'statusName'"
+                                                v-model="selectedStatusesForSearch"
+                                                :items="statuses"
+                                                label="Select statuses"
+                                                multiple
+                                                chips
+                                                persistent-hint
+                                        ></v-select>
+                                        <v-btn
+                                               class="mr-2"
+                                               @click="search"
+                                        >
+                                            Search
+                                        </v-btn>
+                                    </v-container>
+                                </form>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-card>
+                <br>
+                <v-card>
+                    <a href="#" @click="csvExport" class="mb-2 ml-2">Export to CSV</a>
+                    <v-data-table
+                            v-model="selected"
+                            item-key="jobId"
+                            show-select
+                            :headers="headers"
+                            :items="jobEntries"
+                            :server-items-length="totalJobEntries"
+                            :sort-by.sync="sortBy"
+                            :sort-desc.sync="sortDesc"
+                            :search="search"
+                            :options.sync="options"
+                            :loading="loading"
+                            :expanded.sync="expanded"
+                            :footer-props="{
+                                'items-per-page-options': [5, 10, 25, 50, 75, 100, -1]
+                              }"
+                            :items-per-page="25"
+                            show-expand
+                            @item-expanded="onExpand"
+                            class="elevation-1">
+                        <template #item.url="{ item }">
+                            <a target="_blank" :href="item.url" style="word-break:break-all">
+                                {{ item.url_name }}
+                            </a>
+                        </template>
+                        <template #item.script_file="{ item }">
+                            <a target="_blank" :href="item.script_url">
+                                {{ item.script_file }}
+                            </a>
+                        </template>
+                        <template #item.result_file="{ value }">
+                            <div v-if="value">
+                                <a v-if="username" target="_blank" :href="value">
+                                    Job Result
+                                </a>
+                                <span v-else="!username">Job Result</span>
+                            </div>
+                            <div v-else>
+                                *** Not ready ***
+                            </div>
+                        </template>
+                        <template v-slot:expanded-item="{ headers, item }">
+                            <td v-if="item.job_history_metadata_list" colspan="12">
+                                <table>
+                                    <tr>
+                                        <th style="text-align: left">Job status</th>
+                                        <th style="text-align: left">Date that status was modified</th>
+                                        <th style="text-align: left">Job Executor Name</th>
+                                    </tr>
+                                    <tr v-for="expanded_item in item.job_history_metadata_list">
+                                        <td>{{ expanded_item.status_name }}</td>
+                                        <td>{{ expanded_item.date_added }}</td>
+                                        <td>{{ expanded_item.job_executor_name }}</td>
+                                    </tr>
+                                </table>
+                                <div v-if="username">
+                                    <a :href="item.converters_graylog_url" target="_blank">Converters graylog</a> (Display Graylog Results for Converters for dates: {{ item.from_date }} to {{ item.to_date }} )
+                                    <br>
+                                    <a :href="item.job_executor_graylog_url" target="_blank">Job Executor graylog</a> (Display Graylog Results for JobExecutor for dates: {{ item.from_date }} to {{ item.to_date }} )
+                                    <br>
+                                    <div v-if="item.fme_job_id">
+                                        <a :href="item.fme_job_url">FME job id: {{ item.fme_job_id }}</a>
+                                    </div>
+                                    <br>
+                                </div>
+                            </td>
+                        </template>
+                    </v-data-table>
+                </v-card>
+                <div class="pt-2">
+                    <v-btn v-if="permissions && (permissions.wqdPrm || permissions.wquPrm)"
+                           color="primary"
+                           class="mr-2"
+                           @click="deleteJobs"
+                    >
+                        Delete
+                    </v-btn>
+                    <v-btn v-if="permissions && permissions.wquPrm"
+                           color="primary"
+                           class="mr-2"
+                           @click="restartJobs"
+                    >
+                        Restart
+                    </v-btn>
+                </div>
+            </v-main>
+        </v-app>
+    </div>
+</template>
+
+</body>
+</html>

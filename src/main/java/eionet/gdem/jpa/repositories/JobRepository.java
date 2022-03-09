@@ -2,6 +2,8 @@ package eionet.gdem.jpa.repositories;
 
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 @Repository("jobRepository")
 public interface JobRepository extends JpaRepository<JobEntry, Integer> {
@@ -30,4 +33,39 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     @Query(value = "SELECT * FROM T_XQJOBS WHERE N_STATUS=2 AND INTERNAL_STATUS_ID=3", nativeQuery = true)
     List<JobEntry> findProcessingJobs();
 
-   }
+    Page<JobEntry> findById(Integer id, Pageable pageable);
+
+    Long countById(Integer id);
+
+    Page<JobEntry> findByUrlContainingIgnoreCase(String url, Pageable pageable);
+
+    Long countByUrlContainingIgnoreCase(String url);
+
+    Page<JobEntry> findByFileContainingIgnoreCase(String file, Pageable pageable);
+
+    Long countByFileContainingIgnoreCase(String file);
+
+    Page<JobEntry> findByResultFileContainingIgnoreCase(String resultFile, Pageable pageable);
+
+    Long countByResultFileContainingIgnoreCase(String resultFile);
+
+    Page<JobEntry> findByInstanceContainingIgnoreCase(String instance, Pageable pageable);
+
+    Long countByInstanceContainingIgnoreCase(String instance);
+
+    Page<JobEntry> findByJobTypeContainingIgnoreCase(String jobType, Pageable pageable);
+
+    Long countByJobTypeContainingIgnoreCase(String jobType);
+
+    Page<JobEntry> findByJobExecutorNameContainingIgnoreCase(String jobExecutorName, Pageable pageable);
+
+    Long countByJobExecutorNameContainingIgnoreCase(String jobExecutorName);
+
+    Page<JobEntry> findByNStatus(Integer nStatus, Pageable pageable);
+
+    Long countByNStatus(Integer nStatus);
+
+    Page<JobEntry> findByNStatusIn(Set<Integer> nStatus, Pageable pageable);
+
+    Long countByNStatusIn(Set<Integer> nStatus);
+}

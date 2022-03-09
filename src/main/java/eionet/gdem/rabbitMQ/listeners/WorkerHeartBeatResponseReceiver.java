@@ -71,16 +71,3 @@ public class WorkerHeartBeatResponseReceiver implements MessageListener {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
