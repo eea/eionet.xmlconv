@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <!-- T_SCHEMA -->
+  <T_SCHEMA SCHEMA_ID="83" XML_SCHEMA="http://biodiversity.eionet.europa.eu/schemas/dir9243eec/generalreport.xsd" DESCRIPTION="" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="0" MAX_EXECUTION_TIME="360000"/>
+  <T_SCHEMA SCHEMA_ID="1" XML_SCHEMA="http://dd.eionet.europa.eu/GetSchema?id=TBL4564" DESCRIPTION="Groundwater schema" DTD_PUBLIC_ID="" VALIDATE="1" SCHEMA_LANG="XSD" BLOCKER="0" MAX_EXECUTION_TIME="355000"/>
+</dataset>

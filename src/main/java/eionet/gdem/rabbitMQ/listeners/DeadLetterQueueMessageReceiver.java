@@ -12,6 +12,7 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
+import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
@@ -82,7 +83,11 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
             String containerId="";
             if (Properties.enableJobExecRancherScheduledTask) {
-                containerId = containersOrchestrator.getContainerId(deadLetterMessage.getJobExecutorName());
+                try {
+                    containerId = containersOrchestrator.getContainerId(deadLetterMessage.getJobExecutorName());
+                } catch (RancherApiException e) {
+                    LOGGER.error("Error during retrieval of jobExecutor " + deadLetterMessage.getJobExecutorName() + " containerId");
+                }
             }
 
             if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){

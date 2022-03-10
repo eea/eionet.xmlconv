@@ -9,6 +9,7 @@ import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponseMessage;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
+import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,11 @@ public class WorkersStatusMessageReceiver implements MessageListener {
 
             String containerId="";
             if (Properties.enableJobExecRancherScheduledTask) {
-                containerId = containersOrchestrator.getContainerId(response.getJobExecutorName());
+                try {
+                    containerId = containersOrchestrator.getContainerId(response.getJobExecutorName());
+                } catch (RancherApiException e) {
+                    LOGGER.error("Error during retrieval of jobExecutor " + response.getJobExecutorName() + " containerId");
+                }
             }
 
             JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), response.getHeartBeatQueue());
