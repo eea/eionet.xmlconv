@@ -67,6 +67,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 try {
                     containerId = containersOrchestrator.getContainerId(response.getJobExecutorName());
                 } catch (RancherApiException e) {
+                    //rancher occasionally might get unresponsive
                     LOGGER.error("Error during retrieval of jobExecutor " + response.getJobExecutorName() + " containerId");
                 }
             }

@@ -86,6 +86,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 try {
                     containerId = containersOrchestrator.getContainerId(deadLetterMessage.getJobExecutorName());
                 } catch (RancherApiException e) {
+                    //rancher occasionally might get unresponsive
                     LOGGER.error("Error during retrieval of jobExecutor " + deadLetterMessage.getJobExecutorName() + " containerId");
                 }
             }
