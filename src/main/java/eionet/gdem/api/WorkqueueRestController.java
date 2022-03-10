@@ -1,6 +1,5 @@
 package eionet.gdem.api;
 
-import com.google.gson.JsonObject;
 import com.opencsv.CSVWriter;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
@@ -8,7 +7,6 @@ import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.web.spring.workqueue.*;
-import org.apache.commons.io.FileUtils;
 import org.springframework.security.access.AccessDeniedException;
 import eionet.gdem.services.impl.JobEntryAndJobHistoryEntriesService;
 import eionet.gdem.utils.SecurityUtil;
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
