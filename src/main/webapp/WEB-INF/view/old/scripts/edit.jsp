@@ -15,6 +15,7 @@
 <link type="text/css" href="/static/webjars/vuetify/2.6.1/dist/vuetify.min.css" rel="stylesheet">
 <link type="text/css" href="/static/webjars/mdi__font/6.2.95/css/materialdesignicons.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/static/css/vueTable.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 <div style="width:100%;">
   <div id="tabbedmenu">
@@ -122,7 +123,9 @@
           <form:input id="txtUpperLimit" size="3" path="upperLimit"/>
         </div>
         <div>
-          <p style="background:#ecf4f5;"><span style="color:#00446A;">Info:</span>If a script is active and file size < ${form.upperLimit}, the script will be available for OnDemand QA on CDR/BDR. More details on <a target="_blank" href="https://taskman.eionet.europa.eu/projects/reportnet/wiki/Notes_on_Reportnet_2_application_integration_and_usage#End-to-end-workflow-between-the-systems-for-running-different-types-of-QA-scripts">Notes on Reportnet 2 application integration and usage</a></p>
+          <p>
+            <i class="material-icons" style="color:#00446A;font-size:18px">info</i><span style="background:#ecf4f5;">If the script is active and file size < ${form.upperLimit}, the script will be available for OnDemand QA on CDR/BDR. More details on <a target="_blank" href="https://taskman.eionet.europa.eu/projects/reportnet/wiki/Notes_on_Reportnet_2_application_integration_and_usage#End-to-end-workflow-between-the-systems-for-running-different-types-of-QA-scripts">Notes on Reportnet 2 application integration and usage</a></span>
+          </p>
         </div>
         <div class="columns small-4">
           <label class="question" for="isActive">
