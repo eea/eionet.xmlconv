@@ -102,6 +102,9 @@
       <div class="columns small-8">
         <form:input id="txtUpperLimit" size="3" path="upperLimit"/>
       </div>
+      <div>
+        <p style="background:#ecf4f5;"><span style="color:#00446A;">Info:</span>If a script is active and file size < ${form.upperLimit}, the script will be available for OnDemand QA on CDR/BDR. More details on <a target="_blank" href="https://taskman.eionet.europa.eu/projects/reportnet/wiki/Notes_on_Reportnet_2_application_integration_and_usage#End-to-end-workflow-between-the-systems-for-running-different-types-of-QA-scripts">Notes on Reportnet 2 application integration and usage</a></p>
+      </div>
     </div>
   </fieldset>
 

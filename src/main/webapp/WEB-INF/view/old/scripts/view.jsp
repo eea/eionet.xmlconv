@@ -145,24 +145,21 @@
     <tr>
       <th scope="row" class="scope-row">
         <spring:message code="label.qascript.upperlimit"/>
-      </th>
-      <td>
-        ${form.upperLimit}
-      </td>
-    </tr>
-    <tr>
-      <th scope="row" class="scope-row">
+        <br/>
         <spring:message code="label.qascript.isActive"/>
       </th>
       <td>
-        <c:choose>
-          <c:when test="${form.active}">
-            <input type="checkbox" checked="checked" disabled/>
-          </c:when>
-          <c:otherwise>
-            <input type="checkbox" disabled/>
-          </c:otherwise>
-        </c:choose>
+        ${form.upperLimit}
+        <br/>
+        <br/>
+          <c:choose>
+            <c:when test="${form.active}">
+              <input type="checkbox" checked="checked" disabled/>
+            </c:when>
+            <c:otherwise>
+              <input type="checkbox" disabled/>
+            </c:otherwise>
+          </c:choose>
       </td>
     </tr>
 
@@ -210,5 +207,9 @@
       <pre>${form.scriptContent}</pre>
     </c:if>
   </c:if>
+
+  <div style="margin-top:2em">
+    <p style="background:#ecf4f5;"><span style="color:#00446A;">Info:</span>If a script is active and file size < ${form.upperLimit}, the script will be available for OnDemand QA on CDR/BDR. More details on <a target="_blank" href="https://taskman.eionet.europa.eu/projects/reportnet/wiki/Notes_on_Reportnet_2_application_integration_and_usage#End-to-end-workflow-between-the-systems-for-running-different-types-of-QA-scripts">Notes on Reportnet 2 application integration and usage</a></p>
+  </div>
 
 </div>
