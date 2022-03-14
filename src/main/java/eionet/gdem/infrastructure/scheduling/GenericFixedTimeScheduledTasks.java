@@ -76,6 +76,10 @@ public class GenericFixedTimeScheduledTasks {
     private CircularEventConsumer circularEventConsumer;
     @Autowired
     private CircuitBreaker circuitBreaker;
+    @Autowired
+    private QueryJpaService queryJpaService;
+    @Autowired
+    private SchemaService schemaService;
 
     /**
      * Dao for getting job data.
@@ -196,7 +200,7 @@ public class GenericFixedTimeScheduledTasks {
                 }
                 String schemaUrl = null;
                 try {
-                    schemaUrl = findSchemaFromXml(jobEntry.getUrl());
+                    schemaUrl = findSchemaFromXml(jobEntry);
                     Long schemaMaxExecTime = schemaManager.getSchemaMaxExecutionTime(schemaUrl);
                     if (jobEntry.getDuration().compareTo(BigInteger.valueOf(schemaMaxExecTime)) > 0) {
                         LOGGER.info("Interrupting job " + jobEntry.getId() + " because exceeded schema's max execution time.");
@@ -214,15 +218,27 @@ public class GenericFixedTimeScheduledTasks {
     /**
      * Finds schema from XML
      *
-     * @param xml XML
+     * @param jobEntry jobEntry
      * @return Result
      */
-    String findSchemaFromXml(String xml) throws XMLConvException {
-        InputAnalyser analyser = new InputAnalyser();
+    String findSchemaFromXml(JobEntry jobEntry) throws XMLConvException {
         try {
-            analyser.parseXML(xml);
-            String schemaOrDTD = analyser.getSchemaOrDTD();
-            return schemaOrDTD;
+            if (jobEntry.getUrl().contains("/xml")) {
+                QueryEntry queryEntry = queryJpaService.findByQueryId(jobEntry.getQueryId());
+                SchemaEntry schema = schemaService.findById(queryEntry.getSchemaId());
+                return schema.getXmlSchema();
+            } else {
+                int index = jobEntry.getUrl().indexOf("http", jobEntry.getUrl().indexOf("http") + 1);
+                if (index == -1) {
+                    index = jobEntry.getUrl().indexOf("http");
+                }
+                String result = jobEntry.getUrl().substring(index);
+                InputAnalyser analyser = new InputAnalyser();
+
+                analyser.parseXML(result);
+                String schemaOrDTD = analyser.getSchemaOrDTD();
+                return schemaOrDTD;
+            }
         } catch (Exception e) {
             throw new XMLConvException("Could not extract schema");
         }
@@ -326,7 +342,7 @@ public class GenericFixedTimeScheduledTasks {
         LOGGER.info("Task for creating and sending alerts is running");
         io.vavr.collection.List<CircuitBreakerEvent> bufferedEvents = circularEventConsumer.getBufferedEvents();
         bufferedEvents.forEach(event -> {
-            AlertEntry alertEntry =  new AlertEntry().setSeverity(AlertSeverity.CRITICAL).setDescription("JobExecutor rancher orchestration malfunctions, circuit breaker is open")
+            AlertEntry alertEntry = new AlertEntry().setSeverity(AlertSeverity.CRITICAL).setDescription("JobExecutor rancher orchestration malfunctions, circuit breaker is open")
                     .setOccurrenceDate(Timestamp.valueOf(event.getCreationTime().toLocalDateTime()));
             try {
                 new UNSEventSender().alertsNotification(event.getCreationTime() + ", Time exceeded for rancher proper functionality", Properties.ALERTS_EVENT);

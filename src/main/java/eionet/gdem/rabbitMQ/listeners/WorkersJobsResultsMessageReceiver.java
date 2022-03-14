@@ -17,6 +17,7 @@ import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
+import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -63,7 +64,12 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
             String containerId="";
             if (Properties.enableJobExecRancherScheduledTask) {
-                containerId = containersOrchestrator.getContainerId(response.getJobExecutorName());
+                try {
+                    containerId = containersOrchestrator.getContainerId(response.getJobExecutorName());
+                } catch (RancherApiException e) {
+                    //rancher occasionally might get unresponsive
+                    LOGGER.error("Error during retrieval of jobExecutor " + response.getJobExecutorName() + " containerId");
+                }
             }
 
             script = response.getScript();

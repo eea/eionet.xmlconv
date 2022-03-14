@@ -96,6 +96,10 @@ public class HttpFileManager {
     public static CloseableHttpResponse getHeaderResponse(String ticket, String url, boolean isTrustedMode) throws IOException, URISyntaxException, XMLConvException {
         HttpHead httpHead = new HttpHead(url);
 
+        CustomURI uri = new CustomURI(url);
+        if (Utils.isNullStr(ticket)) {
+            ticket = getHostCredentials(uri.getHost());
+        }
         if (  ! Utils.isNullStr(ticket) && isTrustedMode ) {
             httpHead.addHeader(HttpHeaders.AUTHORIZATION, " Basic " + ticket);
         }
