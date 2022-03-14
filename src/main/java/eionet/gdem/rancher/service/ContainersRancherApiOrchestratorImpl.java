@@ -48,7 +48,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
             LOGGER.info("Retrieving id for container with name: '" + containerName + "'");
             ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
             String containerId = "";
-            if (containerApiResponse.getData().size() > 0) {
+            if (containerApiResponse.getData()!=null && containerApiResponse.getData().size() > 0) {
                 containerId = containerApiResponse.getData().get(0).getId();
             }
             return containerId;
