@@ -162,6 +162,8 @@
               <input type="checkbox" disabled/>
             </c:otherwise>
           </c:choose>
+          <br/>
+          <i class="material-icons" style="color:#00446A;font-size:18px">info</i><span style="background:#ecf4f5;">If the script is active and file size < ${form.upperLimit}, the script will be available for OnDemand QA on CDR/BDR. More details on <a target="_blank" href="https://taskman.eionet.europa.eu/projects/reportnet/wiki/Notes_on_Reportnet_2_application_integration_and_usage#End-to-end-workflow-between-the-systems-for-running-different-types-of-QA-scripts">Notes on Reportnet 2 application integration and usage</a></span>
       </td>
     </tr>
 
@@ -209,9 +211,4 @@
       <pre>${form.scriptContent}</pre>
     </c:if>
   </c:if>
-
-  <div style="margin-top:2em">
-    <i class="material-icons" style="color:#00446A;font-size:18px">info</i><span style="background:#ecf4f5;">If the script is active and file size < ${form.upperLimit}, the script will be available for OnDemand QA on CDR/BDR. More details on <a target="_blank" href="https://taskman.eionet.europa.eu/projects/reportnet/wiki/Notes_on_Reportnet_2_application_integration_and_usage#End-to-end-workflow-between-the-systems-for-running-different-types-of-QA-scripts">Notes on Reportnet 2 application integration and usage</a></span>
-  </div>
-
 </div>
