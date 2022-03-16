@@ -46,6 +46,28 @@ public class SpringRabbitMqConfig {
                 .build();
     }
 
+    //Queue where converters sends script messages for synchronous fme jobs for workers to retrieve. The queue is set as priority queue, so that
+    //onDemand jobs can be marked with higher priority and take precedence over other jobs.
+    @Bean
+    Queue syncFmeWorkersJobsQueue() {
+        return QueueBuilder.durable(Properties.SYNC_FME_JOBS_QUEUE)
+                .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
+                .withArgument("x-max-priority", X_MAX_PRIORITY)
+                .build();
+    }
+
+    //Queue where converters sends script messages for asynchronous fme jobs for workers to retrieve. The queue is set as priority queue, so that
+    //onDemand jobs can be marked with higher priority and take precedence over other jobs.
+    @Bean
+    Queue asyncFmeWorkersJobsQueue() {
+        return QueueBuilder.durable(Properties.ASYNC_FME_JOBS_QUEUE)
+                .withArgument("x-dead-letter-exchange", Properties.WORKERS_DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", Properties.WORKERS_DEAD_LETTER_ROUTING_KEY)
+                .withArgument("x-max-priority", X_MAX_PRIORITY)
+                .build();
+    }
+
     //Queue where workers respond with results after executing a script
     @Bean
     Queue workersJobsResultsQueue() {
@@ -93,6 +115,16 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
+    DirectExchange xmlconvSyncFmeWorkersExchange() {
+        return new DirectExchange(Properties.XMLCONV_SYNC_FME_JOBS_EXCHANGE,true,false);
+    }
+
+    @Bean
+    DirectExchange xmlconvAsyncFmeWorkersExchange() {
+        return new DirectExchange(Properties.XMLCONV_ASYNC_FME_JOBS_EXCHANGE,true,false);
+    }
+
+    @Bean
     DirectExchange deadLetterExchange() {
         return new DirectExchange(Properties.WORKERS_DEAD_LETTER_EXCHANGE);
     }
@@ -105,6 +137,16 @@ public class SpringRabbitMqConfig {
     @Bean
     Binding xmlconvExchangeToXmlConvHeavyJobsQueueBinding() {
         return BindingBuilder.bind(heavyWorkersJobsQueue()).to(mainXmlconvHeavyWorkersExchange()).with(Properties.HEAVY_JOBS_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding exchangeToSyncFmeJobsQueueBinding() {
+        return BindingBuilder.bind(syncFmeWorkersJobsQueue()).to(xmlconvSyncFmeWorkersExchange()).with(Properties.SYNC_FME_JOBS_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding exchangeToAsyncFmeJobsQueueBinding() {
+        return BindingBuilder.bind(asyncFmeWorkersJobsQueue()).to(xmlconvAsyncFmeWorkersExchange()).with(Properties.ASYNC_FME_JOBS_ROUTING_KEY);
     }
 
     @Bean
@@ -220,6 +262,8 @@ public class SpringRabbitMqConfig {
         admin.declareExchange(mainXmlconvHeavyWorkersExchange());
         admin.declareExchange(workersHeartBeatRequestExchange());
         admin.declareExchange(deadLetterExchange());
+        admin.declareExchange(xmlconvSyncFmeWorkersExchange());
+        admin.declareExchange(xmlconvAsyncFmeWorkersExchange());
 
         admin.declareQueue(workersJobsQueue());
         admin.declareQueue(heavyWorkersJobsQueue());
@@ -227,6 +271,8 @@ public class SpringRabbitMqConfig {
         admin.declareQueue(workersStatusQueue());
         admin.declareQueue(workerHeartBeatResponseQueue());
         admin.declareQueue(deadLetterQueue());
+        admin.declareQueue(syncFmeWorkersJobsQueue());
+        admin.declareQueue(asyncFmeWorkersJobsQueue());
 
         admin.declareBinding(workersExchangeToWorkersJobResultsQueueBinding());
         admin.declareBinding(xmlconvExchangeToXmlConvJobsQueueBinding());
@@ -234,6 +280,8 @@ public class SpringRabbitMqConfig {
         admin.declareBinding(workersExchangeToWorkersStatusQueueBinding());
         admin.declareBinding(exchangeToWorkerHeartBeatResponseQueueBinding());
         admin.declareBinding(exchangeToDeadLetterQueueBinding());
+        admin.declareBinding(exchangeToSyncFmeJobsQueueBinding());
+        admin.declareBinding(exchangeToAsyncFmeJobsQueueBinding());
 
         return admin;
     }

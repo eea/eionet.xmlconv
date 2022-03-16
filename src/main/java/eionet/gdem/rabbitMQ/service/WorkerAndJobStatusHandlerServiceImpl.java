@@ -1,6 +1,5 @@
 package eionet.gdem.rabbitMQ.service;
 
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
@@ -69,7 +68,7 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
             jobExecutor.setJobExecutorType(jobExecutorType);
             jobExecutorHistory.setJobExecutorType(jobExecutorType);
         }
-        if (jobExecutor.getJobExecutorType()==null) jobExecutor.setJobExecutorType(JobExecutorType.Uknown);
+        if (jobExecutor.getJobExecutorType()==null) jobExecutor.setJobExecutorType(JobExecutorType.Unknown);
         jobExecutorService.saveOrUpdateJobExecutor(jobExecDb!=null, jobExecutor);
         jobExecutorHistoryService.saveJobExecutorHistoryEntry(jobExecutorHistory);
     }

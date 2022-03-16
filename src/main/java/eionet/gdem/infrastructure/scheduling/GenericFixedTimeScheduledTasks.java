@@ -314,7 +314,7 @@ public class GenericFixedTimeScheduledTasks {
             List<String> lightInstances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherLightJobExecServiceId);
             List<String> heavyInstances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherHeavyJobExecServiceId);
             List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
-            List<JobExecutor> jobExecutorsWithUnknownStatus = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Uknown)).collect(Collectors.toList());
+            List<JobExecutor> jobExecutorsWithUnknownStatus = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Unknown)).collect(Collectors.toList());
             for (JobExecutor jobExecutor : jobExecutorsWithUnknownStatus) {
                 if (!lightInstances.contains(jobExecutor.getContainerId()) && !heavyInstances.contains(jobExecutor.getContainerId())) {
                     LOGGER.info("Container retrieved form Database  with ID:" + jobExecutor.getContainerId() + " and name:" + jobExecutor.getName() +

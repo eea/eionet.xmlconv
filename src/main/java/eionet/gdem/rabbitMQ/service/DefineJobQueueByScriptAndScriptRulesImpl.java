@@ -14,6 +14,7 @@ import eionet.gdem.jpa.enums.ScriptRuleMatch;
 import eionet.gdem.jpa.enums.ScriptRuleType;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,8 @@ public class DefineJobQueueByScriptAndScriptRulesImpl implements DefineJobQueueA
     private JobService jobService;
     private RabbitMQMessageSender rabbitMQLightMessageSender;
     private RabbitMQMessageSender rabbitMQHeavyMessageSender;
+    private RabbitMQMessageSender rabbitMQSyncFmeMessageSender;
+    private RabbitMQMessageSender rabbitMQAsyncFmeMessageSender;
     private static int BYTES_TRANSFORM = 1048576;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefineJobQueueByScriptAndScriptRulesImpl.class);
@@ -39,11 +42,15 @@ public class DefineJobQueueByScriptAndScriptRulesImpl implements DefineJobQueueA
     @Autowired
     public DefineJobQueueByScriptAndScriptRulesImpl(WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, JobService jobService,
                                                     @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQLightMessageSender,
-                                                    @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQHeavyMessageSender) {
+                                                    @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQHeavyMessageSender,
+                                                    @Qualifier("syncFmeJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQSyncFmeMessageSender,
+                                                    @Qualifier("asyncFmeJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQAsyncFmeMessageSender) {
         this.workerAndJobStatusHandlerService = workerAndJobStatusHandlerService;
         this.jobService = jobService;
         this.rabbitMQLightMessageSender = rabbitMQLightMessageSender;
         this.rabbitMQHeavyMessageSender = rabbitMQHeavyMessageSender;
+        this.rabbitMQSyncFmeMessageSender = rabbitMQSyncFmeMessageSender;
+        this.rabbitMQAsyncFmeMessageSender = rabbitMQAsyncFmeMessageSender;
     }
 
     @Override
@@ -162,9 +169,13 @@ public class DefineJobQueueByScriptAndScriptRulesImpl implements DefineJobQueueA
     }
 
     @Override
-    public void sendMsgToRabbitMQ(JobEntry jobEntry, WorkerJobRabbitMQRequestMessage message) {
+    public void sendMsgToRabbitMQ(QueryEntry queryEntry, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage message) {
         if (jobEntry.isHeavy()) {
             rabbitMQHeavyMessageSender.sendMessageToRabbitMQ(message);
+        } else if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME) && queryEntry.isAsynchronousExecution()) {
+            rabbitMQAsyncFmeMessageSender.sendMessageToRabbitMQ(message);
+        } else if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME) && !queryEntry.isAsynchronousExecution()) {
+            rabbitMQSyncFmeMessageSender.sendMessageToRabbitMQ(message);
         } else {
             rabbitMQLightMessageSender.sendMessageToRabbitMQ(message);
         }

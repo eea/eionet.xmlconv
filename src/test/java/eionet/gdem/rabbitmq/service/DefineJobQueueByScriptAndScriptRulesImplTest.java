@@ -117,16 +117,16 @@ public class DefineJobQueueByScriptAndScriptRulesImplTest {
         jobEntry.setHeavy(true);
         doNothing().when(rabbitMQHeavyMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
         WorkerJobRabbitMQRequestMessage message = new WorkerJobRabbitMQRequestMessage();
-        defineJobQueueByScriptAndScriptRules.sendMsgToRabbitMQ(jobEntry, message);
-        verify(defineJobQueueByScriptAndScriptRules).sendMsgToRabbitMQ(jobEntry, message);
+        defineJobQueueByScriptAndScriptRules.sendMsgToRabbitMQ(queryEntry, jobEntry, message);
+        verify(defineJobQueueByScriptAndScriptRules).sendMsgToRabbitMQ(queryEntry, jobEntry, message);
     }
 
     @Test
     public void testSendMsgToRabbitMQLight() {
         doNothing().when(rabbitMQLightMessageSender).sendMessageToRabbitMQ(any(WorkerJobRabbitMQRequestMessage.class));
         WorkerJobRabbitMQRequestMessage message = new WorkerJobRabbitMQRequestMessage();
-        defineJobQueueByScriptAndScriptRules.sendMsgToRabbitMQ(jobEntry, message);
-        verify(defineJobQueueByScriptAndScriptRules).sendMsgToRabbitMQ(jobEntry, message);
+        defineJobQueueByScriptAndScriptRules.sendMsgToRabbitMQ(queryEntry, jobEntry, message);
+        verify(defineJobQueueByScriptAndScriptRules).sendMsgToRabbitMQ(queryEntry, jobEntry, message);
     }
 }
 

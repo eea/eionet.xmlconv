@@ -993,4 +993,11 @@
             <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
         </modifySql>
     </changeSet>
+    <changeSet author="favvmary" id="rev-86">
+        <comment>Added maxSyncFmeJobExecutorContainersAllowed and maxAsyncFmeJobExecutorContainersAllowed properties</comment>
+        <sql>
+            INSERT INTO PROPERTIES VALUES (3,'maxSyncFmeJobExecutorContainersAllowed',0,'1','maximum number of synchronous fme JobExecutor containers to run on rancher');
+            INSERT INTO PROPERTIES VALUES (4,'maxAsyncFmeJobExecutorContainersAllowed',0,'1','maximum number of asynchronous fme JobExecutor containers to run on rancher');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
