@@ -40,10 +40,12 @@ public class WorkqueueRestController {
     public WorkqueuePageInfo getWorkqueuePageInfo(HttpSession session, @RequestParam(value = "page") Integer page, @RequestParam(value = "itemsPerPage") Integer itemsPerPage,
                                                   @RequestParam(value = "sortBy") String sortBy, @RequestParam(value = "sortDesc") Boolean sortDesc,
                                                   @RequestParam(value = "searchParam") String searchParam, @RequestParam(value = "keyword") String keyword,
-                                                  @RequestParam(value = "statuses") String[] searchedStatuses, HttpServletRequest request) {
+                                                  @RequestParam(value = "statuses") String[] searchedStatuses) {
         String userName = null;
-        if(session.getAttribute("user") != null){
-            userName = session.getAttribute("user").toString();
+        if(session != null) {
+            if (session.getAttribute("user") != null) {
+                userName = session.getAttribute("user").toString();
+            }
         }
         boolean wqdPrm = false;
         boolean wquPrm = false;

@@ -1,3 +1,4 @@
+let stompClient = null;
 var app = new Vue({
     el: '#workqueueApp',
     vuetify: new Vuetify(),
@@ -141,5 +142,21 @@ var app = new Vue({
     mounted() {
         const { sortBy, sortDesc, page, itemsPerPage } = this.options;
         this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "", []);
+
+        this.$nextTick(function() {
+            let socket = new SockJS("/new/workqueue");
+            stompClient = Stomp.over(socket);
+            stompClient.connect(
+                {},
+                function(frame) {
+                    console.log("Connected: " + frame);
+
+                    stompClient.subscribe("/workqueue", function(val) {
+                        console.log(val);
+                        console.log(JSON.parse(val.body));
+                    });
+                }
+            );
+        });
     }
 })

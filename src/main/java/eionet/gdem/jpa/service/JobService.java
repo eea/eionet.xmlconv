@@ -9,9 +9,11 @@ import eionet.gdem.web.spring.workqueue.JobMetadata;
 import org.basex.core.jobs.Job;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 public interface JobService {
 
@@ -34,5 +36,11 @@ public interface JobService {
     Integer getNumberOfTotalJobs();
 
     EntriesForPageObject getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword, String[] searchedStatuses);
+
+    void deleteJobById(Integer jobId);
+
+    void changeJobStatusAndTimestampByStatus(Integer currentStatus, Integer newStatus);
+
+    void updateJobDurationsByIds(Map<String, Long> jobHashmap);
 
 }

@@ -39,6 +39,7 @@ import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -232,12 +233,9 @@ public class WorkqueueManager {
      */
     public void endXQJob(WorkqueueJob job) throws DCMException {
         // remove the job from the queue / DB when the status won't change= FATAL or READY
-        try {
-            jobDao.endXQJob(job.getJobId());
-            LOGGER.info("Delete expired job: " + job.getJobId());
-        } catch (SQLException sqle) {
-            throw new DCMException("Error getting XQJob data from DB: " + sqle.toString());
-        }
+        getJobServiceBean().deleteJobById(Integer.valueOf(job.getJobId()));
+        LOGGER.info("Delete expired job: " + job.getJobId());
+
         // delete files only, if debug is not enabled
         if (!LOGGER.isDebugEnabled()) {
             // delete the result from filesystem
@@ -265,13 +263,13 @@ public class WorkqueueManager {
      */
     public static void resetActiveJobs() {
         try {
-            jobDao.changeJobStatusByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
+            getJobServiceBean().changeJobStatusAndTimestampByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
             List<JobHistoryEntry> entriesDownloading = getJobHistoryRepository().findAllByStatus(Constants.XQ_DOWNLOADING_SRC);
             for(JobHistoryEntry entry: entriesDownloading){
                 getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }
-            jobDao.changeJobStatusByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
+            getJobServiceBean().changeJobStatusAndTimestampByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
             List<JobHistoryEntry> entriesProcessing = getJobHistoryRepository().findAllByStatus(Constants.XQ_PROCESSING);
             for(JobHistoryEntry entry: entriesProcessing){
                 getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
@@ -380,7 +378,7 @@ public class WorkqueueManager {
                             } catch (Exception e) {
                                 LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
                             }
-                            GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
+                            getJobServiceBean().deleteJobById(Integer.valueOf(jobId));
                         }
                         LOGGER.info("Deleted job " + jobId);
 

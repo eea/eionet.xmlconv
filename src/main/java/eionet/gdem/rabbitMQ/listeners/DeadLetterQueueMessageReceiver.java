@@ -109,7 +109,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
                 }
 
-                GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
+                jobService.deleteJobById(Integer.valueOf(jobId));
                 LOGGER.info("Deleted job: " + jobId + " from the database");
             } else if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_READY) {
                 LOGGER.info("Job " + script.getJobId() + " has already been executed");
