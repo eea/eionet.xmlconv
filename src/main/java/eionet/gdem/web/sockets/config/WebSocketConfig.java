@@ -8,11 +8,8 @@ import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 import org.springframework.session.ExpiringSession;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.*;
 import org.springframework.session.web.socket.config.annotation.AbstractSessionWebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 
 import javax.mail.Session;
@@ -20,12 +17,12 @@ import java.util.List;
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
+public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/workqueue");
-        config.setApplicationDestinationPrefixes("/new");
+        config.enableSimpleBroker("/websocket/workqueue");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
     /**
@@ -34,7 +31,8 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         //registry.addEndpoint("/restapi/workqueueData/getWorkqueuePageInfo").withSockJS();
-        registry.addEndpoint("/new/workqueue").withSockJS();
+        //registry.addEndpoint("/new/workqueue").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/websocket/workqueue/tableChanged").setAllowedOrigins("*").withSockJS();
     }
 
 }

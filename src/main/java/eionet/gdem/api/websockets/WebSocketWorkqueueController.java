@@ -6,9 +6,12 @@ import eionet.gdem.api.WorkqueueRestController;
 import eionet.gdem.web.spring.workqueue.WorkqueuePageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class WebSocketWorkqueueController {
@@ -24,6 +27,8 @@ public class WebSocketWorkqueueController {
         this.workqueueRestController = workqueueRestController;
     }
 
+    @MessageMapping("/websocket/workqueue/tableChanged")
+    @SendTo("/websocket/workqueue")
     @Scheduled(fixedDelay = 20000)
     public void sendWebSocketUpdate() throws JsonProcessingException {
        this.messageTemplate.convertAndSend("/new/workqueue",

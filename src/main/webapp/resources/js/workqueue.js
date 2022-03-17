@@ -144,14 +144,14 @@ var app = new Vue({
         this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "", []);
 
         this.$nextTick(function() {
-            let socket = new SockJS("/new/workqueue");
+            let socket = new SockJS("/websocket/workqueue/tableChanged");
             stompClient = Stomp.over(socket);
             stompClient.connect(
                 {},
                 function(frame) {
                     console.log("Connected: " + frame);
 
-                    stompClient.subscribe("/workqueue", function(val) {
+                    stompClient.subscribe("/websocket/workqueue", function(val) {
                         console.log(val);
                         console.log(JSON.parse(val.body));
                     });
