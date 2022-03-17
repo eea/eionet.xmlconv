@@ -169,13 +169,15 @@ public class DefineJobQueueByScriptAndScriptRulesImpl implements DefineJobQueueA
     }
 
     @Override
-    public void sendMsgToRabbitMQ(QueryEntry queryEntry, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage message) {
+    public void sendMsgToRabbitMQ(JobEntry jobEntry, WorkerJobRabbitMQRequestMessage message) {
         if (jobEntry.isHeavy()) {
             rabbitMQHeavyMessageSender.sendMessageToRabbitMQ(message);
-        } else if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME) && queryEntry.isAsynchronousExecution()) {
-            rabbitMQAsyncFmeMessageSender.sendMessageToRabbitMQ(message);
-        } else if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME) && !queryEntry.isAsynchronousExecution()) {
-            rabbitMQSyncFmeMessageSender.sendMessageToRabbitMQ(message);
+        } else if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME)) {
+            if (message.getScript().getAsynchronousExecution()) {
+                rabbitMQAsyncFmeMessageSender.sendMessageToRabbitMQ(message);
+            } else {
+                rabbitMQSyncFmeMessageSender.sendMessageToRabbitMQ(message);
+            }
         } else {
             rabbitMQLightMessageSender.sendMessageToRabbitMQ(message);
         }

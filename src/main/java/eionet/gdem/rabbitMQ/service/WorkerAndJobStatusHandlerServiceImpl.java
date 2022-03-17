@@ -7,7 +7,9 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.jpa.utils.JobExecutorType;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.services.JobHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +29,23 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     JobExecutorHistoryService jobExecutorHistoryService;
     RabbitMQMessageSender rabbitMQMessageSender;
     RabbitMQMessageSender heavyRabbitMQMessageSender;
+    RabbitMQMessageSender rabbitMQSyncFmeMessageSender;
+    RabbitMQMessageSender rabbitMQAsyncFmeMessageSender;
+    QueryJpaService queryJpaService;
 
     @Autowired
-    public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService, JobExecutorHistoryService jobExecutorHistoryService,
-                                                @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender heavyRabbitMQMessageSender) {
+    public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService, JobExecutorHistoryService jobExecutorHistoryService, @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender,
+                                                @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender heavyRabbitMQMessageSender, @Qualifier("syncFmeJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQSyncFmeMessageSender,
+                                                @Qualifier("asyncFmeJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQAsyncFmeMessageSender, QueryJpaService queryJpaService) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobExecutorService = jobExecutorService;
         this.jobExecutorHistoryService = jobExecutorHistoryService;
         this.rabbitMQMessageSender = rabbitMQMessageSender;
         this.heavyRabbitMQMessageSender = heavyRabbitMQMessageSender;
+        this.rabbitMQSyncFmeMessageSender = rabbitMQSyncFmeMessageSender;
+        this.rabbitMQAsyncFmeMessageSender = rabbitMQAsyncFmeMessageSender;
+        this.queryJpaService = queryJpaService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -93,8 +102,17 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
                                       JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         this.updateJobAndJobHistory(jobEntry);
         this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
-        if (jobEntry.isHeavy()) heavyRabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
-        else rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        if (jobEntry.isHeavy()) {
+            heavyRabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        } else if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME)) {
+            if (workerJobRabbitMQRequestMessage.getScript().getAsynchronousExecution()) {
+                rabbitMQAsyncFmeMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+            } else {
+                rabbitMQSyncFmeMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+            }
+        } else {
+            rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        }
     }
 }
 
