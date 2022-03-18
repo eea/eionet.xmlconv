@@ -128,7 +128,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
      * @throws DatabaseException
      */
     private void findIfJobIsHeavyBasedOnWorkerType(WorkerJobInfoRabbitMQResponseMessage response, JobEntry jobEntry, JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
-        if (response.getJobExecutorType().equals(JobExecutorType.Heavy)) {  //the response came from a heavy worker, so the job is heavy
+        if (response.getJobExecutorType()!=null && response.getJobExecutorType().equals(JobExecutorType.Heavy)) {  //the response came from a heavy worker, so the job is heavy
             jobEntry.setHeavy(true);
             List<JobExecutor> jobExecutors = jobExecutorService.findExecutorsByJobId(jobEntry.getId());
             //find light workers that may have grabbed the job before the job was sent to heavy queue and set their status to failed in order for them to be deleted later by the responsible scheduled Task.
