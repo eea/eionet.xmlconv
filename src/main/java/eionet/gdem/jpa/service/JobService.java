@@ -25,7 +25,7 @@ public interface JobService {
 
     List<JobEntry> findProcessingJobs();
 
-    JobEntry saveOrUpdate(JobEntry jobEntry);
+    JobEntry saveOrUpdate(JobEntry jobEntry) throws DatabaseException;
 
     Integer getRetryCounter(Integer jobId) throws DatabaseException;
 

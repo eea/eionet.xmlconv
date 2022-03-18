@@ -98,7 +98,7 @@ public class JobServiceTest {
     }
 
     @Test
-    public void testSave() {
+    public void testSave() throws DatabaseException {
         when(jobRepository.save(any(JobEntry.class))).thenReturn(jobEntry);
         jobServiceImpl.saveOrUpdate(jobEntry);
         verify(jobServiceImpl).saveOrUpdate(jobEntry);
