@@ -133,13 +133,10 @@ var app = new Vue({
             if(value){
                 //item is expanded
                 let jobId = item.jobId;
-                if(item.job_history_metadata_list == null) {
-                    axios.get("/restapi/workqueueData/getJobDetails/" + jobId)
-                        .then((response) => {
-                            item.job_history_metadata_list = response.data;
-                        })
-                }
-
+                axios.get("/restapi/workqueueData/getJobDetails/" + jobId)
+                    .then((response) => {
+                        item.job_history_metadata_list = response.data;
+                    })
             }
         },
         search() {
