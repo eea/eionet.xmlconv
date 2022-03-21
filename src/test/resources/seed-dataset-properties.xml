@@ -2,4 +2,5 @@
 <dataset>
   <PROPERTIES ID="1" NAME="test1" TYPE="3" VALUE="testValue" DESCRIPTION="a string value" />
   <PROPERTIES ID="2" NAME="test2" TYPE="0" VALUE="5" DESCRIPTION="an integer value" />
+  <PROPERTIES ID="4" NAME="test4" TYPE="1" VALUE="200" DESCRIPTION="a long value" />
 </dataset>
