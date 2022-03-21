@@ -9,5 +9,5 @@ public interface HeartBeatMsgHandlerService {
 
     void saveMsgAndSendToRabbitMQ(WorkerHeartBeatMessage heartBeatMsgInfo, WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry);
 
-    void updateHeartBeatJobAndQueryTables(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry, WorkerHeartBeatMessage message, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException;
+    void updateHeartBeatJobAndQueryTables(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry, WorkerHeartBeatMessage message, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException, InterruptedException;
 }
