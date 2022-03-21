@@ -28,10 +28,10 @@ public class WebSocketWorkqueueController {
     }
 
     @MessageMapping("/websocket/workqueue/tableChanged")
-    @SendTo("/websocket/workqueue")
-    @Scheduled(fixedDelay = 20000)
+    @SendTo("/websocket")
+    @Scheduled(fixedDelay = 30000)
     public void sendWebSocketUpdate() throws JsonProcessingException {
-       this.messageTemplate.convertAndSend("/new/workqueue",
+       this.messageTemplate.convertAndSend("/websocket",
                 mapper.writeValueAsString(changedJobTable));
         changedJobTable = false;
     }

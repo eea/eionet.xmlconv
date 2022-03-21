@@ -4,7 +4,7 @@ var app = new Vue({
     vuetify: new Vuetify(),
     data() {
         return {
-            radioGroup: 1,
+            radioGroup: "",
             sortBy: ["jobId"],
             sortDesc: [true],
             jobEntries: [],
@@ -62,7 +62,22 @@ var app = new Vue({
                     this.totalJobEntries = response.data.totalJobEntries;
                     this.permissions = response.data.workqueuePermissions;
                     this.username = response.data.username;
-                    this.selected = [];
+                    //add parameters to url
+                    var url = new URL(window.location.href);
+                    url.searchParams.set('page', page);
+                    url.searchParams.set('itemsPerPage', itemsPerPage);
+                    url.searchParams.set('sortBy', sortBy);
+                    url.searchParams.set('sortDesc', sortDesc);
+                    url.searchParams.set('searchParam', searchParameter);
+                    if(searchParameter == "statusName"){
+                        url.searchParams.set('keyword', "");
+                    }
+                    else{
+                        url.searchParams.set('keyword', searchKeyword);
+                    }
+                    url.searchParams.set('statuses', searchedStatuses);
+                    //set url without reloading
+                    window.history.pushState(null, null, url.href);
                 });
         },
         restartJobs () {
@@ -140,8 +155,51 @@ var app = new Vue({
     },
     //this will trigger in the onReady State
     mounted() {
-        const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-        this.getWorkqueuePageInfo(sortBy, sortDesc, page, itemsPerPage, "", "", []);
+        var url = new URL(window.location.href);
+        if(url.searchParams.get("sortBy") != null){
+            this.options.sortBy = [url.searchParams.get("sortBy")];
+        }
+        else{
+            this.options.sortBy = ["jobId"];
+        }
+        if(url.searchParams.get("sortDesc") != null){
+            this.options.sortDesc = [url.searchParams.get("sortDesc")];
+        }
+        else{
+            this.options.sortDesc = [true];
+        }
+        if(url.searchParams.get("page") != null){
+            this.options.page = [url.searchParams.get("page")];
+        }
+        else{
+            this.options.page = 1;
+        }
+        if(url.searchParams.get("itemsPerPage") != null){
+            this.options.itemsPerPage = [url.searchParams.get("itemsPerPage")];
+        }
+        else{
+            this.options.itemsPerPage = 25;
+        }
+        if(url.searchParams.get("searchParam") != null){
+            this.radioGroup = [url.searchParams.get("searchParam")];
+        }
+        else{
+            this.radioGroup = "";
+        }
+        if(url.searchParams.get("keyword") != null){
+            this.searchedKeyword = [url.searchParams.get("keyword")];
+        }
+        else{
+            this.searchedKeyword = "";
+        }
+        if(url.searchParams.get("statuses") != null){
+            this.searchedStatuses = [url.searchParams.get("statuses")];
+        }
+        else{
+            this.searchedStatuses = "";
+        }
+        this.getWorkqueuePageInfo(this.options.sortBy, this.options.sortDesc, this.options.page, this.options.itemsPerPage, this.radioGroup, this.searchedKeyword, this.searchedStatuses);
+        let mustRefreshResults = false;
 
         this.$nextTick(function() {
             let socket = new SockJS("/websocket/workqueue/tableChanged");
@@ -149,11 +207,13 @@ var app = new Vue({
             stompClient.connect(
                 {},
                 function(frame) {
-                    console.log("Connected: " + frame);
+                    stompClient.subscribe("/websocket", function(val) {
+                        mustRefreshResults = JSON.parse(val.body);
+                        if(mustRefreshResults){
+                            var url = new URL(window.location.href);
+                            window.location.href = url.href;
 
-                    stompClient.subscribe("/websocket/workqueue", function(val) {
-                        console.log(val);
-                        console.log(JSON.parse(val.body));
+                        }
                     });
                 }
             );
