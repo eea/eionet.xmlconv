@@ -78,6 +78,16 @@ var app = new Vue({
                     url.searchParams.set('statuses', searchedStatuses);
                     //set url without reloading
                     window.history.pushState(null, null, url.href);
+
+                    //setup options
+                    this.options.sortBy = sortBy;
+                    this.options.sortDesc = sortDesc;
+                    this.options.page = page;
+                    this.options.itemsPerPage = itemsPerPage;
+                    this.radioGroup = searchParameter;
+                    this.searchedKeyword = searchKeyword;
+                    this.searchedStatuses = searchedStatuses;
+
                 });
         },
         restartJobs () {
@@ -166,13 +176,13 @@ var app = new Vue({
             this.options.sortDesc = [true];
         }
         if(url.searchParams.get("page") != null){
-            this.options.page = [url.searchParams.get("page")];
+            this.options.page = parseInt([url.searchParams.get("page")], 10);
         }
         else{
             this.options.page = 1;
         }
         if(url.searchParams.get("itemsPerPage") != null){
-            this.options.itemsPerPage = [url.searchParams.get("itemsPerPage")];
+            this.options.itemsPerPage = parseInt([url.searchParams.get("itemsPerPage")], 10);
         }
         else{
             this.options.itemsPerPage = 25;
@@ -196,7 +206,6 @@ var app = new Vue({
             this.searchedStatuses = "";
         }
         this.getWorkqueuePageInfo(this.options.sortBy, this.options.sortDesc, this.options.page, this.options.itemsPerPage, this.radioGroup, this.searchedKeyword, this.searchedStatuses);
-        let mustRefreshResults = false;
 
         this.$nextTick(function() {
             let socket = new SockJS("/websocket/workqueue/tableChanged");
@@ -205,11 +214,10 @@ var app = new Vue({
                 {},
                 function(frame) {
                     stompClient.subscribe("/websocket", function(val) {
-                        mustRefreshResults = JSON.parse(val.body);
+                        let mustRefreshResults = JSON.parse(val.body);
                         if(mustRefreshResults){
                             var url = new URL(window.location.href);
                             window.location.href = url.href;
-
                         }
                     });
                 }
