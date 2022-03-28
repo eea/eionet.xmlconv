@@ -79,8 +79,13 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public JobEntry saveOrUpdate(JobEntry jobEntry) {
-        return jobRepository.save(jobEntry);
+    public JobEntry saveOrUpdate(JobEntry jobEntry) throws DatabaseException {
+        try {
+            return jobRepository.save(jobEntry);
+        } catch (Exception e) {
+            LOGGER.error("Database exception when trying to save or update " + jobEntry.getId());
+            throw new DatabaseException(e);
+        }
     }
 
     @Override

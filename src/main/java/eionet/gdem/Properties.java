@@ -195,9 +195,13 @@ public class Properties {
     public static final Long rancherJobExecServiceMemoryReservation;
     public static final String rancherLightJobExecServiceId;
     public static final String rancherHeavyJobExecServiceId;
+    public static final String rancherSyncFmeJobExecServiceId;
+    public static final String rancherAsyncFmeJobExecServiceId;
     public static final boolean enableJobExecRancherScheduledTask;
     public static final Integer maxLightJobExecutorContainersAllowed;
     public static final Integer maxHeavyJobExecutorContainersAllowed;
+    public static final Integer maxSyncFmeJobExecutorContainersAllowed;
+    public static final Integer maxAsyncFmeJobExecutorContainersAllowed;
 
     public static String rabbitMQHost;
     public static Integer rabbitMQPort;
@@ -218,8 +222,14 @@ public class Properties {
     public static String WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY;
     public static String WORKERS_DEAD_LETTER_ROUTING_KEY;
     public static String HEAVY_WORKERS_JOBS_QUEUE;
+    public static String SYNC_FME_JOBS_QUEUE;
+    public static String ASYNC_FME_JOBS_QUEUE;
     public static String  MAIN_XMLCONV_HEAVY_JOBS_EXCHANGE;
+    public static String XMLCONV_SYNC_FME_JOBS_EXCHANGE;
+    public static String XMLCONV_ASYNC_FME_JOBS_EXCHANGE;
     public static String HEAVY_JOBS_ROUTING_KEY;
+    public static String SYNC_FME_JOBS_ROUTING_KEY;
+    public static String ASYNC_FME_JOBS_ROUTING_KEY;
     public static String CONVERTERS_GRAYLOG;
     public static String JOB_EXECUTOR_GRAYLOG;
     public static String FME_JOB_URL;
@@ -344,9 +354,13 @@ public class Properties {
         rancherJobExecServiceMemoryReservation = getLongProperty("env.rancher.api.jobExec.service.memoryReservation");
         rancherLightJobExecServiceId = getStringProperty("env.rancher.api.light.jobExec.service.id");
         rancherHeavyJobExecServiceId = getStringProperty("env.rancher.api.heavy.jobExec.service.id");
+        rancherSyncFmeJobExecServiceId = getStringProperty("env.rancher.api.sync.fme.jobExec.service.id");
+        rancherAsyncFmeJobExecServiceId = getStringProperty("env.rancher.api.async.fme.jobExec.service.id");
         enableJobExecRancherScheduledTask = Boolean.parseBoolean(getStringProperty("env.enable.jobExecutor.rancher.scheduled.task"));
         maxLightJobExecutorContainersAllowed = getIntProperty("env.max.light.jobExecutor.containers.allowed");
         maxHeavyJobExecutorContainersAllowed = getIntProperty("env.max.heavy.jobExecutor.containers.allowed");
+        maxSyncFmeJobExecutorContainersAllowed = getIntProperty("env.max.sync.fme.jobExecutor.containers.allowed");
+        maxAsyncFmeJobExecutorContainersAllowed = getIntProperty("env.max.async.fme.jobExecutor.containers.allowed");
 
         rabbitMQHost = getStringProperty("env.rabbitmq.host");
         rabbitMQPort = getIntProperty("env.rabbitmq.port");
@@ -364,8 +378,14 @@ public class Properties {
         WORKER_STATUS_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.status.routingkey");
         WORKER_HEART_BEAT_RESPONSE_ROUTING_KEY = getStringProperty("env.rabbitmq.worker.heartBeat.response.routingKey");
         HEAVY_WORKERS_JOBS_QUEUE = getStringProperty("env.rabbitmq.heavy.workers.jobs.queue");
+        SYNC_FME_JOBS_QUEUE = getStringProperty("env.rabbitmq.workers.fme.sync.jobs.queue");
+        ASYNC_FME_JOBS_QUEUE = getStringProperty("env.rabbitmq.workers.fme.async.jobs.queue");
         MAIN_XMLCONV_HEAVY_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.main.xmlconv.heavy.jobs.exchange");
+        XMLCONV_SYNC_FME_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.xmlconv.sync.fme.jobs.exchange");
+        XMLCONV_ASYNC_FME_JOBS_EXCHANGE = getStringProperty("env.rabbitmq.xmlconv.async.fme.jobs.exchange");
         HEAVY_JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.heavy.jobs.routingkey");
+        SYNC_FME_JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.sync.fme.jobs.routingkey");
+        ASYNC_FME_JOBS_ROUTING_KEY = getStringProperty("env.rabbitmq.async.fme.jobs.routingkey");
 
         jobsOnDemandLimitBeforeTimeout = getLongProperty("env.jobs.onDemand.limit.before.time.out");
         jobsOnDemandUITimeout = getLongProperty("env.jobs.onDemand.ui.time.out");

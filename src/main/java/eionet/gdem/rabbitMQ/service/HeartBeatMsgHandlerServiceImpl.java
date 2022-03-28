@@ -9,6 +9,7 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.WorkerHeartBeatMsgService;
 import eionet.gdem.jpa.utils.JobExecutorType;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.jpa.service.QueryMetadataService;
@@ -50,7 +51,7 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
 
     @Transactional
     @Override
-    public void updateHeartBeatJobAndQueryTables(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry, WorkerHeartBeatMessage response, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException {
+    public void updateHeartBeatJobAndQueryTables(WorkerHeartBeatMsgEntry workerHeartBeatMsgEntry, WorkerHeartBeatMessage response, Integer nStatus, InternalSchedulingStatus internalStatus) throws DatabaseException, InterruptedException {
         JobEntry jobEntry = jobService.findById(response.getJobId());
 
         if (jobEntry.getnStatus()== Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND_IN_WORKER) &&
@@ -62,6 +63,15 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
         }
         workerHeartBeatMsgService.save(workerHeartBeatMsgEntry);
         if (jobEntry.getnStatus()== Constants.XQ_PROCESSING && response.getJobStatus().equals(Constants.JOB_NOT_FOUND_IN_WORKER)) {
+            if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME)) {
+                //in case T_XQJOBS table hasn't been updated yet with the right n_status
+                Thread.sleep(5000);
+                jobEntry = jobService.findById(response.getJobId());
+                if (jobEntry.getnStatus()==Constants.XQ_READY || jobEntry.getnStatus()==Constants.XQ_FATAL_ERR) {
+                    return;
+                }
+            }
+
             jobEntry.setnStatus(nStatus).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
             jobService.saveOrUpdate(jobEntry);
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobEntry.getId().toString(), nStatus, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType())

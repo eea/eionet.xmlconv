@@ -1,14 +1,13 @@
 package eionet.gdem.infrastructure.scheduling;
 
 import eionet.gdem.SchedulingConstants;
-import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.Entities.JobExecutorHistory;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.jpa.utils.JobExecutorType;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.model.ContainerApiResponse;
@@ -24,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,10 +40,11 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     private RabbitAdmin rabbitAdmin;
     private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
     private CircuitBreaker circuitBreaker;
+    private QueryJpaService queryJpaService;
 
     @Autowired
-    public WorkersOrchestrationSharedServiceImpl(ServicesRancherApiOrchestrator servicesRancherApiOrchestrator, ContainersRancherApiOrchestrator containersRancherApiOrchestrator,
-                    JobExecutorService jobExecutorService, JobService jobService, RabbitAdmin rabbitAdmin, WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, CircuitBreaker circuitBreaker) {
+    public WorkersOrchestrationSharedServiceImpl(ServicesRancherApiOrchestrator servicesRancherApiOrchestrator, ContainersRancherApiOrchestrator containersRancherApiOrchestrator, JobExecutorService jobExecutorService,
+                                                 JobService jobService, RabbitAdmin rabbitAdmin, WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, CircuitBreaker circuitBreaker, QueryJpaService queryJpaService) {
         this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
         this.containersRancherApiOrchestrator = containersRancherApiOrchestrator;
         this.jobExecutorService = jobExecutorService;
@@ -51,6 +52,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
         this.rabbitAdmin = rabbitAdmin;
         this.workerAndJobStatusHandlerService = workerAndJobStatusHandlerService;
         this.circuitBreaker = circuitBreaker;
+        this.queryJpaService = queryJpaService;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
         List<JobExecutor> failedWorkersToBeDeleted = totalFailedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(jobExecutorType)).collect(Collectors.toList());
 
         //find jobExecutorType for workers with unknown jobExecutorType and add them in failedWorkersToBeDeleted list if they belong to rancher service with specific serviceId
-        List<JobExecutor> jobExecutorsWithUnknownType = totalFailedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Uknown)).collect(Collectors.toList());
+        List<JobExecutor> jobExecutorsWithUnknownType = totalFailedWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Unknown)).collect(Collectors.toList());
         for (JobExecutor jobExec : jobExecutorsWithUnknownType) {
             ContainerApiResponse containerInfo = containersRancherApiOrchestrator.getContainerInfo(jobExec.getName());
             if (containerInfo.getData().size()>0) {
@@ -139,17 +141,45 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
 
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         List<JobEntry> jobs = jobService.findByIntSchedulingStatusAndIsHeavy(internalStatus, isHeavy);
+        List<JobEntry> finalJobs = new ArrayList<>();
+        if (!isHeavy) {
+            switch (jobExecutorType) {
+                case Sync_fme:
+                    jobs = jobs.stream().filter(jobEntry -> jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME)).collect(Collectors.toList());
+                    for (JobEntry jobEntry : jobs) {
+                        QueryEntry queryEntry = queryJpaService.findByQueryId(jobEntry.getQueryId());
+                        if (!queryEntry.isAsynchronousExecution()) {
+                            finalJobs.add(jobEntry);
+                        }
+                    }
+                    break;
+                case Async_fme:
+                    jobs = jobs.stream().filter(jobEntry -> jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME)).collect(Collectors.toList());
+                    for (JobEntry jobEntry : jobs) {
+                        QueryEntry queryEntry = queryJpaService.findByQueryId(jobEntry.getQueryId());
+                        if (queryEntry.isAsynchronousExecution()) {
+                            finalJobs.add(jobEntry);
+                        }
+                    }
+                    break;
+                case Light:
+                    finalJobs = jobs.stream().filter(jobEntry -> !jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME)).collect(Collectors.toList());
+                    break;
+            }
+        } else {
+            finalJobs = jobs;
+        }
         List<JobExecutor> readyWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_READY);
         readyWorkers = readyWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(jobExecutorType)).collect(Collectors.toList());
-        if (jobs.size() > readyWorkers.size()) {
-            Integer newWorkers = jobs.size() - readyWorkers.size();
+        if (finalJobs.size() > readyWorkers.size()) {
+            Integer newWorkers = finalJobs.size() - readyWorkers.size();
             try {
                 this.createWorkers(serviceId, newWorkers, maxJobExecutorsAllowed);
             } catch (RancherApiException e) {
                 LOGGER.error("Worker creation failed.");
                 return;
             }
-        } else if (jobs.size() < readyWorkers.size()) {
+        } else if (finalJobs.size() < readyWorkers.size()) {
             List<String> instances = null;
             try {
                 instances = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
@@ -160,7 +190,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             if (instances.size() == 1) {
                 return;
             }
-            Integer workersToDelete = readyWorkers.size() - jobs.size();
+            Integer workersToDelete = readyWorkers.size() - finalJobs.size();
             Integer workersDeleted = 1;
             for (JobExecutor worker : readyWorkers) {
                 while (workersDeleted <= workersToDelete) {
