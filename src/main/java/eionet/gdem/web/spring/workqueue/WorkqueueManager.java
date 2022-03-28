@@ -355,13 +355,6 @@ public class WorkqueueManager {
                             }
                         }
                         else{
-                            //user has already pressed delete for the job And the job has been handled by the If clause above.
-                            // A Second delete action, will reach this else statement and delete the job Directly from the tables which may lead to unwanted
-                            // behavior in terms of the workers previously executing the job, and their termination, as well as the job removal from rabbitmq queues.
-                            if (status.equals(String.valueOf(Constants.DELETED))) {
-                                LOGGER.info("Job with id " + jobId + " has already status deleted=" + Constants.DELETED);
-                                continue;
-                            }
                             jobsToDelete.add(jobId);
                             // delete also result files from file system tmp folder
                             String resultFile = jobData[2];

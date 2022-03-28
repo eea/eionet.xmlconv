@@ -96,27 +96,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
             } else if (deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_INTERRUPTED) {
                 LOGGER.info("Job " + script.getJobId() + " was interrupted by interruptLongRunningJobs task because duration exceed schema's maxExecution time");
             } else if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.DELETED){
-                //delete temp files and entry from T_XQJOBS table
-                String jobId = script.getJobId();
-                // delete also result files from file system tmp folder
-                try {
-                    Utils.deleteFile(script.getStrResultFile());
-                } catch (Exception e) {
-                    LOGGER.error("Could not delete job result file: " + script.getStrResultFile() + "." + e.getMessage());
-                }
-                // delete xquery files, if they are stored in tmp folder
-                String xqFile = script.getScriptFileName();
-                try {
-                    // Important!!!: delete only, when the file is stored in tmp folder
-                    if (xqFile.startsWith(Properties.tmpFolder)) {
-                        Utils.deleteFile(xqFile);
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
-                }
-
-                GDEMServices.getDaoService().getXQJobDao().endXQJob(jobId);
-                LOGGER.info("Deleted job: " + jobId + " from the database");
+                LOGGER.info("Job " + script.getJobId() + " has received deleted state");
             } else if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_READY) {
                 LOGGER.info("Job " + script.getJobId() + " has already been executed");
             } else{
