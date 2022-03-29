@@ -82,9 +82,13 @@ var app = new Vue({
         },
 
         async save() {
-            await axios.post("/restapi/properties/add", this.editedItem);
-            this.close();
-            this.readPropertiesEntries();
+            if (this.editedItem.type=='Integer' && this.editedItem.value==0) {
+                alert("Value 0 is not allowed");
+            } else {
+                await axios.post("/restapi/properties/add", this.editedItem);
+                this.close();
+                this.readPropertiesEntries();
+            }
         },
 
         //Reading data from API method.
