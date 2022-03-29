@@ -100,6 +100,8 @@
                                                 <v-text-field
                                                         v-model="editedItem.value"
                                                         label="Value"
+                                                        :readonly="editedItem.name=='maxAsyncFmeJobExecutorContainersAllowed'"
+                                                        :rules="[(v) => v!=0 || 'Value 0 is not allowed']"
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col
