@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 public interface JobService {
 
@@ -34,5 +35,11 @@ public interface JobService {
     Integer getNumberOfTotalJobs();
 
     EntriesForPageObject getPagedAndSortedEntries(Integer page, Integer itemsPerPage, String sortBy, Boolean sortDesc, String searchParam, String keyword, String[] searchedStatuses);
+
+    JobEntry findByDuplicateIdentifierAndStatus(String duplicateIdentifier, Set<Integer> statuses);
+
+    String findDuplicateNotCompletedJob(String fileUrl, String scriptId);
+
+    String getDuplicateIdentifier(String fileUrl, String scriptId);
 
 }

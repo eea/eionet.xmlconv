@@ -993,4 +993,20 @@
             <append value="ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
         </modifySql>
     </changeSet>
+    <changeSet author="anthaant" id="rev-87">
+        <comment>
+            Added column DUPLICATE_IDENTIFIER to T_XQJOBS table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="DUPLICATE_IDENTIFIER" type="VARCHAR(100)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-88">
+        <comment>
+            Added column DUPLICATE_IDENTIFIER to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="DUPLICATE_IDENTIFIER" type="VARCHAR(100)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

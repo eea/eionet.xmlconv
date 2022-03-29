@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -48,7 +49,7 @@ public class XQueryServiceTest {
         testHashTable = initTestHashTable();
         testHashMap = initTestHashMap();
         when(queryService.listQueries(Mockito.anyString())).thenReturn(queriesList);
-        when(jobRequestHandlerService.analyzeMultipleXMLFiles(Mockito.any())).thenReturn(testHashMap);
+        when(jobRequestHandlerService.analyzeMultipleXMLFiles(Mockito.any(), anyBoolean())).thenReturn(testHashMap);
         when(xQueryService.getQueryService()).thenReturn(queryService);
         when(xQueryService.getJobRequestHandlerService()).thenReturn(jobRequestHandlerService);
     }

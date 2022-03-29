@@ -1,3 +1,5 @@
+
+
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -1352,5 +1354,9 @@ public final class Utils {
      */
     public static Long getDifferenceBetweenTwoTimestampsInMs(Timestamp t1, Timestamp t2){
         return Math.abs(t1.getTime() - t2.getTime());
+    }
+
+    public static String constructDuplicateIdentifierForJob(String hash, String scriptId, String scriptDateLastChanged){
+        return hash + "_" + scriptId + "_" + scriptDateLastChanged;
     }
 }

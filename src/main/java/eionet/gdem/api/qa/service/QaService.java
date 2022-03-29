@@ -24,12 +24,12 @@ public interface QaService {
 
     List<String> extractObligationUrlsFromEnvelopeUrl(String envelopeUrl) throws XMLConvException;
     /**
-     *  Calls  the method  {@link eionet.gdem.services.JobRequestHandlerService#analyzeMultipleXMLFiles(java.util.HashMap)  }
+     *  Calls  the method  {@link eionet.gdem.services.JobRequestHandlerService#analyzeMultipleXMLFiles(java.util.HashMap, Boolean)  }
      *  which returns hashmap. Each entry contains a JobID and a FileURL.
      * @return a map containing each Job Id and corresponding File URL as Key value pair.
      */
-    List<QaResultsWrapper> scheduleJobs(String envelopeUrl) throws XMLConvException;
-    
+    List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob) throws XMLConvException;
+
     Hashtable<String,Object> getJobResults(String jobId) throws XMLConvException;
     Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException;
     Vector runQaScript(String sourceUrl, String scriptId,boolean setBodyInResponse, boolean isTrustedMode) throws XMLConvException;
@@ -37,7 +37,7 @@ public interface QaService {
     List<LinkedHashMap<String,String>> listQAScripts(String schema, String active) throws XMLConvException;
 
     QueryService getQueryService();
-    
+
     public Document getXMLFromEnvelopeURL(String envelopeURL) throws XMLConvException ;
 
     Schema getSchemaBySchemaUrl(String schemaUrl) throws Exception;

@@ -6,14 +6,9 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dto.Schema;
-import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.jpa.Entities.JobExecutorHistory;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
-import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
+import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.jpa.service.JobExecutorHistoryService;
-import eionet.gdem.jpa.service.JobService;
-import eionet.gdem.jpa.service.QueryMetadataService;
+import eionet.gdem.jpa.service.*;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.QueryService;
 import eionet.gdem.services.*;
@@ -22,6 +17,15 @@ import eionet.gdem.web.spring.hosts.IHostDao;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +137,7 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public List<QaResultsWrapper> scheduleJobs(String envelopeUrl) throws XMLConvException {
+    public List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob) throws XMLConvException {
 
         HashMap<String, String> fileLinksAndSchemas = extractFileLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
 
@@ -159,7 +163,7 @@ public class QaServiceImpl implements QaService {
             if (map.size() == 0) {
                 LOGGER.info("Could not find files and their schemas. There was an issue with the envelope " + envelopeUrl);
             }
-            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerService().analyzeMultipleXMLFiles(map);
+            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerService().analyzeMultipleXMLFiles(map, checkForDuplicateJob);
 
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
             for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {
@@ -304,7 +308,7 @@ public class QaServiceImpl implements QaService {
     protected void addObligationsFiles(HashMap<String,List<String>> map,String envelopeUrl) throws XMLConvException{
         List<String> obligationUrls = extractObligationUrlsFromEnvelopeUrl(envelopeUrl);
         for (String obligationUrl: obligationUrls
-             ) {
+        ) {
             if(obligationUrl!=null && !obligationUrl.isEmpty())    {
                 List<String> obligation = new ArrayList<>();
                 obligation.add(envelopeUrl+"/xml");

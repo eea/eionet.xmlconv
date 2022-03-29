@@ -119,7 +119,7 @@ public class QaControllerTest {
         envelopeWrapper.setEnvelopeUrl(envelopeUrl);
         qaController.scheduleQaRequestOnEnvelope(envelopeWrapper);
         ArgumentCaptor<String> envelopeUrlCaptor = ArgumentCaptor.forClass(String.class);
-        verify(qaServiceMock, times(1)).scheduleJobs(envelopeUrlCaptor.capture());
+        verify(qaServiceMock, times(1)).scheduleJobs(envelopeUrlCaptor.capture(), anyBoolean());
         assertTrue(EqualsBuilder.reflectionEquals(envelopeUrlCaptor.getValue(), envelopeUrl));
     }
 
@@ -155,7 +155,7 @@ public class QaControllerTest {
                 .andExpect(jsonPath("$.feedbackStatus", is("BLOCKER")))
                 .andExpect(jsonPath("$.feedbackMessage", is("Feedback Message")))
                 .andExpect(jsonPath("$.feedbackContentType", is("text/html")));
-                //.andExpect(jsonPath("$.feedbackContent", is("<div>some content</div>")));
+        //.andExpect(jsonPath("$.feedbackContent", is("<div>some content</div>")));
 
         ArgumentCaptor<String> jobIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(qaServiceImplMock, times(1)).getJobResults(jobIdCaptor.capture());

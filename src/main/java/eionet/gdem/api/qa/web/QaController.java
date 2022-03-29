@@ -154,7 +154,7 @@ public class QaController {
         }
 
         QueryService queryService = new QueryService();
-        String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null);
+        String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null, true);
         LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
         results.put("jobId",jobId);
         return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
@@ -170,7 +170,7 @@ public class QaController {
         if (envelopeWrapper.getEnvelopeUrl() == null) {
             throw new EmptyParameterException("envelopeUrl");
         }
-        List<QaResultsWrapper> qaResults = qaService.scheduleJobs(envelopeWrapper.getEnvelopeUrl());
+        List<QaResultsWrapper> qaResults = qaService.scheduleJobs(envelopeWrapper.getEnvelopeUrl(), true);
         if(qaResults == null || qaResults.size() == 0){
             LOGGER.info("No jobs were inserted");
         }
@@ -254,7 +254,7 @@ public class QaController {
                     map.put(value, files);
                 }
             }
-            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(map);
+            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(map, false);
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
 
             for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {

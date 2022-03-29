@@ -11,4 +11,6 @@ public interface QueryHistoryService {
     QueryHistoryEntry save(QueryHistoryEntry entry);
 
     void updateQueryId(Integer newQueryId, Integer oldQueryId);
+
+    QueryHistoryEntry findLastEntryByQueryId(Integer queryId);
 }

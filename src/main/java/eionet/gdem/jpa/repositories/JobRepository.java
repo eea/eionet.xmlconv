@@ -68,4 +68,7 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     Page<JobEntry> findByNStatusIn(Set<Integer> nStatus, Pageable pageable);
 
     Long countByNStatusIn(Set<Integer> nStatus);
+
+    @Query(value = "SELECT * FROM T_XQJOBS WHERE DUPLICATE_IDENTIFIER = :duplicateIdentifier and N_STATUS in :nStatus ORDER BY JOB_ID DESC LIMIT 1", nativeQuery = true)
+    JobEntry findByDuplicateIdentifierAndStatus(@Param("duplicateIdentifier") String duplicateIdentifier, @Param("nStatus") Set<Integer> nStatus);
 }

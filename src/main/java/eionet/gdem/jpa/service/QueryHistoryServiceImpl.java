@@ -35,4 +35,9 @@ public class QueryHistoryServiceImpl implements QueryHistoryService {
     public void updateQueryId(Integer newQueryId, Integer oldQueryId) {
         queryHistoryRepository.updateQueryId(newQueryId, oldQueryId);
     }
+
+    @Override
+    public QueryHistoryEntry findLastEntryByQueryId(Integer queryId) {
+        return queryHistoryRepository.findLastEntryByQueryId(queryId);
+    }
 }

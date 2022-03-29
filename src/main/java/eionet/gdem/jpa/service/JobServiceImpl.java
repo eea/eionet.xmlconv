@@ -4,15 +4,26 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.StatusUtils;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.hosts.IHostDao;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.web.spring.workqueue.EntriesForPageObject;
 import eionet.gdem.web.spring.workqueue.JobMetadata;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +35,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -33,12 +46,15 @@ public class JobServiceImpl implements JobService {
 
     JobRepository jobRepository;
 
+    QueryHistoryService queryHistoryService;
+
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Autowired
-    public JobServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository) {
+    public JobServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository, @Qualifier("queryHistoryServiceImpl") QueryHistoryService queryHistoryService) {
         this.jobRepository = jobRepository;
+        this.queryHistoryService = queryHistoryService;
     }
 
     @Override
@@ -361,17 +377,102 @@ public class JobServiceImpl implements JobService {
         return jobsList;
     }
 
+    @Override
+    public JobEntry findByDuplicateIdentifierAndStatus(String duplicateIdentifier, Set<Integer> statuses){
+        JobEntry jobEntry = jobRepository.findByDuplicateIdentifierAndStatus(duplicateIdentifier, statuses);
+        return jobEntry;
+    }
+
+    @Override
+    public String findDuplicateNotCompletedJob(String fileUrl, String scriptId){
+        String duplicateIdentifier = getDuplicateIdentifier(fileUrl, scriptId);
+        if(Utils.isNullStr(duplicateIdentifier)){
+            return null;
+        }
+        JobEntry jobEntry = findByDuplicateIdentifierAndStatus(duplicateIdentifier, new HashSet<Integer>(Arrays.asList(Constants.XQ_RECEIVED, Constants.XQ_DOWNLOADING_SRC, Constants.XQ_PROCESSING)));
+        if(jobEntry != null){
+            //found duplicate entry
+            LOGGER.info("Found job with id " + jobEntry.getId() + " that has duplicate identifier " + duplicateIdentifier + " and status " + jobEntry.getnStatus());
+            return jobEntry.getId().toString();
+        }
+        return null;
+    }
+
+    private String getHashFromCdrBdrForFile(String fileUrl) throws IOException, SQLException {
+        try {
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            String hash = null;
+            String requestUrl = fileUrl;
+            String lastChar = fileUrl.substring(fileUrl.length() - 1);
+            if (!lastChar.equals("/")) {
+                requestUrl += "/";
+            }
+            requestUrl += "file_metadata";
+            HttpGet httpget = new HttpGet(requestUrl);
+            URL url = new URL(requestUrl);
+            String authorization = getAuthorizationString(url.getHost());
+            if (!Utils.isNullStr(authorization)) {
+                httpget.addHeader(HttpHeaders.AUTHORIZATION, authorization);
+            }
+            CloseableHttpResponse response = httpClient.execute(httpget);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                HttpEntity entity = response.getEntity();
+                String responseString = EntityUtils.toString(entity, "UTF-8");
+                JSONObject object = new JSONObject((responseString));
+                hash = (String) object.get("hash");
+            }
+            return hash;
+        }catch(Exception e){
+            LOGGER.error("Could not retrieve hash from cdr/bdr for file " + fileUrl + ". Exception message is: " + e.getMessage());
+            return null;
+        }
+
+    }
+
+    private String getAuthorizationString(String host) throws SQLException {
+        //get credentials for host
+        IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
+        Vector v = hostDao.getHosts(host);
+
+        if (v != null && v.size() > 0) {
+            Hashtable h = (Hashtable) v.get(0);
+            String user = (String) h.get("user_name");
+            String pwd = (String) h.get("pwd");
+            String userpass = user + ":" + pwd;
+
+            //add basic authorization
+            String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
+            return basicAuth;
+        }
+        return null;
+    }
+
+    @Override
+    public String getDuplicateIdentifier(String fileUrl, String scriptId){
+        if(Utils.isNullStr(fileUrl) || Utils.isNullStr(scriptId)){
+            return null;
+        }
+        String hash = null;
+        try {
+            hash = getHashFromCdrBdrForFile(fileUrl);
+        } catch (IOException e) {
+            LOGGER.error("Could not retrieve hash from cdr/bdr for file " + fileUrl + ". Exception message: " + e.getMessage());
+            return null;
+        } catch (SQLException e) {
+            LOGGER.error("Could not retrieve hash from cdr/bdr for file " + fileUrl + ". Exception message: " + e.getMessage());
+            return null;
+        }
+        if(hash == null){
+            return null;
+        }
+
+        QueryHistoryEntry queryHistoryEntry = queryHistoryService.findLastEntryByQueryId(Integer.valueOf(scriptId));
+        if(queryHistoryEntry == null || queryHistoryEntry.getDateModified() == null){
+            return null;
+        }
+        String scriptDateLastChanged = queryHistoryEntry.getDateModified().toString();
+        String duplicateIdentifier = Utils.constructDuplicateIdentifierForJob(hash, scriptId, scriptDateLastChanged);
+        return duplicateIdentifier;
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
