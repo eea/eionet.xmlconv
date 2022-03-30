@@ -395,6 +395,9 @@ public class JobServiceImpl implements JobService {
             LOGGER.info("Found job with id " + jobEntry.getId() + " that has duplicate identifier " + duplicateIdentifier + " and status " + jobEntry.getnStatus());
             return jobEntry.getId().toString();
         }
+        else{
+            LOGGER.info("No duplicate processing job found for fileUrl " + fileUrl + " and script " + scriptId);
+        }
         return null;
     }
 
@@ -415,6 +418,7 @@ public class JobServiceImpl implements JobService {
                 httpget.addHeader(HttpHeaders.AUTHORIZATION, authorization);
             }
             CloseableHttpResponse response = httpClient.execute(httpget);
+            LOGGER.info("When retrieving hash from cdr/bdr for file " + fileUrl + " got response code " + response.getStatusLine().getStatusCode());
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 HttpEntity entity = response.getEntity();
                 String responseString = EntityUtils.toString(entity, "UTF-8");
@@ -449,7 +453,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public String getDuplicateIdentifier(String fileUrl, String scriptId){
-        if(Utils.isNullStr(fileUrl) || Utils.isNullStr(scriptId)){
+        if(Utils.isNullStr(fileUrl) || Utils.isNullStr(scriptId) || scriptId.equals("-1")){
             return null;
         }
         String hash = null;
@@ -467,10 +471,10 @@ public class JobServiceImpl implements JobService {
         }
 
         QueryHistoryEntry queryHistoryEntry = queryHistoryService.findLastEntryByQueryId(Integer.valueOf(scriptId));
-        if(queryHistoryEntry == null || queryHistoryEntry.getDateModified() == null){
-            return null;
+        String scriptDateLastChanged = null;
+        if(queryHistoryEntry != null && queryHistoryEntry.getDateModified() != null){
+            scriptDateLastChanged = queryHistoryEntry.getDateModified().toString();
         }
-        String scriptDateLastChanged = queryHistoryEntry.getDateModified().toString();
         String duplicateIdentifier = Utils.constructDuplicateIdentifierForJob(hash, scriptId, scriptDateLastChanged);
         return duplicateIdentifier;
     }

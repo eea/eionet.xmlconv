@@ -1357,6 +1357,10 @@ public final class Utils {
     }
 
     public static String constructDuplicateIdentifierForJob(String hash, String scriptId, String scriptDateLastChanged){
-        return hash + "_" + scriptId + "_" + scriptDateLastChanged;
+        String duplicateIdentifier = hash + "_" + scriptId;
+        if(scriptDateLastChanged != null){
+            duplicateIdentifier += "_" + scriptDateLastChanged;
+        }
+        return duplicateIdentifier;
     }
 }
