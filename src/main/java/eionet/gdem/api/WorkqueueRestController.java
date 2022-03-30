@@ -1,6 +1,5 @@
 package eionet.gdem.api;
 
-import com.google.gson.JsonObject;
 import com.opencsv.CSVWriter;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
@@ -8,7 +7,6 @@ import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.web.spring.workqueue.*;
-import org.apache.commons.io.FileUtils;
 import org.springframework.security.access.AccessDeniedException;
 import eionet.gdem.services.impl.JobEntryAndJobHistoryEntriesService;
 import eionet.gdem.utils.SecurityUtil;
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,10 +40,12 @@ public class WorkqueueRestController {
     public WorkqueuePageInfo getWorkqueuePageInfo(HttpSession session, @RequestParam(value = "page") Integer page, @RequestParam(value = "itemsPerPage") Integer itemsPerPage,
                                                   @RequestParam(value = "sortBy") String sortBy, @RequestParam(value = "sortDesc") Boolean sortDesc,
                                                   @RequestParam(value = "searchParam") String searchParam, @RequestParam(value = "keyword") String keyword,
-                                                  @RequestParam(value = "statuses") String[] searchedStatuses, HttpServletRequest request) {
+                                                  @RequestParam(value = "statuses") String[] searchedStatuses) {
         String userName = null;
-        if(session.getAttribute("user") != null){
-            userName = session.getAttribute("user").toString();
+        if(session != null) {
+            if (session.getAttribute("user") != null) {
+                userName = session.getAttribute("user").toString();
+            }
         }
         boolean wqdPrm = false;
         boolean wquPrm = false;

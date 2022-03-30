@@ -107,7 +107,7 @@ public class GenericFixedTimeScheduledTasks {
             repository.setDurationForJobHistory(diffInMs, entry.getKey(), Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING);
         }
         //Update time spent in status in table T_XQJOBS
-        xqJobDao.updateXQJobsDuration(jobDurations);
+        jobService.updateJobDurationsByIds(jobDurations);
         LOGGER.info("Updated duration of jobs in PROCESSING status.");
     }
 

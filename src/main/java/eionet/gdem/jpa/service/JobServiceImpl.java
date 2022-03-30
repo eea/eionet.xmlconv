@@ -24,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -364,6 +365,29 @@ public class JobServiceImpl implements JobService {
 
         }
         return jobsList;
+    }
+
+    @Override
+    public void deleteJobById(Integer jobId){
+        jobRepository.delete(jobId);
+        LOGGER.info("Deleting job with id " + jobId);
+    }
+
+
+    @Override
+    public void changeJobStatusAndTimestampByStatus(Integer currentStatus, Integer newStatus) {
+        jobRepository.changeJobStatusAndTimestampByStatus(currentStatus, new Timestamp(new Date().getTime()) ,newStatus);
+        LOGGER.info("Changed statuses to " + newStatus + " for all entries with old status " + currentStatus);
+    }
+
+    @Override
+    public void updateJobDurationsByIds(Map<String, Long> jobHashmap){
+        for (Map.Entry<String, Long> entry : jobHashmap.entrySet()) {
+            String jobId = entry.getKey();
+            Long duration = entry.getValue();
+            jobRepository.updateDurationByJobId(duration, Integer.valueOf(jobId));
+
+        }
     }
 
 }

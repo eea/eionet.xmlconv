@@ -2,6 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body th:fragment="jobQueue">
 
+<!-- Websockets -->
+<script src="https://cdn.jsdelivr.net/sockjs/1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 <script type="text/javascript" th:src="@{/static/js/workqueue.js}"></script>
 <link rel="stylesheet" type="text/css" th:href="@{/static/js/workqueue.css}">
 

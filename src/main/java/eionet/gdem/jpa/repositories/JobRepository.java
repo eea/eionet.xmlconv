@@ -68,4 +68,10 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     Page<JobEntry> findByNStatusIn(Set<Integer> nStatus, Pageable pageable);
 
     Long countByNStatusIn(Set<Integer> nStatus);
+
+    @Query(value = "UPDATE T_XQJOBS SET N_STATUS= :newStatus AND TIMESTAMP= :timestamp WHERE N_STATUS= :oldStatus", nativeQuery = true)
+    void changeJobStatusAndTimestampByStatus(@Param("newStatus") Integer newStatus, @Param("timestamp") Timestamp timestamp, @Param("oldStatus") Integer oldStatus);
+
+    @Query(value = "UPDATE T_XQJOBS SET DURATION= :duration WHERE JOB_ID= :jobId", nativeQuery=true)
+    Integer updateDurationByJobId(@Param("duration") Long duration, @Param("jobId") Integer jobId);
 }
