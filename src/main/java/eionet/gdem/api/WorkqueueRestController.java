@@ -123,7 +123,14 @@ public class WorkqueueRestController {
     }
 
     @RequestMapping(value = "exportToCsv", method = RequestMethod.POST)
-    public void exportToCsv(HttpServletRequest request, HttpServletResponse response, @RequestBody JobMetadata[] jobEntries) throws IOException {
+    public void exportToCsv(HttpServletRequest request, HttpServletResponse response,
+                            @RequestParam(value = "sortBy") String sortBy, @RequestParam(value = "sortDesc") Boolean sortDesc,
+                            @RequestParam(value = "searchParam") String searchParam, @RequestParam(value = "keyword") String keyword,
+                            @RequestParam(value = "statuses") String[] searchedStatuses) throws IOException {
+        //get all jobs
+        EntriesForPageObject entriesForPageObject = jobEntryAndJobHistoryEntriesService.getSortedJobsForPage(1, -1, sortBy, sortDesc, searchParam, keyword, searchedStatuses);
+        List<JobMetadata> jobEntries = entriesForPageObject.getJobMetadataEntriesForPage();
+
         List<String[]> csvData = new ArrayList<>();
         String[] header = {"Job ID", "Document URL", "XQuery script", "Job Result", "Status", "Started at", "Instance", "Duration", "Job type", "Worker"};
         csvData.add(header);

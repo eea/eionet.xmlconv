@@ -129,7 +129,8 @@ var app = new Vue({
             }
         },
         csvExport() {
-            axios.post("/restapi/workqueueData/exportToCsv", this.jobEntries, {responseType: 'blob'})
+            axios.post("/restapi/workqueueData/exportToCsv?sortBy=" + this.sortBy + "&sortDesc=" + this.sortDesc +"&searchParam=" + this.radioGroup +"&keyword=" + this.searchedKeyword
+                +"&statuses=" + this.searchedStatuses, {responseType: 'blob'})
                 .then((response) => {
                     const url = window.URL.createObjectURL(new Blob([response.data]));
                     const link = document.createElement("a");
