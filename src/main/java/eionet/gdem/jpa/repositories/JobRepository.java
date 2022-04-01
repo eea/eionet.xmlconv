@@ -74,4 +74,12 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
 
     @Query(value = "UPDATE T_XQJOBS SET DURATION= :duration WHERE JOB_ID= :jobId", nativeQuery=true)
     Integer updateDurationByJobId(@Param("duration") Long duration, @Param("jobId") Integer jobId);
+
+    @Query(value = "SELECT * FROM T_XQJOBS where TIME_STAMP like :containedDate ORDER BY JOB_ID DESC LIMIT :pageSize OFFSET :offsetNum",
+            nativeQuery = true)
+    List<JobEntry> findByTimestampContaining(@Param("containedDate") String containedDate, @Param("pageSize") Integer pageSize, @Param("offsetNum") Integer offsetNum);
+
+
+    @Query(value = "SELECT COUNT(*) FROM T_XQJOBS where TIME_STAMP like :containedDate", nativeQuery = true)
+    Long countByTimestampContaining(@Param("containedDate") String containedDate);
 }

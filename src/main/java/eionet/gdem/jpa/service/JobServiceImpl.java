@@ -17,10 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -210,6 +207,9 @@ public class JobServiceImpl implements JobService {
             totalNumberOfEntries = jobRepository.countByJobTypeContainingIgnoreCase(keyword);
         } else if (searchParam.equals("jobExecutorName")){
             totalNumberOfEntries = jobRepository.countByJobExecutorNameContainingIgnoreCase(keyword);
+        } else if (searchParam.equals("timestamp")){
+            String likeKeyword = "%" + keyword + "%";
+            totalNumberOfEntries = jobRepository.countByTimestampContaining(likeKeyword);
         }
         LOGGER.info("For keyword " + keyword + " and parameter " + searchParam + " there are " + totalNumberOfEntries + " entries in the database.");
         return Math.toIntExact(totalNumberOfEntries);
@@ -252,6 +252,11 @@ public class JobServiceImpl implements JobService {
             pagedPage = jobRepository.findByJobTypeContainingIgnoreCase(keyword, pageRequest);
         } else if (searchParam.equals("jobExecutorName")){
             pagedPage = jobRepository.findByJobExecutorNameContainingIgnoreCase(keyword, pageRequest);
+        }
+        else if (searchParam.equals("timestamp")){
+            String likeKeyword = "%" + keyword + "%";
+            List<JobEntry> entriesOfTimestampContaining = jobRepository.findByTimestampContaining(likeKeyword, pageRequest.getPageSize(), pageRequest.getOffset());
+            pagedPage = new PageImpl<>(entriesOfTimestampContaining);
         }
         return pagedPage;
     }

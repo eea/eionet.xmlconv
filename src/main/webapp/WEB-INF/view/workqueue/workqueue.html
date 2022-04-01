@@ -29,7 +29,7 @@
                                                 mandatory>
                                             <v-radio
                                                 v-for="item in headers"
-                                                v-if="item.value != 'timestamp' && item.value != 'durationInProgress'"
+                                                v-if="item.value != 'durationInProgress'"
                                                 :key="item.value"
                                                 :label="item.text"
                                                 :value="item.value" >
