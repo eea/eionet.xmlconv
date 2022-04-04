@@ -28,9 +28,11 @@ import eionet.gdem.dto.WorkqueueJob;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.repositories.JobHistoryRepository;
+import eionet.gdem.jpa.service.AsyncFmeJobService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.services.GDEMServices;
@@ -39,9 +41,7 @@ import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.*;
@@ -336,33 +336,35 @@ public class WorkqueueManager {
             if (jobIds.length > 0) {
                 try {
                     for (String jobId : jobIds) {
-                        String[] jobData = GDEMServices.getDaoService().getXQJobDao().getXQJobData(jobId);
-                        if (jobData == null || jobData.length < 3) {
+                        JobEntry jobEntry = getJobServiceBean().findById(Integer.parseInt(jobId));
+                        if (jobEntry == null) {
                             continue;
                         }
 
-                        String status = jobData[3];
+                        String status = jobEntry.getnStatus().toString();
                         if(status.equals(String.valueOf(Constants.XQ_PROCESSING))){
                             //make job_executor status failed
                             Integer jobIdInt = Integer.parseInt(jobId);
                             if (jobIdInt!=null) {
-                                JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
                                 InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                                 jobEntry.setnStatus(Constants.DELETED).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                                 getWorkerAndJobStatusHandlerService().handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED);
+                                if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME) && jobEntry.getFmeJobId()!=null) {
+                                    getAsyncFmeJobService().cancelJobOnFMEServer(jobEntry.getFmeJobId());
+                                }
                             }
                         }
                         else{
                             jobsToDelete.add(jobId);
                             // delete also result files from file system tmp folder
-                            String resultFile = jobData[2];
+                            String resultFile = jobEntry.getResultFile();
                             try {
                                 Utils.deleteFile(resultFile);
                             } catch (Exception e) {
                                 LOGGER.error("Could not delete job result file: " + resultFile + "." + e.getMessage());
                             }
                             // delete xquery files, if they are stored in tmp folder
-                            String xqFile = jobData[1];
+                            String xqFile = jobEntry.getFile();
                             try {
                                 // Important!!!: delete only, when the file is stored in tmp folder
                                 if (xqFile.startsWith(Properties.tmpFolder)) {
@@ -372,6 +374,11 @@ public class WorkqueueManager {
                                 LOGGER.error("Could not delete XQuery script file: " + xqFile + "." + e.getMessage());
                             }
                             getJobServiceBean().deleteJobById(Integer.valueOf(jobId));
+                            if (jobEntry.getScriptType().equals(XQScript.SCRIPT_LANG_FME) && jobEntry.getFmeJobId()!=null && jobEntry.getnStatus()==Constants.XQ_FATAL_ERR) {
+                                if (!getAsyncFmeJobService().jobHasStatusSuccessOnFmeServer(jobEntry.getFmeJobId())) {
+                                    getAsyncFmeJobService().cancelJobOnFMEServer(jobEntry.getFmeJobId());
+                                }
+                            }
                         }
                         LOGGER.info("Deleted job " + jobId);
 
@@ -440,4 +447,9 @@ public class WorkqueueManager {
     private static WorkerAndJobStatusHandlerService getWorkerAndJobStatusHandlerService() {
         return (WorkerAndJobStatusHandlerService) SpringApplicationContext.getBean("workerAndJobStatusHandlerService");
     }
+
+    private static AsyncFmeJobService getAsyncFmeJobService() {
+        return (AsyncFmeJobService) SpringApplicationContext.getBean("asyncFmeJobServiceImpl");
+    }
+
 }

@@ -242,6 +242,11 @@ public class Properties {
     public static Long timeoutToWaitForEmptyFileForOnDemandJobs;
     public static Long maxMsToWaitForEmptyFileForOnDemandJobs;
 
+    public static String fmeUrl;
+    public static String fmeUser;
+    public static String fmePassword;
+    public static String fmeToken;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -402,6 +407,11 @@ public class Properties {
 
         timeoutToWaitForEmptyFileForOnDemandJobs = getLongProperty("env.onDemand.waitForEmptyFile.timeout.ms");
         maxMsToWaitForEmptyFileForOnDemandJobs = getLongProperty("env.onDemand.waitForEmptyFile.max.ms");
+
+        fmeUrl = getStringProperty("env.fme.url");
+        fmeUser = getStringProperty("env.fme.user");
+        fmePassword = getStringProperty("env.fme.password");
+        fmeToken = getStringProperty("env.fme.token");
     }
 
     /**
