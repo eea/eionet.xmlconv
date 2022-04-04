@@ -20,8 +20,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.*;
 import java.io.File;
-import java.math.BigInteger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -30,6 +32,9 @@ import java.util.*;
 public class JobServiceImpl implements JobService {
 
     JobRepository jobRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
@@ -157,7 +162,7 @@ public class JobServiceImpl implements JobService {
             pagedPage = jobRepository.findAll(pageRequest);
         }
         else{
-            pagedPage = getPagedEntriesWithKeyword(pageRequest, searchParam, keyword, searchedStatuses);
+            pagedPage = getPagedEntriesWithKeyword(pageRequest, searchParam, keyword, searchedStatuses, sortBy, sortDesc);
         }
         entriesForPageObject.setTotalNumberOfJobEntries(totalNumberOfEntries);
 
@@ -215,7 +220,7 @@ public class JobServiceImpl implements JobService {
         return Math.toIntExact(totalNumberOfEntries);
     }
 
-    private Page<JobEntry> getPagedEntriesWithKeyword(Pageable pageRequest, String searchParam, String keyword, String[] searchedStatuses){
+    private Page<JobEntry> getPagedEntriesWithKeyword(Pageable pageRequest, String searchParam, String keyword, String[] searchedStatuses, String sortBy, Boolean sortDesc){
         Page<JobEntry> pagedPage = null;
         LOGGER.info("Searching in T_XQJOBS table for keyword " + keyword + " for parameter " + searchParam);
         if (searchParam.equals("jobId")){
@@ -255,10 +260,62 @@ public class JobServiceImpl implements JobService {
         }
         else if (searchParam.equals("timestamp")){
             String likeKeyword = "%" + keyword + "%";
-            List<JobEntry> entriesOfTimestampContaining = jobRepository.findByTimestampContaining(likeKeyword, pageRequest.getPageSize(), pageRequest.getOffset());
+            List<JobEntry> entriesOfTimestampContaining = getJobEntriesBasedOnTimestampContaining(likeKeyword, pageRequest.getPageSize(), pageRequest.getOffset(),
+                    sortBy, sortDesc);
             pagedPage = new PageImpl<>(entriesOfTimestampContaining);
         }
         return pagedPage;
+    }
+
+    private List<JobEntry> getJobEntriesBasedOnTimestampContaining(String keyword, Integer limit, Integer offset, String sortParameter, Boolean sortDesc){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<JobEntry> criteriaQuery = criteriaBuilder.createQuery(JobEntry.class);
+        Root<JobEntry> itemRoot = criteriaQuery.from(JobEntry.class);
+        //add sorting parameters
+        if(sortParameter.equals("url") || sortParameter.equals("timestamp") || sortParameter.equals("instance") || sortParameter.equals("jobType") || sortParameter.equals("jobExecutorName")){
+            if(sortDesc){
+                criteriaQuery.orderBy(criteriaBuilder.desc(itemRoot.get(sortParameter)));
+            }
+            else{
+                criteriaQuery.orderBy(criteriaBuilder.asc(itemRoot.get(sortParameter)));
+            }
+        } else if(sortParameter.equals("jobId")){
+            if(sortDesc){
+                criteriaQuery.orderBy(criteriaBuilder.desc(itemRoot.get("id")));
+            }
+            else{
+                criteriaQuery.orderBy(criteriaBuilder.asc(itemRoot.get("id")));
+            }
+        }else if(sortParameter.equals("script_file")){
+            if(sortDesc){
+                criteriaQuery.orderBy(criteriaBuilder.desc(itemRoot.get("file")));
+            }
+            else{
+                criteriaQuery.orderBy(criteriaBuilder.asc(itemRoot.get("file")));
+            }
+        }else if(sortParameter.equals("statusName")){
+            if(sortDesc){
+                criteriaQuery.orderBy(criteriaBuilder.desc(itemRoot.get("nStatus")));
+            }
+            else{
+                criteriaQuery.orderBy(criteriaBuilder.asc(itemRoot.get("nStatus")));
+            }
+        }else if(sortParameter.equals("durationInProgress")){
+            if(sortDesc){
+                criteriaQuery.orderBy(criteriaBuilder.desc(itemRoot.get("duration")));
+            }
+            else{
+                criteriaQuery.orderBy(criteriaBuilder.asc(itemRoot.get("duration")));
+            }
+        }
+        else{
+            LOGGER.error("Received invalid sort parameter for query in T_XQJOBS based on timestamp. Sort parameter is: " + sortParameter);
+        }
+
+        Predicate predicateForTimestamp = criteriaBuilder.like(itemRoot.get("timestamp").as(String.class), keyword);
+        criteriaQuery.where(predicateForTimestamp);
+        List<JobEntry> items = entityManager.createQuery(criteriaQuery).setFirstResult(offset).setMaxResults(limit).getResultList();
+        return items;
     }
 
     @Override
