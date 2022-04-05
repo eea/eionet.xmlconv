@@ -43,6 +43,7 @@
                                         <v-select v-show="radioGroup === 'statusName'"
                                                 v-model="selectedStatusesForSearch"
                                                 :items="statuses"
+                                                :menu-props="{ top: true, offsetY: true }"
                                                 label="Select statuses"
                                                 multiple
                                                 chips
