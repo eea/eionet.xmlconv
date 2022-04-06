@@ -457,17 +457,19 @@ public class JobServiceImpl implements JobService {
             return null;
         }
         String hash = null;
-        try {
-            hash = getHashFromCdrBdrForFile(fileUrl);
-        } catch (IOException e) {
-            LOGGER.error("Could not retrieve hash from cdr/bdr for file " + fileUrl + ". Exception message: " + e.getMessage());
-            return null;
-        } catch (SQLException e) {
-            LOGGER.error("Could not retrieve hash from cdr/bdr for file " + fileUrl + ". Exception message: " + e.getMessage());
-            return null;
-        }
-        if(hash == null){
-            return null;
+        if(!fileUrl.endsWith("/xml")) {
+            try {
+                hash = getHashFromCdrBdrForFile(fileUrl);
+            } catch (IOException e) {
+                LOGGER.error("Could not retrieve hash from cdr/bdr for file " + fileUrl + ". Exception message: " + e.getMessage());
+                return null;
+            } catch (SQLException e) {
+                LOGGER.error("Could not retrieve hash from cdr/bdr for file " + fileUrl + ". Exception message: " + e.getMessage());
+                return null;
+            }
+            if (hash == null) {
+                return null;
+            }
         }
 
         QueryHistoryEntry queryHistoryEntry = queryHistoryService.findLastEntryByQueryId(Integer.valueOf(scriptId));
@@ -475,7 +477,7 @@ public class JobServiceImpl implements JobService {
         if(queryHistoryEntry != null && queryHistoryEntry.getDateModified() != null){
             scriptDateLastChanged = queryHistoryEntry.getDateModified().toString();
         }
-        String duplicateIdentifier = Utils.constructDuplicateIdentifierForJob(hash, scriptId, scriptDateLastChanged);
+        String duplicateIdentifier = Utils.constructDuplicateIdentifierForJob(fileUrl, hash, scriptId, scriptDateLastChanged);
         return duplicateIdentifier;
     }
 

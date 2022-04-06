@@ -1356,8 +1356,12 @@ public final class Utils {
         return Math.abs(t1.getTime() - t2.getTime());
     }
 
-    public static String constructDuplicateIdentifierForJob(String hash, String scriptId, String scriptDateLastChanged){
-        String duplicateIdentifier = hash + "_" + scriptId;
+    public static String constructDuplicateIdentifierForJob(String documentUrl, String hash, String scriptId, String scriptDateLastChanged){
+        String duplicateIdentifier = documentUrl + "_";
+        if(hash != null){
+            duplicateIdentifier += hash + "_";
+        }
+        duplicateIdentifier += scriptId;
         if(scriptDateLastChanged != null){
             duplicateIdentifier += "_" + scriptDateLastChanged;
         }

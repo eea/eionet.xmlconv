@@ -1009,4 +1009,13 @@
             <column name="DUPLICATE_IDENTIFIER" type="VARCHAR(100)"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-89">
+        <comment>
+            Changed DUPLICATE_IDENTIFIER column size for T_XQJOBS and JOB_HISTORY table
+        </comment>
+        <sql>
+        ALTER TABLE T_XQJOBS MODIFY DUPLICATE_IDENTIFIER VARCHAR(350);
+        ALTER TABLE JOB_HISTORY MODIFY DUPLICATE_IDENTIFIER VARCHAR(350);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
