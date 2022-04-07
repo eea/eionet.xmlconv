@@ -371,6 +371,7 @@ public class QaServiceImpl implements QaService {
         if(results.get("executionStatusName") != null){
             String executionStatusName = (String) results.get("executionStatusName");
             if (executionStatusName.equals("Deleted")){
+                //if job has been deleted, feedback content should stay empty and we will return execution status code Constants.JOB_READY
                 return jsonResults;
             }
         }
