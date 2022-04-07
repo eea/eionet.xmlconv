@@ -174,4 +174,14 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
     public QueryMetadataHistoryEntry saveQueryMetadataHistoryEntry(QueryMetadataHistoryEntry entry) {
         return queryMetadataHistoryRepository.save(entry);
     }
+
+    @Override
+    public List<QueryMetadataHistoryEntry> getAllQueryMetadataHistoryEntries(Integer scriptId) {
+        return queryMetadataHistoryRepository.findByQueryId(scriptId);
+    }
+
+    @Override
+    public List<QueryMetadataEntry> getAllQueryMetadataEntries(Integer scriptId) {
+        return queryMetadataRepository.findByQueryId(scriptId);
+    }
 }

@@ -25,4 +25,8 @@ public interface QueryMetadataService {
     List<QueryMetadataHistoryEntry> findByJobId(Integer jobId);
 
     QueryMetadataHistoryEntry saveQueryMetadataHistoryEntry(QueryMetadataHistoryEntry entry);
+
+    List<QueryMetadataHistoryEntry> getAllQueryMetadataHistoryEntries(Integer scriptId);
+
+    List<QueryMetadataEntry> getAllQueryMetadataEntries(Integer scriptId);
 }
