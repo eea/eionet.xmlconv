@@ -48,13 +48,19 @@ public class JobServiceImpl implements JobService {
 
     QueryHistoryService queryHistoryService;
 
+    private PropertiesService propertiesService;
+
+    private static final String MAX_MS_FOR_PROCESSING_DUPLICATE_SCHEMA_VALIDATION = "maxMsForProcessingDuplicateSchemaValidation";
+
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Autowired
-    public JobServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository, @Qualifier("queryHistoryServiceImpl") QueryHistoryService queryHistoryService) {
+    public JobServiceImpl(@Qualifier("jobRepository") JobRepository jobRepository, @Qualifier("queryHistoryServiceImpl") QueryHistoryService queryHistoryService,
+                          PropertiesService propertiesService) {
         this.jobRepository = jobRepository;
         this.queryHistoryService = queryHistoryService;
+        this.propertiesService = propertiesService;
     }
 
     @Override
@@ -393,6 +399,26 @@ public class JobServiceImpl implements JobService {
         if(jobEntry != null){
             //found duplicate entry
             LOGGER.info("Found job with id " + jobEntry.getId() + " that has duplicate identifier " + duplicateIdentifier + " and status " + jobEntry.getnStatus());
+            if(scriptId.equals("-1")){
+                //check processing time
+                Long currentMs = new Date().getTime();
+                Long entryTimestampMs = jobEntry.getTimestamp().getTime();
+                Long durationOfJob = currentMs - entryTimestampMs;
+                Long maxDuration = Properties.maxMsForProcessingDuplicateSchemaValidation;
+                try {
+                    Long maxDurationDbValue = (Long) propertiesService.getValue(MAX_MS_FOR_PROCESSING_DUPLICATE_SCHEMA_VALIDATION);
+                    if (maxDurationDbValue != null) {
+                        maxDuration = maxDurationDbValue;
+                    }
+                } catch (DatabaseException e) {
+                    LOGGER.error("Error when retrieving value for maxMsForProcessingDuplicateSchemaValidation in PROPERTIES table. Exception message: " + e.getMessage());
+                }
+                if(durationOfJob >= maxDuration){
+                    //this job should not be considered as duplicate because it has taken too long and has probably failed.
+                    return null;
+                }
+
+            }
             return jobEntry.getId().toString();
         }
         else{
@@ -401,7 +427,7 @@ public class JobServiceImpl implements JobService {
         return null;
     }
 
-    private String getHashFromCdrBdrForFile(String fileUrl) throws IOException, SQLException {
+    protected String getHashFromCdrBdrForFile(String fileUrl) throws IOException, SQLException {
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
             String hash = null;
@@ -453,7 +479,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public String getDuplicateIdentifier(String fileUrl, String scriptId){
-        if(Utils.isNullStr(fileUrl) || Utils.isNullStr(scriptId) || scriptId.equals("-1")){
+        if(Utils.isNullStr(fileUrl) || Utils.isNullStr(scriptId)){
             return null;
         }
         String hash = null;

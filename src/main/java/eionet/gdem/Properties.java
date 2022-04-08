@@ -232,6 +232,8 @@ public class Properties {
     public static Long timeoutToWaitForEmptyFileForOnDemandJobs;
     public static Long maxMsToWaitForEmptyFileForOnDemandJobs;
 
+    public static Long maxMsForProcessingDuplicateSchemaValidation;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -382,6 +384,7 @@ public class Properties {
 
         timeoutToWaitForEmptyFileForOnDemandJobs = getLongProperty("env.onDemand.waitForEmptyFile.timeout.ms");
         maxMsToWaitForEmptyFileForOnDemandJobs = getLongProperty("env.onDemand.waitForEmptyFile.max.ms");
+        maxMsForProcessingDuplicateSchemaValidation = getLongProperty("schema.validation.duplicates.processing.threshold");
     }
 
     /**
