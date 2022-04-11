@@ -2,8 +2,8 @@ package eionet.gdem.web.spring.scripts;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVWriter;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.data.scripts.HeavyScriptReasonEnum;
@@ -37,8 +37,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -644,5 +647,70 @@ public class QAScriptsController {
         //we pass queryId in html to be able to use it in the tabbed menu and in scriptInfoHistory.js vue script
         model.addAttribute("queryId", queryId);
         return "scriptHistory/scriptHistory";
+    }
+
+    @PostMapping(value = "/{id}/queryMetadata/exportToCsv")
+    public void queryMetadataExportToCsv(@PathVariable String id, HttpServletResponse response) throws IOException {
+        List<QueryMetadataEntry> queryMetadataEntries = queryMetadataService.getAllQueryMetadataEntries(Integer.parseInt(id));
+        List<String[]> csvData = new ArrayList<>();
+        String[] header = {"Average duration", "Number of executions", "Version", "Was Heavy"};
+        csvData.add(header);
+        for (QueryMetadataEntry entry : queryMetadataEntries) {
+            if (entry.getAverageDuration()!=null) {
+                entry.setAverageDurationFormatted(Utils.createFormatForMs(entry.getAverageDuration()));
+            }
+            String[] row = {entry.getAverageDurationFormatted(), entry.getNumberOfExecutions()!=null ? entry.getNumberOfExecutions().toString() : "", entry.getVersion()!=null ? entry.getVersion().toString() : "",
+                entry.getMarkedHeavy()!=null ? entry.getMarkedHeavy().toString() : ""};
+            csvData.add(row);
+        }
+
+        // default all fields are enclosed in double quotes
+        // default separator is a comma
+        // init stream writer
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+        CSVWriter writer = new CSVWriter(osw);
+        writer.writeAll(csvData);
+
+        // set response content type
+        response.setContentType("text/csv; charset=UTF-8");
+        response.addHeader("Content-Disposition", "attachment; filename=queryMetadata.csv");
+
+        // flush and close stream writer
+        writer.flush();
+        osw.flush();
+        writer.close();
+        osw.close();
+    }
+
+    @PostMapping(value = "/{id}/queryMetadataHistory/exportToCsv")
+    public void queryMetadataHistoryExportToCsv(@PathVariable String id, HttpServletResponse response) throws IOException {
+        List<QueryMetadataHistoryEntry> queryMetadataHistoryList = queryMetadataService.getAllQueryMetadataHistoryEntries(Integer.parseInt(id));
+        List<QueryMetadataHistoryEntry> queryMetadataHistoryEntries = queryMetadataService.fillQueryHistoryMetadataAdditionalInfo(queryMetadataHistoryList);
+        List<String[]> csvData = new ArrayList<>();
+        String[] header = {"File Name", "Script Type", "Duration", "Was Heavy", "Job Status", "Version", "Timestamp", "Job Id", "FME Job Id"};
+        csvData.add(header);
+        for (QueryMetadataHistoryEntry entry : queryMetadataHistoryEntries) {
+            String[] row = {entry.getShortFileName(), entry.getScriptType(), entry.getDurationFormatted(), entry.getMarkedHeavy()!=null ? entry.getMarkedHeavy().toString() : "", entry.getStatusName()!=null ? entry.getStatusName().toString() : "",
+                    entry.getVersion()!=null ? entry.getVersion().toString() : "", entry.getTimestamp()!=null ? entry.getTimestamp().toString() : "", entry.getJobId()!=null ? entry.getJobId().toString() : "",
+                    entry.getFmeJobId()!=null ? entry.getFmeJobId().toString() : ""};
+            csvData.add(row);
+        }
+
+        // default all fields are enclosed in double quotes
+        // default separator is a comma
+        // init stream writer
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+        CSVWriter writer = new CSVWriter(osw);
+        writer.writeAll(csvData);
+
+        // set response content type
+        response.setContentType("text/csv; charset=UTF-8");
+        response.addHeader("Content-Disposition", "attachment; filename=queryMetadataHistory.csv");
+
+        // flush and close stream writer
+        writer.flush();
+        osw.flush();
+        writer.close();
+        osw.close();
     }
 }

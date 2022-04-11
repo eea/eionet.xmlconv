@@ -23,11 +23,14 @@
                 </ul>
             </div>
 
+            <input type="hidden" id="scriptId" th:value="${scriptId}">
+
             <!-- Show version table -->
             <div class="row">
                 <div class="col-lg-10 mt-5 mb-5">
                     <div th:if="${not #lists.isEmpty(history.page.content)}">
 
+                        <button type="button" onclick="exportScriptMetadataToCsv()" style="text-decoration:underline;color:#306886;float:left;">Export to CSV</button>
                         <div class="tablePageEntriesSize" style="float: right;">
                             <form th:action="@{${#httpServletRequest.requestURI}}" method="get">
                                 <label for="pageVersionEntries">Entries per page:</label>
@@ -99,6 +102,7 @@
                 <div class="col-lg-10 mt-5 mb-5">
                     <div th:if="${not #lists.isEmpty(history.page.content)}">
 
+                        <button type="button" onclick="exportScriptMetadataHistoryToCsv()" style="text-decoration:underline;color:#306886;float:left;">Export to CSV</button>
                         <div class="tablePageEntriesSize" style="float: right;">
                             <form th:action="@{${#httpServletRequest.requestURI}}" method="get">
                                 <label for="pageHistoryEntries">Entries per page:</label>
