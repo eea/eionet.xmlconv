@@ -168,8 +168,6 @@
                     </v-icon>
                 </template>
             </v-data-table>
-        </v-app>
-        <v-app>
             <v-data-table
                     :headers="timeoutPropertiesHeaders"
                     :items="timeoutProperties"
@@ -177,7 +175,7 @@
                     :loading="loading"
                     class="elevation-1"
             >
-                <template v-slot:bottom>
+                <template v-slot:top>
                     <v-toolbar
                             flat
                     >
