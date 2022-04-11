@@ -169,6 +169,29 @@
                 </template>
             </v-data-table>
         </v-app>
+        <v-app>
+            <v-data-table
+                    :headers="timeoutPropertiesHeaders"
+                    :items="timeoutProperties"
+                    :sort-by.sync="sortByTimeout"
+                    :loading="loading"
+                    class="elevation-1"
+            >
+                <template v-slot:bottom>
+                    <v-toolbar
+                            flat
+                    >
+                        <v-toolbar-title>List of timeout properties</v-toolbar-title>
+                        <v-divider
+                                class="mx-4"
+                                inset
+                                vertical
+                        ></v-divider>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                </template>
+            </v-data-table>
+        </v-app>
     </div>
 </template>
 

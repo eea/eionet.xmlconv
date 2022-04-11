@@ -4,6 +4,7 @@ var app = new Vue({
     data() {
         return {
             sortBy: "name",
+            sortByTimeout: "name",
             dialog: false,
             dialogDelete: false,
             select: null,
@@ -22,7 +23,13 @@ var app = new Vue({
                 { text: "Description", value: "description", sortable: false },
                 { text: "Actions", value: "actions", sortable: false },
             ],
+            timeoutPropertiesHeaders: [
+                { text: "Name", value: "name"},
+                { text: "Value", value: "value", sortable: false },
+                { text: "Description", value: "description", sortable: false },
+            ],
             properties: [],
+            timeoutProperties: [],
             editedItem: {
                 id: '',
                 name: '',
@@ -102,11 +109,25 @@ var app = new Vue({
                     this.loading = false;
                     this.properties = response.data;
                 });
+        },
+
+        //Retrieve all timeout properties
+        getAllTimeoutProperties() {
+            this.loading = true;
+            axios
+                .get(
+                    "/restapi/timeoutProperties/get/all"
+                )
+                .then((response) => {
+                    this.loading = false;
+                    this.timeoutProperties = response.data;
+                });
         }
     },
 
     //this will trigger in the onReady State
     mounted() {
         this.readPropertiesEntries();
+        this.getAllTimeoutProperties();
     }
 })
