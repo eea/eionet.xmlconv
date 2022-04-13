@@ -247,6 +247,9 @@ public class Properties {
     public static String fmePassword;
     public static String fmeToken;
 
+    public static String jobExecutorRequestsUrl;
+    public static String jobExecutorTimeoutRetrieveEndpoint;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -412,6 +415,10 @@ public class Properties {
         fmeUser = getStringProperty("env.fme.user");
         fmePassword = getStringProperty("env.fme.password");
         fmeToken = getStringProperty("env.fme.token");
+
+        jobExecutorRequestsUrl = getStringProperty("jobExecutor.requests.url");
+        jobExecutorTimeoutRetrieveEndpoint = getStringProperty("jobExecutor.properties.retrieve.endpoint");
+
     }
 
     /**

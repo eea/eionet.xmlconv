@@ -25,8 +25,8 @@ var app = new Vue({
             ],
             timeoutPropertiesHeaders: [
                 { text: "Name", value: "name"},
-                { text: "Value", value: "value", sortable: false },
-                { text: "Description", value: "description", sortable: false },
+                { text: "Value", value: "value", width: '20%' },
+                { text: "Description", value: "description"},
             ],
             properties: [],
             timeoutProperties: [],
