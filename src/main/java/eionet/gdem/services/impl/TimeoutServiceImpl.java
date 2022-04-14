@@ -38,7 +38,7 @@ public class TimeoutServiceImpl implements TimeoutService {
         timeoutEntities.add(longRunningJobThreshold);
         TimeoutEntity maxSchemaExecutionTime = new TimeoutEntity("maxSchemaExecutionTime", String.valueOf(Properties.maxSchemaExecutionTime) + " (in ms)", "Max execution time of qa scripts");
         timeoutEntities.add(maxSchemaExecutionTime);
-        TimeoutEntity maxSchemaExecutionTimeLimit = new TimeoutEntity("maxSchemaExecutionTimeLimit", String.valueOf(Properties.maxSchemaExecutionTimeLimit) + " (in ms)", "Limit for max execution time of qa scripts in ms");
+        TimeoutEntity maxSchemaExecutionTimeLimit = new TimeoutEntity("maxSchemaExecutionTimeLimit", String.valueOf(Properties.maxSchemaExecutionTimeLimit) + " (in ms)", "Limit for max execution time property (maxSchemaExecutionTime) of qa scripts ");
         timeoutEntities.add(maxSchemaExecutionTimeLimit);
         TimeoutEntity wqJobMaxAge = new TimeoutEntity("wqJobMaxAge", String.valueOf(Properties.wqJobMaxAge) + " (in hours)", "The number of hours a finished or cancelled job will remain in the workqueue");
         timeoutEntities.add(wqJobMaxAge);
@@ -46,13 +46,11 @@ public class TimeoutServiceImpl implements TimeoutService {
         timeoutEntities.add(interruptingJobsInterval);
         TimeoutEntity consumerTimeout = new TimeoutEntity("consumerTimeout", "90000000 (in ms)", "Rabbitmq consumer_timeout which dictates how much time the workers have, to give any job result (and in rabbitmq concept, acknowledge the message they took)");
         timeoutEntities.add(consumerTimeout);
-        TimeoutEntity qaTimeout = new TimeoutEntity("qaTimeout", String.valueOf(Properties.qaTimeout) + " (in ms)", "External QA engine (shell program) timeout");
-        timeoutEntities.add(qaTimeout);
-        TimeoutEntity proxyTimeout = new TimeoutEntity("proxyTimeout", " (in ms)", "Proxy Server(rancher) timeouts for /runQaScript");
+        TimeoutEntity proxyTimeout = new TimeoutEntity("proxyTimeout", "14400 (in sec)", "Proxy Server(rancher) timeouts for /runQaScript");
         timeoutEntities.add(proxyTimeout);
 
 
-        //call fme endpoint and retrieve jsonArray
+        //call fme endpoint and retrieve json
         try {
             String url = Properties.jobExecutorRequestsUrl + Properties.jobExecutorTimeoutRetrieveEndpoint;
             LOGGER.error("Calling " + url + " url to retrieve properties from Job Executor");
