@@ -93,6 +93,11 @@ public class SpringRabbitMqConfig {
         return new Queue(Properties.WORKERS_DEAD_LETTER_QUEUE, true);
     }
 
+    @Bean
+    Queue xmlconvHealthQueue() {
+        return new Queue(Properties.XMLCONV_HEALTH_QUEUE, true);
+    }
+
     //Exchange where converters sends message asking worker if it's executing a specific job
     @Bean
     FanoutExchange workersHeartBeatRequestExchange() {
@@ -127,6 +132,11 @@ public class SpringRabbitMqConfig {
     @Bean
     DirectExchange deadLetterExchange() {
         return new DirectExchange(Properties.WORKERS_DEAD_LETTER_EXCHANGE);
+    }
+
+    @Bean
+    DirectExchange xmlconvHealthExchange() {
+        return new DirectExchange(Properties.XMLCONV_HEALTH_EXCHANGE,true,false);
     }
 
     @Bean
@@ -167,6 +177,11 @@ public class SpringRabbitMqConfig {
     @Bean
     Binding exchangeToDeadLetterQueueBinding() {
         return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with(Properties.WORKERS_DEAD_LETTER_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding exchangeToXmlconvHealthQueueBinding() {
+        return BindingBuilder.bind(xmlconvHealthQueue()).to(xmlconvHealthExchange()).with(Properties.XMLCONV_HEALTH_ROUTING_KEY);
     }
 
     @Bean
@@ -264,6 +279,7 @@ public class SpringRabbitMqConfig {
         admin.declareExchange(deadLetterExchange());
         admin.declareExchange(xmlconvSyncFmeWorkersExchange());
         admin.declareExchange(xmlconvAsyncFmeWorkersExchange());
+        admin.declareExchange(xmlconvHealthExchange());
 
         admin.declareQueue(workersJobsQueue());
         admin.declareQueue(heavyWorkersJobsQueue());
@@ -273,6 +289,7 @@ public class SpringRabbitMqConfig {
         admin.declareQueue(deadLetterQueue());
         admin.declareQueue(syncFmeWorkersJobsQueue());
         admin.declareQueue(asyncFmeWorkersJobsQueue());
+        admin.declareQueue(xmlconvHealthQueue());
 
         admin.declareBinding(workersExchangeToWorkersJobResultsQueueBinding());
         admin.declareBinding(xmlconvExchangeToXmlConvJobsQueueBinding());
@@ -282,6 +299,7 @@ public class SpringRabbitMqConfig {
         admin.declareBinding(exchangeToDeadLetterQueueBinding());
         admin.declareBinding(exchangeToSyncFmeJobsQueueBinding());
         admin.declareBinding(exchangeToAsyncFmeJobsQueueBinding());
+        admin.declareBinding(exchangeToXmlconvHealthQueueBinding());
 
         return admin;
     }

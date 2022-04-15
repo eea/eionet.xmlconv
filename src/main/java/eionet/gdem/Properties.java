@@ -233,6 +233,9 @@ public class Properties {
     public static String CONVERTERS_GRAYLOG;
     public static String JOB_EXECUTOR_GRAYLOG;
     public static String FME_JOB_URL;
+    public static String XMLCONV_HEALTH_QUEUE;
+    public static String XMLCONV_HEALTH_EXCHANGE;
+    public static String XMLCONV_HEALTH_ROUTING_KEY;
 
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
@@ -246,6 +249,8 @@ public class Properties {
     public static String fmeUser;
     public static String fmePassword;
     public static String fmeToken;
+
+    public static String rancherContainerMetadataUrl;
 
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
@@ -399,6 +404,10 @@ public class Properties {
         WORKERS_DEAD_LETTER_EXCHANGE = getStringProperty("env.rabbitmq.dead.letter.exchange");
         WORKERS_DEAD_LETTER_ROUTING_KEY = getStringProperty("env.rabbitmq.dead.letter.routingKey");
 
+        XMLCONV_HEALTH_QUEUE = getStringProperty("env.rabbitmq.health.queue");
+        XMLCONV_HEALTH_EXCHANGE = getStringProperty("env.rabbitmq.health.exchange");
+        XMLCONV_HEALTH_ROUTING_KEY = getStringProperty("env.rabbitmq.health.routingKey");
+
         CONVERTERS_GRAYLOG = getStringProperty("env.converters.graylog");
         JOB_EXECUTOR_GRAYLOG = getStringProperty("env.jobExecutor.graylog");
         FME_JOB_URL = getStringProperty("env.fme.job.url");
@@ -412,6 +421,8 @@ public class Properties {
         fmeUser = getStringProperty("env.fme.user");
         fmePassword = getStringProperty("env.fme.password");
         fmeToken = getStringProperty("env.fme.token");
+
+        rancherContainerMetadataUrl = getStringProperty("env.rancher.container.metadata.url");
     }
 
     /**
