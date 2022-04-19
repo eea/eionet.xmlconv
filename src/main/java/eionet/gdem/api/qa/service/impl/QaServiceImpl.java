@@ -226,7 +226,10 @@ public class QaServiceImpl implements QaService {
                 break;
 
             case Constants.DELETED:
+                //change feedback
                 executionStatusName = "Deleted";
+                results.put(Constants.RESULT_FEEDBACKMESSAGE_PRM, "Job canceled by reporter");
+                results.put(Constants.RESULT_CODE_PRM, Integer.toString(Constants.JOB_READY));
                 break;
 
         }
@@ -340,6 +343,17 @@ public class QaServiceImpl implements QaService {
 
     @Override
     public LinkedHashMap<String, Object> checkIfZipFileExistsOrIsEmpty(String[] fileUrls, String jobId, LinkedHashMap<String, Object> jsonResults) throws XMLConvException {
+        if(jsonResults.get("executionStatus") != null){
+            LinkedHashMap<String,String> executionStatus = (LinkedHashMap<String, String>) jsonResults.get("executionStatus");
+            if(executionStatus.get("statusName") != null) {
+                String executionStatusName = (String) executionStatus.get("statusName");
+                if (executionStatusName.equals("Deleted")){
+                    //if job has been deleted, feedback content should stay empty and we will return execution status code Constants.JOB_READY
+                    return jsonResults;
+                }
+            }
+        }
+
         String fileName = fileUrls[0].replace(eionet.gdem.Properties.gdemURL + "/restapi/download/zip/","");
         if (fileName == null || fileName.isEmpty() || "/".equals(fileName)) {
             throw new XMLConvException("FileName is not correct");
@@ -365,6 +379,14 @@ public class QaServiceImpl implements QaService {
 
     @Override
     public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results){
+        if(results.get("executionStatusName") != null){
+            String executionStatusName = (String) results.get("executionStatusName");
+            if (executionStatusName.equals("Deleted")){
+                //if job has been deleted, feedback content should stay empty and we will return execution status code Constants.JOB_READY
+                return jsonResults;
+            }
+        }
+
         String htmlFileContent = (String) results.get(Constants.RESULT_VALUE_PRM);
         String feedbackStatus = (String) results.get(Constants.RESULT_FEEDBACKSTATUS_PRM);
         if(feedbackStatus.equals(Constants.XQ_FEEDBACKSTATUS_UNKNOWN) && htmlFileContent.length() == 0){
