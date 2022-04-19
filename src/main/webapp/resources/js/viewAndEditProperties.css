@@ -1,0 +1,8 @@
+.v-data-table-header__icon {
+    opacity: 0.5 !important;
+    color: #ffffff !important;
+}
+
+.sortable.active{
+    color: #000000 !important;
+}

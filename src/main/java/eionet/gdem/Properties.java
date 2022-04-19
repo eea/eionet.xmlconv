@@ -252,6 +252,9 @@ public class Properties {
 
     public static String rancherContainerMetadataUrl;
 
+    public static String jobExecutorRequestsUrl;
+    public static String jobExecutorTimeoutRetrieveEndpoint;
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties
@@ -423,6 +426,10 @@ public class Properties {
         fmeToken = getStringProperty("env.fme.token");
 
         rancherContainerMetadataUrl = getStringProperty("env.rancher.container.metadata.url");
+
+        jobExecutorRequestsUrl = getStringProperty("jobExecutor.requests.url");
+        jobExecutorTimeoutRetrieveEndpoint = getStringProperty("jobExecutor.properties.retrieve.endpoint");
+
     }
 
     /**
