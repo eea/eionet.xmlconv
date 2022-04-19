@@ -77,4 +77,7 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     
     @Query(value = "SELECT COUNT(*) FROM T_XQJOBS where TIME_STAMP like :containedDate", nativeQuery = true)
     Long countByTimestampContaining(@Param("containedDate") String containedDate);
+
+    @Query(value = "SELECT * FROM T_XQJOBS WHERE DUPLICATE_IDENTIFIER = :duplicateIdentifier and N_STATUS in :nStatus ORDER BY JOB_ID DESC LIMIT 1", nativeQuery = true)
+    JobEntry findByDuplicateIdentifierAndStatus(@Param("duplicateIdentifier") String duplicateIdentifier, @Param("nStatus") Set<Integer> nStatus);
 }

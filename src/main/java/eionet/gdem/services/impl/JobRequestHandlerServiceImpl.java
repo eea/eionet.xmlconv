@@ -2,6 +2,7 @@ package eionet.gdem.services.impl;
 
 import eionet.gdem.Properties;
 import eionet.gdem.*;
+import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
@@ -67,7 +68,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
      * @throws XMLConvException If an error occurs.
      */
     @Override
-    public HashMap analyzeMultipleXMLFiles(HashMap<String, List<String>> filesAndSchemas) throws XMLConvException {
+    public HashMap analyzeMultipleXMLFiles(HashMap<String, List<String>> filesAndSchemas, Boolean checkForDuplicateJob) throws XMLConvException {
 
         HashMap result = new HashMap();
 
@@ -91,7 +92,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                 if (!Utils.isNullList(queries)) {
                     for(Hashtable ht: queries){
                         String query_id = String.valueOf(ht.get( ListQueriesMethod.KEY_QUERY_ID ));
-                        newId = analyzeSingleXMLFile( file, query_id , schema );
+                        newId = analyzeSingleXMLFile( file, query_id , schema, checkForDuplicateJob );
                         result.put(newId, file);
                     }
                 }
@@ -101,8 +102,17 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
     }
 
     @Override
-    public String analyzeSingleXMLFile(String sourceURL, String scriptId, String schema) throws XMLConvException{
-        String jobId = "-1";
+    public String analyzeSingleXMLFile(String sourceURL, String scriptId, String schema, Boolean checkForDuplicateJob) throws XMLConvException{
+        String jobId = null;
+        if(checkForDuplicateJob){
+            jobId = getJobService().findDuplicateNotCompletedJob(sourceURL, scriptId);
+        }
+        if(!Utils.isNullStr(jobId)){
+            return jobId;
+        }
+        else{
+            jobId = "-1";
+        }
         HashMap query;
         String originalSourceURL = sourceURL;
 
@@ -229,6 +239,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         LOGGER.info("### File with size=" + sourceSize + " Bytes has been downloaded.");
 
         String jobId = "-1";
+        String duplicateIdentifier = null;
         if(queryId == null) {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
@@ -240,6 +251,8 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         else{
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
+            duplicateIdentifier = getJobService().getDuplicateIdentifier(originalSourceURL, queryId.toString());
+            jobEntry.setDuplicateIdentifier(duplicateIdentifier);
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
@@ -249,6 +262,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
 
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType);
         jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+        jobHistoryEntry.setDuplicateIdentifier(duplicateIdentifier);
         getJobHistoryService().save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);

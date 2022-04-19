@@ -245,6 +245,8 @@ public class Properties {
     public static Long timeoutToWaitForEmptyFileForOnDemandJobs;
     public static Long maxMsToWaitForEmptyFileForOnDemandJobs;
 
+    public static Long maxMsForProcessingDuplicateSchemaValidation;
+
     public static String fmeUrl;
     public static String fmeUser;
     public static String fmePassword;
@@ -419,6 +421,7 @@ public class Properties {
 
         timeoutToWaitForEmptyFileForOnDemandJobs = getLongProperty("env.onDemand.waitForEmptyFile.timeout.ms");
         maxMsToWaitForEmptyFileForOnDemandJobs = getLongProperty("env.onDemand.waitForEmptyFile.max.ms");
+        maxMsForProcessingDuplicateSchemaValidation = getLongProperty("schema.validation.duplicates.processing.threshold");
 
         fmeUrl = getStringProperty("env.fme.url");
         fmeUser = getStringProperty("env.fme.user");

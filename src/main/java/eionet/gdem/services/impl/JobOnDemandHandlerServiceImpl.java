@@ -47,13 +47,18 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
     @Override
     public JobEntry createJobAndSendToRabbitMQ(XQScript script, Integer scriptId, boolean isApi) throws XMLConvException {
         JobEntry jobEntry = new JobEntry();
+        String duplicateIdentifier = null;
         try {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus)
                     .setRetryCounter(0).setJobType(Constants.ON_DEMAND_TYPE);
+            if(scriptId != null){
+                duplicateIdentifier = jobService.getDuplicateIdentifier(script.getOrigFileUrl(), scriptId.toString());
+                jobEntry.setDuplicateIdentifier(duplicateIdentifier);
+            }
             jobEntry = jobService.saveOrUpdate(jobEntry);
             LOGGER.info("Job with id " + jobEntry.getId() + " has been inserted in table T_XQJOBS");
-            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED);
+            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED, duplicateIdentifier);
             script.setJobId(jobEntry.getId().toString());
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
@@ -72,10 +77,11 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
         return jobEntry;
     }
 
-    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus) throws DatabaseException {
+    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus, String duplicateIdentifier) throws DatabaseException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
         jobHistoryEntry.setIntSchedulingStatus(internalStatus);
         jobHistoryEntry.setJobType(Constants.ON_DEMAND_TYPE);
+        jobHistoryEntry.setDuplicateIdentifier(duplicateIdentifier);
         jobHistoryService.save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
     }

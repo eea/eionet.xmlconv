@@ -61,6 +61,9 @@ public class JobHistoryEntry implements Serializable {
     @Column(name = "FME_JOB_ID")
     private Long fmeJobId;
 
+    @Column(name = "DUPLICATE_IDENTIFIER")
+    private String duplicateIdentifier;
+
     public JobHistoryEntry() {
     }
 
@@ -234,5 +237,13 @@ public class JobHistoryEntry implements Serializable {
 
     public void setFmeJobId(Long fmeJobId) {
         this.fmeJobId = fmeJobId;
+    }
+
+    public String getDuplicateIdentifier() {
+        return duplicateIdentifier;
+    }
+
+    public void setDuplicateIdentifier(String duplicateIdentifier) {
+        this.duplicateIdentifier = duplicateIdentifier;
     }
 }

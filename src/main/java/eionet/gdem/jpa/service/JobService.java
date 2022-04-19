@@ -7,6 +7,7 @@ import eionet.gdem.web.spring.workqueue.EntriesForPageObject;
 import eionet.gdem.web.spring.workqueue.JobMetadata;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface JobService {
 
@@ -35,5 +36,11 @@ public interface JobService {
     void changeJobStatusAndTimestampByStatus(Integer currentStatus, Integer newStatus);
 
     void updateJobDurationsByIds(Map<String, Long> jobHashmap);
+
+    JobEntry findByDuplicateIdentifierAndStatus(String duplicateIdentifier, Set<Integer> statuses);
+
+    String findDuplicateNotCompletedJob(String fileUrl, String scriptId);
+
+    String getDuplicateIdentifier(String fileUrl, String scriptId);
 
 }

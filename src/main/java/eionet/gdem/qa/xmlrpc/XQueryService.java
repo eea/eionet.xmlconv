@@ -74,30 +74,30 @@ public class XQueryService extends RemoteService {
     public static Vector analyzeXMLFiles(Hashtable files) throws XMLConvException {
         HashMap<String, List<String>> filesAndSchemas = new HashMap<>();
         Hashtable table = new Hashtable();
-            // getting keySet() into Set
+        // getting keySet() into Set
 
-            Set<String> schemaSet = files.keySet();
-            for(String schema : schemaSet) {
-                List fileList = new ArrayList();
+        Set<String> schemaSet = files.keySet();
+        for(String schema : schemaSet) {
+            List fileList = new ArrayList();
 
-                Vector<String> schemaFiles = (Vector) files.get(schema);
-                for (String file: schemaFiles){
-                    fileList.add(file);
-                }
-                filesAndSchemas.put(schema, fileList);
+            Vector<String> schemaFiles = (Vector) files.get(schema);
+            for (String file: schemaFiles){
+                fileList.add(file);
             }
-            HashMap<String,String> hashMapResult = getJobRequestHandlerService().analyzeMultipleXMLFiles(filesAndSchemas);
-            Vector result = new Vector();
-            if(!Utils.isNullHashMap(hashMapResult)){
-                //convert hashmap to vector where each element is a vector of strings
-                for (Map.Entry<String, String> entry : hashMapResult.entrySet()) {
-                    Vector idFileVector = new Vector();
-                    idFileVector.add(entry.getKey());
-                    idFileVector.add(entry.getValue());
-                    result.add(idFileVector);
-                }
+            filesAndSchemas.put(schema, fileList);
+        }
+        HashMap<String,String> hashMapResult = getJobRequestHandlerService().analyzeMultipleXMLFiles(filesAndSchemas, false);
+        Vector result = new Vector();
+        if(!Utils.isNullHashMap(hashMapResult)){
+            //convert hashmap to vector where each element is a vector of strings
+            for (Map.Entry<String, String> entry : hashMapResult.entrySet()) {
+                Vector idFileVector = new Vector();
+                idFileVector.add(entry.getKey());
+                idFileVector.add(entry.getValue());
+                result.add(idFileVector);
             }
-            return result;
+        }
+        return result;
     }
 
 
