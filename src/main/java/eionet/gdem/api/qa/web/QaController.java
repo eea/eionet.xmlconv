@@ -188,12 +188,13 @@ public class QaController {
     @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
-
         Hashtable<String, Object> results = qaService.getJobResults(jobId);
+        String executionStatusId = (String) results.get(Constants.RESULT_CODE_PRM);
+        String executionStatusName = (String) results.get("executionStatusName");
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
         LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
-        executionStatusView.put("statusId", (String) results.get(Constants.RESULT_CODE_PRM));
-        executionStatusView.put("statusName",(String) results.get("executionStatusName"));
+        executionStatusView.put("statusId", executionStatusId);
+        executionStatusView.put("statusName", executionStatusName);
         jsonResults.put("scriptTitle",results.get(Constants.RESULT_SCRIPTTITLE_PRM));
         jsonResults.put("executionStatus",executionStatusView);
         jsonResults.put("feedbackStatus", results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
@@ -212,7 +213,12 @@ public class QaController {
             //result file is html
             jsonResults = qaService.checkIfHtmlResultIsEmpty(jobId, jsonResults, results);
         }
-        return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.OK);
+        if(executionStatusName.equals("Not Found")){
+            return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.NOT_FOUND);
+        }
+        else{
+            return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.OK);
+        }
     }
 
     /**
