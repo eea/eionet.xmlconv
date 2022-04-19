@@ -74,4 +74,7 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
 
     @Query(value = "UPDATE T_XQJOBS SET DURATION= :duration WHERE JOB_ID= :jobId", nativeQuery=true)
     Integer updateDurationByJobId(@Param("duration") Long duration, @Param("jobId") Integer jobId);
+    
+    @Query(value = "SELECT COUNT(*) FROM T_XQJOBS where TIME_STAMP like :containedDate", nativeQuery = true)
+    Long countByTimestampContaining(@Param("containedDate") String containedDate);
 }
