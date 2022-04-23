@@ -12,7 +12,7 @@
         <java_version>11</java_version>
         <tomcat.version>9.0.24</tomcat.version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
-        <spring.version>4.3.25.RELEASE</spring.version>
+        <spring.version>5.3.19</spring.version>
         <spring-security-version>4.2.17.RELEASE</spring-security-version>
         <liquibase.changeLogFile>db/xmlconv-struct.xml</liquibase.changeLogFile>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
