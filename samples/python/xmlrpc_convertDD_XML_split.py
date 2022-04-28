@@ -15,7 +15,7 @@ try:
     # sheet name
     param2 = sys.argv[3]
 
-    method_result = server.ConversionService.convertDD_XML_split(param1) #, param2)
+    method_result = server.ConversionService.convertDD_XML_split(param1, param2)
 
 except xmlrpc.client.ProtocolError as err:
     print("A protocol error occurred")
