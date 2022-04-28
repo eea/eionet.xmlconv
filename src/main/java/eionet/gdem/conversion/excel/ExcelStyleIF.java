@@ -23,6 +23,8 @@
 
 package eionet.gdem.conversion.excel;
 
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+
 /**
  * This interface is defing the methods for mapping styles between xml (fo:style) and styles defined in Excel tool.
  *
@@ -63,7 +65,7 @@ public interface ExcelStyleIF {
      * Gets Font weight
      * @return Font weight
      */
-    short getFontWeight();
+    boolean getFontWeight();
 
     /**
      * Gets Font size
@@ -81,7 +83,7 @@ public interface ExcelStyleIF {
      * Gets Text Align
      * @return Text align
      */
-    short getTextAlign();
+    HorizontalAlignment getTextAlign();
 
     /**
      * Gets Workbook index

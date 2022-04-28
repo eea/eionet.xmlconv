@@ -23,18 +23,16 @@
 
 package eionet.gdem.conversion.excel;
 
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-
 import eionet.gdem.conversion.excel.reader.ExcelReader;
 import eionet.gdem.conversion.excel.writer.ExcelConversionHandler;
 import eionet.gdem.conversion.excel.writer.ExcelConversionHandlerIF;
 import eionet.gdem.conversion.spreadsheet.SourceReaderIF;
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import java.io.InputStream;
 
 /**
  * Excel conversion utilities.
@@ -96,8 +94,7 @@ public class ExcelUtils {
      */
     public static boolean isExcel2007File(InputStream input) {
         try {
-            OPCPackage p = OPCPackage.open(input);
-            Workbook wb = WorkbookFactory.create(p);
+            Workbook wb = WorkbookFactory.create(input);
             return true;
         } catch (Exception e) {
             return false;

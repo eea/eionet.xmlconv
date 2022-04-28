@@ -12,8 +12,8 @@
         <java_version>11</java_version>
         <tomcat.version>9.0.24</tomcat.version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
-        <spring.version>4.3.25.RELEASE</spring.version>
-        <spring-security-version>4.2.17.RELEASE</spring-security-version>
+        <spring.version>5.3.19</spring.version>
+        <spring-security-version>5.6.3</spring-security-version>
         <liquibase.changeLogFile>db/xmlconv-struct.xml</liquibase.changeLogFile>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
@@ -553,7 +553,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.5</version>
+                <version>2.11.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-lang</groupId>
@@ -590,7 +590,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient-cache</artifactId>
-                <version>4.5.2</version>
+                <version>4.5.13</version>
             </dependency>
             <!-- http://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
             <dependency>
@@ -654,17 +654,17 @@
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
-                <version>3.14</version>
+                <version>5.2.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
-                <version>3.14</version>
+                <version>5.2.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml-schemas</artifactId>
-                <version>3.14</version>
+                <version>4.1.2</version>
             </dependency>
 
             <!-- XSL-FO (pdf) conversion -->
@@ -739,7 +739,7 @@
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
-                <version>1.9.2</version>
+                <version>1.14.3</version>
             </dependency>
 
             <!-- EIONET dependencies -->
@@ -887,7 +887,7 @@
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
-                <version>3.5.0</version>
+                <version>4.9.1</version>
             </dependency>
             <dependency>
                 <groupId>com.zaxxer</groupId>
@@ -968,27 +968,27 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>2.10.3</version>
+                <version>2.13.2</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.10.3</version>
+                <version>2.13.2</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.10.3</version>
+                <version>2.13.2</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-hibernate5</artifactId>
-                <version>2.10.3</version>
+                <version>2.13.2</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>2.10.3</version>
+                <version>2.13.2</version>
             </dependency>
 
             <dependency>
@@ -1030,7 +1030,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>4.13.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
