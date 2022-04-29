@@ -131,8 +131,14 @@ public class QaControllerTestIT {
 
     @Test
     public void testSuccessGetQaResultsForJob() throws Exception {
-        MockHttpServletRequestBuilder request = get("/asynctasks/qajobs/{jobId}", 42);
+        MockHttpServletRequestBuilder request = get("/asynctasks/qajobs/{jobId}", 1);
         mockMvc.perform(request).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testSuccessGetQaResultsForJobNotFound() throws Exception {
+        MockHttpServletRequestBuilder request = get("/asynctasks/qajobs/{jobId}", 42);
+        mockMvc.perform(request).andExpect(status().isNotFound());
     }
 
     
