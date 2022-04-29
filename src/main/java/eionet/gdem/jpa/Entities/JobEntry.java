@@ -72,6 +72,9 @@ public class JobEntry implements Serializable {
     @Column(name = "FME_JOB_ID")
     private Long fmeJobId;
 
+    @Column(name = "DUPLICATE_IDENTIFIER")
+    private String duplicateIdentifier;
+
     @Transient
     private String fromDate;
 
@@ -285,5 +288,13 @@ public class JobEntry implements Serializable {
 
     public void setFmeJobId(Long fmeJobId) {
         this.fmeJobId = fmeJobId;
+    }
+
+    public String getDuplicateIdentifier() {
+        return duplicateIdentifier;
+    }
+
+    public void setDuplicateIdentifier(String duplicateIdentifier) {
+        this.duplicateIdentifier = duplicateIdentifier;
     }
 }

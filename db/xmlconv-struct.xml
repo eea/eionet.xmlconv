@@ -1000,4 +1000,29 @@
             INSERT INTO PROPERTIES VALUES (4,'maxAsyncFmeJobExecutorContainersAllowed',0,'1','maximum number of asynchronous fme JobExecutor containers to run on rancher');
         </sql>
     </changeSet>
+    <changeSet author="anthaant" id="rev-87">
+        <comment>
+            Added column DUPLICATE_IDENTIFIER to T_XQJOBS table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="DUPLICATE_IDENTIFIER" type="VARCHAR(100)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-88">
+        <comment>
+            Added column DUPLICATE_IDENTIFIER to JOB_HISTORY table
+        </comment>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="DUPLICATE_IDENTIFIER" type="VARCHAR(100)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-89">
+        <comment>
+            Changed DUPLICATE_IDENTIFIER column size for T_XQJOBS and JOB_HISTORY table
+        </comment>
+        <sql>
+        ALTER TABLE T_XQJOBS MODIFY DUPLICATE_IDENTIFIER VARCHAR(350);
+        ALTER TABLE JOB_HISTORY MODIFY DUPLICATE_IDENTIFIER VARCHAR(350);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -2,6 +2,7 @@ package eionet.gdem.jpa.service;
 
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.jpa.Entities.QueryHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.services.GDEMServices;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -39,6 +42,9 @@ public class JobServiceTest {
 
     @Mock
     private JobRepository jobRepository;
+
+    @Mock
+    private QueryHistoryService queryHistoryService;
 
     @Spy
     @InjectMocks
@@ -152,6 +158,53 @@ public class JobServiceTest {
         assertThat(jobMetadataListResult.get(0).getResult_file(), is(nullValue()));
         assertThat(jobMetadataListResult.get(0).getUrl(), is("test"));
         assertThat(jobMetadataListResult.get(0).getUrl_name(), is("test"));
+    }
+
+    @Test
+    public void testGetDuplicateIdentifierForSchemaValidation() throws SQLException, IOException {
+        String documentUrl = "testUrl";
+        String scriptId = "-1";
+        assertThat(jobServiceImpl.getDuplicateIdentifier(documentUrl, scriptId), is(nullValue()));
+        when(jobServiceImpl.getHashFromCdrBdrForFile(documentUrl)).thenReturn("testHash");
+        assertThat(jobServiceImpl.getDuplicateIdentifier(documentUrl, scriptId), is("testUrl_testHash_-1"));
+    }
+
+    @Test
+    public void testGetDuplicateIdentifierForScriptExecutionWithoutHistory() throws SQLException, IOException {
+        String documentUrl = "testUrl";
+        String scriptId = "15";
+        when(jobServiceImpl.getHashFromCdrBdrForFile(documentUrl)).thenReturn("testHash");
+        assertThat(jobServiceImpl.getDuplicateIdentifier(documentUrl, scriptId), is("testUrl_testHash_15"));
+    }
+
+    @Test
+    public void testGetDuplicateIdentifierForScriptExecutionWithHistory() throws SQLException, IOException {
+        String documentUrl = "testUrl";
+        String scriptId = "15";
+        QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry();
+        Date date = new Date();
+        queryHistoryEntry.setDateModified(date);
+        when(jobServiceImpl.getHashFromCdrBdrForFile(documentUrl)).thenReturn("testHash");
+        when(queryHistoryService.findLastEntryByQueryId(Integer.valueOf(scriptId))).thenReturn(queryHistoryEntry);
+        assertThat(jobServiceImpl.getDuplicateIdentifier(documentUrl, scriptId), is("testUrl_testHash_15_"+ date.toString()));
+    }
+
+    @Test
+    public void testGetDuplicateIdentifierForScriptExecutionOfEnvelopeWithoutHistory() {
+        String documentUrl = "testUrl/xml";
+        String scriptId = "15";
+        assertThat(jobServiceImpl.getDuplicateIdentifier(documentUrl, scriptId), is("testUrl/xml_15"));
+    }
+
+    @Test
+    public void testGetDuplicateIdentifierForScriptExecutionOfEnvelopeWithHistory() {
+        String documentUrl = "testUrl/xml";
+        String scriptId = "15";
+        QueryHistoryEntry queryHistoryEntry = new QueryHistoryEntry();
+        Date date = new Date();
+        queryHistoryEntry.setDateModified(date);
+        when(queryHistoryService.findLastEntryByQueryId(Integer.valueOf(scriptId))).thenReturn(queryHistoryEntry);
+        assertThat(jobServiceImpl.getDuplicateIdentifier(documentUrl, scriptId), is("testUrl/xml_15_"+ date.toString()));
     }
 }
 

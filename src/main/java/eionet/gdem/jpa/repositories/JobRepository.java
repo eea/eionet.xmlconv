@@ -69,6 +69,9 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
 
     Long countByNStatusIn(Set<Integer> nStatus);
 
+    @Query(value = "SELECT * FROM T_XQJOBS WHERE DUPLICATE_IDENTIFIER = :duplicateIdentifier and N_STATUS in :nStatus ORDER BY JOB_ID DESC LIMIT 1", nativeQuery = true)
+    JobEntry findByDuplicateIdentifierAndStatus(@Param("duplicateIdentifier") String duplicateIdentifier, @Param("nStatus") Set<Integer> nStatus);
+
     @Query(value = "UPDATE T_XQJOBS SET N_STATUS= :newStatus AND TIMESTAMP= :timestamp WHERE N_STATUS= :oldStatus", nativeQuery = true)
     void changeJobStatusAndTimestampByStatus(@Param("newStatus") Integer newStatus, @Param("timestamp") Timestamp timestamp, @Param("oldStatus") Integer oldStatus);
 

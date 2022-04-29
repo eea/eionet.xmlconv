@@ -99,7 +99,7 @@ public class WorkqueueManager {
      * @throws DCMException If an error occurs.
      */
     public String addQAScriptToWorkqueue(String user, String sourceUrl, String scriptContent, String scriptType, Boolean usedToken)
-    throws DCMException {
+            throws DCMException {
 
         if(!usedToken) {
             try {
@@ -165,7 +165,7 @@ public class WorkqueueManager {
             List<String> files = new ArrayList<>();
             files.add(sourceUrl);
             h.put(schemaUrl, files);
-            HashMap<String, String> resultMap = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(h);
+            HashMap<String, String> resultMap = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(h, false);
             if (resultMap != null) {
                 for (Map.Entry<String, String> entry : resultMap.entrySet()) {
                     result.add(entry.getKey());
@@ -266,13 +266,17 @@ public class WorkqueueManager {
             getJobServiceBean().changeJobStatusAndTimestampByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
             List<JobHistoryEntry> entriesDownloading = getJobHistoryRepository().findAllByStatus(Constants.XQ_DOWNLOADING_SRC);
             for(JobHistoryEntry entry: entriesDownloading){
-                getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType());
+                jobHistoryEntry.setDuplicateIdentifier(entry.getDuplicateIdentifier());
+                getJobHistoryRepository().save(jobHistoryEntry);
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }
             getJobServiceBean().changeJobStatusAndTimestampByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
             List<JobHistoryEntry> entriesProcessing = getJobHistoryRepository().findAllByStatus(Constants.XQ_PROCESSING);
             for(JobHistoryEntry entry: entriesProcessing){
-                getJobHistoryRepository().save(new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType()));
+                JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType());
+                jobHistoryEntry.setDuplicateIdentifier(entry.getDuplicateIdentifier());
+                getJobHistoryRepository().save(jobHistoryEntry);
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }
         } catch (Exception e) {
