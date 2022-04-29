@@ -6,6 +6,7 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.web.spring.workqueue.EntriesForPageObject;
 import eionet.gdem.web.spring.workqueue.JobMetadata;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface JobService {

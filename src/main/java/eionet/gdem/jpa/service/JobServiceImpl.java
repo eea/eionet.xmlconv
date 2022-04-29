@@ -474,7 +474,7 @@ public class JobServiceImpl implements JobService {
         }
     }
 
-}
+
     @Override
     public JobEntry findByDuplicateIdentifierAndStatus(String duplicateIdentifier, Set<Integer> statuses){
         JobEntry jobEntry = jobRepository.findByDuplicateIdentifierAndStatus(duplicateIdentifier, statuses);
