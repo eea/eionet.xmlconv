@@ -5,7 +5,7 @@ import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
-import org.junit.Assert;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,20 +40,20 @@ public class JobHistoryRepositoryTestIT {
 
     @Test
     public void findByIdTestIdDoesntExist() {
-        Assert.assertThat(repository.findById(0), is(nullValue()));
+        MatcherAssert.assertThat(repository.findById(0), is(nullValue()));
     }
 
     @Test
     public void findByIdTestIdExists(){
         JobHistoryEntry entry = repository.findById(2);
-        Assert.assertThat(entry.getId(), is(2));
-        Assert.assertThat(entry.getJobName(), is("job2"));
-        Assert.assertThat(entry.getStatus(), is(1));
-        Assert.assertThat(entry.getDateAdded().toString(), is("2017-07-23 13:10:11.0"));
-        Assert.assertThat(entry.getUrl(), is(nullValue()));
-        Assert.assertThat(entry.getXqFile(), is(nullValue()));
-        Assert.assertThat(entry.getResultFile(), is(nullValue()));
-        Assert.assertThat(entry.getXqType(), is(nullValue()));
+        MatcherAssert.assertThat(entry.getId(), is(2));
+        MatcherAssert.assertThat(entry.getJobName(), is("job2"));
+        MatcherAssert.assertThat(entry.getStatus(), is(1));
+        MatcherAssert.assertThat(entry.getDateAdded().toString(), is("2017-07-23 13:10:11.0"));
+        MatcherAssert.assertThat(entry.getUrl(), is(nullValue()));
+        MatcherAssert.assertThat(entry.getXqFile(), is(nullValue()));
+        MatcherAssert.assertThat(entry.getResultFile(), is(nullValue()));
+        MatcherAssert.assertThat(entry.getXqType(), is(nullValue()));
     }
 
     @Test(expected = Exception.class)

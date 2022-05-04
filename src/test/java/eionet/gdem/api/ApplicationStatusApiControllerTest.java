@@ -9,6 +9,7 @@ import eionet.gdem.rancher.model.ContainerData;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.test.ApplicationTestContext;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -84,10 +84,10 @@ public class ApplicationStatusApiControllerTest {
                 .andReturn();
         String contentAsString = result.getResponse().getContentAsString();
         ApplicationStatus content = mapper.readValue(contentAsString, ApplicationStatus.class);
-        assertThat(content.getJobExecutorReportStatus().getLightJobExecutorInstancesRunning(), is(1));
-        assertThat(content.getJobExecutorReportStatus().getHeavyJobExecutorInstancesRunning(), is(1));
-        assertThat(content.getJobExecutorReportStatus().getFmeAsyncJobExecutorInstancesRunning(), is(1));
-        assertThat(content.getJobExecutorReportStatus().getFmeSyncJobExecutorInstancesRunning(), is(1));
+        MatcherAssert.assertThat(content.getJobExecutorReportStatus().getLightJobExecutorInstancesRunning(), is(1));
+        MatcherAssert.assertThat(content.getJobExecutorReportStatus().getHeavyJobExecutorInstancesRunning(), is(1));
+        MatcherAssert.assertThat(content.getJobExecutorReportStatus().getFmeAsyncJobExecutorInstancesRunning(), is(1));
+        MatcherAssert.assertThat(content.getJobExecutorReportStatus().getFmeSyncJobExecutorInstancesRunning(), is(1));
     }
 }
 

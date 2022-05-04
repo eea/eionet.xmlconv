@@ -5,7 +5,7 @@ import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
-import org.junit.Assert;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class IntSchedulingStatusRepositoryTestIT {
 
     @Test
     public void testFindAll() {
-        Assert.assertThat(intSchedulingStatusRepository.findAll().size(), is(3));
+        MatcherAssert.assertThat(intSchedulingStatusRepository.findAll().size(), is(3));
     }
 
     @Test(expected = Exception.class)

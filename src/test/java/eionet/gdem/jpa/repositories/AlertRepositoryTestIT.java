@@ -6,6 +6,7 @@ import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,6 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
@@ -41,7 +41,7 @@ public class AlertRepositoryTestIT {
     @Test
     public void testFindAll() {
         List<AlertEntry> alertEntries = alertRepository.findAll();
-        assertThat(alertEntries.size(), is(2));
+        MatcherAssert.assertThat(alertEntries.size(), is(2));
     }
 
     @Test
@@ -49,8 +49,8 @@ public class AlertRepositoryTestIT {
         AlertEntry alertEntry = new AlertEntry().setId(3).setSeverity(AlertSeverity.MEDIUM).setDescription("alert3").setNotificationSentToUns(false)
                 .setOccurrenceDate(new Timestamp(new Date().getTime()));
         AlertEntry result = alertRepository.save(alertEntry);
-        assertThat(result.getDescription(), is(alertEntry.getDescription()));
-        assertThat(result.getId(), is(alertEntry.getId()));
+        MatcherAssert.assertThat(result.getDescription(), is(alertEntry.getDescription()));
+        MatcherAssert.assertThat(result.getId(), is(alertEntry.getId()));
     }
 
     @Test

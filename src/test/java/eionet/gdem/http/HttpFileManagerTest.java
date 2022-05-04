@@ -4,16 +4,10 @@ import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
-import net.xqj.basex.bin.H;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicHeader;
+import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,9 +27,9 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -112,6 +106,6 @@ public class HttpFileManagerTest {
         when(mockHttpConnection.getHeaderField(any(String.class))).thenReturn("https://cdrtest.eionet.europa.eu/api/testXMLfile.xml");
 
          toTestUrl = httpFileManager.followUrlRedirectIfNeeded(toTestUrl, null);
-        assertThat(spyToTestUrl.toString(),equalTo(httpsUrl));
+        MatcherAssert.assertThat(spyToTestUrl.toString(),equalTo(httpsUrl));
     }
 }

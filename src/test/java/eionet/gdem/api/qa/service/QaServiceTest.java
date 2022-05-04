@@ -12,6 +12,25 @@ import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.services.JobResultHandlerService;
 import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
+import org.hamcrest.MatcherAssert;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.sql.DataSource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,31 +38,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Vector;
-import javax.sql.DataSource;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import eionet.gdem.test.DbHelper;
-import eionet.gdem.test.TestConstants;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -115,14 +115,14 @@ public class QaServiceTest {
     @Test
     public void testGetSchemaBySchemaUrlSuccessful() throws Exception {
         Schema result = qaService.getSchemaBySchemaUrl("http://localhost/not_existing.xsd");
-        Assert.assertThat(result.getId(), is("58"));
-        Assert.assertThat(result.getSchema(), is("http://localhost/not_existing.xsd"));
-        Assert.assertThat(result.getDescription(), is("Expired dummy"));
-        Assert.assertThat(result.getDtdPublicId(), is(""));
-        Assert.assertThat(result.isDoValidation(), is(false));
-        Assert.assertThat(result.getSchemaLang(), is("XSD"));
-        Assert.assertThat(result.isBlocker(), is(false));
-        Assert.assertThat(result.getMaxExecutionTime(), is(nullValue()));
+        MatcherAssert.assertThat(result.getId(), is("58"));
+        MatcherAssert.assertThat(result.getSchema(), is("http://localhost/not_existing.xsd"));
+        MatcherAssert.assertThat(result.getDescription(), is("Expired dummy"));
+        MatcherAssert.assertThat(result.getDtdPublicId(), is(""));
+        MatcherAssert.assertThat(result.isDoValidation(), is(false));
+        MatcherAssert.assertThat(result.getSchemaLang(), is("XSD"));
+        MatcherAssert.assertThat(result.isBlocker(), is(false));
+        MatcherAssert.assertThat(result.getMaxExecutionTime(), is(nullValue()));
     }
 
     /* Test case: content is not empty */
@@ -144,10 +144,10 @@ public class QaServiceTest {
         when(qaServiceMocked.handleOnDemandJobsResults(results, sourceUrl, scriptId)).thenCallRealMethod();
 
         LinkedHashMap<String, String> jsonResults = qaServiceMocked.handleOnDemandJobsResults(results, sourceUrl, scriptId);
-        Assert.assertThat(jsonResults.get("feedbackStatus"), is("testFeedbackStatus"));
-        Assert.assertThat(jsonResults.get("feedbackMessage"), is("testMessage"));
-        Assert.assertThat(jsonResults.get("feedbackContent"), is("testContent"));
-        Assert.assertThat(jsonResults.get("feedbackContentType"), is("testContentType"));
+        MatcherAssert.assertThat(jsonResults.get("feedbackStatus"), is("testFeedbackStatus"));
+        MatcherAssert.assertThat(jsonResults.get("feedbackMessage"), is("testMessage"));
+        MatcherAssert.assertThat(jsonResults.get("feedbackContent"), is("testContent"));
+        MatcherAssert.assertThat(jsonResults.get("feedbackContentType"), is("testContentType"));
     }
 
     /* Test case: content is empty */
@@ -169,10 +169,10 @@ public class QaServiceTest {
         when(qaServiceMocked.handleOnDemandJobsResults(results, sourceUrl, scriptId)).thenCallRealMethod();
 
         LinkedHashMap<String, String> jsonResults = qaServiceMocked.handleOnDemandJobsResults(results, sourceUrl, scriptId);
-        Assert.assertThat(jsonResults.get("feedbackStatus"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_STATUS));
-        Assert.assertThat(jsonResults.get("feedbackMessage"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_MESSAGE));
-        Assert.assertThat(jsonResults.get("feedbackContent"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT));
-        Assert.assertThat(jsonResults.get("feedbackContentType"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT_TYPE));
+        MatcherAssert.assertThat(jsonResults.get("feedbackStatus"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_STATUS));
+        MatcherAssert.assertThat(jsonResults.get("feedbackMessage"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_MESSAGE));
+        MatcherAssert.assertThat(jsonResults.get("feedbackContent"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT));
+        MatcherAssert.assertThat(jsonResults.get("feedbackContentType"), is(TestConstants.ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT_TYPE));
     }
 
 }
