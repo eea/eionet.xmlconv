@@ -32,7 +32,7 @@
     <!-- Runs on Tomcat startup. -->
     <bean id="quartz_liquibase" class="liquibase.integration.spring.SpringLiquibase">
         <property name="dataSource" ref="quartzDataSource" />
-        <property name="changeLog" value="classpath:db/quartz-liquibase.xml" />
+        <property name="changeLog" value="classpath:liquibase/quartz-liquibase.xml" />
     </bean>
 
 </beans>

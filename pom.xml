@@ -14,7 +14,7 @@
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
         <spring.version>5.3.19</spring.version>
         <spring-security-version>5.6.3</spring-security-version>
-        <liquibase.changeLogFile>db/xmlconv-struct.xml</liquibase.changeLogFile>
+        <liquibase.changeLogFile>liquibase/xmlconv-struct.xml</liquibase.changeLogFile>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
         <thymeleaf-layout-dialect.version>2.1.1</thymeleaf-layout-dialect.version>
@@ -211,10 +211,10 @@
                                 <copy todir="${project.build.directory}/classes/acl">
                                     <fileset dir="acl" />
                                 </copy>
-                                <copy file="${basedir}/db/xmlconv-struct.xml"
-                                      toFile="${project.build.directory}/classes/db/xmlconv-struct.xml" />
-                                <copy file="${basedir}/db/quartz-liquibase.xml"
-                                      toFile="${project.build.directory}/classes/db/quartz-liquibase.xml" />
+                                <copy file="${basedir}/liquibase/xmlconv-struct.xml"
+                                      toFile="${project.build.directory}/classes/liquibase/xmlconv-struct.xml" />
+                                <copy file="${basedir}/liquibase/quartz-liquibase.xml"
+                                      toFile="${project.build.directory}/classes/liquibase/quartz-liquibase.xml" />
                             </target>
                         </configuration>
                     </execution>
@@ -371,8 +371,8 @@
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${basedir}/db</directory>
-                            <targetPath>WEB-INF/classes/db</targetPath>
+                            <directory>${basedir}/liquibase</directory>
+                            <targetPath>WEB-INF/classes/liquibase</targetPath>
                             <filtering>false</filtering>
                             <includes>
                                 <include>xmlconv-struct.xml</include>
