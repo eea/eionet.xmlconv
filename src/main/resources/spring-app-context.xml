@@ -46,7 +46,7 @@
     <!-- Runs on Tomcat startup. -->
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
         <property name="dataSource" ref="transactionAwareDataSource" />
-        <property name="changeLog" value="classpath:db/xmlconv-struct.xml" />
+        <property name="changeLog" value="classpath:liquibase/xmlconv-struct.xml" />
     </bean>
 
 </beans>

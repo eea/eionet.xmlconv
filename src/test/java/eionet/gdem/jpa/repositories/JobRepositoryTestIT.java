@@ -5,6 +5,7 @@ import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.DbHelper;
 import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,6 @@ import javax.sql.DataSource;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })
@@ -39,19 +39,19 @@ public class JobRepositoryTestIT {
     @Test
     public void testFindById() {
         JobEntry jobEntry = jobRepository.findById(1);
-        assertThat(jobEntry.getId(), is(1));
-        assertThat(jobEntry.getUrl(), is("http://test.dev/test.xml"));
-        assertThat(jobEntry.getFile(), is("test.xq"));
+        MatcherAssert.assertThat(jobEntry.getId(), is(1));
+        MatcherAssert.assertThat(jobEntry.getUrl(), is("http://test.dev/test.xml"));
+        MatcherAssert.assertThat(jobEntry.getFile(), is("test.xq"));
     }
 
     @Test
     public void testFindByIdNotExists() {
-        assertThat(jobRepository.findById(0), is(nullValue()));
+        MatcherAssert.assertThat(jobRepository.findById(0), is(nullValue()));
     }
 
     @Test
     public void testGetRetryCounter() {
-        assertThat(jobRepository.getRetryCounter(1), is(0));
+        MatcherAssert.assertThat(jobRepository.getRetryCounter(1), is(0));
     }
 
     @Test(expected = Exception.class)

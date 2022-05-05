@@ -38,6 +38,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.excel.ExcelStyleIF;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+
+import static org.apache.poi.ss.usermodel.CellType.*;
 
 /**
  * The main class, which is calling POI HSSF methods for creating Excel file and adding data into it works together with
@@ -206,14 +209,14 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
             if (number_value != null) {
                 _cell.setCellValue(number_value.doubleValue());
             }
-            _cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            _cell.setCellType(NUMERIC);
         } else if (isBoolean) {
             if (boolean_value != null) {
                 _cell.setCellValue(boolean_value.booleanValue());
             }
-            _cell.setCellType(HSSFCell.CELL_TYPE_BOOLEAN);
+            _cell.setCellType(BOOLEAN);
         } else {
-            _cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+            _cell.setCellType(STRING);
             // _cell.setEncoding(HSSFCell.ENCODING_UTF_16 );//
             _cell.setCellValue(str_value);
         }
@@ -304,14 +307,14 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
         // Italic
         font.setItalic(style.getItalic());
         // Font Weight eg.bold
-        short weight = style.getFontWeight();
-        font.setBoldweight(weight);
+        boolean weight = style.getFontWeight();
+        font.setBold(weight);
 
         // Fonts are set into a style so create a new one to use.
         HSSFCellStyle HSSFStyle = wb.createCellStyle();
         HSSFStyle.setFont(font);
         // Text alignment eg.center
-        short align = style.getTextAlign();
+        HorizontalAlignment align = style.getTextAlign();
         HSSFStyle.setAlignment(align);
 
         style.setWorkbookIndex(HSSFStyle.getIndex());

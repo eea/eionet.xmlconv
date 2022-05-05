@@ -33,29 +33,14 @@ import eionet.gdem.conversion.spreadsheet.SourceReaderLogger.ReaderTypeEnum;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.RichTextString;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The main class, which is calling POI HSSF methods for reading Excel file.
@@ -126,8 +111,7 @@ public class ExcelReader implements SourceReaderIF {
                 POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(inputFile));
                 wb = new HSSFWorkbook(fs);
             } else {
-                OPCPackage p = OPCPackage.open(new FileInputStream(inputFile));
-                wb = WorkbookFactory.create(p);
+                wb = WorkbookFactory.create(new FileInputStream(inputFile));
             }
         } catch (Exception e) {
             throw new XMLConvException("ErrorConversionHandler - couldn't open Excel file: " + e.toString());
@@ -502,11 +486,11 @@ public class ExcelReader implements SourceReaderIF {
 
         if (cell != null) {
             switch (evaluator.evaluateInCell(cell).getCellType()) {
-                case HSSFCell.CELL_TYPE_NUMERIC:
-                    if (HSSFDateUtil.isCellDateFormatted(cell) && !isYearValue(cell.getNumericCellValue())) {
+                case NUMERIC:
+                    if (DateUtil.isCellDateFormatted(cell) && !isYearValue(cell.getNumericCellValue())) {
                         Date dateValue = cell.getDateCellValue();
                         value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
-                    } else if (HSSFDateUtil.isValidExcelDate(cell.getNumericCellValue()) && schemaType != null
+                    } else if (DateUtil.isValidExcelDate(cell.getNumericCellValue()) && schemaType != null
                             && schemaType.equals("xs:date") && !isYearValue(cell.getNumericCellValue())) {
                         Date dateValue = cell.getDateCellValue();
                         value = Utils.getFormat(dateValue, DEFAULT_DATE_FORMAT);
@@ -514,16 +498,16 @@ public class ExcelReader implements SourceReaderIF {
                         value = NumberToTextConverter.toText(cell.getNumericCellValue());
                     }
                     break;
-                case HSSFCell.CELL_TYPE_STRING:
+                case STRING:
                     RichTextString richText = cell.getRichStringCellValue();
                     value = richText.toString();
                     break;
-                case HSSFCell.CELL_TYPE_BOOLEAN:
+                case BOOLEAN:
                     value = Boolean.toString(cell.getBooleanCellValue());
                     break;
-                case HSSFCell.CELL_TYPE_ERROR:
+                case ERROR:
                     break;
-                case HSSFCell.CELL_TYPE_FORMULA:
+                case FORMULA:
                     break;
                 default:
                     break;

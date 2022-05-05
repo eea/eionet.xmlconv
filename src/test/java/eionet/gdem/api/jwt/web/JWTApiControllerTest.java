@@ -3,7 +3,7 @@ package eionet.gdem.api.jwt.web;
 import eionet.gdem.api.jwt.service.JWTService;
 import eionet.gdem.services.impl.AclOperationsServiceImpl;
 import eionet.gdem.test.ApplicationTestContext;
-import org.junit.Assert;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.when;
@@ -70,9 +71,9 @@ public class JWTApiControllerTest {
     public void testGenerateJWTTokenNoHeader() throws Exception {
         request.setMethod("POST");
         ResponseEntity<HashMap<String,String>> response = jwtApiController.generateJWTToken(request);
-        Assert.assertThat(response, is(notNullValue()));
-        Assert.assertThat(response.getStatusCode().toString(), is("401"));
-        Assert.assertThat(response.getBody().toString(), is("{message=No Basic authentication received}"));
+        MatcherAssert.assertThat(response, is(notNullValue()));
+        MatcherAssert.assertThat(response.getStatusCodeValue(), is(401));
+        MatcherAssert.assertThat(response.getBody().toString(), is("{message=No Basic authentication received}"));
     }
 
     /* Test case: no basic authentication params in the header of the request */
@@ -83,9 +84,9 @@ public class JWTApiControllerTest {
         request.setMethod("POST");
         request.addHeader("Authorization", "NotBasic " + new String(encoding));
         ResponseEntity<HashMap<String,String>> response = jwtApiController.generateJWTToken(request);
-        Assert.assertThat(response, is(notNullValue()));
-        Assert.assertThat(response.getStatusCode().toString(), is("401"));
-        Assert.assertThat(response.getBody().toString(), is("{message=No Basic authentication received}"));
+        MatcherAssert.assertThat(response, is(notNullValue()));
+        MatcherAssert.assertThat(response.getStatusCodeValue(), is(401));
+        MatcherAssert.assertThat(response.getBody().toString(), is("{message=No Basic authentication received}"));
     }
 
     /* Test case: the given credentials do not belong to an eionet user */
@@ -97,9 +98,9 @@ public class JWTApiControllerTest {
         request.addHeader("Authorization", "Basic " + new String(encoding));
 
         ResponseEntity<HashMap<String,String>> response = jwtApiController.generateJWTToken(request);
-        Assert.assertThat(response, is(notNullValue()));
-        Assert.assertThat(response.getStatusCode().toString(), is("401"));
-        Assert.assertThat(response.getBody().toString(), is("{message=User does not exist}"));
+        MatcherAssert.assertThat(response, is(notNullValue()));
+        MatcherAssert.assertThat(response.getStatusCodeValue(), is(401));
+        MatcherAssert.assertThat(response.getBody().toString(), is("{message=User does not exist}"));
     }
 
     /* Test case: the user does not have admin rights */
@@ -115,9 +116,9 @@ public class JWTApiControllerTest {
         when(jwtApiController.checkIfUserHasAdminRights("userExistsUsername")).thenReturn(false);
 
         ResponseEntity<HashMap<String,String>> response = jwtApiController.generateJWTToken(request);
-        Assert.assertThat(response, is(notNullValue()));
-        Assert.assertThat(response.getStatusCode().toString(), is("401"));
-        Assert.assertThat(response.getBody().toString(), is("{message=User userExistsUsername does not have admin rights}"));
+        MatcherAssert.assertThat(response, is(notNullValue()));
+        MatcherAssert.assertThat(response.getStatusCodeValue(), is(401));
+        MatcherAssert.assertThat(response.getBody().toString(), is("{message=User userExistsUsername does not have admin rights}"));
     }
 
     /* Test case: successful generation of token */
@@ -133,9 +134,9 @@ public class JWTApiControllerTest {
         request.addHeader("Authorization", "Basic " + new String(encoding));
 
         ResponseEntity<HashMap<String,String>> response = jwtApiController.generateJWTToken(request);
-        Assert.assertThat(response, is(notNullValue()));
-        Assert.assertThat(response.getStatusCode().toString(), is("200"));
-        Assert.assertThat(response.getBody().toString(), is("{token=testToken}"));
+        MatcherAssert.assertThat(response, is(notNullValue()));
+        MatcherAssert.assertThat(response.getStatusCodeValue(), is(200));
+        MatcherAssert.assertThat(response.getBody().toString(), is("{token=testToken}"));
     }
 
 
@@ -143,7 +144,7 @@ public class JWTApiControllerTest {
     @Test
     public void testGetExecutionValueFromSSOPageSuccessful() throws Exception {
         String execution = jwtApiController.getExecutionValueFromSSOPage();
-        Assert.assertThat(execution, is(notNullValue()));
+        MatcherAssert.assertThat(execution, is(notNullValue()));
     }
 
     /* Test case: get execution value from wrong page*/
@@ -157,7 +158,7 @@ public class JWTApiControllerTest {
         catch(Exception e)
         {
             String expectedMessage = "The execution input type from the https://www.google.com/ page does not exist.";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            MatcherAssert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
         }
         fail("Wrong URI - exception did not throw!");
@@ -167,14 +168,14 @@ public class JWTApiControllerTest {
     @Test
     public void testAuthenticateUserWrongCredentials() throws Exception {
         Boolean result = jwtApiController.authenticateUser("wrongUsername", "WrongPassword");
-        Assert.assertThat(result, is(false));
+        MatcherAssert.assertThat(result, is(false));
     }
 
     /* Test case: authenticate user correct credentials*/
     @Test
     public void testAuthenticateUserCorrectCredentials() throws Exception {
         Boolean result = jwtApiController.authenticateUser("userExistsUsername", "userExistsPassword");
-        Assert.assertThat(result, is(true));
+        MatcherAssert.assertThat(result, is(true));
     }
 
     /* Test case: get execution value from wrong page*/
@@ -188,7 +189,7 @@ public class JWTApiControllerTest {
         catch(Exception e)
         {
             String expectedMessage = "The execution input type from the https://www.google.com/ page does not exist.";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            MatcherAssert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
         }
         fail("Wrong URI - exception did not throw!");
@@ -205,7 +206,7 @@ public class JWTApiControllerTest {
         catch(Exception e)
         {
             String expectedMessage = "No gdem_admin role was found.";
-            Assert.assertThat(e.getMessage(), is(expectedMessage));
+            MatcherAssert.assertThat(e.getMessage(), is(expectedMessage));
             throw e;
         }
         fail("Admin group does not exist - exception did not throw!");
@@ -216,7 +217,7 @@ public class JWTApiControllerTest {
     public void testCheckIfUserHasAdminRightsUserNotFound() throws Exception {
         when(aclOperationsService.getRefreshedGroupsAndUsersHashTable(anyBoolean())).thenReturn(hashtableWithAdmins);
         Boolean result = jwtApiController.checkIfUserHasAdminRights("userNotFound");
-        Assert.assertThat(result, is(false));
+        MatcherAssert.assertThat(result, is(false));
     }
 
     /* Test case: user does not have admin rights */
@@ -224,7 +225,7 @@ public class JWTApiControllerTest {
     public void testCheckIfUserHasAdminRightsUserIsNotAdmin() throws Exception {
         when(aclOperationsService.getRefreshedGroupsAndUsersHashTable(anyBoolean())).thenReturn(hashtableWithAdmins);
         Boolean result = jwtApiController.checkIfUserHasAdminRights("heinlja");
-        Assert.assertThat(result, is(false));
+        MatcherAssert.assertThat(result, is(false));
     }
 
     /* Test case: user has admin rights */
@@ -232,7 +233,7 @@ public class JWTApiControllerTest {
     public void testCheckIfUserHasAdminRightsUserIsAdmin() throws Exception {
         when(aclOperationsService.getRefreshedGroupsAndUsersHashTable(anyBoolean())).thenReturn(hashtableWithAdmins);
         Boolean result = jwtApiController.checkIfUserHasAdminRights("anthaant");
-        Assert.assertThat(result, is(true));
+        MatcherAssert.assertThat(result, is(true));
     }
 
     private Hashtable<String, Vector<String>> createGroupsAndUsersHashtableWithAdmins(){
