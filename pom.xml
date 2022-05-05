@@ -828,18 +828,18 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-taglibs</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>5.6.3</version>
             </dependency>
             <!-- Spring RabbitMQ Integration Dependencies -->
             <dependency>
                 <groupId>org.springframework.amqp</groupId>
                 <artifactId>spring-amqp</artifactId>
-                <version>1.7.14.RELEASE</version>
+                <version>2.4.4</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.amqp</groupId>
                 <artifactId>spring-rabbit</artifactId>
-                <version>1.7.14.RELEASE</version>
+                <version>2.4.4</version>
             </dependency>
 
             <dependency>
@@ -864,12 +864,12 @@
             <dependency>
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf-spring4</artifactId>
-                <version>3.0.3.RELEASE</version>
+                <version>3.0.15.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.thymeleaf.extras</groupId>
                 <artifactId>thymeleaf-extras-springsecurity4</artifactId>
-                <version>3.0.2.RELEASE</version>
+                <version>3.0.4.RELEASE</version>
             </dependency>
 
 
@@ -1182,13 +1182,13 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-messaging</artifactId>
-                <version>4.3.30.RELEASE</version>
+                <version>5.3.19</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-websocket</artifactId>
-                <version>4.3.30.RELEASE</version>
+                <version>5.3.19</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.session/spring-session -->
             <dependency>
