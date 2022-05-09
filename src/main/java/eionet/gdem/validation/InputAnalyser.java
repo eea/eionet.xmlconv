@@ -23,28 +23,21 @@
 
 package eionet.gdem.validation;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import eionet.gdem.http.HttpFileManager;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.utils.Utils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.*;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 
 /**
  * The class analyses XML file and extracts XML Schema, DTD, namespace and root element information.
@@ -113,6 +106,8 @@ public class InputAnalyser {
             reader.setFeature("http://apache.org/xml/features/validation/schema", false);
             reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             reader.setFeature("http://xml.org/sax/features/namespaces", true);
+            reader.setFeature("http://xml.org/sax/features/external-general-entities",false);
+            reader.setFeature("http://xml.org/sax/features/external-parameter-entities",false);
 
             SAXDoctypeReader doctypeReader = new SAXDoctypeReader();
             // turn on dtd handling
