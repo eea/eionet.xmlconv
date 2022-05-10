@@ -32,7 +32,7 @@ public class FileDownloadController {
     @RequestMapping(value = "/zip/{fileName}", method = RequestMethod.GET)
     public void getFile(@PathVariable String fileName, @RequestHeader(value = "authorization") String authorization, HttpServletResponse response) throws JWTException, IOException {
         String filePath = null;
-        String urlPath = new StringBuilder("/tmp/").append(fileName).append(".zip").toString();
+        String urlPath = new StringBuilder("/tmp/").append(fileName.endsWith(".zip") ? fileName : fileName + ".zip").toString();
 
         String rawAuthenticationToken = authorization;
         String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, Properties.jwtHeaderSchemaProperty);
