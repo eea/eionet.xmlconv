@@ -1,7 +1,6 @@
 package eionet.gdem.jpa.service;
 
 import eionet.gdem.Constants;
-import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataEntry;
 import eionet.gdem.jpa.Entities.QueryMetadataHistoryEntry;
@@ -43,7 +42,7 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
     QueryJpaService queryJpaService;
 
     @Override
-    public void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus, Integer jobId, Long fmeJobId){
+    public void storeScriptInformation(Integer queryID, String scriptFile, String scriptType, Long durationOfJob, Integer jobStatus, Integer jobId, Long fmeJobId, String xmlUrl, Long xmlSize){
         //if queryID does not exist in T_QUERY do nothing
         QueryEntry queryEntry = queryJpaService.findByQueryId(queryID);
         if(queryEntry == null){
@@ -58,6 +57,12 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
             QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()), jobId);
             if(fmeJobId != null){
                 queryMetadataHistoryEntry.setFmeJobId(fmeJobId);
+            }
+            if(xmlUrl != null){
+                queryMetadataHistoryEntry.setXmlUrl(xmlUrl);
+            }
+            if(xmlSize != null){
+                queryMetadataHistoryEntry.setXmlSize(xmlSize);
             }
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }
@@ -83,6 +88,12 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
             QueryMetadataHistoryEntry queryMetadataHistoryEntry = new QueryMetadataHistoryEntry(scriptFile, queryID, scriptType, durationOfJob , queryEntry.getMarkedHeavy(), jobStatus, queryEntry.getVersion(), new Timestamp(new Date().getTime()), jobId);
             if(fmeJobId != null){
                 queryMetadataHistoryEntry.setFmeJobId(fmeJobId);
+            }
+            if(xmlUrl != null){
+                queryMetadataHistoryEntry.setXmlUrl(xmlUrl);
+            }
+            if(xmlSize != null){
+                queryMetadataHistoryEntry.setXmlSize(xmlSize);
             }
             queryMetadataHistoryRepository.save(queryMetadataHistoryEntry);
         }

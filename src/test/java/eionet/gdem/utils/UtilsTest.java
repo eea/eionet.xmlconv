@@ -15,6 +15,7 @@ import eionet.gdem.test.TestConstants;
 import eionet.gdem.test.TestUtils;
 
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -92,9 +93,9 @@ public class UtilsTest {
 
     @Test
     public void createFormatForMsSuccessful() {
-        Assert.assertThat("0 hours, 00 minutes, 00 seconds", is(Utils.createFormatForMs(Long.valueOf(124))));
-        Assert.assertThat("0 hours, 00 minutes, 07 seconds", is(Utils.createFormatForMs(Long.valueOf(7443))));
-        Assert.assertThat("0 hours, 01 minutes, 14 seconds", is(Utils.createFormatForMs(Long.valueOf(74543))));
-        Assert.assertThat("3 hours, 26 minutes, 47 seconds", is(Utils.createFormatForMs(Long.valueOf(12407443))));
+        assertThat("0 hours, 00 minutes, 00 seconds", is(Utils.createFormatForMs(Long.valueOf(124))));
+        assertThat("0 hours, 00 minutes, 07 seconds", is(Utils.createFormatForMs(Long.valueOf(7443))));
+        assertThat("0 hours, 01 minutes, 14 seconds", is(Utils.createFormatForMs(Long.valueOf(74543))));
+        assertThat("3 hours, 26 minutes, 47 seconds", is(Utils.createFormatForMs(Long.valueOf(12407443))));
     }
 }

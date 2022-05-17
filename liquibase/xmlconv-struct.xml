@@ -1025,4 +1025,21 @@
         ALTER TABLE JOB_HISTORY MODIFY DUPLICATE_IDENTIFIER VARCHAR(350);
         </sql>
     </changeSet>
+    <changeSet author="anthaant" id="rev-90">
+        <comment>
+            Added column XML_SIZE to T_XQJOBS and JOB_HISTORY table and columns XML_URL and XML_SIZE to QUERY_METADATA_HISTORY table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="XML_SIZE" type="BIGINT"></column>
+        </addColumn>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="XML_SIZE" type="BIGINT"></column>
+        </addColumn>
+        <addColumn tableName="QUERY_METADATA_HISTORY">
+            <column name="XML_URL" type="VARCHAR(2048)"></column>
+        </addColumn>
+        <addColumn tableName="QUERY_METADATA_HISTORY">
+            <column name="XML_SIZE" type="BIGINT"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

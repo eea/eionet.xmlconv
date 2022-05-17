@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
@@ -58,32 +59,32 @@ public class XQueryServiceTest {
     public void testListQueries() throws Exception {
         when(xQueryService.listQueries(Mockito.anyString())).thenCallRealMethod();
         Vector v = xQueryService.listQueries("test");
-        Assert.assertThat(v.size(), is(2));
-        Assert.assertThat(((Hashtable) v.get(0)).get("test1Key"), is("test1Value"));
-        Assert.assertThat(((Hashtable) v.get(0)).get("test2Key"), is("test2Value"));
-        Assert.assertThat(((Hashtable) v.get(0)).get("test3Key"), is("test3Value"));
-        Assert.assertThat(((Hashtable) v.get(1)).get("test4Key"), is("test4Value"));
-        Assert.assertThat(((Hashtable) v.get(1)).get("test5Key"), is("test5Value"));
-        Assert.assertThat(((Hashtable) v.get(1)).get("test6Key"), is("test6Value"));
+        assertThat(v.size(), is(2));
+        assertThat(((Hashtable) v.get(0)).get("test1Key"), is("test1Value"));
+        assertThat(((Hashtable) v.get(0)).get("test2Key"), is("test2Value"));
+        assertThat(((Hashtable) v.get(0)).get("test3Key"), is("test3Value"));
+        assertThat(((Hashtable) v.get(1)).get("test4Key"), is("test4Value"));
+        assertThat(((Hashtable) v.get(1)).get("test5Key"), is("test5Value"));
+        assertThat(((Hashtable) v.get(1)).get("test6Key"), is("test6Value"));
     }
 
     @Test
     public void testAnalyzeXMLFiles() throws Exception {
         when(xQueryService.analyzeXMLFiles(Mockito.any())).thenCallRealMethod();
         Vector v = xQueryService.analyzeXMLFiles(testHashTable);
-        Assert.assertThat(v.size(), is(3));
+        assertThat(v.size(), is(3));
 
-        Assert.assertThat(((Vector) v.get(0)).size(), is(2));
-        Assert.assertThat(((Vector) v.get(0)).get(0), is("test1Key"));
-        Assert.assertThat(((Vector) v.get(0)).get(1), is("test1Value"));
+        assertThat(((Vector) v.get(0)).size(), is(2));
+        assertThat(((Vector) v.get(0)).get(0), is("test1Key"));
+        assertThat(((Vector) v.get(0)).get(1), is("test1Value"));
 
-        Assert.assertThat(((Vector) v.get(1)).size(), is(2));
-        Assert.assertThat(((Vector) v.get(1)).get(0), is("test3Key"));
-        Assert.assertThat(((Vector) v.get(1)).get(1), is("test3Value"));
+        assertThat(((Vector) v.get(1)).size(), is(2));
+        assertThat(((Vector) v.get(1)).get(0), is("test3Key"));
+        assertThat(((Vector) v.get(1)).get(1), is("test3Value"));
 
-        Assert.assertThat(((Vector) v.get(2)).size(), is(2));
-        Assert.assertThat(((Vector) v.get(2)).get(0), is("test2Key"));
-        Assert.assertThat(((Vector) v.get(2)).get(1), is("test2Value"));
+        assertThat(((Vector) v.get(2)).size(), is(2));
+        assertThat(((Vector) v.get(2)).get(0), is("test2Key"));
+        assertThat(((Vector) v.get(2)).get(1), is("test2Value"));
     }
 
     private List<Hashtable> initQueriesList(){
