@@ -78,6 +78,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 jobHistoryEntry.setIntSchedulingStatus(jobEntry.getIntSchedulingStatus().getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setJobType(jobEntry.getJobType())
                         .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());
                 jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
+                jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
                 handleHeavyJobsService.handle(deadLetterMessage, jobEntry, jobHistoryEntry);
                 return;
             }
@@ -124,7 +125,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
-                    queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, Integer.parseInt(script.getJobId()), null);
+                    queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, Integer.parseInt(script.getJobId()), null, script.getOrigFileUrl(), jobEntry.getXmlSize());
                 }
             }
         } catch (Exception e) {

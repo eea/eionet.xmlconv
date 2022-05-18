@@ -130,6 +130,8 @@
                                     <th scope="col" class="scope-col">Timestamp</th>
                                     <th scope="col" class="scope-col">Job Id</th>
                                     <th th:if="${isFMEScript}" scope="col" class="scope-col">FME Job Id</th>
+                                    <th scope="col" class="scope-col">Xml</th>
+                                    <th scope="col" class="scope-col">Xml size (in bytes)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -145,6 +147,8 @@
                                     <td th:if="${isFMEScript}">
                                         <a th:href="@{${fmeJobUrl} + ${entry.fmeJobId}}"><span th:text="${entry.fmeJobId}"></span></a>
                                     </td>
+                                    <td th:text="${entry.xmlUrl}"></td>
+                                    <td th:text="${entry.xmlSize}"></td>
                                 </tr>
                             </tbody>
                         </table>

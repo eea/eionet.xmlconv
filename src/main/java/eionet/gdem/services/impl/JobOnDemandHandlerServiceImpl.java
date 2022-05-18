@@ -3,6 +3,7 @@ package eionet.gdem.services.impl;
 import eionet.gdem.Constants;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
@@ -58,7 +59,7 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
             }
             jobEntry = jobService.saveOrUpdate(jobEntry);
             LOGGER.info("Job with id " + jobEntry.getId() + " has been inserted in table T_XQJOBS");
-            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED, duplicateIdentifier);
+            saveJobHistory(jobEntry.getId().toString(), script, Constants.XQ_RECEIVED, SchedulingConstants.INTERNAL_STATUS_RECEIVED, duplicateIdentifier, jobEntry.getXmlSize());
             script.setJobId(jobEntry.getId().toString());
 
             WorkerJobRabbitMQRequestMessage workerJobRabbitMQRequestMessage = new WorkerJobRabbitMQRequestMessage(script);
@@ -77,11 +78,12 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
         return jobEntry;
     }
 
-    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus, String duplicateIdentifier) throws DatabaseException {
+    void saveJobHistory(String jobId, XQScript script, Integer nStatus, Integer internalStatus, String duplicateIdentifier, Long xmlSize) throws DatabaseException {
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, nStatus, new Timestamp(new Date().getTime()), script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), script.getScriptType());
         jobHistoryEntry.setIntSchedulingStatus(internalStatus);
         jobHistoryEntry.setJobType(Constants.ON_DEMAND_TYPE);
         jobHistoryEntry.setDuplicateIdentifier(duplicateIdentifier);
+        jobHistoryEntry.setXmlSize(xmlSize);
         jobHistoryService.save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
     }

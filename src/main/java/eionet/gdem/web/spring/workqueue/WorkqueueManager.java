@@ -268,6 +268,7 @@ public class WorkqueueManager {
             for(JobHistoryEntry entry: entriesDownloading){
                 JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType());
                 jobHistoryEntry.setDuplicateIdentifier(entry.getDuplicateIdentifier());
+                jobHistoryEntry.setXmlSize(entry.getXmlSize());
                 getJobHistoryRepository().save(jobHistoryEntry);
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }
@@ -276,6 +277,7 @@ public class WorkqueueManager {
             for(JobHistoryEntry entry: entriesProcessing){
                 JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType());
                 jobHistoryEntry.setDuplicateIdentifier(entry.getDuplicateIdentifier());
+                jobHistoryEntry.setXmlSize(entry.getXmlSize());
                 getJobHistoryRepository().save(jobHistoryEntry);
                 LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
             }

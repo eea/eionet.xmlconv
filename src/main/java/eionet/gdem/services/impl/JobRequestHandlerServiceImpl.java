@@ -243,6 +243,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         if(queryId == null) {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
+            jobEntry.setXmlSize(sourceSize);
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
@@ -251,6 +252,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         else{
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
+            jobEntry.setXmlSize(sourceSize);
             duplicateIdentifier = getJobService().getDuplicateIdentifier(originalSourceURL, queryId.toString());
             jobEntry.setDuplicateIdentifier(duplicateIdentifier);
             jobEntry = getJobService().saveOrUpdate(jobEntry);
@@ -263,6 +265,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId, Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), sourceURL, xqFile, resultFile, scriptType);
         jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
         jobHistoryEntry.setDuplicateIdentifier(duplicateIdentifier);
+        jobHistoryEntry.setXmlSize(sourceSize);
         getJobHistoryService().save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);

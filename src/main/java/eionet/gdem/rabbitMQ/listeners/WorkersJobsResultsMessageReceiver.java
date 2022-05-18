@@ -93,7 +93,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                 workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-                queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId(), fmeJobId, jobEntry.getUrl());
+                queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId(), fmeJobId, script.getOrigFileUrl(), jobEntry.getXmlSize());
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getJobExecutorName());
                 findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
@@ -105,7 +105,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 jobEntry.setnStatus(Constants.XQ_READY).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                 workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-                queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_READY, jobEntry.getId(), fmeJobId, jobEntry.getUrl());
+                queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_READY, jobEntry.getId(), fmeJobId, script.getOrigFileUrl(), jobEntry.getXmlSize());
             }
             else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED_FME_JOB_ID) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received FME job id " + fmeJobId + " by worker with container name " + response.getJobExecutorName());
