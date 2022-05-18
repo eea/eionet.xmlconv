@@ -76,7 +76,7 @@ public class JobOnDemandHandlerServiceTest {
         QueryEntry queryEntry = new QueryEntry().setQueryId(1).setShortName("shortName").setSchemaId(742).setResultType("HTML").setScriptType("xquery 3.0+").setUrl("test").setUpperLimit(10).setActive(true).setVersion(1);
         when(queryJpaService.findByQueryId(anyInt())).thenReturn(queryEntry);
         doNothing().when(defineJobQueueAndSendToRabbitMQ).execute(any(QueryEntry.class), any(JobEntry.class), any(WorkerJobRabbitMQRequestMessage.class));
-        JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0, false);
+        JobEntry jobEntryResult = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(script, 0, false, null);
         Assert.assertEquals(jobEntry.getId(), jobEntryResult.getId());
     }
 

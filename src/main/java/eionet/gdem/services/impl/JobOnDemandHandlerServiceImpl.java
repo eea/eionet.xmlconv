@@ -46,13 +46,14 @@ public class JobOnDemandHandlerServiceImpl implements JobOnDemandHandlerService 
 
     @Transactional
     @Override
-    public JobEntry createJobAndSendToRabbitMQ(XQScript script, Integer scriptId, boolean isApi) throws XMLConvException {
+    public JobEntry createJobAndSendToRabbitMQ(XQScript script, Integer scriptId, boolean isApi, Long sourceSize) throws XMLConvException {
         JobEntry jobEntry = new JobEntry();
         String duplicateIdentifier = null;
         try {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             jobEntry = new JobEntry(script.getSrcFileUrl(), script.getScriptFileName(), script.getStrResultFile(), Constants.XQ_RECEIVED, scriptId, new Timestamp(new Date().getTime()), script.getScriptType(), internalSchedulingStatus)
                     .setRetryCounter(0).setJobType(Constants.ON_DEMAND_TYPE);
+            jobEntry.setXmlSize(sourceSize);
             if(scriptId != null){
                 duplicateIdentifier = jobService.getDuplicateIdentifier(script.getOrigFileUrl(), scriptId.toString());
                 jobEntry.setDuplicateIdentifier(duplicateIdentifier);

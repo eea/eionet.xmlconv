@@ -3,12 +3,14 @@ package eionet.gdem.web.spring.qasandbox;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
+import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.IQueryDao;
@@ -21,6 +23,7 @@ import eionet.gdem.security.errors.JWTException;
 import eionet.gdem.security.service.AuthTokenService;
 import eionet.gdem.services.JobOnDemandHandlerService;
 import eionet.gdem.services.MessageService;
+import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
@@ -534,7 +537,9 @@ public class QASandboxController {
                 xq.setStrResultFile(resultFile);
                 xq.setScriptFileName(scriptFile);
 
-                JobEntry jobEntry = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(xq, scriptId!=null ? Integer.parseInt(scriptId) : Constants.JOB_FROMSTRING, false);
+                Long sourceSize = getRunScriptAutomaticServiceBean().getXmlSize(sourceUrl);
+
+                JobEntry jobEntry = jobOnDemandHandlerService.createJobAndSendToRabbitMQ(xq, scriptId!=null ? Integer.parseInt(scriptId) : Constants.JOB_FROMSTRING, false, sourceSize);
                 LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle runScript through GUI.");
                 session.setAttribute("jobId", jobEntry.getId());
 
@@ -650,5 +655,9 @@ public class QASandboxController {
             // handleError(request, response, e);
         }
         return null;
+    }
+
+    private static RunScriptAutomaticService getRunScriptAutomaticServiceBean() {
+        return (RunScriptAutomaticService) SpringApplicationContext.getBean("runScriptAutomaticService");
     }
 }

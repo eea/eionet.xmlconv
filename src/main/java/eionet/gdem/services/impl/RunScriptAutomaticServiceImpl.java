@@ -3,6 +3,7 @@ package eionet.gdem.services.impl;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.dcm.remote.RemoteService;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.RunQAScriptMethod;
 import eionet.gdem.services.RunScriptAutomaticService;
 import org.slf4j.Logger;
@@ -87,5 +88,17 @@ public class RunScriptAutomaticServiceImpl extends RemoteService implements RunS
         runQaMethod.setTrustedMode(isTrustedMode);
         return runQaMethod.runQAScript(sourceUrl, scriptId);
 
+    }
+
+    @Override
+    public Long getXmlSize(String url)  {
+        Long sourceSize = null;
+        try {
+            sourceSize = HttpFileManager.getSourceURLSize(getTicket(), url, isTrustedMode());
+            LOGGER.info("File with url " + url + " is " + sourceSize + " bytes.");
+        } catch (XMLConvException e) {
+            LOGGER.error("Could not find size of url " + url);
+        }
+        return sourceSize;
     }
 }
