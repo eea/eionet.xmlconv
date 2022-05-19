@@ -1,7 +1,7 @@
 package eionet.gdem.rancher.service;
 
 import eionet.gdem.Properties;
-import eionet.gdem.rancher.config.RestTemplateAndCircuitBreakerConfig;
+import eionet.gdem.rancher.config.RestTemplateAndCircuitBreakerAndTaskSchedulerConfig;
 import eionet.gdem.rancher.exception.ContainerScalingFailedException;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.exception.RancherApiTimoutException;
@@ -60,7 +60,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
 
     @Override
     public ContainerApiResponse getContainerInfo(String containerName) throws RancherApiException {
-        HttpEntity<ContainerApiResponse> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerConfig.getHeaders());
+        HttpEntity<ContainerApiResponse> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerAndTaskSchedulerConfig.getHeaders());
         ResponseEntity<ContainerApiResponse> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + "?name={containerName}", HttpMethod.GET, entity, ContainerApiResponse.class, containerName);
@@ -73,7 +73,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
 
     @Override
     public ContainerData getContainerInfoById(String containerId) throws RancherApiException {
-        HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerConfig.getHeaders());
+        HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerAndTaskSchedulerConfig.getHeaders());
         ResponseEntity<ContainerData> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + "/" + containerId, HttpMethod.GET, entity, ContainerData.class);
@@ -87,7 +87,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     @Override
     public ContainerData startContainer(String containerName) throws RancherApiException {
         String containerId = getContainerId(containerName);
-        HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerConfig.getHeaders());
+        HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerAndTaskSchedulerConfig.getHeaders());
         ResponseEntity<ContainerData> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + "/" + containerId + "?action=start", HttpMethod.POST, entity, ContainerData.class);
@@ -101,7 +101,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     @Override
     public ContainerData restartContainer(String containerName) throws RancherApiException {
         String containerId = getContainerId(containerName);
-        HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerConfig.getHeaders());
+        HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerAndTaskSchedulerConfig.getHeaders());
         ResponseEntity<ContainerData> result;
         StopWatch timer = new StopWatch();
         try {
@@ -136,7 +136,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
     @Override
     public ContainerData stopContainer(String containerName) throws RancherApiException {
         String containerId = getContainerId(containerName);
-        HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerConfig.getHeaders());
+        HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerAndTaskSchedulerConfig.getHeaders());
         ResponseEntity<ContainerData> result;
         try {
             result = restTemplate.exchange(rancherApiUrl + "/" + containerId + "?action=stop", HttpMethod.POST, entity, ContainerData.class);
@@ -153,7 +153,7 @@ public class ContainersRancherApiOrchestratorImpl implements ContainersRancherAp
         ResponseEntity<ContainerData> newContainerReplacingTheJustDeletedOne = null;
         try {
             timer.start();
-            HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerConfig.getHeaders());
+            HttpEntity<ContainerData> entity = new HttpEntity<>(RestTemplateAndCircuitBreakerAndTaskSchedulerConfig.getHeaders());
             String containerId = getContainerId(containerName);
             ContainerApiResponse containerApiResponse = getContainerInfo(containerName);
             String serviceId = containerApiResponse.getData().get(0).getServiceIds().get(0);

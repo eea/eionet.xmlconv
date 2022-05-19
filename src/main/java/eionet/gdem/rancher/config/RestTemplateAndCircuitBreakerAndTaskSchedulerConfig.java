@@ -22,14 +22,14 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class RestTemplateAndCircuitBreakerConfig {
+public class RestTemplateAndCircuitBreakerAndTaskSchedulerConfig {
 
     /**
      * time in seconds, corresponds to 2 minutes
      */
     private final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(120);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RestTemplateAndCircuitBreakerConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestTemplateAndCircuitBreakerAndTaskSchedulerConfig.class);
 
     @Bean
     public RestTemplate restTemplate() {
