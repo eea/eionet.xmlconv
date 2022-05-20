@@ -75,7 +75,7 @@ public class QASandboxController {
     private JobRepository jobRepository;
     private IQueryDao queryDao;
     /**
-     * time in milliseconds (2 minutes)
+     * time in milliseconds (15 seconds)
      */
     private static final int TIME_INTERVAL_FOR_JOB_STATUS = 15000;
 

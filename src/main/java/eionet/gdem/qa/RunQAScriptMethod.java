@@ -101,7 +101,7 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
     private static final Logger LOGGER = LoggerFactory.getLogger(RunQAScriptMethod.class);
 
     /**
-     * time in milliseconds (2 minutes)
+     * time in milliseconds (15 seconds)
      */
     private static final int TIME_INTERVAL_FOR_JOB_STATUS = 15000;
 

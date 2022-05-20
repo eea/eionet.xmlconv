@@ -16,7 +16,7 @@ public interface DefineJobQueueAndSendToRabbitMQTemplate {
     default void execute(QueryEntry queryEntry, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage message) throws XMLConvException, DatabaseException {
         checkHeavyOrLight(queryEntry, jobEntry);
         checkRules(queryEntry, jobEntry);
-        updateDatabase(jobEntry);
         sendMsgToRabbitMQ(jobEntry, message);
+        updateDatabase(jobEntry);
     }
 }
