@@ -94,8 +94,9 @@ public class RestTemplateAndCircuitBreakerAndTaskSchedulerConfig {
             Timestamp dateOccurred = new Timestamp(new Date().getTime());
             AlertEntry alertEntry = new AlertEntry().setSeverity(AlertSeverity.CRITICAL).setDescription("Scheduled task failed.").setOccurrenceDate(dateOccurred);
             try {
-                new UNSEventSender().alertsNotification(dateOccurred.getTime() + ", Time exceeded for rancher proper functionality", Properties.ALERTS_EVENT);
+                new UNSEventSender().alertsNotification(dateOccurred.getTime() + ", Scheduled task failed", Properties.ALERTS_EVENT);
                 alertEntry.setNotificationSentToUns(true);
+                LOGGER.info("Sent scheduled task failure alert to UNS.");
             } catch (Exception e) {
                 LOGGER.error("Could not send scheduled task failure alert to UNS. Exception is: " + e.getMessage());
                 alertEntry.setNotificationSentToUns(false);
