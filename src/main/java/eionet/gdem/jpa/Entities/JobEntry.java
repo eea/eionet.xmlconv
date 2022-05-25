@@ -75,6 +75,9 @@ public class JobEntry implements Serializable {
     @Column(name = "DUPLICATE_IDENTIFIER")
     private String duplicateIdentifier;
 
+    @Column(name = "XML_SIZE")
+    private Long xmlSize;
+
     @Transient
     private String fromDate;
 
@@ -296,5 +299,13 @@ public class JobEntry implements Serializable {
 
     public void setDuplicateIdentifier(String duplicateIdentifier) {
         this.duplicateIdentifier = duplicateIdentifier;
+    }
+
+    public Long getXmlSize() {
+        return xmlSize;
+    }
+
+    public void setXmlSize(Long xmlSize) {
+        this.xmlSize = xmlSize;
     }
 }

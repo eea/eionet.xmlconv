@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import org.mockito.Mock;
@@ -192,15 +193,15 @@ public class QaControllerTest {
     @Test
     public void testDeleteNoJobId() throws Exception {
         ResponseEntity<HashMap<String,String>> result = qaController.delete("");
-        Assert.assertThat(result.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        Assert.assertThat(result.getBody().toString(), is("{message=Missing job id from request}"));
+        assertThat(result.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(result.getBody().toString(), is("{message=Missing job id from request}"));
     }
 
     /* Test case: delete successful */
     @Test
     public void testDeleteSuccessful() throws Exception {
         ResponseEntity<HashMap<String,String>> result = qaController.delete("12345");
-        Assert.assertThat(result.getStatusCode(), is(HttpStatus.OK));
-        Assert.assertThat(result.getBody().toString(), is("{message=Job deleted successfully}"));
+        assertThat(result.getStatusCode(), is(HttpStatus.OK));
+        assertThat(result.getBody().toString(), is("{message=Job deleted successfully}"));
     }
 }

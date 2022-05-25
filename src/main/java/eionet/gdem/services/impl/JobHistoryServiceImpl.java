@@ -89,6 +89,7 @@ public class JobHistoryServiceImpl implements JobHistoryService {
             jobHistoryEntry.setIntSchedulingStatus(jobEntry.getIntSchedulingStatus().getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setJobType(jobEntry.getJobType())
                     .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());
             jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
+            jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
             if(jobEntry.getFmeJobId() != null){
                 jobHistoryEntry.setFmeJobId(jobEntry.getFmeJobId());
             }

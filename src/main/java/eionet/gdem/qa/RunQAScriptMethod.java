@@ -183,7 +183,14 @@ public class RunQAScriptMethod extends RemoteServiceMethod {
                         xq.setStrResultFile(resultFile);
                         xq.setScriptFileName(Properties.queriesFolder + File.separator + scriptFile);
 
-                        JobEntry jobEntry = getJobOnDemandHandlerService().createJobAndSendToRabbitMQ(xq, Integer.parseInt(scriptId), true);
+                        Long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), sourceUrl, isTrustedMode());
+                        if(sourceSize != null){
+                            LOGGER.info("File with url " + sourceUrl + " is " + sourceSize + " bytes.");
+                        }
+                        else{
+                            LOGGER.error("Could not find size of url " + sourceUrl);
+                        }
+                        JobEntry jobEntry = getJobOnDemandHandlerService().createJobAndSendToRabbitMQ(xq, Integer.parseInt(scriptId), true, sourceSize);
                         LOGGER.info("Job with id " + jobEntry.getId() + " was created to handle xmlrpc/rest call.");
                         jobId = jobEntry.getId().toString();
 

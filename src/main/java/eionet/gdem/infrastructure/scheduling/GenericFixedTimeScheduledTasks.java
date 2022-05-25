@@ -164,7 +164,13 @@ public class GenericFixedTimeScheduledTasks {
                     jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
-                    queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId(), null);
+                    String xmlUrl = jobEntry.getUrl();
+                    String[] parts = jobEntry.getUrl().split("source_url=");
+                    if(parts.length > 1){
+                        //get only xml url without ticket
+                        xmlUrl = parts[1];
+                    }
+                    queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId(), null, xmlUrl, jobEntry.getXmlSize());
                 }
             } catch (Exception e) {
                 LOGGER.error("Error while checking heart beat messages for job with id " + jobEntry.getId());

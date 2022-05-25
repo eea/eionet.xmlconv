@@ -78,9 +78,16 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
                     .setIntSchedulingStatus(internalStatus.getId()).setJobExecutorName(jobEntry.getJobExecutorName()).setWorkerRetries(jobEntry.getWorkerRetries()).setJobType(jobEntry.getJobType())
                     .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());
             jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
+            jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
             jobHistoryService.save(jobHistoryEntry);
             Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
-            queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, response.getJobId(), null);
+            String xmlUrl = jobEntry.getUrl();
+            String[] parts = jobEntry.getUrl().split("source_url=");
+            if(parts.length > 1){
+                //get only xml url without ticket
+                xmlUrl = parts[1];
+            }
+            queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, response.getJobId(), null, xmlUrl, jobEntry.getXmlSize());
         }
     }
 }

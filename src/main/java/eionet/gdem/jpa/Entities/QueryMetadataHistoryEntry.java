@@ -53,20 +53,13 @@ public class QueryMetadataHistoryEntry implements Serializable {
     @Column(name = "FME_JOB_ID")
     private Long fmeJobId;
 
-    public QueryMetadataHistoryEntry() {
-    }
+    @Column(name = "XML_URL")
+    private String xmlUrl;
 
-    public QueryMetadataHistoryEntry(Integer id, String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version, Timestamp timestamp, Integer jobId) {
-        this.id = id;
-        this.scriptFilename = scriptFilename;
-        this.queryId = queryId;
-        this.scriptType = scriptType;
-        this.duration = duration;
-        this.markedHeavy = markedHeavy;
-        this.jobStatus = jobStatus;
-        this.version = version;
-        this.timestamp = timestamp;
-        this.jobId = jobId;
+    @Column(name = "XML_SIZE")
+    private Long xmlSize;
+
+    public QueryMetadataHistoryEntry() {
     }
 
     public QueryMetadataHistoryEntry(String scriptFilename, Integer queryId, String scriptType, Long duration, Boolean markedHeavy, Integer jobStatus, Integer version, Timestamp timestamp, Integer jobId) {
@@ -191,6 +184,22 @@ public class QueryMetadataHistoryEntry implements Serializable {
 
     public void setFmeJobId(Long fmeJobId) {
         this.fmeJobId = fmeJobId;
+    }
+
+    public String getXmlUrl() {
+        return xmlUrl;
+    }
+
+    public void setXmlUrl(String xmlUrl) {
+        this.xmlUrl = xmlUrl;
+    }
+
+    public Long getXmlSize() {
+        return xmlSize;
+    }
+
+    public void setXmlSize(Long xmlSize) {
+        this.xmlSize = xmlSize;
     }
 }
 

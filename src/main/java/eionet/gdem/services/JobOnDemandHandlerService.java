@@ -6,5 +6,5 @@ import eionet.gdem.qa.XQScript;
 
 public interface JobOnDemandHandlerService {
 
-    JobEntry createJobAndSendToRabbitMQ(XQScript xq, Integer scriptId, boolean isApi) throws XMLConvException;
+    JobEntry createJobAndSendToRabbitMQ(XQScript xq, Integer scriptId, boolean isApi, Long sourceSize) throws XMLConvException;
 }

@@ -119,13 +119,6 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                     markValidationJobAsFinished(jobEntry, jobStatus);
                     handleError("Error during validation: " + ExceptionUtils.getRootCauseMessage(e), true,jobEntry, jobId);
                 }
-                finally{
-                    long stopTime = System.nanoTime();
-                    Long durationOfJob = stopTime - startTime;
-                    //Store script information
-                    queryMetadataService.storeScriptInformation(Integer.valueOf(queryID), scriptFile, scriptType, durationOfJob, jobStatus, Integer.valueOf(jobId), null);
-                    LOGGER.info("Updated tables QUERY_METADATA and QUERY_METADATA_HISTORY for script: " + scriptFile);
-                }
             } else {
 
                 // read query info from DB.
@@ -229,6 +222,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), Constants.XQ_PROCESSING, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
             jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
+            jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
@@ -245,6 +239,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(jobId.toString(), status, new Timestamp(new Date().getTime()), jobEntry.getUrl(), jobEntry.getFile(), jobEntry.getResultFile(), jobEntry.getScriptType());
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
             jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
+            jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
         } catch (Exception e) {
