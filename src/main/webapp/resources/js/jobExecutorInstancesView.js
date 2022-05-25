@@ -58,6 +58,9 @@ function format ( row, tr ) {
                 else if (entry.status == 2){
                     additionalInfo = additionalInfo.concat('WORKER FAILED');
                 }
+                else if (entry.status == 12){
+                    additionalInfo = additionalInfo.concat('FME JOB ID WAS RECEIVED');
+                }
                 else{
                     additionalInfo = additionalInfo.concat('UNKNOWN STATUS: ' + entry.status);
                 }

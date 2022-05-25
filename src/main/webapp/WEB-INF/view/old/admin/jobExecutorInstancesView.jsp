@@ -52,6 +52,9 @@
                             <c:when test="${instance.status == 2}">
                                 <p>WORKER FAILED<p>
                             </c:when>
+                            <c:when test="${instance.status == 12}">
+                                <p>FME JOB ID WAS RECEIVED<p>
+                            </c:when>
                             <c:otherwise>
                                 <p>UNKNOWN STATUS: ${instance.status} <p>
                             </c:otherwise>
