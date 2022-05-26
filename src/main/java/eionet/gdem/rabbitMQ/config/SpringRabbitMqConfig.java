@@ -96,7 +96,7 @@ public class SpringRabbitMqConfig {
         return new Queue(Properties.XMLCONV_HEALTH_QUEUE, true);
     }
 
-    //Queue where cdr sends request messages
+    //Queue where converters listens for cdr requests
     @Bean
     Queue cdrJobsRequestQueue() {
         return QueueBuilder.durable(Properties.CDR_REQUEST_QUEUE)
