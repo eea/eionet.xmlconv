@@ -59,7 +59,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
         XQScript script = null;
         try {
             Long fmeJobId = null;
-            ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
+            ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             WorkerJobInfoRabbitMQResponseMessage response = mapper.readValue(messageBody, WorkerJobInfoRabbitMQResponseMessage.class);
 
             String containerId="";

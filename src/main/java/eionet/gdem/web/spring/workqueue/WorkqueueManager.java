@@ -165,7 +165,7 @@ public class WorkqueueManager {
             List<String> files = new ArrayList<>();
             files.add(sourceUrl);
             h.put(schemaUrl, files);
-            HashMap<String, String> resultMap = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(h, false);
+            HashMap<String, String> resultMap = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(h, false, false, null);
             if (resultMap != null) {
                 for (Map.Entry<String, String> entry : resultMap.entrySet()) {
                     result.add(entry.getKey());

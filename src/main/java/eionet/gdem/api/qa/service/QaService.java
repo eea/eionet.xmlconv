@@ -24,11 +24,11 @@ public interface QaService {
 
     List<String> extractObligationUrlsFromEnvelopeUrl(String envelopeUrl) throws XMLConvException;
     /**
-     *  Calls  the method  {@link eionet.gdem.services.JobRequestHandlerService#analyzeMultipleXMLFiles(java.util.HashMap, Boolean)  }
+     *  Calls  the method  {@link eionet.gdem.services.JobRequestHandlerService#analyzeMultipleXMLFiles(java.util.HashMap, Boolean, Boolean, String)  }
      *  which returns hashmap. Each entry contains a JobID and a FileURL.
      * @return a map containing each Job Id and corresponding File URL as Key value pair.
      */
-    List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob) throws XMLConvException;
+    List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob, Boolean addedThroughRabbitMq, String uuid) throws XMLConvException;
 
     Hashtable<String,Object> getJobResults(String jobId) throws XMLConvException;
     Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException;

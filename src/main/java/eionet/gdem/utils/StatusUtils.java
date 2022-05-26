@@ -54,4 +54,30 @@ public final class StatusUtils {
         }
         return status;
     }
+
+    public static String getStatusNameByNumber(Integer status) {
+        String statusName = null;
+        if (status == Constants.XQ_RECEIVED)
+            statusName = "JOB RECEIVED";
+        else if (status == Constants.XQ_DOWNLOADING_SRC)
+            statusName = "DOWNLOADING SOURCE";
+        else if (status == Constants.XQ_PROCESSING)
+            statusName = "PROCESSING";
+        else if (status == Constants.XQ_READY)
+            statusName = "READY";
+        else if (status == Constants.XQ_FATAL_ERR)
+            statusName = "FATAL ERROR";
+        else if (status == Constants.XQ_LIGHT_ERR)
+            statusName = "RECOVERABLE ERROR";
+        else if (status == Constants.XQ_INTERRUPTED)
+            statusName = "INTERRUPTED";
+        else if (status == Constants.CANCELLED_BY_USER)
+            statusName = "CANCELLED BY USER";
+        else if (status == Constants.DELETED)
+            statusName = "DELETED";
+        else{
+            statusName = "UNKNOWN STATUS (" + status + ")";
+        }
+        return statusName;
+    }
 }

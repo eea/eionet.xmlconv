@@ -120,7 +120,7 @@ public class QaControllerTest {
         envelopeWrapper.setEnvelopeUrl(envelopeUrl);
         qaController.scheduleQaRequestOnEnvelope(envelopeWrapper);
         ArgumentCaptor<String> envelopeUrlCaptor = ArgumentCaptor.forClass(String.class);
-        verify(qaServiceMock, times(1)).scheduleJobs(envelopeUrlCaptor.capture(), anyBoolean());
+        verify(qaServiceMock, times(1)).scheduleJobs(envelopeUrlCaptor.capture(), anyBoolean(), false, null);
         assertTrue(EqualsBuilder.reflectionEquals(envelopeUrlCaptor.getValue(), envelopeUrl));
     }
 

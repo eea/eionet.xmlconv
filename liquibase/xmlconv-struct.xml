@@ -1042,4 +1042,21 @@
             <column name="XML_SIZE" type="BIGINT"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-91">
+        <comment>
+            Added columns ADDED_FROM_QUEUE and UUID to T_XQJOBS and JOB_HISTORY table
+        </comment>
+        <addColumn tableName="T_XQJOBS">
+            <column name="ADDED_FROM_QUEUE" defaultValue="false" type="BOOLEAN"></column>
+        </addColumn>
+        <addColumn tableName="T_XQJOBS">
+            <column name="UUID" type="VARCHAR(200)"></column>
+        </addColumn>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="ADDED_FROM_QUEUE" defaultValue="false" type="BOOLEAN"></column>
+        </addColumn>
+        <addColumn tableName="JOB_HISTORY">
+            <column name="UUID" type="VARCHAR(200)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

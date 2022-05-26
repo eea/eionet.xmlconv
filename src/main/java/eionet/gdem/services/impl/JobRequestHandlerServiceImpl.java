@@ -64,11 +64,14 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
      * This method is copied from QueryService public Vector analyzeXMLFiles(Hashtable files) throws XMLConvException {
      *
      * @param filesAndSchemas - Structure with XMLschemas as a keys and values are list of XML Files
+     * @param checkForDuplicateJob - If true we will identify processing duplicates
+     * @param addedThroughRabbitMq
+     * @param uuid - an identifier between the job and the initial request
      * @return Hashtable result: Structure with JOB ids as a keys and source files as values
      * @throws XMLConvException If an error occurs.
      */
     @Override
-    public HashMap analyzeMultipleXMLFiles(HashMap<String, List<String>> filesAndSchemas, Boolean checkForDuplicateJob) throws XMLConvException {
+    public HashMap analyzeMultipleXMLFiles(HashMap<String, List<String>> filesAndSchemas, Boolean checkForDuplicateJob, Boolean addedThroughRabbitMq, String uuid) throws XMLConvException {
 
         HashMap result = new HashMap();
 
@@ -92,7 +95,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                 if (!Utils.isNullList(queries)) {
                     for(Hashtable ht: queries){
                         String query_id = String.valueOf(ht.get( ListQueriesMethod.KEY_QUERY_ID ));
-                        newId = analyzeSingleXMLFile( file, query_id , schema, checkForDuplicateJob );
+                        newId = analyzeSingleXMLFile( file, query_id , schema, checkForDuplicateJob, addedThroughRabbitMq, uuid );
                         result.put(newId, file);
                     }
                 }
@@ -102,7 +105,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
     }
 
     @Override
-    public String analyzeSingleXMLFile(String sourceURL, String scriptId, String schema, Boolean checkForDuplicateJob) throws XMLConvException{
+    public String analyzeSingleXMLFile(String sourceURL, String scriptId, String schema, Boolean checkForDuplicateJob, Boolean addedThroughRabbitMq, String uuid) throws XMLConvException{
         String jobId = null;
         if(checkForDuplicateJob){
             jobId = getJobService().findDuplicateNotCompletedJob(sourceURL, scriptId);
@@ -169,7 +172,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                 queryFile = eionet.gdem.Properties.queriesFolder + File.separator + queryFile;
             }
 
-            jobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, queryFile, resultFile, scriptType, queryId);
+            jobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, queryFile, resultFile, scriptType, queryId, addedThroughRabbitMq, uuid);
 
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
@@ -216,7 +219,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         String newJobId = "-1"; // should not be returned with value -1;
 
         try {
-            newJobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, xqFile, resultFile, scriptType, null);
+            newJobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, xqFile, resultFile, scriptType, null, false, null);
         } catch (SQLException sqe) {
             LOGGER.error("DB operation failed: " + sqe.toString());
             throw new XMLConvException("DB operation failed: " + sqe.toString());
@@ -232,7 +235,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         return newJobId;
     }
 
-    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId) throws URISyntaxException, XMLConvException, SQLException, CreateRabbitMQMessageException, DatabaseException {
+    private String startJobInDbAndSchedule(String sourceURL, String originalSourceURL, String xqFile, String resultFile, String scriptType, Integer queryId, Boolean addedThroughRabbitMq, String uuid) throws URISyntaxException, XMLConvException, SQLException, CreateRabbitMQMessageException, DatabaseException {
         // get the trusted URL from source file adapter
         sourceURL = HttpFileManager.getSourceUrlWithTicket(getTicket(), sourceURL, isTrustedMode());
         long sourceSize = HttpFileManager.getSourceURLSize(getTicket(), originalSourceURL, isTrustedMode());
@@ -244,6 +247,8 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
             jobEntry.setXmlSize(sourceSize);
+            jobEntry.setAddedFromQueue(addedThroughRabbitMq);
+            jobEntry.setUuid(uuid);
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
@@ -255,6 +260,8 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             jobEntry.setXmlSize(sourceSize);
             duplicateIdentifier = getJobService().getDuplicateIdentifier(originalSourceURL, queryId.toString());
             jobEntry.setDuplicateIdentifier(duplicateIdentifier);
+            jobEntry.setAddedFromQueue(addedThroughRabbitMq);
+            jobEntry.setUuid(uuid);
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
@@ -266,6 +273,8 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
         jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
         jobHistoryEntry.setDuplicateIdentifier(duplicateIdentifier);
         jobHistoryEntry.setXmlSize(sourceSize);
+        jobHistoryEntry.setAddedFromQueue(addedThroughRabbitMq);
+        jobHistoryEntry.setUuid(uuid);
         getJobHistoryService().save(jobHistoryEntry);
         LOGGER.info("Job with id #" + jobId + " has been inserted in table JOB_HISTORY ");
         getRabbitMQMessageFactory().createScriptAndSendMessageToRabbitMQ(jobId);

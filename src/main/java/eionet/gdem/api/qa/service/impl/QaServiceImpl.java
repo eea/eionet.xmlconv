@@ -137,7 +137,7 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob) throws XMLConvException {
+    public List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob, Boolean addedThroughRabbitMq, String uuid) throws XMLConvException {
 
         HashMap<String, String> fileLinksAndSchemas = extractFileLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
 
@@ -163,7 +163,7 @@ public class QaServiceImpl implements QaService {
             if (map.size() == 0) {
                 LOGGER.info("Could not find files and their schemas. There was an issue with the envelope " + envelopeUrl);
             }
-            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerService().analyzeMultipleXMLFiles(map, checkForDuplicateJob);
+            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerService().analyzeMultipleXMLFiles(map, checkForDuplicateJob, addedThroughRabbitMq, uuid);
 
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
             for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {

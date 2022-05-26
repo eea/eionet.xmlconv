@@ -55,7 +55,7 @@ public class JobRequestHandlerServiceTest {
         fileList.add(fileName);
         map.put(schema, fileList);
 
-        HashMap<String, String> result = jobRequestHandlerService.analyzeMultipleXMLFiles(map, false);
+        HashMap<String, String> result = jobRequestHandlerService.analyzeMultipleXMLFiles(map, false, false, null);
         assertTrue(result.size() == 1);
 
         for (Map.Entry<String, String> entry : result.entrySet()) {
@@ -77,7 +77,7 @@ public class JobRequestHandlerServiceTest {
         fileList.add("http://cdr.eionet.europa.eu/test3.xml");
         map.put(schema, fileList);
 
-        HashMap<String, String> result = jobRequestHandlerService.analyzeMultipleXMLFiles(map, false);
+        HashMap<String, String> result = jobRequestHandlerService.analyzeMultipleXMLFiles(map, false, false, null);
         assertTrue(result.size() == 9);
         for (Map.Entry<String, String> entry : result.entrySet()) {
             String jobId = entry.getKey();
@@ -104,7 +104,7 @@ public class JobRequestHandlerServiceTest {
         fileList2.add("http://cdr.eionet.europa.eu/test4.xml");
         map.put(schema2, fileList2);
 
-        HashMap<String, String> result = jobRequestHandlerService.analyzeMultipleXMLFiles(map, false);
+        HashMap<String, String> result = jobRequestHandlerService.analyzeMultipleXMLFiles(map, false, false, null);
         assertTrue(result.size() == 11);
         for (Map.Entry<String, String> entry : result.entrySet()) {
             String jobId = entry.getKey();
