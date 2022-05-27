@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public class HostDetailsAction extends BaseAction {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(HostDetailsAction.class);
-    private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();;
+    private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
     @Override
     public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,

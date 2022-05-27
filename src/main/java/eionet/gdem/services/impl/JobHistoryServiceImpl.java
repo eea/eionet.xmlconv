@@ -90,6 +90,8 @@ public class JobHistoryServiceImpl implements JobHistoryService {
                     .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());
             jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
             jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
+            jobHistoryEntry.setUuid(jobEntry.getUuid());
+            jobHistoryEntry.setAddedFromQueue(jobEntry.getAddedFromQueue());
             if(jobEntry.getFmeJobId() != null){
                 jobHistoryEntry.setFmeJobId(jobEntry.getFmeJobId());
             }

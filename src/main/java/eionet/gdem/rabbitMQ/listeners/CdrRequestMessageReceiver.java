@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CdrJobRequestMessageReceiver implements MessageListener {
+public class CdrRequestMessageReceiver implements MessageListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CdrJobRequestMessageReceiver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CdrRequestMessageReceiver.class);
 
     @Autowired
     private QaService qaService;

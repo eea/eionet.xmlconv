@@ -56,15 +56,18 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
     private QueryJpaService queryJpaService;
     private DefineJobQueueAndSendToRabbitMQTemplate defineJobQueueByScriptAndScriptRules;
 
+    private CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
+
     @Autowired
     public RabbitMQMessageFactoryImpl(IQueryDao queryDao, JobHistoryService jobHistoryService, JobService jobService, QueryMetadataService queryMetadataService, QueryJpaService queryJpaService,
-                                      DefineJobQueueAndSendToRabbitMQTemplate defineJobQueueByScriptAndScriptRules) {
+                                      DefineJobQueueAndSendToRabbitMQTemplate defineJobQueueByScriptAndScriptRules, CdrResponseMessageFactoryService cdrResponseMessageFactoryService) {
         this.queryDao = queryDao;
         this.jobHistoryService = jobHistoryService;
         this.queryJpaService = queryJpaService;
         this.defineJobQueueByScriptAndScriptRules = defineJobQueueByScriptAndScriptRules;
         this.jobService = jobService;
         this.queryMetadataService = queryMetadataService;
+        this.cdrResponseMessageFactoryService = cdrResponseMessageFactoryService;
     }
 
     @Transactional(rollbackFor=Exception.class)
@@ -223,8 +226,13 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
             jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
             jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
+            jobHistoryEntry.setUuid(jobEntry.getUuid());
+            jobHistoryEntry.setAddedFromQueue(jobEntry.getAddedFromQueue());
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
+            if(jobEntry.getAddedFromQueue()) {
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+            }
         } catch (Exception e) {
             LOGGER.error("Database exception when processing validation job with id " + jobEntry.getId() + " Exception message is: " + e.toString());
             throw e;
@@ -240,8 +248,13 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             jobHistoryEntry.setIntSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING).setHeavy(false);
             jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
             jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
+            jobHistoryEntry.setUuid(jobEntry.getUuid());
+            jobHistoryEntry.setAddedFromQueue(jobEntry.getAddedFromQueue());
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
+            if(jobEntry.getAddedFromQueue()) {
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+            }
         } catch (Exception e) {
             LOGGER.error("Database exception when marking validation job as finished with id " + jobEntry.getId() + " Exception message is: " + e.toString());
             throw e;
@@ -313,6 +326,9 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             }
             Utils.saveStrToFile(resultFile, "<error>" + error + "</error>", null);
             changeStatus(errStatus,jobId);
+            if(jobEntry.getAddedFromQueue()) {
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+            }
         } catch (Exception e) {
             // what to do if exception occurs here...
             LOGGER.error(Markers.FATAL, "** Error occurred when handling XQ error: " + e.toString());

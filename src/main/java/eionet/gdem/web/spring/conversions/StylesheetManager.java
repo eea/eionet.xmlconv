@@ -58,7 +58,7 @@ public class StylesheetManager {
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(StylesheetManager.class);
 
-    private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();;
+    private IStyleSheetDao styleSheetDao = GDEMServices.getDaoService().getStyleSheetDao();
     private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 

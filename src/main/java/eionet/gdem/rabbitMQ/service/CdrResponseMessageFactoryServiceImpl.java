@@ -6,14 +6,20 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.rabbitMQ.model.CdrJobResponseMessage;
 import eionet.gdem.rabbitMQ.model.CdrJobResultMessage;
 import eionet.gdem.utils.StatusUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Hashtable;
 
+@Service("cdrResponseMessageFactoryServiceImpl")
 public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageFactoryService{
 
     @Autowired
     QaService qaService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CdrResponseMessageFactoryServiceImpl.class);
 
     @Override
     public void createCdrResponseMessageAndSendToQueue(JobEntry jobEntry){
@@ -69,6 +75,7 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
             CdrJobResultMessage jobResult = new CdrJobResultMessage();
             cdrJobResponseMessage.setJobResult(jobResult);
         }
+        LOGGER.info("Created response for cdr request and sent it to the queue");
         //send cdrJobResponseMessage to queue
     }
 }

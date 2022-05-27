@@ -53,7 +53,7 @@ public class ListQueriesMethod extends RemoteServiceMethod {
     public static final String DEFAULT_CONTENT_TYPE_ID = "HTML";
 
     /** DAO for getting schema info. */
-    private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
+    private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
     /** DAO for getting query info. */
     private IQueryDao queryDao = GDEMServices.getDaoService().getQueryDao();
     /** DAO for getting conversion types info. */

@@ -1,10 +1,7 @@
 package eionet.gdem.rabbitMQ.config;
 
 import eionet.gdem.Properties;
-import eionet.gdem.rabbitMQ.listeners.DeadLetterQueueMessageReceiver;
-import eionet.gdem.rabbitMQ.listeners.WorkerHeartBeatResponseReceiver;
-import eionet.gdem.rabbitMQ.listeners.WorkersJobsResultsMessageReceiver;
-import eionet.gdem.rabbitMQ.listeners.WorkersStatusMessageReceiver;
+import eionet.gdem.rabbitMQ.listeners.*;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -17,6 +14,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 @Conditional(RabbitMqProdEnabledCondition.class)
@@ -98,6 +96,27 @@ public class SpringRabbitMqConfig {
         return new Queue(Properties.XMLCONV_HEALTH_QUEUE, true);
     }
 
+    //Queue where converters listens for cdr requests
+    @Bean
+    Queue cdrJobsRequestQueue() {
+        return QueueBuilder.durable(Properties.CDR_REQUEST_QUEUE)
+                .withArgument("x-dead-letter-exchange", Properties.CDR_DEAD_LETTER_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", Properties.CDR_DEAD_LETTER_ROUTING_KEY)
+                .build();
+    }
+
+    //Queue where converters sends results for cdr to retrieve
+    @Bean
+    Queue cdrJobsResultsQueue() {
+        return new Queue(Properties.CDR_RESULTS_QUEUE, true);
+    }
+
+    //Queue where cdr rejected requests go to
+    @Bean
+    Queue cdrDeadLetterQueue() {
+        return new Queue(Properties.CDR_DEAD_LETTER_QUEUE, true);
+    }
+
     //Exchange where converters sends message asking worker if it's executing a specific job
     @Bean
     FanoutExchange workersHeartBeatRequestExchange() {
@@ -137,6 +156,21 @@ public class SpringRabbitMqConfig {
     @Bean
     DirectExchange xmlconvHealthExchange() {
         return new DirectExchange(Properties.XMLCONV_HEALTH_EXCHANGE,true,false);
+    }
+
+    @Bean
+    DirectExchange cdrJobsRequestExchange() {
+        return new DirectExchange(Properties.CDR_REQUEST_EXCHANGE,true,false);
+    }
+
+    @Bean
+    DirectExchange cdrJobsResultsExchange() {
+        return new DirectExchange(Properties.CDR_RESULTS_EXCHANGE,true,false);
+    }
+
+    @Bean
+    DirectExchange cdrDeadLetterExchange() {
+        return new DirectExchange(Properties.CDR_DEAD_LETTER_EXCHANGE,true,false);
     }
 
     @Bean
@@ -182,6 +216,21 @@ public class SpringRabbitMqConfig {
     @Bean
     Binding exchangeToXmlconvHealthQueueBinding() {
         return BindingBuilder.bind(xmlconvHealthQueue()).to(xmlconvHealthExchange()).with(Properties.XMLCONV_HEALTH_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding exchangeToCdrRequestQueueBinding() {
+        return BindingBuilder.bind(cdrJobsRequestQueue()).to(cdrJobsRequestExchange()).with(Properties.CDR_REQUEST_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding exchangeToCdrResultsQueueBinding() {
+        return BindingBuilder.bind(cdrJobsResultsQueue()).to(cdrJobsResultsExchange()).with(Properties.CDR_RESULTS_ROUTING_KEY);
+    }
+
+    @Bean
+    Binding exchangeToCdrDeadLetterQueueBinding() {
+        return BindingBuilder.bind(cdrDeadLetterQueue()).to(cdrDeadLetterExchange()).with(Properties.CDR_DEAD_LETTER_ROUTING_KEY);
     }
 
     @Bean
@@ -257,6 +306,7 @@ public class SpringRabbitMqConfig {
         return new Jackson2JsonMessageConverter();
     }
 
+    @Primary
     @Bean
     ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(Properties.rabbitMQHost);
@@ -266,11 +316,38 @@ public class SpringRabbitMqConfig {
         return connectionFactory;
     }
 
+    @Bean
+    ConnectionFactory cdrConnectionFactory() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(Properties.cdrRabbitMQHost);
+        connectionFactory.setPort(Properties.cdrRabbitMQPort);
+        connectionFactory.setUsername(Properties.cdrRabbitMQUsername);
+        connectionFactory.setPassword(Properties.cdrRabbitMQPassword);
+        return connectionFactory;
+    }
 
+    @Bean
+    SimpleMessageListenerContainer cdrRequestQueueContainer() {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(cdrConnectionFactory());
+        container.setQueueNames(Properties.CDR_REQUEST_QUEUE);
+        container.setMessageListener(cdrRequestQueueListenerAdapter());
+        return container;
+    }
+    @Bean
+    CdrRequestMessageReceiver cdrRequestMessageReceiver() {
+        return new CdrRequestMessageReceiver();
+    }
+    @Bean
+    MessageListenerAdapter cdrRequestQueueListenerAdapter() {
+        return new MessageListenerAdapter(cdrRequestMessageReceiver(), jsonMessageConverter());
+    }
+
+    @Primary
     @Bean
     RabbitAdmin rabbitAdmin() {
         RabbitAdmin admin = new RabbitAdmin(connectionFactory());
         admin.setAutoStartup(true);
+        admin.setExplicitDeclarationsOnly(true);
 
         admin.declareExchange(mainWorkersExchange());
         admin.declareExchange(mainXmlconvJobsExchange());
@@ -305,10 +382,38 @@ public class SpringRabbitMqConfig {
     }
 
     @Bean
+    RabbitAdmin cdrRabbitAdmin() {
+        RabbitAdmin cdrRabbitAdmin = new RabbitAdmin(cdrConnectionFactory());
+        cdrRabbitAdmin.setAutoStartup(true);
+        cdrRabbitAdmin.setExplicitDeclarationsOnly(true);
+
+        cdrRabbitAdmin.declareQueue(cdrJobsRequestQueue());
+        cdrRabbitAdmin.declareQueue(cdrJobsResultsQueue());
+        cdrRabbitAdmin.declareQueue(cdrDeadLetterQueue());
+
+        cdrRabbitAdmin.declareExchange(cdrJobsRequestExchange());
+        cdrRabbitAdmin.declareExchange(cdrJobsResultsExchange());
+        cdrRabbitAdmin.declareExchange(cdrDeadLetterExchange());
+
+        cdrRabbitAdmin.declareBinding(exchangeToCdrRequestQueueBinding());
+        cdrRabbitAdmin.declareBinding(exchangeToCdrResultsQueueBinding());
+        cdrRabbitAdmin.declareBinding(exchangeToCdrDeadLetterQueueBinding());
+        return cdrRabbitAdmin;
+    }
+
+    @Primary
+    @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
+    }
+
+    @Bean
+    public RabbitTemplate cdrRabbitTemplate() {
+        RabbitTemplate cdrRabbitTemplate = new RabbitTemplate(cdrConnectionFactory());
+        cdrRabbitTemplate.setMessageConverter(jsonMessageConverter());
+        return cdrRabbitTemplate;
     }
 
 }

@@ -16,6 +16,7 @@ import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
+import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
@@ -52,6 +53,9 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
     @Autowired
     private QueryMetadataService queryMetadataService;
+
+    @Autowired
+    private CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
 
     @Override
     public void onMessage(Message message) {
@@ -113,6 +117,9 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                 workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+            }
+            if(jobEntry.getAddedFromQueue()) {
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
             }
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing: ", e);

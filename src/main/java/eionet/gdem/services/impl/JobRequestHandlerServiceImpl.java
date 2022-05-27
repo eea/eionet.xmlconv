@@ -13,6 +13,7 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.*;
 import eionet.gdem.qa.utils.ScriptUtils;
 import eionet.gdem.rabbitMQ.errors.CreateRabbitMQMessageException;
+import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobHistoryService;
@@ -50,6 +51,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
     private IConvTypeDao convTypeDao = GDEMServices.getDaoService().getConvTypeDao();
 
     private SchemaManager schManager = new SchemaManager();
+
+    @Autowired
+    private CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
 
     QueryService queryService;
     private static final String NOT_HEAVY = "0";
@@ -252,7 +256,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
-
+            if(jobEntry.getAddedFromQueue()) {
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+            }
         }
         else{
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
@@ -265,6 +271,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
+            if(jobEntry.getAddedFromQueue()) {
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+            }
         }
         LOGGER.debug( jobId + " : " + sourceURL + " size: " + sourceSize );
         LOGGER.info("### Job with id=" + jobId + " has been created.");

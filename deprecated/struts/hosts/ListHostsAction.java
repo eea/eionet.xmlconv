@@ -52,7 +52,7 @@ public class ListHostsAction extends BaseAction {
 
     protected final String GDEM_SSAclName = "/stylesheets";
 
-    private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();;
+    private IHostDao hostDao = GDEMServices.getDaoService().getHostDao();
 
     @Override
     public ActionForward execute(ActionMapping map, ActionForm actionForm, HttpServletRequest request,

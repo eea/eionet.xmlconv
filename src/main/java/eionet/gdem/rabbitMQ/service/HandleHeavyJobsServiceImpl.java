@@ -30,13 +30,15 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
     private QueryAndQueryHistoryService queryAndQueryHistoryService;
     private QueryJpaService queryJpaService;
 
+    private CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
+
     public static final String CONVERTERS_NAME = "converters";
     private static final Logger LOGGER = LoggerFactory.getLogger(HandleHeavyJobsServiceImpl.class);
 
     @Autowired
     public HandleHeavyJobsServiceImpl(JobService jobService, JobHistoryService jobHistoryService, WorkerHeartBeatMsgService workerHeartBeatMsgService,
                                       @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender, QueryAndQueryHistoryService queryAndQueryHistoryService,
-                                      QueryJpaService queryJpaService) {
+                                      QueryJpaService queryJpaService, CdrResponseMessageFactoryService cdrResponseMessageFactoryService) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.workerHeartBeatMsgService = workerHeartBeatMsgService;
@@ -55,6 +57,9 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
         rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
         if (jobEntry.getHeavyRetriesOnFailure()==1) {
             clearUnansweredLightWorkerHeartBeatMessages(jobEntry.getId());
+        }
+        if(jobEntry.getAddedFromQueue()) {
+            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
         }
     }
 

@@ -43,7 +43,7 @@ public class WorkersStatusMessageReceiver implements MessageListener {
     public void onMessage(Message message) {
         String messageBody = new String(message.getBody());
         try {
-            ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
+            ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             WorkerStateRabbitMQResponseMessage response = mapper.readValue(messageBody, WorkerStateRabbitMQResponseMessage.class);
 
             String containerId="";
