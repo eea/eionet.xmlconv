@@ -14,6 +14,7 @@ import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.rabbitMQ.model.CdrJobRequestMessage;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -66,6 +68,10 @@ public class QaController {
 
     @Autowired(required=false)
     RabbitTemplate rabbitTemplate;
+
+    @Autowired(required=false)
+    @Qualifier("cdrRabbitTemplate")
+    RabbitTemplate cdrRabbitTemplate;
 
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
@@ -395,6 +401,20 @@ public class QaController {
 
     private static JobRequestHandlerService getJobRequestHandlerServiceBean() {
         return (JobRequestHandlerService) SpringApplicationContext.getBean("jobRequestHandlerService");
+    }
+
+    //TODO remove this
+    @RequestMapping(value = "/asynctasks/qajobs/test", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public String createQueueJob(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException {
+        if (envelopeWrapper.getEnvelopeUrl() == null) {
+            throw new EmptyParameterException("envelopeUrl");
+        }
+        if (envelopeWrapper.getSourceUrl() == null) {
+            throw new EmptyParameterException("UUID");
+        }
+        CdrJobRequestMessage request = new CdrJobRequestMessage(envelopeWrapper.getEnvelopeUrl(), envelopeWrapper.getSourceUrl());
+        cdrRabbitTemplate.convertAndSend(Properties.CDR_REQUEST_QUEUE, request);
+        return "done";
     }
 
 }

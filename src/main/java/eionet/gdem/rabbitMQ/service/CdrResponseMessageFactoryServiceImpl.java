@@ -102,7 +102,7 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
                 throw new RuntimeException(e);
             }
         }
-        LOGGER.info("Created response for cdr request for job id " + cdrJobResponseMessage.getJobId());
+        LOGGER.info("Created response for cdr request for job id " + cdrJobResponseMessage.getJobId() + " and status " + cdrJobResponseMessage.getJobStatus());
         //send cdrJobResponseMessage to queue
         cdrJobResultMessageSender.sendMessageToRabbitMQ(cdrJobResponseMessage);
     }

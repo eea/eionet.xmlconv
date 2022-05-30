@@ -253,6 +253,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
             if(jobEntry.getAddedFromQueue()) {
+                jobEntry.setnStatus(status);
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
             }
         } catch (Exception e) {

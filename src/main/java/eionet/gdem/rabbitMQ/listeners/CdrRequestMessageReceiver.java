@@ -30,7 +30,7 @@ public class CdrRequestMessageReceiver implements MessageListener {
             //the following class may need changes.
             CdrJobRequestMessage cdrMessage = mapper.readValue(messageBody, CdrJobRequestMessage.class);
             LOGGER.info("Jobs from cdr queue for envelope url " + cdrMessage.getEnvelopeUrl() + " and UUID " + cdrMessage.getUUID() + " will be scheduled");
-            List<QaResultsWrapper> qaResults = qaService.scheduleJobs(cdrMessage.getEnvelopeUrl(), true, true, cdrMessage.getUUID());
+            List<QaResultsWrapper> qaResults = qaService.scheduleJobs(cdrMessage.getEnvelopeUrl(), false, true, cdrMessage.getUUID());
             LOGGER.info("Jobs from cdr queue for envelope url " + cdrMessage.getEnvelopeUrl() + " and UUID " + cdrMessage.getUUID() + " have been scheduled");
         } catch (Exception e) {
             LOGGER.error("Error during cdr message processing. Exception message is:  " + e.getMessage());
