@@ -26,7 +26,7 @@ public class CdrRequestMessageReceiver implements MessageListener {
     public void onMessage(Message message) {
         String messageBody = new String(message.getBody());
         try {
-            ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             //the following class may need changes.
             CdrJobRequestMessage cdrMessage = mapper.readValue(messageBody, CdrJobRequestMessage.class);
             LOGGER.info("Jobs from cdr queue for envelope url " + cdrMessage.getEnvelopeUrl() + " and UUID " + cdrMessage.getUUID() + " will be scheduled");

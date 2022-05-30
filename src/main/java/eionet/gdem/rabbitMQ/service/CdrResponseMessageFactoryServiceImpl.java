@@ -21,6 +21,9 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
     @Autowired
     QaService qaService;
 
+    @Autowired
+    CdrJobResultMessageSender cdrJobResultMessageSender;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CdrResponseMessageFactoryServiceImpl.class);
 
     @Override
@@ -46,7 +49,6 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
         }
         else{
             //create job result message and set it up
-
             CdrJobResultMessage jobResult = new CdrJobResultMessage();
 
             Hashtable<String, Object> results = null;
@@ -100,7 +102,8 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
                 throw new RuntimeException(e);
             }
         }
-        LOGGER.info("Created response for cdr request and sent it to the queue");
+        LOGGER.info("Created response for cdr request for job id " + cdrJobResponseMessage.getJobId());
         //send cdrJobResponseMessage to queue
+        cdrJobResultMessageSender.sendMessageToRabbitMQ(cdrJobResponseMessage);
     }
 }
