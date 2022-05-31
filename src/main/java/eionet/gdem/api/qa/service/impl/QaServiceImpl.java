@@ -507,7 +507,7 @@ public class QaServiceImpl implements QaService {
             LOGGER.info("Changed status to FATAL ERROR in QUERY_MEATADATA_HISTORY table for jobId " + jobId + ". Query Metadata history entry id is " + queryMetadataHistoryLastEntry.getId()
                     + " and script Id is " + scriptId);
         }
-        if(jobEntry.getAddedFromQueue()) {
+        if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
             cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
         }
 

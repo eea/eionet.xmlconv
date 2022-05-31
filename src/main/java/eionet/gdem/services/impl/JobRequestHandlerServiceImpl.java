@@ -256,7 +256,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
-            if(jobEntry.getAddedFromQueue()) {
+            if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
             }
         }
@@ -271,7 +271,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
-            if(jobEntry.getAddedFromQueue()) {
+            if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
             }
         }

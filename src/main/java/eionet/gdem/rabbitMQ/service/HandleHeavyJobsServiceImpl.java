@@ -58,7 +58,7 @@ public class HandleHeavyJobsServiceImpl implements HandleHeavyJobsService {
         if (jobEntry.getHeavyRetriesOnFailure()==1) {
             clearUnansweredLightWorkerHeartBeatMessages(jobEntry.getId());
         }
-        if(jobEntry.getAddedFromQueue()) {
+        if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
             cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
         }
     }

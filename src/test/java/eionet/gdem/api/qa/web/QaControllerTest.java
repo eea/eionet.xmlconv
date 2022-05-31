@@ -28,6 +28,7 @@ import org.mockito.ArgumentCaptor;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.anyString;
 import org.mockito.Mock;
 import static org.mockito.Mockito.times;
@@ -120,7 +121,7 @@ public class QaControllerTest {
         envelopeWrapper.setEnvelopeUrl(envelopeUrl);
         qaController.scheduleQaRequestOnEnvelope(envelopeWrapper);
         ArgumentCaptor<String> envelopeUrlCaptor = ArgumentCaptor.forClass(String.class);
-        verify(qaServiceMock, times(1)).scheduleJobs(envelopeUrlCaptor.capture(), anyBoolean(), false, null);
+        verify(qaServiceMock, times(1)).scheduleJobs(envelopeUrlCaptor.capture(), anyBoolean(), anyBoolean(), eq(null));
         assertTrue(EqualsBuilder.reflectionEquals(envelopeUrlCaptor.getValue(), envelopeUrl));
     }
 

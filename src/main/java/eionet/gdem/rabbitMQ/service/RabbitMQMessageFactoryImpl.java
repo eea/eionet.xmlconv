@@ -230,7 +230,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             jobHistoryEntry.setAddedFromQueue(jobEntry.getAddedFromQueue());
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
-            if(jobEntry.getAddedFromQueue()) {
+            if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
             }
         } catch (Exception e) {
@@ -252,7 +252,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             jobHistoryEntry.setAddedFromQueue(jobEntry.getAddedFromQueue());
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
-            if(jobEntry.getAddedFromQueue()) {
+            if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 jobEntry.setnStatus(status);
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
             }
@@ -327,7 +327,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             }
             Utils.saveStrToFile(resultFile, "<error>" + error + "</error>", null);
             changeStatus(errStatus,jobId);
-            if(jobEntry.getAddedFromQueue()) {
+            if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
             }
         } catch (Exception e) {

@@ -167,7 +167,7 @@ public class GenericFixedTimeScheduledTasks {
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
-                    if(jobEntry.getAddedFromQueue()){
+                    if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()){
                         cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
                     }
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());

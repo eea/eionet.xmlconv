@@ -132,7 +132,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
                     queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, Integer.parseInt(script.getJobId()), null, script.getOrigFileUrl(), jobEntry.getXmlSize());
-                    if(jobEntry.getAddedFromQueue()) {
+                    if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                         cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
                     }
                 }
