@@ -37,6 +37,7 @@
     <logger name="org.springframework.web" level="info"/>
     <logger name="org.hibernate" level="info" />
     <logger name="org.basex" level="info"/>
+    <logger name="org.springframework.amqp" level="debug"/>
     <Root level="INFO">
       <AppenderRef ref="console" />
       <AppenderRef ref="fileLogger" level="info" />
