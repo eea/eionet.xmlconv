@@ -16,7 +16,7 @@
         <property name="poolName" value="quartzHikariCP" />
         <property name="minimumIdle" value="5"/>
         <property name="maximumPoolSize" value="50"/>
-        <property name="dataSourceClassName" value="org.mariadb.jdbc.MariaDbDataSource" />
+        <property name="dataSourceClassName" value="com.mysql.jdbc.Driver"/>
         <property name="dataSourceProperties">
             <props>
                 <prop key="url">${quartz.db.url}</prop>

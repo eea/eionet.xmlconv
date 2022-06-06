@@ -28,7 +28,7 @@
         <property name="poolName" value="springHikariCP"/>
         <property name="minimumIdle" value="5"/>
         <property name="maximumPoolSize" value="30"/>
-        <property name="dataSourceClassName" value="org.mariadb.jdbc.MariaDbDataSource"/>
+        <property name="dataSourceClassName" value="com.mysql.jdbc.Driver"/>
         <property name="dataSourceProperties">
             <props>
                 <prop key="url">${db.url}</prop>
