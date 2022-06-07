@@ -37,7 +37,6 @@ public class ServerStatusServiceImpl implements ServerStatusService {
     private IXQJobDao ixqJobDao;
     private static final Logger LOGGER = LoggerFactory.getLogger(QueueJobsServiceImpl.class);
 
-    /** holds the clustered quartz scheduler shared amongst instances*/
     private static class isRancher {
         public static final int IS_RANCHER = Properties.getIsRancher();
     }
