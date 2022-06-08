@@ -43,4 +43,5 @@ public interface JobService {
 
     String getDuplicateIdentifier(String fileUrl, String scriptId);
 
+    List<JobEntry> findQueuedJobs();
 }

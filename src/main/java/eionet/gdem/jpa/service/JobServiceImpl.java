@@ -599,4 +599,9 @@ public class JobServiceImpl implements JobService {
         return duplicateIdentifier;
     }
 
+    @Override
+    public List<JobEntry> findQueuedJobs() {
+        return jobRepository.findQueuedJobs();
+    }
+
 }

@@ -87,6 +87,7 @@ public class GenericFixedTimeScheduledTasks {
     private WorkqueueManager jobsManager = new WorkqueueManager();
 
     private static final Integer MIN_UNANSWERED_REQUESTS = 10;
+    public static Set<Integer> queuedJobs;
 
     @Autowired
     public GenericFixedTimeScheduledTasks() {
@@ -366,6 +367,64 @@ public class GenericFixedTimeScheduledTasks {
         }
     }
 
+    /**
+     * The task runs every 30 minutes. It finds jobs with n_status=2 and internal_status=2 and checks if these jobs have been
+     * in the queue with these statuses for 30 minutes. If so, a notification is sent to uns and an alert entry is added in
+     * the alerts table.
+     */
+    @Scheduled(cron = "0 */30 * * * *")  //every 30 minutes
+    public void sendNotificationForStuckJobs() {
+        LOGGER.info("Task for sending notification for stuck jobs is running");
+        List<JobEntry> jobEntries = null;
+        Set<Integer> tempSet = new HashSet<>();
+        boolean setEquals = false;
+        try {
+            jobEntries = jobService.findQueuedJobs();
+        } catch (Exception e) {
+            LOGGER.error("Error while fetching queuedJobs.");
+            return;
+        }
+        if (jobEntries!=null && jobEntries.size()>0) {
+            jobEntries.forEach(jobEntry -> tempSet.add(jobEntry.getId()));
+        }
+
+        if (getQueuedJobs().size()>0) {
+            for (Integer id : getQueuedJobs()) {
+                if (tempSet.contains(id)) {
+                    setEquals = true;
+                } else {
+                    setEquals = false;
+                    break;
+                }
+            }
+        }
+
+        if (setEquals && tempSet.size()>=getQueuedJobs().size()) {
+            AlertEntry alertEntry = new AlertEntry().setSeverity(AlertSeverity.CRITICAL).setDescription("There are stuck jobs in queue")
+                    .setOccurrenceDate(new Timestamp(new Date().getTime()));
+            try {
+                new UNSEventSender().alertsNotification(alertEntry.getOccurrenceDate() + ", There are stuck jobs in queue", Properties.ALERTS_EVENT);
+                alertEntry.setNotificationSentToUns(true);
+            } catch (Exception e) {
+                LOGGER.error("Error sending stuck jobs event to uns");
+                alertEntry.setNotificationSentToUns(false);
+            } finally {
+                alertService.save(alertEntry);
+            }
+        }
+        setQueuedJobs(tempSet);
+    }
+
+    public static Set<Integer> getQueuedJobs() {
+        if (queuedJobs==null) {
+            return new HashSet<>();
+        }
+        return queuedJobs;
+    }
+
+    public static void setQueuedJobs(Set<Integer> queuedJobs) {
+        GenericFixedTimeScheduledTasks.queuedJobs = queuedJobs;
+    }
 }
 
 

@@ -33,6 +33,9 @@ public interface JobRepository extends JpaRepository<JobEntry, Integer> {
     @Query(value = "SELECT * FROM T_XQJOBS WHERE N_STATUS=2 AND INTERNAL_STATUS_ID=3", nativeQuery = true)
     List<JobEntry> findProcessingJobs();
 
+    @Query(value = "SELECT * FROM T_XQJOBS WHERE N_STATUS=2 AND INTERNAL_STATUS_ID=2", nativeQuery = true)
+    List<JobEntry> findQueuedJobs();
+
     Page<JobEntry> findById(Integer id, Pageable pageable);
 
     Long countById(Integer id);
