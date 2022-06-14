@@ -213,8 +213,6 @@
                                 </copy>
                                 <copy file="${basedir}/liquibase/xmlconv-struct.xml"
                                       toFile="${project.build.directory}/classes/liquibase/xmlconv-struct.xml" />
-                                <copy file="${basedir}/liquibase/quartz-liquibase.xml"
-                                      toFile="${project.build.directory}/classes/liquibase/quartz-liquibase.xml" />
                             </target>
                         </configuration>
                     </execution>
@@ -376,7 +374,6 @@
                             <filtering>false</filtering>
                             <includes>
                                 <include>xmlconv-struct.xml</include>
-                                <include>quartz-liquibase.xml</include>
                             </includes>
                         </resource>
                         <resource>
@@ -874,16 +871,16 @@
 
 
             <!-- Database dependencies -->
-            <!--<dependency>-->
-                <!--<groupId>mysql</groupId>-->
-                <!--<artifactId>mysql-connector-java</artifactId>-->
-                <!--<version>5.1.39</version>-->
-            <!--</dependency>-->
             <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.22</version>
+            </dependency>
+            <!--<dependency>
                 <groupId>org.mariadb.jdbc</groupId>
                 <artifactId>mariadb-java-client</artifactId>
                 <version>2.1.2</version>
-            </dependency>
+            </dependency> -->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
@@ -892,7 +889,7 @@
             <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
-                <version>2.4.6</version>
+                <version>3.4.5</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
