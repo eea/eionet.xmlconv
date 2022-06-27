@@ -10,10 +10,14 @@ public class CdrJobResponseMessage {
     private String scriptId;
     private CdrJobResultMessage jobResult;
 
+    private CdrJobExecutionStatus executionStatus;
+
     public CdrJobResponseMessage() {
     }
 
-    public CdrJobResponseMessage(String UUID, String documentURL, String jobId, String jobStatus, String scriptTitle, String scriptId, CdrJobResultMessage jobResult) {
+    public CdrJobResponseMessage(String UUID, String documentURL, String jobId, String jobStatus,
+                                 String scriptTitle, String scriptId, CdrJobResultMessage jobResult,
+                                 CdrJobExecutionStatus executionStatus) {
         this.UUID = UUID;
         this.documentURL = documentURL;
         this.jobId = jobId;
@@ -21,6 +25,7 @@ public class CdrJobResponseMessage {
         this.scriptTitle = scriptTitle;
         this.scriptId = scriptId;
         this.jobResult = jobResult;
+        this.executionStatus = executionStatus;
     }
 
     public String getUUID() {
@@ -77,5 +82,13 @@ public class CdrJobResponseMessage {
 
     public void setJobResult(CdrJobResultMessage jobResult) {
         this.jobResult = jobResult;
+    }
+
+    public CdrJobExecutionStatus getExecutionStatus() {
+        return executionStatus;
+    }
+
+    public void setExecutionStatus(CdrJobExecutionStatus executionStatus) {
+        this.executionStatus = executionStatus;
     }
 }

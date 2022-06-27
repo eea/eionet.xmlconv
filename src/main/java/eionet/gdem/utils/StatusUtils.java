@@ -1,6 +1,7 @@
 package eionet.gdem.utils;
 
 import eionet.gdem.Constants;
+import eionet.gdem.rabbitMQ.model.CdrJobExecutionStatus;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.HashSet;
@@ -79,5 +80,34 @@ public final class StatusUtils {
             statusName = "UNKNOWN STATUS (" + status + ")";
         }
         return statusName;
+    }
+
+    public static CdrJobExecutionStatus createJobExecutionStatus(Integer jobNStatus){
+        CdrJobExecutionStatus cdrJobExecutionStatus;
+        if(jobNStatus == Constants.XQ_READY){
+            cdrJobExecutionStatus = new CdrJobExecutionStatus(Integer.toString(Constants.JOB_READY), Constants.EXECUTION_STATUS_NAME_READY);
+        }
+        else if(jobNStatus == Constants.XQ_FATAL_ERR || jobNStatus == Constants.XQ_LIGHT_ERR ){
+            cdrJobExecutionStatus = new CdrJobExecutionStatus(Integer.toString(Constants.JOB_FATAL_ERROR), Constants.EXECUTION_STATUS_NAME_FAILED);
+        }
+        else if(jobNStatus == Constants.XQ_RECEIVED || jobNStatus == Constants.XQ_DOWNLOADING_SRC || jobNStatus == Constants.XQ_PROCESSING){
+            cdrJobExecutionStatus = new CdrJobExecutionStatus(Integer.toString(Constants.JOB_NOT_READY), Constants.EXECUTION_STATUS_NAME_PENDING);
+        }
+        else if(jobNStatus == Constants.XQ_JOBNOTFOUND_ERR){
+            cdrJobExecutionStatus = new CdrJobExecutionStatus(Integer.toString(Constants.JOB_LIGHT_ERROR), Constants.EXECUTION_STATUS_NAME_NOT_FOUND);
+        }
+        else if(jobNStatus == Constants.CANCELLED_BY_USER){
+            cdrJobExecutionStatus = new CdrJobExecutionStatus(Integer.toString(Constants.CANCELLED_BY_USER), Constants.EXECUTION_STATUS_NAME_CANCELLED);
+        }
+        else if(jobNStatus == Constants.XQ_INTERRUPTED){
+            cdrJobExecutionStatus = new CdrJobExecutionStatus(Integer.toString(Constants.XQ_INTERRUPTED), Constants.EXECUTION_STATUS_NAME_INTERRUPTED);
+        }
+        else if(jobNStatus == Constants.DELETED){
+            cdrJobExecutionStatus = new CdrJobExecutionStatus(Integer.toString(Constants.JOB_READY), Constants.EXECUTION_STATUS_NAME_DELETED);
+        }
+        else{
+            cdrJobExecutionStatus = new CdrJobExecutionStatus(Integer.toString(Constants.JOB_FATAL_ERROR), Constants.EXECUTION_STATUS_NAME_FAILED);
+        }
+        return cdrJobExecutionStatus;
     }
 }

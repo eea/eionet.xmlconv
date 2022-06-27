@@ -4,6 +4,7 @@ import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.jpa.Entities.JobEntry;
+import eionet.gdem.rabbitMQ.model.CdrJobExecutionStatus;
 import eionet.gdem.rabbitMQ.model.CdrJobResponseMessage;
 import eionet.gdem.rabbitMQ.model.CdrJobResultMessage;
 import eionet.gdem.utils.StatusUtils;
@@ -44,62 +45,72 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
             cdrJobResponseMessage.setScriptTitle(scriptTitle);
         }
 
-        if(jobEntry.getnStatus() != Constants.XQ_READY && jobEntry.getnStatus() != Constants.XQ_FATAL_ERR && jobEntry.getnStatus() != Constants.XQ_LIGHT_ERR){
+        //set up Execution Status
+        cdrJobResponseMessage.setExecutionStatus(StatusUtils.createJobExecutionStatus(jobEntry.getnStatus()));
+
+        if(jobEntry.getnStatus() != Constants.XQ_READY && jobEntry.getnStatus() != Constants.XQ_FATAL_ERR && jobEntry.getnStatus() != Constants.XQ_LIGHT_ERR
+                && jobEntry.getnStatus() != Constants.DELETED){
             cdrJobResponseMessage.setJobResult(null);
         }
         else{
             //create job result message and set it up
             CdrJobResultMessage jobResult = new CdrJobResultMessage();
 
-            Hashtable<String, Object> results = null;
-            try {
-                results = qaService.getJobResults(String.valueOf(jobEntry.getId()));
+            if(jobEntry.getnStatus() == Constants.DELETED){
+                jobResult.setFeedbackMessage(Constants.JOB_FEEDBACK_MESSAGE_DELETED);
+                cdrJobResponseMessage.setJobResult(jobResult);
+            }
+            else{
 
-                LOGGER.info("For job id " + jobEntry.getId() + " statusId=" + (String) results.get(Constants.RESULT_CODE_PRM) + " and feedbackStatus=" + results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
+                Hashtable<String, Object> results = null;
+                try {
+                    results = qaService.getJobResults(String.valueOf(jobEntry.getId()));
 
-                LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
-                //if result file is zip
-                if(results.get("REMOTE_FILES")!=null){
-                    String[] fileUrls = (String[]) results.get("REMOTE_FILES");
-                    if(fileUrls[0]!=null) {
-                        LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
-                        String executionStatusId = (String) results.get(Constants.RESULT_CODE_PRM);
-                        String executionStatusName = (String) results.get("executionStatusName");
-                        executionStatusView.put("statusId", executionStatusId);
-                        executionStatusView.put("statusName", executionStatusName);
-                        jsonResults.put("executionStatus",executionStatusView);
-                        jsonResults = qaService.checkIfZipFileExistsOrIsEmpty(fileUrls, String.valueOf(jobEntry.getId()), jsonResults);
-                        if(jsonResults.get("REMOTE_FILES") != null)
-                        {
-                            jobResult.setRemoteFiles((String) jsonResults.get("REMOTE_FILES"));
+                    LOGGER.info("For job id " + jobEntry.getId() + " statusId=" + (String) results.get(Constants.RESULT_CODE_PRM) + " and feedbackStatus=" + results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
+
+                    LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
+                    //if result file is zip
+                    if(results.get("REMOTE_FILES")!=null){
+                        String[] fileUrls = (String[]) results.get("REMOTE_FILES");
+                        if(fileUrls[0]!=null) {
+                            LinkedHashMap<String,String> executionStatusView = new LinkedHashMap<String,String>();
+                            String executionStatusId = (String) results.get(Constants.RESULT_CODE_PRM);
+                            String executionStatusName = (String) results.get("executionStatusName");
+                            executionStatusView.put("statusId", executionStatusId);
+                            executionStatusView.put("statusName", executionStatusName);
+                            jsonResults.put("executionStatus",executionStatusView);
+                            jsonResults = qaService.checkIfZipFileExistsOrIsEmpty(fileUrls, String.valueOf(jobEntry.getId()), jsonResults);
+                            if(jsonResults.get("REMOTE_FILES") != null)
+                            {
+                                jobResult.setRemoteFiles((String) jsonResults.get("REMOTE_FILES"));
+                            }
+                            if(jsonResults.get("feedbackContent") != null){
+                                jobResult.setFeedbackContent((String) jsonResults.get("feedbackContent"));
+                            }
                         }
+                        else{
+                            jobResult.setFeedbackContent((String) jsonResults.get(""));
+                        }
+                    }else{
+                        //result file is html
+                        jsonResults = qaService.checkIfHtmlResultIsEmpty(String.valueOf(jobEntry.getId()), jsonResults, results);
                         if(jsonResults.get("feedbackContent") != null){
                             jobResult.setFeedbackContent((String) jsonResults.get("feedbackContent"));
                         }
                     }
-                    else{
-                        jobResult.setFeedbackContent((String) jsonResults.get(""));
+                    if(results.get(Constants.RESULT_FEEDBACKSTATUS_PRM) != null){
+                        jobResult.setFeedbackStatus((String) results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
                     }
-                }else{
-                    //result file is html
-                    jsonResults = qaService.checkIfHtmlResultIsEmpty(String.valueOf(jobEntry.getId()), jsonResults, results);
-                    if(jsonResults.get("feedbackContent") != null){
-                        jobResult.setFeedbackContent((String) jsonResults.get("feedbackContent"));
+                    if(results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM) != null){
+                        jobResult.setFeedbackMessage((String) results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
                     }
+                    if(results.get(Constants.RESULT_METATYPE_PRM) != null){
+                        jobResult.setFeedbackContentType((String) results.get(Constants.RESULT_METATYPE_PRM));
+                    }
+                    cdrJobResponseMessage.setJobResult(jobResult);
+                } catch (XMLConvException e) {
+                    throw new RuntimeException(e);
                 }
-                if(results.get(Constants.RESULT_FEEDBACKSTATUS_PRM) != null){
-                    jobResult.setFeedbackStatus((String) results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
-                }
-                if(results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM) != null){
-                    jobResult.setFeedbackMessage((String) results.get(Constants.RESULT_FEEDBACKMESSAGE_PRM));
-                }
-                if(results.get(Constants.RESULT_METATYPE_PRM) != null){
-                    jobResult.setFeedbackContentType((String) results.get(Constants.RESULT_METATYPE_PRM));
-                }
-                cdrJobResponseMessage.setJobResult(jobResult);
-
-            } catch (XMLConvException e) {
-                throw new RuntimeException(e);
             }
         }
         LOGGER.info("Created response for cdr request for job id " + cdrJobResponseMessage.getJobId() + " and status " + cdrJobResponseMessage.getJobStatus());
