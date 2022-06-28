@@ -64,12 +64,11 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
 
                 Hashtable<String, Object> results = null;
                 try {
-                    results = qaService.getJobResults(String.valueOf(jobEntry.getId()));
+                    results = qaService.getJobResults(String.valueOf(jobEntry.getId()), true);
 
                     LOGGER.info("For job id " + jobEntry.getId() + " statusId=" + (String) results.get(Constants.RESULT_CODE_PRM) + " and feedbackStatus=" + results.get(Constants.RESULT_FEEDBACKSTATUS_PRM));
 
                     LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
-                    //if result file is zip
                     if(results.get("REMOTE_FILES")!=null){
                         String[] fileUrls = (String[]) results.get("REMOTE_FILES");
                         if(fileUrls[0]!=null) {
@@ -79,10 +78,23 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
                             executionStatusView.put("statusId", executionStatusId);
                             executionStatusView.put("statusName", executionStatusName);
                             jsonResults.put("executionStatus",executionStatusView);
-                            jsonResults = qaService.checkIfZipFileExistsOrIsEmpty(fileUrls, String.valueOf(jobEntry.getId()), jsonResults);
-                            if(jsonResults.get("REMOTE_FILES") != null)
+                            if(fileUrls[0].endsWith(".zip")){
+                                jsonResults = qaService.checkIfZipFileExistsOrIsEmpty(fileUrls, String.valueOf(jobEntry.getId()), jsonResults);
+                            }
+                            else{
+                                if(jobEntry.getnStatus() == Constants.XQ_READY){
+                                    jsonResults = qaService.checkIfHtmlResultIsEmpty(String.valueOf(jobEntry.getId()), jsonResults, results, true, true, fileUrls[0]);
+                                }
+                                else{
+                                    jsonResults = qaService.checkIfHtmlResultIsEmpty(String.valueOf(jobEntry.getId()), jsonResults, results, true, false, null);
+                                }
+
+                            }
+
+                            String[] remoteFiles = (String[]) jsonResults.get("REMOTE_FILES");
+                            if(remoteFiles != null && remoteFiles.length > 0)
                             {
-                                jobResult.setRemoteFiles((String) jsonResults.get("REMOTE_FILES"));
+                                jobResult.setRemoteFiles(remoteFiles[0]);
                             }
                             if(jsonResults.get("feedbackContent") != null){
                                 jobResult.setFeedbackContent((String) jsonResults.get("feedbackContent"));
@@ -93,7 +105,7 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
                         }
                     }else{
                         //result file is html
-                        jsonResults = qaService.checkIfHtmlResultIsEmpty(String.valueOf(jobEntry.getId()), jsonResults, results);
+                        jsonResults = qaService.checkIfHtmlResultIsEmpty(String.valueOf(jobEntry.getId()), jsonResults, results, true, false, null);
                         if(jsonResults.get("feedbackContent") != null){
                             jobResult.setFeedbackContent((String) jsonResults.get("feedbackContent"));
                         }

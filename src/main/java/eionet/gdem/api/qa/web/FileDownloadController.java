@@ -30,7 +30,7 @@ public class FileDownloadController {
 
 
     @RequestMapping(value = "/zip/{fileName}", method = RequestMethod.GET)
-    public void getFile(@PathVariable String fileName, @RequestHeader(value = "authorization") String authorization, HttpServletResponse response) throws JWTException, IOException {
+    public void getZipFile(@PathVariable String fileName, @RequestHeader(value = "authorization") String authorization, HttpServletResponse response) throws JWTException, IOException {
         String filePath = null;
         String urlPath = new StringBuilder("/tmp/").append(fileName.endsWith(".zip") ? fileName : fileName + ".zip").toString();
 
@@ -38,6 +38,28 @@ public class FileDownloadController {
         String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, Properties.jwtHeaderSchemaProperty);
         if (authTokenService.verifyUser(parsedAuthenticationToken)!=null) {
            filePath = getFilePath(urlPath, fileName);
+        }
+
+        Path file = getPath(filePath);
+        if (checkIfFileExists(file)) {
+            response.setContentType("application/zip");
+            response.addHeader("Content-Disposition", "attachment; filename=" + file.getFileName());
+            copyFIle(response, file);
+            response.getOutputStream().flush();
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(value = "/html/{fileName}", method = RequestMethod.GET)
+    public void getHtmlFile(@PathVariable String fileName, @RequestHeader(value = "authorization") String authorization, HttpServletResponse response) throws JWTException, IOException {
+        String filePath = null;
+        String urlPath = new StringBuilder("/tmp/").append(fileName.endsWith(".html") ? fileName : fileName + ".html").toString();
+
+        String rawAuthenticationToken = authorization;
+        String parsedAuthenticationToken = authTokenService.getParsedAuthenticationTokenFromSchema(rawAuthenticationToken, Properties.jwtHeaderSchemaProperty);
+        if (authTokenService.verifyUser(parsedAuthenticationToken)!=null) {
+            filePath = getFilePath(urlPath, fileName);
         }
 
         Path file = getPath(filePath);

@@ -121,7 +121,7 @@ public class XQueryService extends RemoteService {
      * @throws XMLConvException If an error occurs.
      */
     public static Hashtable getResult(String jobId) throws XMLConvException {
-        return getJobResultHandlerService().getResult(jobId);
+        return getJobResultHandlerService().getResult(jobId, false);
     }
 
     /**

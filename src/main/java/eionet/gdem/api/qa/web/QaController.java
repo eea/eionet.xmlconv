@@ -194,7 +194,7 @@ public class QaController {
     @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
-        Hashtable<String, Object> results = qaService.getJobResults(jobId);
+        Hashtable<String, Object> results = qaService.getJobResults(jobId, false);
         String executionStatusId = (String) results.get(Constants.RESULT_CODE_PRM);
         String executionStatusName = (String) results.get("executionStatusName");
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
@@ -217,7 +217,7 @@ public class QaController {
             }
         }else{
             //result file is html
-            jsonResults = qaService.checkIfHtmlResultIsEmpty(jobId, jsonResults, results);
+            jsonResults = qaService.checkIfHtmlResultIsEmpty(jobId, jsonResults, results, false, false, null);
         }
         if(executionStatusName.equals("Not Found")){
             return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.NOT_FOUND);

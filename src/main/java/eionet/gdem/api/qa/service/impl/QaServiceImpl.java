@@ -194,10 +194,10 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public Hashtable<String, Object> getJobResults(String jobId) throws XMLConvException {
+    public Hashtable<String, Object> getJobResults(String jobId, Boolean addedThroughRabbitMq) throws XMLConvException {
 
         QueryService queryService = getQueryService(); // new QueryService();
-        Hashtable<String, Object> results = getJobResultHandlerService().getResult(jobId);
+        Hashtable<String, Object> results = getJobResultHandlerService().getResult(jobId, addedThroughRabbitMq);
         int resultCode = Integer.parseInt((String) results.get(Constants.RESULT_CODE_PRM));
         String executionStatusName = "";
         switch (resultCode) {
@@ -378,7 +378,7 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results){
+    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results, Boolean addedThroughRabbitMq, Boolean isReady, String fileUrl){
         if(results.get("executionStatusName") != null){
             String executionStatusName = (String) results.get("executionStatusName");
             if (executionStatusName.equals("Deleted")){
@@ -398,7 +398,13 @@ public class QaServiceImpl implements QaService {
             jsonResults.put("executionStatus",executionStatusView);
         }
         else{
-            jsonResults.put("feedbackContent", htmlFileContent);
+            if(addedThroughRabbitMq && isReady){
+                String[] fileUrls = {fileUrl};
+                jsonResults.put("REMOTE_FILES", fileUrls);
+            }
+            else{
+                jsonResults.put("feedbackContent", htmlFileContent);
+            }
         }
         return jsonResults;
     }

@@ -81,9 +81,9 @@ public class JobResultHandlerServiceTest {
         String jobId = "1289";
         Hashtable<String, Object> results = new Hashtable<String, Object>();
         results.put(Constants.RESULT_CODE_PRM, "0");
-        when(jobResultHandlerService.getResult(jobId)).thenReturn(results);
-        Hashtable<String, Object> realResults = this.qaService.getJobResults(jobId);
-        verify(jobResultHandlerService, times(2)).getResult(jobId);
+        when(jobResultHandlerService.getResult(jobId, false)).thenReturn(results);
+        Hashtable<String, Object> realResults = this.qaService.getJobResults(jobId, false);
+        verify(jobResultHandlerService, times(2)).getResult(jobId, false);
         Assert.assertEquals(results, realResults);
     }
 

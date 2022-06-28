@@ -39,11 +39,12 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
      * Checks if the job is ready (or error) and returns the result (or error message).
      *
      * @param jobId Job Id
+     * @param addedThroughRabbitMq
      * @return Hash including code and result
      * @throws XMLConvException If an error occurs.
      */
     @Override
-    public Hashtable<String,Object> getResult(String jobId) throws XMLConvException {
+    public Hashtable<String,Object> getResult(String jobId, Boolean addedThroughRabbitMq) throws XMLConvException {
 
         LOGGER.info("XML/RPC call for getting result with JOB ID: " + jobId);
 
@@ -84,8 +85,13 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
                 ret.put("REMOTE_FILES", fmeUrls);
             }
         }
-
-            return ret;
+        else{
+            if(addedThroughRabbitMq && jobData != null && jobData[3].equals(String.valueOf(Constants.XQ_READY))){
+                String[] htmlUrls = {Properties.gdemURL.concat("/restapi/download/html/" + Paths.get(jobData[2]).getFileName())};
+                ret.put("REMOTE_FILES", htmlUrls);
+            }
+        }
+        return ret;
     }
 
     /**
