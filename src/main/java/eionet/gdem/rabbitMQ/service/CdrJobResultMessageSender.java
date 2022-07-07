@@ -2,6 +2,7 @@ package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.Properties;
 import eionet.gdem.rabbitMQ.model.CdrJobResponseMessage;
+import eionet.gdem.rabbitMQ.model.CdrSummaryResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -24,5 +25,10 @@ public class CdrJobResultMessageSender {
     public void sendMessageToRabbitMQ(CdrJobResponseMessage responseMessage) {
         rabbitTemplate.convertAndSend(Properties.CDR_RESULTS_QUEUE, responseMessage);
         LOGGER.info("Results for job with id " + responseMessage.getJobId() + " have been sent to the rabbitmq queue " + Properties.CDR_RESULTS_QUEUE);
+    }
+
+    public void sendSummaryMessageToRabbitMQ(CdrSummaryResponseMessage responseMessage) {
+        rabbitTemplate.convertAndSend(Properties.CDR_RESULTS_QUEUE, responseMessage);
+        LOGGER.info("Summary of jobs with UUID " + responseMessage.getUuid() + " has been sent to the rabbitmq queue " + Properties.CDR_RESULTS_QUEUE);
     }
 }

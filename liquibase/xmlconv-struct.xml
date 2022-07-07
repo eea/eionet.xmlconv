@@ -1059,4 +1059,25 @@
             <column name="UUID" type="VARCHAR(200)"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="anthaant" id="rev-92">
+        <comment> Table for Storing alerts</comment>
+        <createTable tableName="CDR_REQUESTS">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="UUID" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ENVELOPE_URL" type="VARCHAR(2048)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NUMBER_OF_JOBS" type="INTEGER">
+            </column>
+            <column name="DATE_ADDED" type="TIMESTAMP">
+            </column>
+        </createTable>
+        <createIndex indexName="UUID_REQUESTS" tableName="CDR_REQUESTS" unique="false">
+            <column name="UUID"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

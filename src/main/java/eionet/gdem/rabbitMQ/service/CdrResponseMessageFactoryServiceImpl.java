@@ -2,19 +2,22 @@ package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
+import eionet.gdem.jpa.Entities.CdrRequestEntry;
 import eionet.gdem.jpa.Entities.JobEntry;
-import eionet.gdem.rabbitMQ.model.CdrJobExecutionStatus;
+import eionet.gdem.jpa.service.CdrRequestsService;
 import eionet.gdem.rabbitMQ.model.CdrJobResponseMessage;
 import eionet.gdem.rabbitMQ.model.CdrJobResultMessage;
+import eionet.gdem.rabbitMQ.model.CdrSummaryResponseMessage;
 import eionet.gdem.utils.StatusUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("cdrResponseMessageFactoryServiceImpl")
 public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageFactoryService{
@@ -24,6 +27,9 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
 
     @Autowired
     CdrJobResultMessageSender cdrJobResultMessageSender;
+
+    @Autowired
+    private CdrRequestsService cdrRequestsService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CdrResponseMessageFactoryServiceImpl.class);
 
@@ -129,4 +135,16 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
         //send cdrJobResponseMessage to queue
         cdrJobResultMessageSender.sendMessageToRabbitMQ(cdrJobResponseMessage);
     }
+
+    @Override
+    public void createCdrSummaryResponseMessageAndSendToQueue(String uuid, List<QaResultsWrapper> scheduledJobs){
+        List<String> jobIds = scheduledJobs.stream().map(QaResultsWrapper::getJobId).collect(Collectors.toList());
+
+        CdrSummaryResponseMessage cdrSummaryResponseMessage = new CdrSummaryResponseMessage(uuid, scheduledJobs.size(), jobIds);
+
+        LOGGER.info("Created summary response for cdr request for uuid " + cdrSummaryResponseMessage.getUuid());
+        //send cdrSummaryResponseMessage to queue
+        cdrJobResultMessageSender.sendSummaryMessageToRabbitMQ(cdrSummaryResponseMessage);
+    }
+
 }
