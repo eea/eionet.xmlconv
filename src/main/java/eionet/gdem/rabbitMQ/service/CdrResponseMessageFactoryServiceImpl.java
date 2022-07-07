@@ -4,7 +4,6 @@ import eionet.gdem.Constants;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
-import eionet.gdem.jpa.Entities.CdrRequestEntry;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.service.CdrRequestsService;
 import eionet.gdem.rabbitMQ.model.CdrJobResponseMessage;
