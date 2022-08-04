@@ -99,7 +99,7 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
                             String[] remoteFiles = (String[]) jsonResults.get("REMOTE_FILES");
                             if(remoteFiles != null && remoteFiles.length > 0)
                             {
-                                jobResult.setRemoteFiles(remoteFiles[0]);
+                                jobResult.setREMOTE_FILES(remoteFiles[0]);
                             }
                             if(jsonResults.get("feedbackContent") != null){
                                 jobResult.setFeedbackContent((String) jsonResults.get("feedbackContent"));
@@ -136,10 +136,10 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
     }
 
     @Override
-    public void createCdrSummaryResponseMessageAndSendToQueue(String uuid, List<QaResultsWrapper> scheduledJobs){
+    public void createCdrSummaryResponseMessageAndSendToQueue(String uuid,  String envelopeUrl, List<QaResultsWrapper> scheduledJobs){
         List<String> jobIds = scheduledJobs.stream().map(QaResultsWrapper::getJobId).collect(Collectors.toList());
 
-        CdrSummaryResponseMessage cdrSummaryResponseMessage = new CdrSummaryResponseMessage(uuid, scheduledJobs.size(), jobIds);
+        CdrSummaryResponseMessage cdrSummaryResponseMessage = new CdrSummaryResponseMessage(uuid, scheduledJobs.size(), envelopeUrl, jobIds);
 
         LOGGER.info("Created summary response for cdr request for uuid " + cdrSummaryResponseMessage.getUuid());
         //send cdrSummaryResponseMessage to queue

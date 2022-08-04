@@ -64,7 +64,7 @@ public class FileDownloadController {
 
         Path file = getPath(filePath);
         if (checkIfFileExists(file)) {
-            response.setContentType("application/zip");
+            response.setContentType("text/html");
             response.addHeader("Content-Disposition", "attachment; filename=" + file.getFileName());
             copyFIle(response, file);
             response.getOutputStream().flush();

@@ -48,7 +48,7 @@ public class CdrRequestMessageReceiver implements MessageListener {
             qaResults = qaService.scheduleJobs(cdrMessage.getEnvelopeUrl(), false, true, uuid);
             CdrRequestEntry cdrRequestEntry = new CdrRequestEntry(uuid, cdrMessage.getEnvelopeUrl(), qaResults.size(), new Timestamp(new Date().getTime()));
             cdrRequestsService.save(cdrRequestEntry);
-            cdrResponseMessageFactoryService.createCdrSummaryResponseMessageAndSendToQueue(uuid, qaResults);
+            cdrResponseMessageFactoryService.createCdrSummaryResponseMessageAndSendToQueue(uuid, cdrMessage.getEnvelopeUrl(), qaResults);
             LOGGER.info("There are " + qaResults.size() + " jobs that have been scheduled for envelope url " + cdrMessage.getEnvelopeUrl() + " and UUID " + uuid);
         } catch (Exception e) {
             LOGGER.error("Error during cdr message processing. Exception message is:  " + e.getMessage());

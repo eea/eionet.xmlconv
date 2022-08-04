@@ -6,14 +6,17 @@ public class CdrSummaryResponseMessage {
 
     private String uuid;
     private Integer numberOfJobs;
+
+    private String envelopeUrl;
     private List<String> jobIds;
 
     public CdrSummaryResponseMessage() {
     }
 
-    public CdrSummaryResponseMessage(String uuid, Integer numberOfJobs, List<String> jobIds) {
+    public CdrSummaryResponseMessage(String uuid, Integer numberOfJobs, String envelopeUrl, List<String> jobIds) {
         this.uuid = uuid;
         this.numberOfJobs = numberOfJobs;
+        this.envelopeUrl = envelopeUrl;
         this.jobIds = jobIds;
     }
 
@@ -39,5 +42,13 @@ public class CdrSummaryResponseMessage {
 
     public void setJobIds(List<String> jobIds) {
         this.jobIds = jobIds;
+    }
+
+    public String getEnvelopeUrl() {
+        return envelopeUrl;
+    }
+
+    public void setEnvelopeUrl(String envelopeUrl) {
+        this.envelopeUrl = envelopeUrl;
     }
 }

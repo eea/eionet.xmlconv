@@ -78,12 +78,10 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
             LOGGER.info("result: " + result);
         }
 
-        if(jobData!=null && jobData[8].equals("fme")) {
-            String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
-            if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
-                String[] fmeUrls = {Properties.gdemURL.concat("/restapi/download/zip/" + Paths.get(jobData[2]).getFileName())};
-                ret.put("REMOTE_FILES", fmeUrls);
-            }
+        String asynchronousExecution = (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
+        if (asynchronousExecution != null && asynchronousExecution.equals("1")) {
+            String[] fmeUrls = {Properties.gdemURL.concat("/restapi/download/zip/" + Paths.get(jobData[2]).getFileName())};
+            ret.put("REMOTE_FILES", fmeUrls);
         }
         else{
             if(addedThroughRabbitMq && jobData != null && jobData[3].equals(String.valueOf(Constants.XQ_READY))){

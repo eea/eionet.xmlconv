@@ -8,5 +8,5 @@ import java.util.List;
 public interface CdrResponseMessageFactoryService {
 
     void createCdrResponseMessageAndSendToQueue(JobEntry jobEntry);
-    void createCdrSummaryResponseMessageAndSendToQueue(String uuid, List<QaResultsWrapper> scheduledJobs);
+    void createCdrSummaryResponseMessageAndSendToQueue(String uuid, String envelopeUrl, List<QaResultsWrapper> scheduledJobs);
 }

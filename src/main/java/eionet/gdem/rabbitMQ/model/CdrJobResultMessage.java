@@ -6,17 +6,17 @@ public class CdrJobResultMessage {
     private String feedbackContent;
     private String feedbackMessage;
     private String feedbackContentType;
-    private String remoteFiles;
+    private String REMOTE_FILES;
 
     public CdrJobResultMessage() {
     }
 
-    public CdrJobResultMessage(String feedbackStatus, String feedbackContent, String feedbackMessage, String feedbackContentType, String remoteFiles) {
+    public CdrJobResultMessage(String feedbackStatus, String feedbackContent, String feedbackMessage, String feedbackContentType, String REMOTE_FILES) {
         this.feedbackStatus = feedbackStatus;
         this.feedbackContent = feedbackContent;
         this.feedbackMessage = feedbackMessage;
         this.feedbackContentType = feedbackContentType;
-        this.remoteFiles = remoteFiles;
+        this.REMOTE_FILES = REMOTE_FILES;
     }
 
     public String getFeedbackStatus() {
@@ -51,11 +51,11 @@ public class CdrJobResultMessage {
         this.feedbackContentType = feedbackContentType;
     }
 
-    public String getRemoteFiles() {
-        return remoteFiles;
+    public String getREMOTE_FILES() {
+        return REMOTE_FILES;
     }
 
-    public void setRemoteFiles(String remoteFiles) {
-        this.remoteFiles = remoteFiles;
+    public void setREMOTE_FILES(String REMOTE_FILES) {
+        this.REMOTE_FILES = REMOTE_FILES;
     }
 }
