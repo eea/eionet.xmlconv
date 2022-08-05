@@ -99,7 +99,7 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
                             String[] remoteFiles = (String[]) jsonResults.get("REMOTE_FILES");
                             if(remoteFiles != null && remoteFiles.length > 0)
                             {
-                                jobResult.setREMOTE_FILES(remoteFiles[0]);
+                                jobResult.setRemoteFiles(remoteFiles[0]);
                             }
                             if(jsonResults.get("feedbackContent") != null){
                                 jobResult.setFeedbackContent((String) jsonResults.get("feedbackContent"));
