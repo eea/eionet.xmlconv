@@ -1,6 +1,7 @@
 package eionet.gdem.rabbitMQ.service;
 
 import eionet.gdem.Properties;
+import eionet.gdem.rabbitMQ.model.CdrJobDeadLetterQueueMessage;
 import eionet.gdem.rabbitMQ.model.CdrJobResponseMessage;
 import eionet.gdem.rabbitMQ.model.CdrSummaryResponseMessage;
 import org.slf4j.Logger;
@@ -30,5 +31,10 @@ public class CdrJobResultMessageSender {
     public void sendSummaryMessageToRabbitMQ(CdrSummaryResponseMessage responseMessage) {
         rabbitTemplate.convertAndSend(Properties.CDR_RESULTS_QUEUE, responseMessage);
         LOGGER.info("Summary of jobs with UUID " + responseMessage.getUuid() + " has been sent to the rabbitmq queue " + Properties.CDR_RESULTS_QUEUE);
+    }
+
+    public void sendMessageToDeadLetterQueue(CdrJobDeadLetterQueueMessage dlqMessage) {
+        rabbitTemplate.convertAndSend(Properties.CDR_DEAD_LETTER_QUEUE, dlqMessage);
+        LOGGER.info("Error message for cdr request with UUID " + dlqMessage.getUUID() + " and envelope url " + dlqMessage.getEnvelopeUrl() + " has been sent to the rabbitmq queue " + Properties.CDR_DEAD_LETTER_QUEUE);
     }
 }
