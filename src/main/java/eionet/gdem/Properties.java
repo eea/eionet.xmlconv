@@ -244,6 +244,8 @@ public class Properties {
     public static String CDR_DEAD_LETTER_EXCHANGE;
     public static String CDR_DEAD_LETTER_ROUTING_KEY;
     public static String CDR_REQUEST_QUEUE;
+
+    public static String CDR_REQUEST_QUEUE_TTL;
     public static String CDR_REQUEST_EXCHANGE;
     public static String CDR_REQUEST_ROUTING_KEY;
     public static String CDR_RESULTS_QUEUE;
@@ -433,6 +435,7 @@ public class Properties {
         CDR_REQUEST_QUEUE = getStringProperty("env.rabbitmq.cdr.request.queue");
         CDR_REQUEST_EXCHANGE= getStringProperty("env.rabbitmq.cdr.request.exchange");
         CDR_REQUEST_ROUTING_KEY = getStringProperty("env.rabbitmq.cdr.request.routingKey");
+        CDR_REQUEST_QUEUE_TTL = getStringProperty("eenv.rabbitmq.cdr.request.queue.ttl");
 
         CDR_RESULTS_QUEUE = getStringProperty("env.rabbitmq.cdr.results.queue");
         CDR_RESULTS_EXCHANGE = getStringProperty("env.rabbitmq.cdr.results.exchange");

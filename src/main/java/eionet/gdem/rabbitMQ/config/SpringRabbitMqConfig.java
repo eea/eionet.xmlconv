@@ -102,6 +102,7 @@ public class SpringRabbitMqConfig {
         return QueueBuilder.durable(Properties.CDR_REQUEST_QUEUE)
                 .withArgument("x-dead-letter-exchange", Properties.CDR_DEAD_LETTER_EXCHANGE)
                 .withArgument("x-dead-letter-routing-key", Properties.CDR_DEAD_LETTER_ROUTING_KEY)
+                .withArgument("x-message-ttl", Properties.CDR_REQUEST_QUEUE_TTL)
                 .build();
     }
 
