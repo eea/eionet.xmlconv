@@ -2,6 +2,7 @@ package eionet.gdem.rabbitMQ.listeners;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.client.Channel;
 import eionet.gdem.api.qa.model.QaResultsWrapper;
 import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.jpa.Entities.CdrRequestEntry;
@@ -16,16 +17,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
-public class CdrRequestMessageReceiver implements MessageListener {
+public class CdrRequestMessageReceiver implements ChannelAwareMessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CdrRequestMessageReceiver.class);
 
@@ -42,7 +45,8 @@ public class CdrRequestMessageReceiver implements MessageListener {
     CdrJobResultMessageSender cdrJobResultMessageSender;
 
     @Override
-    public void onMessage(Message message) {
+    public void onMessage(Message message, Channel channel) throws IOException {
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
         if(message == null || message.getBody() == null){
             LOGGER.error("Error during cdr message processing. Message was empty");
             return;
