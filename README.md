@@ -88,6 +88,14 @@ To properly configure rabbitmq stack, a file rabbitmq.conf needs to be created i
 The file should contain the line "consumer_timeout = 16200000", in order to increase the default timeout value that a rabbitmq consumer 
 should ack its delivery before the channel is closed.
 
+#### Rabbitmq for CDR-Converters commmunication
+We need to have a service alias in our stack that is linked to the rabbitmq stack.
+We also need the following properties to be set up:
+- env.cdr.rabbitmq.host
+- env.cdr.rabbitmq.port
+- env.cdr.rabbitmq.username
+- env.cdr.rabbitmq.password
+
 #### Converters rancher stack configuration
 When converters is deployed for the first time, the properties maxLightJobExecutorContainersAllowed and maxHeavyJobExecutorContainersAllowed are added in database
 table "PROPERTIES". These properties should then be configured by an admin user from UI tab  "Admin tools" -> "View and Edit Properties" according to needs.
