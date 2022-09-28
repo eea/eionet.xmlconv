@@ -78,6 +78,12 @@ public class JobEntry implements Serializable {
     @Column(name = "XML_SIZE")
     private Long xmlSize;
 
+    @Column(name= "ADDED_FROM_QUEUE")
+    private Boolean addedFromQueue;
+
+    @Column(name= "UUID")
+    private String uuid;
+
     @Transient
     private String fromDate;
 
@@ -307,5 +313,21 @@ public class JobEntry implements Serializable {
 
     public void setXmlSize(Long xmlSize) {
         this.xmlSize = xmlSize;
+    }
+
+    public Boolean getAddedFromQueue() {
+        return addedFromQueue;
+    }
+
+    public void setAddedFromQueue(Boolean addedFromQueue) {
+        this.addedFromQueue = addedFromQueue;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

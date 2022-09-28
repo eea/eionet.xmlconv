@@ -33,6 +33,7 @@ import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.qa.QueryService;
 import eionet.gdem.qa.XQScript;
+import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.RabbitMQMessageFactory;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.services.GDEMServices;
@@ -165,7 +166,7 @@ public class WorkqueueManager {
             List<String> files = new ArrayList<>();
             files.add(sourceUrl);
             h.put(schemaUrl, files);
-            HashMap<String, String> resultMap = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(h, false);
+            HashMap<String, String> resultMap = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(h, false, false, null);
             if (resultMap != null) {
                 for (Map.Entry<String, String> entry : resultMap.entrySet()) {
                     result.add(entry.getKey());
@@ -259,34 +260,6 @@ public class WorkqueueManager {
     }
 
     /**
-     * Reset active jobs on startup.
-     */
-    public static void resetActiveJobs() {
-        try {
-            getJobServiceBean().changeJobStatusAndTimestampByStatus(Constants.XQ_DOWNLOADING_SRC, Constants.XQ_RECEIVED);
-            List<JobHistoryEntry> entriesDownloading = getJobHistoryRepository().findAllByStatus(Constants.XQ_DOWNLOADING_SRC);
-            for(JobHistoryEntry entry: entriesDownloading){
-                JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType());
-                jobHistoryEntry.setDuplicateIdentifier(entry.getDuplicateIdentifier());
-                jobHistoryEntry.setXmlSize(entry.getXmlSize());
-                getJobHistoryRepository().save(jobHistoryEntry);
-                LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
-            }
-            getJobServiceBean().changeJobStatusAndTimestampByStatus(Constants.XQ_PROCESSING, Constants.XQ_RECEIVED);
-            List<JobHistoryEntry> entriesProcessing = getJobHistoryRepository().findAllByStatus(Constants.XQ_PROCESSING);
-            for(JobHistoryEntry entry: entriesProcessing){
-                JobHistoryEntry jobHistoryEntry = new JobHistoryEntry(entry.getJobName(), Constants.XQ_RECEIVED, new Timestamp(new Date().getTime()), entry.getUrl(), entry.getXqFile(), entry.getResultFile(), entry.getXqType());
-                jobHistoryEntry.setDuplicateIdentifier(entry.getDuplicateIdentifier());
-                jobHistoryEntry.setXmlSize(entry.getXmlSize());
-                getJobHistoryRepository().save(jobHistoryEntry);
-                LOGGER.info("Job with id #" + entry.getJobName() + " has been inserted in table JOB_HISTORY ");
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error reseting active jobs: " + e.toString());
-        }
-    }
-
-    /**
      * Restart jobs by id.
      */
     public static void restartJobs(String[] jobIds) throws XMLConvException {
@@ -314,6 +287,9 @@ public class WorkqueueManager {
                             InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
                             jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setJobExecutorName(null).setTimestamp(new Timestamp(new Date().getTime()));
                             getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(jobEntry);
+                            if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
+                                getCdrResponseMessageFactoryService().createCdrResponseMessageAndSendToQueue(jobEntry);
+                            }
                         }
                     }
                     else{
@@ -456,6 +432,10 @@ public class WorkqueueManager {
 
     private static AsyncFmeJobService getAsyncFmeJobService() {
         return (AsyncFmeJobService) SpringApplicationContext.getBean("asyncFmeJobServiceImpl");
+    }
+
+    private static CdrResponseMessageFactoryService getCdrResponseMessageFactoryService() {
+        return (CdrResponseMessageFactoryService) SpringApplicationContext.getBean("cdrResponseMessageFactoryServiceImpl");
     }
 
 }

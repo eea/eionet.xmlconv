@@ -50,7 +50,7 @@ public class XQueryServiceTest {
         testHashTable = initTestHashTable();
         testHashMap = initTestHashMap();
         when(queryService.listQueries(Mockito.anyString())).thenReturn(queriesList);
-        when(jobRequestHandlerService.analyzeMultipleXMLFiles(Mockito.any(), anyBoolean())).thenReturn(testHashMap);
+        when(jobRequestHandlerService.analyzeMultipleXMLFiles(Mockito.any(), anyBoolean(), false, null)).thenReturn(testHashMap);
         when(xQueryService.getQueryService()).thenReturn(queryService);
         when(xQueryService.getJobRequestHandlerService()).thenReturn(jobRequestHandlerService);
     }

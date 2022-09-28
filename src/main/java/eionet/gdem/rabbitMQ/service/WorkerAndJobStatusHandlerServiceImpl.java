@@ -33,10 +33,12 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
     RabbitMQMessageSender rabbitMQAsyncFmeMessageSender;
     QueryJpaService queryJpaService;
 
+    CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
+
     @Autowired
     public WorkerAndJobStatusHandlerServiceImpl(JobService jobService, JobHistoryService jobHistoryService, JobExecutorService jobExecutorService, JobExecutorHistoryService jobExecutorHistoryService, @Qualifier("lightJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQMessageSender,
                                                 @Qualifier("heavyJobRabbitMessageSenderImpl") RabbitMQMessageSender heavyRabbitMQMessageSender, @Qualifier("syncFmeJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQSyncFmeMessageSender,
-                                                @Qualifier("asyncFmeJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQAsyncFmeMessageSender, QueryJpaService queryJpaService) {
+                                                @Qualifier("asyncFmeJobRabbitMessageSenderImpl") RabbitMQMessageSender rabbitMQAsyncFmeMessageSender, QueryJpaService queryJpaService, CdrResponseMessageFactoryService cdrResponseMessageFactoryService) {
         this.jobService = jobService;
         this.jobHistoryService = jobHistoryService;
         this.jobExecutorService = jobExecutorService;
@@ -46,6 +48,7 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
         this.rabbitMQSyncFmeMessageSender = rabbitMQSyncFmeMessageSender;
         this.rabbitMQAsyncFmeMessageSender = rabbitMQAsyncFmeMessageSender;
         this.queryJpaService = queryJpaService;
+        this.cdrResponseMessageFactoryService = cdrResponseMessageFactoryService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -94,6 +97,9 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
             }
         }
         this.updateJobAndJobHistory(jobEntry);
+        if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
+            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -112,6 +118,9 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
             }
         } else {
             rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
+        }
+        if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
+            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
         }
     }
 }

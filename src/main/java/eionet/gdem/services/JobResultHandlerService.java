@@ -6,5 +6,5 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 public interface JobResultHandlerService {
-    Hashtable<String,Object> getResult(String jobId) throws XMLConvException;
+    Hashtable<String,Object> getResult(String jobId, Boolean addedThroughRabbitMq) throws XMLConvException;
 }

@@ -24,13 +24,13 @@ public interface QaService {
 
     List<String> extractObligationUrlsFromEnvelopeUrl(String envelopeUrl) throws XMLConvException;
     /**
-     *  Calls  the method  {@link eionet.gdem.services.JobRequestHandlerService#analyzeMultipleXMLFiles(java.util.HashMap, Boolean)  }
+     *  Calls  the method  {@link eionet.gdem.services.JobRequestHandlerService#analyzeMultipleXMLFiles(java.util.HashMap, Boolean, Boolean, String)  }
      *  which returns hashmap. Each entry contains a JobID and a FileURL.
      * @return a map containing each Job Id and corresponding File URL as Key value pair.
      */
-    List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob) throws XMLConvException;
+    List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob, Boolean addedThroughRabbitMq, String uuid) throws XMLConvException;
 
-    Hashtable<String,Object> getJobResults(String jobId) throws XMLConvException;
+    Hashtable<String,Object> getJobResults(String jobId, Boolean addedThroughRabbitMq) throws XMLConvException;
     Vector runQaScript(String sourceUrl, String scriptId) throws XMLConvException;
     Vector runQaScript(String sourceUrl, String scriptId,boolean setBodyInResponse, boolean isTrustedMode) throws XMLConvException;
 
@@ -46,7 +46,7 @@ public interface QaService {
 
     LinkedHashMap<String, Object> checkIfZipFileExistsOrIsEmpty(String[] fileUrls, String jobId, LinkedHashMap<String, Object> jsonResults) throws XMLConvException;
 
-    LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results) throws XMLConvException;
+    LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results, Boolean addedThroughRabbitMq, Boolean isReady, String fileUrl);
 
     LinkedHashMap<String, String> handleOnDemandJobsResults(Vector results, String sourceXml, String scriptId) throws XMLConvException;
 }

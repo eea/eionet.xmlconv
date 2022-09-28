@@ -79,6 +79,8 @@ public class HeartBeatMsgHandlerServiceImpl implements HeartBeatMsgHandlerServic
                     .setDuration(jobEntry.getDuration()!=null ? jobEntry.getDuration().longValue() : null).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());
             jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
             jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
+            jobHistoryEntry.setUuid(jobEntry.getUuid());
+            jobHistoryEntry.setAddedFromQueue(jobEntry.getAddedFromQueue());
             jobHistoryService.save(jobHistoryEntry);
             Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
             String xmlUrl = jobEntry.getUrl();

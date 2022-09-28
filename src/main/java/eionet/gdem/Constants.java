@@ -161,4 +161,14 @@ public interface Constants {
     String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_STATUS = "FAILED";
     String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_MESSAGE = "Script execution failed, e.g. due to memory problems or unresponsive third party web service.";
     String ON_DEMAND_JOBS_EMPTY_CONTENT_FEEDBACK_CONTENT = "";
+
+    String EXECUTION_STATUS_NAME_READY = "Ready";
+    String EXECUTION_STATUS_NAME_NOT_FOUND = "Not Found";
+    String EXECUTION_STATUS_NAME_FAILED = "Failed";
+    String EXECUTION_STATUS_NAME_PENDING = "Pending";
+    String EXECUTION_STATUS_NAME_DELETED = "Deleted";
+    String EXECUTION_STATUS_NAME_CANCELLED = "Cancelled by user";
+    String EXECUTION_STATUS_NAME_INTERRUPTED = "Interrupted";
+
+    String JOB_FEEDBACK_MESSAGE_DELETED = "Job canceled by reporter";
 }

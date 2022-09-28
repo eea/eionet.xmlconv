@@ -14,6 +14,7 @@ import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.RestApiException;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.rabbitMQ.model.CdrJobRequestMessage;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.JobRequestHandlerService;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -66,6 +68,10 @@ public class QaController {
 
     @Autowired(required=false)
     RabbitTemplate rabbitTemplate;
+
+    @Autowired(required=false)
+    @Qualifier("cdrRabbitTemplate")
+    RabbitTemplate cdrRabbitTemplate;
 
     /**
      * Method specific for Habitats Directive - allows uploading two files for QA checks
@@ -154,7 +160,7 @@ public class QaController {
         }
 
         QueryService queryService = new QueryService();
-        String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null, true);
+        String jobId = getJobRequestHandlerServiceBean().analyzeSingleXMLFile(envelopeWrapper.getSourceUrl(), envelopeWrapper.getScriptId(), null, true, false, null);
         LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
         results.put("jobId",jobId);
         return  new ResponseEntity<HashMap<String,String>>(results,HttpStatus.OK);
@@ -170,7 +176,7 @@ public class QaController {
         if (envelopeWrapper.getEnvelopeUrl() == null) {
             throw new EmptyParameterException("envelopeUrl");
         }
-        List<QaResultsWrapper> qaResults = qaService.scheduleJobs(envelopeWrapper.getEnvelopeUrl(), true);
+        List<QaResultsWrapper> qaResults = qaService.scheduleJobs(envelopeWrapper.getEnvelopeUrl(), true, false, null);
         if(qaResults == null || qaResults.size() == 0){
             LOGGER.info("No jobs were inserted");
         }
@@ -188,7 +194,7 @@ public class QaController {
     @RequestMapping(value = "/asynctasks/qajobs/{jobId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<LinkedHashMap<String, Object>> getQAResultsForJob(@PathVariable String jobId) throws XMLConvException, JsonProcessingException {
-        Hashtable<String, Object> results = qaService.getJobResults(jobId);
+        Hashtable<String, Object> results = qaService.getJobResults(jobId, false);
         String executionStatusId = (String) results.get(Constants.RESULT_CODE_PRM);
         String executionStatusName = (String) results.get("executionStatusName");
         LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
@@ -211,7 +217,7 @@ public class QaController {
             }
         }else{
             //result file is html
-            jsonResults = qaService.checkIfHtmlResultIsEmpty(jobId, jsonResults, results);
+            jsonResults = qaService.checkIfHtmlResultIsEmpty(jobId, jsonResults, results, false, false, null);
         }
         if(executionStatusName.equals("Not Found")){
             return new ResponseEntity<LinkedHashMap<String, Object>>(jsonResults, HttpStatus.NOT_FOUND);
@@ -260,7 +266,7 @@ public class QaController {
                     map.put(value, files);
                 }
             }
-            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(map, false);
+            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerServiceBean().analyzeMultipleXMLFiles(map, false, false, null);
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
 
             for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {
@@ -395,6 +401,20 @@ public class QaController {
 
     private static JobRequestHandlerService getJobRequestHandlerServiceBean() {
         return (JobRequestHandlerService) SpringApplicationContext.getBean("jobRequestHandlerService");
+    }
+
+    //TODO remove this
+    @RequestMapping(value = "/asynctasks/qajobs/test", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public String createQueueJob(@RequestBody EnvelopeWrapper envelopeWrapper) throws XMLConvException, EmptyParameterException {
+        if (envelopeWrapper.getEnvelopeUrl() == null) {
+            throw new EmptyParameterException("envelopeUrl");
+        }
+        if (envelopeWrapper.getSourceUrl() == null) {
+            throw new EmptyParameterException("UUID");
+        }
+        CdrJobRequestMessage request = new CdrJobRequestMessage(envelopeWrapper.getEnvelopeUrl(), envelopeWrapper.getSourceUrl());
+        cdrRabbitTemplate.convertAndSend(Properties.CDR_REQUEST_QUEUE, request);
+        return "done";
     }
 
 }

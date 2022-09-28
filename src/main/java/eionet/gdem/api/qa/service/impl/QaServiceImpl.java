@@ -11,21 +11,13 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.*;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.qa.QueryService;
+import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.services.*;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.web.spring.hosts.IHostDao;
 import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +56,7 @@ public class QaServiceImpl implements QaService {
 
     private QueryService queryService;
     /** DAO for getting schema info. */
-    private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();;
+    private ISchemaDao schemaDao = GDEMServices.getDaoService().getSchemaDao();
     private static final Logger LOGGER = LoggerFactory.getLogger(QaService.class);
 
     private JobRequestHandlerService jobRequestHandlerService;
@@ -80,12 +72,15 @@ public class QaServiceImpl implements QaService {
     private JobExecutorHistoryService jobExecutorHistoryService;
     private QueryMetadataService queryMetadataService;
 
+    private CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
+
     public QaServiceImpl() {
     }
 
     @Autowired
     public QaServiceImpl(QueryService queryService, JobRequestHandlerService jobRequestHandlerService, JobResultHandlerService jobResultHandlerService,
-                         RunScriptAutomaticService runScriptAutomaticService, JobService jobService, JobHistoryService jobHistoryService, JobExecutorHistoryService jobExecutorHistoryService, QueryMetadataService queryMetadataService) {
+                         RunScriptAutomaticService runScriptAutomaticService, JobService jobService, JobHistoryService jobHistoryService, JobExecutorHistoryService jobExecutorHistoryService,
+                         QueryMetadataService queryMetadataService, CdrResponseMessageFactoryService cdrResponseMessageFactoryService) {
         this.queryService = queryService;
         this.jobRequestHandlerService = jobRequestHandlerService;
         this.jobResultHandlerService = jobResultHandlerService;
@@ -94,6 +89,7 @@ public class QaServiceImpl implements QaService {
         this.jobHistoryService = jobHistoryService;
         this.jobExecutorHistoryService = jobExecutorHistoryService;
         this.queryMetadataService = queryMetadataService;
+        this.cdrResponseMessageFactoryService = cdrResponseMessageFactoryService;
     }
 
     @Override
@@ -137,7 +133,7 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob) throws XMLConvException {
+    public List<QaResultsWrapper> scheduleJobs(String envelopeUrl, Boolean checkForDuplicateJob, Boolean addedThroughRabbitMq, String uuid) throws XMLConvException {
 
         HashMap<String, String> fileLinksAndSchemas = extractFileLinksAndSchemasFromEnvelopeUrl(envelopeUrl);
 
@@ -163,7 +159,7 @@ public class QaServiceImpl implements QaService {
             if (map.size() == 0) {
                 LOGGER.info("Could not find files and their schemas. There was an issue with the envelope " + envelopeUrl);
             }
-            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerService().analyzeMultipleXMLFiles(map, checkForDuplicateJob);
+            HashMap<String, String> jobIdsAndFileUrls = getJobRequestHandlerService().analyzeMultipleXMLFiles(map, checkForDuplicateJob, addedThroughRabbitMq, uuid);
 
             List<QaResultsWrapper> results = new ArrayList<QaResultsWrapper>();
             for (Map.Entry<String, String> entry : jobIdsAndFileUrls.entrySet()) {
@@ -198,10 +194,10 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public Hashtable<String, Object> getJobResults(String jobId) throws XMLConvException {
+    public Hashtable<String, Object> getJobResults(String jobId, Boolean addedThroughRabbitMq) throws XMLConvException {
 
         QueryService queryService = getQueryService(); // new QueryService();
-        Hashtable<String, Object> results = getJobResultHandlerService().getResult(jobId);
+        Hashtable<String, Object> results = getJobResultHandlerService().getResult(jobId, addedThroughRabbitMq);
         int resultCode = Integer.parseInt((String) results.get(Constants.RESULT_CODE_PRM));
         String executionStatusName = "";
         switch (resultCode) {
@@ -382,7 +378,7 @@ public class QaServiceImpl implements QaService {
     }
 
     @Override
-    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results){
+    public LinkedHashMap<String, Object> checkIfHtmlResultIsEmpty(String jobId, LinkedHashMap<String, Object> jsonResults, Hashtable<String, Object> results, Boolean addedThroughRabbitMq, Boolean isReady, String fileUrl){
         if(results.get("executionStatusName") != null){
             String executionStatusName = (String) results.get("executionStatusName");
             if (executionStatusName.equals("Deleted")){
@@ -402,7 +398,13 @@ public class QaServiceImpl implements QaService {
             jsonResults.put("executionStatus",executionStatusView);
         }
         else{
-            jsonResults.put("feedbackContent", htmlFileContent);
+            if(addedThroughRabbitMq && isReady){
+                String[] fileUrls = {fileUrl};
+                jsonResults.put("REMOTE_FILES", fileUrls);
+            }
+            else{
+                jsonResults.put("feedbackContent", htmlFileContent);
+            }
         }
         return jsonResults;
     }
@@ -510,6 +512,9 @@ public class QaServiceImpl implements QaService {
             queryMetadataService.saveQueryMetadataHistoryEntry(queryMetadataHistoryLastEntry);
             LOGGER.info("Changed status to FATAL ERROR in QUERY_MEATADATA_HISTORY table for jobId " + jobId + ". Query Metadata history entry id is " + queryMetadataHistoryLastEntry.getId()
                     + " and script Id is " + scriptId);
+        }
+        if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
+            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
         }
 
     }

@@ -10,6 +10,7 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.QueryMetadataService;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
+import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
@@ -46,6 +47,9 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
     @Autowired
     QueryMetadataService queryMetadataService;
 
+    @Autowired
+    CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
+
     /**
      * time in milliseconds
      */
@@ -55,7 +59,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
     public void onMessage(Message message) {
         String messageBody = new String(message.getBody());
         try {
-            ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
+            ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             WorkerJobRabbitMQRequestMessage deadLetterMessage = mapper.readValue(messageBody, WorkerJobRabbitMQRequestMessage.class);
 
             LOGGER.info("Received error message in DEAD LETTER QUEUE: " + deadLetterMessage.getErrorMessage());
@@ -79,6 +83,8 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                         .setWorkerRetries(jobEntry.getWorkerRetries()).setHeavy(jobEntry.isHeavy()).setHeavyRetriesOnFailure(jobEntry.getHeavyRetriesOnFailure());
                 jobHistoryEntry.setDuplicateIdentifier(jobEntry.getDuplicateIdentifier());
                 jobHistoryEntry.setXmlSize(jobEntry.getXmlSize());
+                jobHistoryEntry.setUuid(jobEntry.getUuid());
+                jobHistoryEntry.setAddedFromQueue(jobEntry.getAddedFromQueue());
                 handleHeavyJobsService.handle(deadLetterMessage, jobEntry, jobHistoryEntry);
                 return;
             }
@@ -126,6 +132,9 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
                     queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, Integer.parseInt(script.getJobId()), null, script.getOrigFileUrl(), jobEntry.getXmlSize());
+                    if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
+                        cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+                    }
                 }
             }
         } catch (Exception e) {

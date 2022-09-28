@@ -207,6 +207,10 @@ public class Properties {
     public static Integer rabbitMQPort;
     public static String rabbitMQUsername;
     public static String rabbitMQPassword;
+    public static String cdrRabbitMQHost;
+    public static Integer cdrRabbitMQPort;
+    public static String cdrRabbitMQUsername;
+    public static String cdrRabbitMQPassword;
     public static String WORKERS_JOBS_QUEUE;
     public static String WORKERS_JOBS_RESULTS_QUEUE;
     public static String WORKERS_STATUS_QUEUE;
@@ -236,6 +240,17 @@ public class Properties {
     public static String XMLCONV_HEALTH_QUEUE;
     public static String XMLCONV_HEALTH_EXCHANGE;
     public static String XMLCONV_HEALTH_ROUTING_KEY;
+    public static String CDR_DEAD_LETTER_QUEUE;
+    public static String CDR_DEAD_LETTER_EXCHANGE;
+    public static String CDR_DEAD_LETTER_ROUTING_KEY;
+    public static String CDR_REQUEST_QUEUE;
+
+    public static Integer CDR_REQUEST_QUEUE_TTL;
+    public static String CDR_REQUEST_EXCHANGE;
+    public static String CDR_REQUEST_ROUTING_KEY;
+    public static String CDR_RESULTS_QUEUE;
+    public static String CDR_RESULTS_EXCHANGE;
+    public static String CDR_RESULTS_ROUTING_KEY;
 
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
@@ -381,6 +396,10 @@ public class Properties {
         rabbitMQPort = getIntProperty("env.rabbitmq.port");
         rabbitMQUsername = getStringProperty("env.rabbitmq.username");
         rabbitMQPassword = getStringProperty("env.rabbitmq.password");
+        cdrRabbitMQHost = getStringProperty("env.cdr.rabbitmq.host");
+        cdrRabbitMQPort = getIntProperty("env.cdr.rabbitmq.port");
+        cdrRabbitMQUsername = getStringProperty("env.cdr.rabbitmq.username");
+        cdrRabbitMQPassword = getStringProperty("env.cdr.rabbitmq.password");
         WORKERS_JOBS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.queue");
         WORKERS_JOBS_RESULTS_QUEUE = getStringProperty("env.rabbitmq.workers.jobs.results.queue");
         WORKERS_STATUS_QUEUE = getStringProperty("env.rabbitmq.workers.status.queue");
@@ -412,6 +431,19 @@ public class Properties {
         XMLCONV_HEALTH_QUEUE = getStringProperty("env.rabbitmq.health.queue");
         XMLCONV_HEALTH_EXCHANGE = getStringProperty("env.rabbitmq.health.exchange");
         XMLCONV_HEALTH_ROUTING_KEY = getStringProperty("env.rabbitmq.health.routingKey");
+
+        CDR_REQUEST_QUEUE = getStringProperty("env.rabbitmq.cdr.request.queue");
+        CDR_REQUEST_EXCHANGE= getStringProperty("env.rabbitmq.cdr.request.exchange");
+        CDR_REQUEST_ROUTING_KEY = getStringProperty("env.rabbitmq.cdr.request.routingKey");
+        CDR_REQUEST_QUEUE_TTL = getIntProperty("env.rabbitmq.cdr.request.queue.ttl");
+
+        CDR_RESULTS_QUEUE = getStringProperty("env.rabbitmq.cdr.results.queue");
+        CDR_RESULTS_EXCHANGE = getStringProperty("env.rabbitmq.cdr.results.exchange");
+        CDR_RESULTS_ROUTING_KEY = getStringProperty("env.rabbitmq.cdr.results.routingKey");
+
+        CDR_DEAD_LETTER_QUEUE = getStringProperty("env.rabbitmq.cdr.dead.letter.queue");
+        CDR_DEAD_LETTER_EXCHANGE = getStringProperty("env.rabbitmq.cdr.dead.letter.exchange");
+        CDR_DEAD_LETTER_ROUTING_KEY = getStringProperty("env.rabbitmq.cdr.dead.letter.routingKey");
 
         CONVERTERS_GRAYLOG = getStringProperty("env.converters.graylog");
         JOB_EXECUTOR_GRAYLOG = getStringProperty("env.jobExecutor.graylog");
@@ -470,9 +502,9 @@ public class Properties {
         }
     }
 
-        private static boolean getBooleanProperty(String key) {
+    private static boolean getBooleanProperty(String key) {
         String value = getStringProperty(key);
-            return Boolean.parseBoolean(value);
+        return Boolean.parseBoolean(value);
     }
     private static long getLongProperty(String key) {
         String value = getStringProperty(key);

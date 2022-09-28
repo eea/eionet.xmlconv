@@ -17,6 +17,7 @@ import eionet.gdem.jpa.service.*;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.notifications.UNSEventSender;
 import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
+import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
@@ -80,6 +81,9 @@ public class GenericFixedTimeScheduledTasks {
     private QueryJpaService queryJpaService;
     @Autowired
     private SchemaService schemaService;
+
+    @Autowired
+    private CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
 
     /**
      * Dao for getting job data.
@@ -172,6 +176,9 @@ public class GenericFixedTimeScheduledTasks {
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
+                    if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()){
+                        cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+                    }
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
                     String xmlUrl = jobEntry.getUrl();
                     String[] parts = jobEntry.getUrl().split("source_url=");

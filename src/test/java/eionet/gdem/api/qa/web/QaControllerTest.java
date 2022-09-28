@@ -23,16 +23,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
+import org.mockito.*;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.anyString;
-import org.mockito.Mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -120,16 +120,16 @@ public class QaControllerTest {
         envelopeWrapper.setEnvelopeUrl(envelopeUrl);
         qaController.scheduleQaRequestOnEnvelope(envelopeWrapper);
         ArgumentCaptor<String> envelopeUrlCaptor = ArgumentCaptor.forClass(String.class);
-        verify(qaServiceMock, times(1)).scheduleJobs(envelopeUrlCaptor.capture(), anyBoolean());
+        verify(qaServiceMock, times(1)).scheduleJobs(envelopeUrlCaptor.capture(), anyBoolean(), anyBoolean(), eq(null));
         assertTrue(EqualsBuilder.reflectionEquals(envelopeUrlCaptor.getValue(), envelopeUrl));
     }
 
     @Test
     public void FailureToGetQaResultsForJobBecauseOfXMLConvException() throws XMLConvException, Exception {
-        when(qaServiceMock.getJobResults(any(String.class))).thenThrow(XMLConvException.class);
+        when(qaServiceMock.getJobResults("77", false)).thenThrow(XMLConvException.class);
         mockMvc.perform(get("/asynctasks/qajobs/{jobId}", 77))
                 .andExpect(status().isInternalServerError());
-        verify(qaServiceMock, times(1)).getJobResults("77");
+        verify(qaServiceMock, times(1)).getJobResults("77", false);
     }
 
     @Test
@@ -145,8 +145,8 @@ public class QaControllerTest {
         results.put(Constants.RESULT_FEEDBACKSTATUS_PRM, "BLOCKER");
         results.put(Constants.RESULT_FEEDBACKMESSAGE_PRM, "Feedback Message");
         results.put(Constants.RESULT_METATYPE_PRM, "text/html");
-        when(qaServiceImplMock.getJobResults(any(String.class))).thenReturn(results);
-        when(qaServiceImplMock.checkIfHtmlResultIsEmpty(any(String.class), any(LinkedHashMap.class), any(Hashtable.class))).thenCallRealMethod();
+        when(qaServiceImplMock.getJobResults(any(String.class), any(Boolean.class))).thenReturn(results);
+        when(qaServiceImplMock.checkIfHtmlResultIsEmpty(any(String.class), any(LinkedHashMap.class), any(Hashtable.class), any(Boolean.class), any(Boolean.class), ArgumentMatchers.isNull())).thenCallRealMethod();
 
         mockMvc.perform(get("/asynctasks/qajobs/{jobId}", jobid))
                 .andExpect(status().isOk())
@@ -159,7 +159,7 @@ public class QaControllerTest {
         //.andExpect(jsonPath("$.feedbackContent", is("<div>some content</div>")));
 
         ArgumentCaptor<String> jobIdCaptor = ArgumentCaptor.forClass(String.class);
-        verify(qaServiceImplMock, times(1)).getJobResults(jobIdCaptor.capture());
+        verify(qaServiceImplMock, times(1)).getJobResults(jobIdCaptor.capture(), anyBoolean());
         assertTrue(jobIdCaptor.getValue().equals(jobid));
     }
 

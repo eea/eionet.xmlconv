@@ -86,7 +86,7 @@ public class XQueryService extends RemoteService {
             }
             filesAndSchemas.put(schema, fileList);
         }
-        HashMap<String,String> hashMapResult = getJobRequestHandlerService().analyzeMultipleXMLFiles(filesAndSchemas, false);
+        HashMap<String,String> hashMapResult = getJobRequestHandlerService().analyzeMultipleXMLFiles(filesAndSchemas, false, false, null);
         Vector result = new Vector();
         if(!Utils.isNullHashMap(hashMapResult)){
             //convert hashmap to vector where each element is a vector of strings
@@ -121,7 +121,7 @@ public class XQueryService extends RemoteService {
      * @throws XMLConvException If an error occurs.
      */
     public static Hashtable getResult(String jobId) throws XMLConvException {
-        return getJobResultHandlerService().getResult(jobId);
+        return getJobResultHandlerService().getResult(jobId, false);
     }
 
     /**
