@@ -38,7 +38,15 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
         cdrJobResponseMessage.setUUID(jobEntry.getUuid());
         cdrJobResponseMessage.setJobId(String.valueOf(jobEntry.getId()));
         cdrJobResponseMessage.setJobStatus(StatusUtils.getStatusNameByNumber(jobEntry.getnStatus()));
-        cdrJobResponseMessage.setDocumentURL(jobEntry.getUrl());
+        String documentUrl = jobEntry.getUrl();
+        if(documentUrl.contains("source_url=")){
+            //get xml url without ticket
+            String[] parts = documentUrl.split("source_url=");
+            if(parts.length > 1){
+                documentUrl = parts[1];
+            }
+        }
+        cdrJobResponseMessage.setDocumentURL(documentUrl);
         cdrJobResponseMessage.setScriptId(jobEntry.getQueryId().toString());
         String scriptFullTitle = jobEntry.getFile();
         String[] splittedTitleArray = scriptFullTitle.split("/");
