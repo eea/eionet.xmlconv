@@ -1080,4 +1080,26 @@
             <column name="UUID"/>
         </createIndex>
     </changeSet>
+    <changeSet author="anthaant" id="rev-93">
+        <comment> Table for Storing jobs that should be checked if they have ready results</comment>
+        <createTable tableName="PENDING_CDR_JOBS">
+            <column autoIncrement="true" name="ID" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="JOB_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UUID" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="N_STATUS" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_ADDED" type="TIMESTAMP">
+            </column>
+        </createTable>
+        <createIndex indexName="JOB_ID_PENDING_INDΕΧ" tableName="PENDING_CDR_JOBS" unique="false">
+            <column name="JOB_ID"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

@@ -75,7 +75,7 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
             if (result.length() > 100) {
                 result = result.substring(0, 100).concat("....");
             }
-            LOGGER.info("result: " + result);
+            LOGGER.info("For jobId " + jobId + " result: " + result);
         }
 
         if (scriptData != null && (String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION) != null && ((String) scriptData.get(QaScriptView.ASYNCHRONOUS_EXECUTION)).equals("1")) {
