@@ -376,6 +376,11 @@ public class GenericFixedTimeScheduledTasks {
         }
     }
 
+    /**
+     * The task runs every minute, checks PENDING_CDR_JOBS table for ready jobs with unfinished html or zip results.
+     * If the results are finished, a response is sent to the cdr results queue. Then the entry is removed from the
+     * PENDING_CDR_JOBS table. If the results are not finished, we will check again in the next run of the scheduled task.
+     */
     @Scheduled(cron = "0 */1 * * * *") //Every 1 minute
     public void schedulePeriodicHandlingOfPendingCdrJobs() {
         LOGGER.info("Task for handling pending cdr jobs is running");
