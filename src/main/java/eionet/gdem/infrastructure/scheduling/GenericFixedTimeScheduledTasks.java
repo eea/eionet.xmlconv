@@ -443,6 +443,7 @@ public class GenericFixedTimeScheduledTasks {
     public static void setQueuedJobs(Set<Integer> queuedJobs) {
         GenericFixedTimeScheduledTasks.queuedJobs = queuedJobs;
     }
+    
     /**
      * The task runs every minute, checks PENDING_CDR_JOBS table for ready jobs with unfinished html or zip results.
      * If the results are finished, a response is sent to the cdr results queue. Then the entry is removed from the
