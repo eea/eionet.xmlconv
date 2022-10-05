@@ -98,7 +98,7 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
         }
         this.updateJobAndJobHistory(jobEntry);
         if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
-            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
         }
     }
 
@@ -120,7 +120,7 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
             rabbitMQMessageSender.sendMessageToRabbitMQ(workerJobRabbitMQRequestMessage);
         }
         if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
-            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
         }
     }
 }

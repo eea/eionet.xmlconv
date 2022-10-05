@@ -356,7 +356,7 @@ public class QaServiceImpl implements QaService {
 
         String fileName = fileUrls[0].replace(eionet.gdem.Properties.gdemURL + "/restapi/download/zip/","");
         if (fileName == null || fileName.isEmpty() || "/".equals(fileName)) {
-            throw new XMLConvException("FileName is not correct");
+            throw new XMLConvException("FileName " + fileName + " is not correct for jobId " + jobId);
         }
         String urlPath = new StringBuilder("/tmp/").append(fileName).toString();
         String filePath = Properties.appRootFolder + urlPath;
@@ -514,7 +514,7 @@ public class QaServiceImpl implements QaService {
                     + " and script Id is " + scriptId);
         }
         if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
-            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+            cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
         }
 
     }

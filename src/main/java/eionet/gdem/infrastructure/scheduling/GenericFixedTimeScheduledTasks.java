@@ -85,6 +85,9 @@ public class GenericFixedTimeScheduledTasks {
     @Autowired
     private CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
 
+    @Autowired
+    private PendingCdrJobsService pendingCdrJobsService;
+
     /**
      * Dao for getting job data.
      */
@@ -177,7 +180,7 @@ public class GenericFixedTimeScheduledTasks {
                     jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                     if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()){
-                        cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+                        cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
                     }
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
                     String xmlUrl = jobEntry.getUrl();
@@ -440,6 +443,34 @@ public class GenericFixedTimeScheduledTasks {
     public static void setQueuedJobs(Set<Integer> queuedJobs) {
         GenericFixedTimeScheduledTasks.queuedJobs = queuedJobs;
     }
+    /**
+     * The task runs every minute, checks PENDING_CDR_JOBS table for ready jobs with unfinished html or zip results.
+     * If the results are finished, a response is sent to the cdr results queue. Then the entry is removed from the
+     * PENDING_CDR_JOBS table. If the results are not finished, we will check again in the next run of the scheduled task.
+     */
+    @Scheduled(cron = "0 */1 * * * *") //Every 1 minute
+    public void schedulePeriodicHandlingOfPendingCdrJobs() {
+        LOGGER.info("Task for handling pending cdr jobs is running");
+        List<PendingCdrJobEntry> pendingCdrJobEntries = pendingCdrJobsService.getAllPendingEntries();
+        for(PendingCdrJobEntry entry: pendingCdrJobEntries){
+            JobEntry jobEntry = null;
+            try {
+                jobEntry = jobService.findById(entry.getJobId());
+                LOGGER.info("Checking if pending job with id " + jobEntry.getId() + " can be sent to the results queue");
+                Boolean jobWasSentToResultQueue = cdrResponseMessageFactoryService.handleReadyOrFailedJobsAndSendToCdr(jobEntry);
+                if (jobWasSentToResultQueue){
+                    LOGGER.info("Job with id " + jobEntry.getId() + " has been sent to the results queue and will be removed from PENDING_CDR_JOBS table");
+                    pendingCdrJobsService.removePendingEntry(entry.getId());
+                }
+                else{
+                    LOGGER.info("Job with id " + jobEntry.getId() + " is not ready to be be sent to the results queue yet");
+                }
+            } catch (Exception e) {
+                LOGGER.error("Could not handle pending cdr job with id " + entry.getJobId() + " Exception message is: " + e.getMessage());
+            }
+        }
+    }
+
 }
 
 

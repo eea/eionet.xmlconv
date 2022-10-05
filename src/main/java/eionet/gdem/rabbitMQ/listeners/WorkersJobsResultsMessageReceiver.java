@@ -119,7 +119,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
             }
             if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
-                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
             }
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing: ", e);

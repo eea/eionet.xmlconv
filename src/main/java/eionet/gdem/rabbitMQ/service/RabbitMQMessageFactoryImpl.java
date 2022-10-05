@@ -231,7 +231,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             jobHistoryService.save(jobHistoryEntry);
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
             if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
-                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
             }
         } catch (Exception e) {
             LOGGER.error("Database exception when processing validation job with id " + jobEntry.getId() + " Exception message is: " + e.toString());
@@ -254,7 +254,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             LOGGER.info("Job with id=" + jobId + " has been inserted in table JOB_HISTORY ");
             if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 jobEntry.setnStatus(status);
-                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
             }
         } catch (Exception e) {
             LOGGER.error("Database exception when marking validation job as finished with id " + jobEntry.getId() + " Exception message is: " + e.toString());
@@ -328,7 +328,7 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
             Utils.saveStrToFile(resultFile, "<error>" + error + "</error>", null);
             changeStatus(errStatus,jobId);
             if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
-                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueue(jobEntry);
+                cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
             }
         } catch (Exception e) {
             // what to do if exception occurs here...

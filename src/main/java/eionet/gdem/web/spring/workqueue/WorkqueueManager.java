@@ -288,7 +288,7 @@ public class WorkqueueManager {
                             jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setJobExecutorName(null).setTimestamp(new Timestamp(new Date().getTime()));
                             getWorkerAndJobStatusHandlerService().updateJobAndJobHistoryEntries(jobEntry);
                             if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
-                                getCdrResponseMessageFactoryService().createCdrResponseMessageAndSendToQueue(jobEntry);
+                                getCdrResponseMessageFactoryService().createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
                             }
                         }
                     }
