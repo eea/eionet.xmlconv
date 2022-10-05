@@ -84,16 +84,17 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
             LOGGER.info("For job id " + jobEntry.getId() + " statusId=" + (String) results.get(Constants.RESULT_CODE_PRM) + " and feedbackStatus=" + results.get(Constants.RESULT_FEEDBACKSTATUS_PRM) + " Job status is " + StatusUtils.getStatusNameByNumber(jobEntry.getnStatus()));
 
             LinkedHashMap<String, Object> jsonResults = new LinkedHashMap<String, Object>();
+            LinkedHashMap<String, String> executionStatusView = new LinkedHashMap<String, String>();
+            String executionStatusId = (String) results.get(Constants.RESULT_CODE_PRM);
+            String executionStatusName = (String) results.get("executionStatusName");
+            executionStatusView.put("statusId", executionStatusId);
+            executionStatusView.put("statusName", executionStatusName);
+            jsonResults.put("executionStatus", executionStatusView);
+
             if (results.get("REMOTE_FILES") != null) {
                 LOGGER.info("For job id " + jobEntry.getId() + " we have remote files parameters");
                 String[] fileUrls = (String[]) results.get("REMOTE_FILES");
                 if (fileUrls[0] != null) {
-                    LinkedHashMap<String, String> executionStatusView = new LinkedHashMap<String, String>();
-                    String executionStatusId = (String) results.get(Constants.RESULT_CODE_PRM);
-                    String executionStatusName = (String) results.get("executionStatusName");
-                    executionStatusView.put("statusId", executionStatusId);
-                    executionStatusView.put("statusName", executionStatusName);
-                    jsonResults.put("executionStatus", executionStatusView);
                     if (fileUrls[0].endsWith(".zip")) {
                         jsonResults = qaService.checkIfZipFileExistsOrIsEmpty(fileUrls, String.valueOf(jobEntry.getId()), jsonResults);
                     } else {
@@ -153,7 +154,7 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
         return true;
     }
 
-        private CdrJobResponseMessage setupBasicCdrJobResponseMessage(JobEntry jobEntry){
+    private CdrJobResponseMessage setupBasicCdrJobResponseMessage(JobEntry jobEntry){
         CdrJobResponseMessage cdrJobResponseMessage = new CdrJobResponseMessage();
         cdrJobResponseMessage.setUUID(jobEntry.getUuid());
         cdrJobResponseMessage.setJobId(String.valueOf(jobEntry.getId()));
@@ -188,7 +189,7 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
         LinkedHashMap<String,String> executionStatusView = (LinkedHashMap<String, String>) jsonResults.get("executionStatus");
         if(executionStatusView != null){
             String statusId = executionStatusView.get("statusId");
-            if(statusId != null && statusId.equals(Constants.JOB_READY)){
+            if(statusId != null && statusId.equals(String.valueOf(Constants.JOB_READY))){
                 LOGGER.info("Results for job " + jobId + " can be sent to the results queue");
                 return true;
             }

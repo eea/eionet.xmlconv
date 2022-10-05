@@ -1081,7 +1081,7 @@
         </createIndex>
     </changeSet>
     <changeSet author="anthaant" id="rev-93">
-        <comment> Table for Storing jobs that should be checked if they have ready results</comment>
+        <comment>Table for Storing jobs that should be checked if they have ready results</comment>
         <createTable tableName="PENDING_CDR_JOBS">
             <column autoIncrement="true" name="ID" type="INT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -1098,8 +1098,11 @@
             <column name="DATE_ADDED" type="TIMESTAMP">
             </column>
         </createTable>
-        <createIndex indexName="JOB_ID_PENDING_INDΕΧ" tableName="PENDING_CDR_JOBS" unique="false">
-            <column name="JOB_ID"/>
-        </createIndex>
+    </changeSet>
+    <changeSet author="anthaant" id="rev-94">
+        <comment>Create index for job id for PENDING_CDR_JOBS</comment>
+        <sql>
+            CREATE INDEX JOB_ID_PENDING_INDΕΧ ON PENDING_CDR_JOBS (JOB_ID);
+        </sql>
     </changeSet>
 </databaseChangeLog>

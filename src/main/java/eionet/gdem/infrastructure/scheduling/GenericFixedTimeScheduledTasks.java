@@ -378,6 +378,7 @@ public class GenericFixedTimeScheduledTasks {
 
     @Scheduled(cron = "0 */1 * * * *") //Every 1 minute
     public void schedulePeriodicHandlingOfPendingCdrJobs() {
+        LOGGER.info("Task for handling pending cdr jobs is running");
         List<PendingCdrJobEntry> pendingCdrJobEntries = pendingCdrJobsService.getAllPendingEntries();
         for(PendingCdrJobEntry entry: pendingCdrJobEntries){
             JobEntry jobEntry = null;
