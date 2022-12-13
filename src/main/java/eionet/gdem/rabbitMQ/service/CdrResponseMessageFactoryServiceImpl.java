@@ -189,7 +189,7 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
         LinkedHashMap<String,String> executionStatusView = (LinkedHashMap<String, String>) jsonResults.get("executionStatus");
         if(executionStatusView != null){
             String statusId = executionStatusView.get("statusId");
-            if(statusId != null && statusId.equals(String.valueOf(Constants.JOB_READY))){
+            if(statusId != null && (statusId.equals(String.valueOf(Constants.JOB_READY)) || statusId.equals(String.valueOf(Constants.JOB_FATAL_ERROR)))){
                 LOGGER.info("Results for job " + jobId + " can be sent to the results queue");
                 return true;
             }

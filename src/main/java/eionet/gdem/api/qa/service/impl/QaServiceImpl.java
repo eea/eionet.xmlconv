@@ -210,7 +210,7 @@ public class QaServiceImpl implements QaService {
                 break;
 
             case Constants.JOB_FATAL_ERROR:
-                executionStatusName = "Failed";
+                executionStatusName = "FATAL ERROR";
                 break;
 
             case Constants.JOB_NOT_READY:

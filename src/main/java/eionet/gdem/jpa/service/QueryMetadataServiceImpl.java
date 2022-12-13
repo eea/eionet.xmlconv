@@ -115,7 +115,7 @@ public class QueryMetadataServiceImpl implements QueryMetadataService {
                 entry.setStatusName("Successful");
             }
             else  if(entry.getJobStatus() == Constants.XQ_FATAL_ERR){
-                entry.setStatusName("Failed");
+                entry.setStatusName("FATAL ERROR");
             }
             else{
                 entry.setStatusName("Unknown status (" + entry.getJobStatus() + ")");
