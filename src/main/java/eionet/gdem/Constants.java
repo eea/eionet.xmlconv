@@ -171,4 +171,8 @@ public interface Constants {
     String EXECUTION_STATUS_NAME_INTERRUPTED = "Interrupted";
 
     String JOB_FEEDBACK_MESSAGE_DELETED = "Job canceled by reporter";
+    String JOB_FAILED_BECAUSE_OF_WORKER_CONTENT = "<div class=\"feedbacktext\"><span id=\"feedbackStatus\" class=\"FAILED\" style=\"display:none\">Something went wrong while executing the job please try again.</span>Something went wrong while executing the job please try again.</div>";
+    String JOB_FAILED_BECAUSE_OF_WORKER_MESSAGE = "Something went wrong while executing the job please try again";
+    String JOB_FAILED_BECAUSE_OF_WORKER_STATUS = "FAILED";
+
 }

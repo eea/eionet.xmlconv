@@ -354,6 +354,19 @@ public class QaServiceImpl implements QaService {
             }
         }
 
+        try {
+            JobEntry jobEntry = jobService.findById(Integer.valueOf(jobId));
+            if (jobEntry.getnStatus() == Constants.XQ_FATAL_ERR) {
+                jsonResults.put("feedbackContent", "");
+                jsonResults.put("REMOTE_FILES",fileUrls);
+                jsonResults.put("feedbackStatus", Constants.JOB_FAILED_BECAUSE_OF_WORKER_STATUS);
+                jsonResults.put("feedbackMessage", Constants.JOB_FAILED_BECAUSE_OF_WORKER_MESSAGE);
+                return jsonResults;
+            }
+        } catch (DatabaseException e) {
+            LOGGER.error("Could not set up the failed feedback message and status for async fme job with id " + jobId);
+        }
+
         String fileName = fileUrls[0].replace(eionet.gdem.Properties.gdemURL + "/restapi/download/zip/","");
         if (fileName == null || fileName.isEmpty() || "/".equals(fileName)) {
             throw new XMLConvException("FileName " + fileName + " is not correct for jobId " + jobId);

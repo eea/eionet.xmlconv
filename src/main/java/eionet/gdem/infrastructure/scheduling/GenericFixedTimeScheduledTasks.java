@@ -22,6 +22,7 @@ import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import eionet.gdem.services.JobResultHandlerService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
 import eionet.gdem.web.spring.schemas.SchemaManager;
@@ -87,6 +88,9 @@ public class GenericFixedTimeScheduledTasks {
 
     @Autowired
     private PendingCdrJobsService pendingCdrJobsService;
+
+    @Autowired
+    private JobResultHandlerService jobResultHandlerService;
 
     /**
      * Dao for getting job data.
@@ -179,6 +183,7 @@ public class GenericFixedTimeScheduledTasks {
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
+                    jobResultHandlerService.setResultFileContentToFailed(jobEntry);
                     if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()){
                         cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
                     }

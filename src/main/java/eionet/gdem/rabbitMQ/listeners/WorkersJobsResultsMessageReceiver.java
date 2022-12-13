@@ -20,6 +20,7 @@ import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
+import eionet.gdem.utils.StatusUtils;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,11 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
             script = response.getScript();
             JobEntry jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
+
+            if(jobEntry.getnStatus() == Constants.XQ_READY || jobEntry.getnStatus() == Constants.XQ_FATAL_ERR){
+                LOGGER.error("Job with id " + jobEntry.getId() + " is already finished with status " + StatusUtils.getStatusNameByNumber(jobEntry.getnStatus()));
+                return;
+            }
 
             JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), containerId, response.getHeartBeatQueue()).setJobExecutorType(response.getJobExecutorType());
             JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
