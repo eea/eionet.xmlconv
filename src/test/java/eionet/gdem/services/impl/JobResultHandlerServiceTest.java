@@ -90,13 +90,13 @@ public class JobResultHandlerServiceTest {
     @Test
     public void testJobFatalError() throws Exception {
         Hashtable table = jobResultHandlerService.prepareResult(Constants.XQ_FATAL_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
-        assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
+        assertEquals("Wrong result code", "2", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test
     public void testJobLightError() throws Exception {
         Hashtable table = jobResultHandlerService.prepareResult(Constants.XQ_LIGHT_ERR, new String[]{"", "", "src/test/resources/seed-gw-valid.xml", "", "", "-1"}, new HashMap(), "-1");
-        assertEquals("Wrong result code", "0", table.get(Constants.RESULT_CODE_PRM));
+        assertEquals("Wrong result code", "2", table.get(Constants.RESULT_CODE_PRM));
     }
 
     @Test

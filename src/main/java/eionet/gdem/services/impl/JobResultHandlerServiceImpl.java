@@ -3,6 +3,7 @@ package eionet.gdem.services.impl;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
+import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.qa.IQueryDao;
 import eionet.gdem.qa.QaScriptView;
 import eionet.gdem.services.GDEMServices;
@@ -10,15 +11,21 @@ import eionet.gdem.services.JobResultHandlerService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.utils.xml.FeedbackAnalyzer;
 import eionet.gdem.web.spring.workqueue.IXQJobDao;
+import io.vavr.collection.List;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import static eionet.gdem.Constants.JOB_VALIDATION;
 
@@ -130,9 +137,9 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
             if (status == Constants.XQ_READY) {
                 resultCode = Constants.JOB_READY;
             } else if (status == Constants.XQ_LIGHT_ERR) {
-                resultCode = Constants.JOB_READY;
+                resultCode = Constants.JOB_FATAL_ERROR;
             } else if (status == Constants.XQ_FATAL_ERR) {
-                resultCode = Constants.JOB_READY;
+                resultCode = Constants.JOB_FATAL_ERROR;
             } else {
                 resultCode = -1; // not expected to reach here
             }
@@ -194,5 +201,31 @@ public class JobResultHandlerServiceImpl implements JobResultHandlerService {
 
         return h;
 
+    }
+
+    @Override
+    public void setResultFileContentToFailed(JobEntry job) throws XMLConvException {
+        FileOutputStream result = null;
+        try {
+            result = new FileOutputStream(new File(job.getResultFile()));
+        } catch (FileNotFoundException e) {
+            throw new XMLConvException("For job id " + job.getId() + " could not find result file " + job.getResultFile());
+        }
+        try {
+            if(job.getResultFile().endsWith(".zip")) {
+                ZipOutputStream out = new ZipOutputStream(result);
+                ZipEntry entry = new ZipEntry("output.html");
+                out.putNextEntry(entry);
+                byte[] data = Constants.JOB_FAILED_BECAUSE_OF_WORKER_CONTENT.getBytes();
+                out.write(data, 0, data.length);
+                out.closeEntry();
+                out.close();
+            }
+            else if(job.getResultFile().endsWith(".html")) {
+                IOUtils.copy(IOUtils.toInputStream(Constants.JOB_FAILED_BECAUSE_OF_WORKER_CONTENT, "UTF-8"), result);
+            }
+        } catch (IOException e) {
+            throw new XMLConvException("For job id " + job.getId() + " could not copy failed results to file " + job.getResultFile());
+        }
     }
 }
