@@ -11,4 +11,7 @@ public interface QueryJpaService {
     QueryEntry save(QueryEntry queryEntry);
 
     void updateVersion(Integer version, Integer queryId);
+
+    String getShortName(Integer queryId);
+
 }

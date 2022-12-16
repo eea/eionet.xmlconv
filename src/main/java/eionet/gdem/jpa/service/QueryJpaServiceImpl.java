@@ -36,4 +36,9 @@ public class QueryJpaServiceImpl implements QueryJpaService {
     public void updateVersion(Integer version, Integer queryId) {
         queryRepository.updateVersion(version, queryId);
     }
+
+    @Override
+    public String getShortName(Integer queryId) {
+        return queryRepository.getShortName(queryId);
+    }
 }

@@ -7,6 +7,7 @@ import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.PendingCdrJobEntry;
 import eionet.gdem.jpa.service.PendingCdrJobsService;
+import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.rabbitMQ.model.CdrJobResponseMessage;
 import eionet.gdem.rabbitMQ.model.CdrJobResultMessage;
 import eionet.gdem.rabbitMQ.model.CdrSummaryResponseMessage;
@@ -19,12 +20,16 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 @Service("cdrResponseMessageFactoryServiceImpl")
 public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageFactoryService{
 
     @Autowired
     QaService qaService;
+
+    @Autowired
+    QueryJpaService queryJpaService;
 
     @Autowired
     CdrJobResultMessageSender cdrJobResultMessageSender;
@@ -169,15 +174,19 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
         }
         cdrJobResponseMessage.setDocumentURL(documentUrl);
         cdrJobResponseMessage.setScriptId(jobEntry.getQueryId().toString());
-        String scriptFullTitle = jobEntry.getFile();
-        String[] splittedTitleArray = scriptFullTitle.split("/");
-        if(splittedTitleArray.length == 0){
-            cdrJobResponseMessage.setScriptTitle(scriptFullTitle);
+
+        String scriptTitle = queryJpaService.getShortName(jobEntry.getQueryId());
+        if (StringUtils.isBlank(scriptTitle)) { // fall-back
+            String scriptFullTitle = jobEntry.getFile();
+            String[] splittedTitleArray = scriptFullTitle.split("/");
+            if(splittedTitleArray.length == 0){
+                scriptTitle = scriptFullTitle;
+            }
+            else{
+                scriptTitle = splittedTitleArray[splittedTitleArray.length - 1];
+            }
         }
-        else{
-            String scriptTitle = splittedTitleArray[splittedTitleArray.length - 1];
-            cdrJobResponseMessage.setScriptTitle(scriptTitle);
-        }
+        cdrJobResponseMessage.setScriptTitle(scriptTitle);
 
         //set up Execution Status
         cdrJobResponseMessage.setExecutionStatus(StatusUtils.createJobExecutionStatus(jobEntry.getnStatus()));

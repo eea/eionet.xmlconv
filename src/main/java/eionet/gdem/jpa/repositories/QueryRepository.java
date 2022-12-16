@@ -18,4 +18,7 @@ public interface QueryRepository extends JpaRepository<QueryEntry, Integer> {
     @Modifying
     @Query(value = "update T_QUERY set VERSION= :version where QUERY_ID= :queryId", nativeQuery=true)
     void updateVersion(@Param("version") Integer version, @Param("queryId") Integer queryId);
+
+    @Query(value = "SELECT SHORT_NAME FROM T_QUERY WHERE QUERY_ID= :queryId", nativeQuery = true)
+    String getShortName(@Param("queryId") Integer queryId);
 }
