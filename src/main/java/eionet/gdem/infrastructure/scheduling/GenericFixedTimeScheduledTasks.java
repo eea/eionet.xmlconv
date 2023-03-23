@@ -461,7 +461,6 @@ public class GenericFixedTimeScheduledTasks {
         for(PendingCdrJobEntry entry: pendingCdrJobEntries){
             JobEntry jobEntry = null;
             try {
-                LOGGER.info("Found " + pendingCdrJobEntries.size() + " entries in PENDING_CDR_JOBS table.");
                 jobEntry = jobService.findById(entry.getJobId());
                 if(jobEntry == null){
                     //delete the entry from the PENDING_CDR_JOBS table
@@ -479,7 +478,6 @@ public class GenericFixedTimeScheduledTasks {
                     LOGGER.info("Job with id " + jobEntry.getId() + " is not ready to be be sent to the results queue yet");
                 }
             } catch (Exception e) {
-                LOGGER.info("In schedulePeriodicHandlingOfPendingCdrJobs exception");
                 LOGGER.error("Could not handle pending cdr job with id " + entry.getJobId() + " Exception message is: " + e.getMessage());
             }
         }
