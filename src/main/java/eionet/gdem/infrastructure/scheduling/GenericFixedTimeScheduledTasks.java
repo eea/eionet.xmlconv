@@ -466,7 +466,7 @@ public class GenericFixedTimeScheduledTasks {
                     //delete the entry from the PENDING_CDR_JOBS table
                     LOGGER.info("Job with id " + entry.getJobId() + " has been removed from the T_XQJOBS table and will also be removed from PENDING_CDR_JOBS table");
                     pendingCdrJobsService.removePendingEntry(entry.getId());
-                    return;
+                    continue;
                 }
                 LOGGER.info("Checking if pending job with id " + jobEntry.getId() + " can be sent to the results queue");
                 Boolean jobWasSentToResultQueue = cdrResponseMessageFactoryService.handleReadyOrFailedJobsAndSendToCdr(jobEntry);
