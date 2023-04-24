@@ -51,6 +51,7 @@ public class JobExecutorServiceImpl implements JobExecutorService {
             }
         } catch (PessimisticLockException | PessimisticLockingFailureException pem) {
             LOGGER.error("PessimisticLock exception when updating worker with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + pem.toString());
+            throw pem;
         } catch (Exception e) {
             LOGGER.error("Database exception when updating worker with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + e.toString());
             throw new DatabaseException(e);

@@ -30,6 +30,7 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
             repository.save(entry);
         } catch (PessimisticLockException | PessimisticLockingFailureException pem) {
             LOGGER.error("PessimisticLock exception when saving into JOB_EXECUTOR_HISTORY table worker with name " + entry.getName() + " and job id " + entry.getJobId());
+            throw pem;
         } catch (Exception e) {
             LOGGER.error("Database exception when saving into JOB_EXECUTOR_HISTORY table worker with name " + entry.getName() + " and job id " + entry.getJobId());
             throw new DatabaseException(e);

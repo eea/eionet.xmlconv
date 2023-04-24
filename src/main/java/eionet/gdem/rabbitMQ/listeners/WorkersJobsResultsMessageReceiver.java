@@ -22,11 +22,13 @@ import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.utils.StatusUtils;
 import eionet.gdem.utils.Utils;
+import org.hibernate.PessimisticLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -102,19 +104,19 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 LOGGER.info("Job with id " + script.getJobId() + " failed with error: " + response.getErrorMessage());
                 jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                 workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
-                workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+                saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, jobEntry.getId(), fmeJobId, script.getOrigFileUrl(), jobEntry.getXmlSize());
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED) {
                 LOGGER.info("Job with id=" + script.getJobId() + " received by worker with container name " + response.getJobExecutorName());
                 findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
                 jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                 workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
-                workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+                saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
             } else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_READY) {
                 LOGGER.info("### Job with id=" + script.getJobId() + " status is READY. Executing time in nanoseconds = " + response.getExecutionTime() + ".");
                 jobEntry.setnStatus(Constants.XQ_READY).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                 workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
-                workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+                saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                 queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_READY, jobEntry.getId(), fmeJobId, script.getOrigFileUrl(), jobEntry.getXmlSize());
             }
             else if (response.getJobExecutorStatus() == SchedulingConstants.WORKER_RECEIVED_FME_JOB_ID) {
@@ -122,13 +124,21 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 findIfJobIsHeavyBasedOnWorkerType(response, jobEntry, jobExecutor, jobExecutorHistory);
                 jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                 workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
-                workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+                saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
             }
             if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
             }
         } catch (Exception e) {
             LOGGER.info("Error during jobExecutor message processing: ", e);
+        }
+    }
+
+    private void saveOrUpdateJobExecutor(JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
+        try {
+            workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+        } catch (PessimisticLockException | PessimisticLockingFailureException pem) {
+            LOGGER.error("PessimisticLock exception when updating jobExecutor or jobExecutorHistory with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + pem.toString());
         }
     }
 
@@ -154,14 +164,14 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                     lightJobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
                     JobExecutorHistory lightJobExecutorHistory = new JobExecutorHistory(lightJobExecutor.getName(), lightJobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, lightJobExecutor.getJobId(), new Timestamp(new Date().getTime()), lightJobExecutor.getHeartBeatQueue());
                     lightJobExecutorHistory.setJobExecutorType(lightJobExecutor.getJobExecutorType());
-                    workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(lightJobExecutor, lightJobExecutorHistory);
+                    saveOrUpdateJobExecutor(lightJobExecutor, lightJobExecutorHistory);
                 }
             }
         } else {  //the response came from a light worker. However, maybe the job has already been handled by a heavy worker but there was an inconsistency in the order the messages were processed
             if (jobEntry.isHeavy()) {
                 jobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
                 jobExecutorHistory.setStatus(SchedulingConstants.WORKER_FAILED);
-                workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+                saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
             }
         }
     }
