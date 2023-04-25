@@ -127,7 +127,8 @@ public class JobExecutor {
         return fmeJobId;
     }
 
-    public void setFmeJobId(Long fmeJobId) {
+    public JobExecutor setFmeJobId(Long fmeJobId) {
         this.fmeJobId = fmeJobId;
+        return this;
     }
 }

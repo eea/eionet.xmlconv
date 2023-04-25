@@ -1099,4 +1099,9 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="favvmary" id="rev-94">
+        <createIndex indexName="JOB_EXECUTOR_NAME" tableName="JOB_EXECUTOR" unique="true">
+            <column name="NAME"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

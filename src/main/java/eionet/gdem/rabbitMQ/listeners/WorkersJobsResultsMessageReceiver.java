@@ -22,13 +22,11 @@ import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.utils.StatusUtils;
 import eionet.gdem.utils.Utils;
-import org.hibernate.PessimisticLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -137,8 +135,8 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
     private void saveOrUpdateJobExecutor(JobExecutor jobExecutor, JobExecutorHistory jobExecutorHistory) throws DatabaseException {
         try {
             workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-        } catch (PessimisticLockException | PessimisticLockingFailureException pem) {
-            LOGGER.error("PessimisticLock exception when updating jobExecutor or jobExecutorHistory with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + pem.toString());
+        } catch (DatabaseException e) {
+            LOGGER.error("Database exception when updating jobExecutor or jobExecutorHistory with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + e.toString());
         }
     }
 

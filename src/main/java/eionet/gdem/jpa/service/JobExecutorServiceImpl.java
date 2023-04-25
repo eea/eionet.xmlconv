@@ -4,11 +4,9 @@ import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
 import eionet.gdem.jpa.utils.JobExecutorType;
-import org.hibernate.PessimisticLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,16 +40,9 @@ public class JobExecutorServiceImpl implements JobExecutorService {
     }
 
     @Override
-    public void saveOrUpdateJobExecutor(boolean update,JobExecutor jobExecutor) throws DatabaseException {
+    public void saveOrUpdateJobExecutor(JobExecutor jobExecutor) throws DatabaseException {
         try {
-            if (update) {
-                jobExecutorRepository.updateJobExecutor(jobExecutor.getStatus(), jobExecutor.getJobId(), jobExecutor.getJobExecutorType().getId(), jobExecutor.getFmeJobId(), jobExecutor.getName());
-            } else {
-                jobExecutorRepository.save(jobExecutor);
-            }
-        } catch (PessimisticLockException | PessimisticLockingFailureException pem) {
-            LOGGER.error("PessimisticLock exception when updating worker with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + pem.toString());
-            throw pem;
+            jobExecutorRepository.save(jobExecutor);
         } catch (Exception e) {
             LOGGER.error("Database exception when updating worker with name " + jobExecutor.getName() + " and jobId " + jobExecutor.getJobId() + ", " + e.toString());
             throw new DatabaseException(e);
