@@ -1,9 +1,5 @@
 package eionet.gdem.web.spring.validation;
 
-/**
- *
- *
- */
 public class ValidationForm {
 
     private String XmlUrl;
@@ -24,4 +20,5 @@ public class ValidationForm {
     public void setSchemaUrl(String schemaUrl) {
         this.schemaUrl = schemaUrl;
     }
+
 }
