@@ -11,12 +11,9 @@ import eionet.gdem.rabbitMQ.model.CdrJobDeadLetterQueueMessage;
 import eionet.gdem.rabbitMQ.model.CdrJobRequestMessage;
 import eionet.gdem.rabbitMQ.service.CdrJobResultMessageSender;
 import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
-import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +43,7 @@ public class CdrRequestMessageReceiver implements ChannelAwareMessageListener {
 
     @Override
     public void onMessage(Message message, Channel channel) throws IOException {
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         if(message == null || message.getBody() == null){
             LOGGER.error("Error during cdr message processing. Message was empty");
             return;
