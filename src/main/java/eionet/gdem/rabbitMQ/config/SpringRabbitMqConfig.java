@@ -330,6 +330,7 @@ public class SpringRabbitMqConfig {
     SimpleMessageListenerContainer cdrRequestQueueContainer() {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(cdrConnectionFactory());
+        container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         container.setQueueNames(Properties.CDR_REQUEST_QUEUE);
         container.setMessageListener(cdrRequestQueueListenerAdapter());
         return container;
