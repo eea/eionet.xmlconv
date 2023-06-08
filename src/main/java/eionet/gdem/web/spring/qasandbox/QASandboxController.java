@@ -648,7 +648,8 @@ public class QASandboxController {
         InputAnalyser analyser = new InputAnalyser();
         try {
             analyser.parseXML(xml);
-            String schemaOrDTD = analyser.getSchemaOrDTD();
+            // get first in case of multiple schemas
+            String schemaOrDTD = analyser.getSchemas().get(0);
             return schemaOrDTD;
         } catch (Exception e) {
             // do nothing - did not find XML Schema

@@ -1,5 +1,6 @@
 package eionet.gdem.web.spring.workqueue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,8 +15,8 @@ public class JobMetadata {
     private String url;
     private String url_name;
     private String fileName;
-    private String script_file;
-    private String script_url;
+    private List<String> script_file = new ArrayList<>();
+    private List<String> script_url = new ArrayList<>();
     private String result_file;
     private int status;
     private String statusName;
@@ -98,12 +99,8 @@ public class JobMetadata {
     }
 
 
-    public String getScript_file() {
+    public List<String> getScript_file() {
         return script_file;
-    }
-
-    public void setScript_file(String script_file) {
-        this.script_file = script_file;
     }
 
     public String getScriptId() {
@@ -154,12 +151,8 @@ public class JobMetadata {
         this.jobExecutorName = jobExecutorName;
     }
 
-    public String getScript_url() {
+    public List<String> getScript_url() {
         return script_url;
-    }
-
-    public void setScript_url(String script_url) {
-        this.script_url = script_url;
     }
 
     public String getFme_job_url() {

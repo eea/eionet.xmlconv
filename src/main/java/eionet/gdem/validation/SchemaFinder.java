@@ -32,6 +32,9 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import eionet.gdem.utils.Utils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Handler for parsing xml document extening SAX DefaultHandler. This class is calling different ExcelConversionhandler methods,
@@ -43,15 +46,14 @@ import eionet.gdem.utils.Utils;
 
 public class SchemaFinder extends DefaultHandler {
 
-    private static String SCHEMA_REFERENCE = "schemaLocation";
-    private static String NO_NS_SCHEMA_REFERENCE = "noNamespaceSchemaLocation";
+    private static final String SCHEMA_REFERENCE = "schemaLocation";
+    private static final String NO_NS_SCHEMA_REFERENCE = "noNamespaceSchemaLocation";
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemaFinder.class);
 
     private String startTag = null;
     private String startTagNamespace = null;
-    private String schemaLocation = null;
-    private String schemaNamespace = null;
-    private boolean hasNamespace = false;
+
+    private List<String> schemaLocations = new ArrayList<>();
 
     /**
      * Starts element
@@ -61,47 +63,40 @@ public class SchemaFinder extends DefaultHandler {
      * @param attrs Attributes
      * @throws SAXException If an error occurs.
      */
+    @Override
     public void startElement(String uri, String localName, String name, Attributes attrs) throws SAXException {
-        // System.out.println("element:" + uri + "||" + localName + "||" + name);
-
         startTag = (localName == null) ? name : localName; // we want the tag name without ns prefix, if ns processing is turned
                                                            // off, them we use name
         startTagNamespace = uri;
 
-        // String schema_location_attr = (Utils.isNullStr(startTagNamespace))? NO_NS_SCHEMA_REFERENCE:SCHEMA_REFERENCE;
-
-        // System.out.println("("+name);
         int length = attrs != null ? attrs.getLength() : 0;
         for (int i = 0; i < length; i++) {
             String attrName = attrs.getLocalName(i);
             if (attrName.equalsIgnoreCase(NO_NS_SCHEMA_REFERENCE)) {
-                setSchemaLocation(attrs.getValue(i));
+                schemaLocations.add(attrs.getValue(i));
             } else if (attrName.equalsIgnoreCase(SCHEMA_REFERENCE)) {
                 String sch_val = attrs.getValue(i);
 
                 if (!Utils.isNullStr(sch_val)) {
-                    // int l = sch_val.indexOf(" ");
-                    // schemaLocation=sch_val.substring(l+1);
                     String schemaWithNS = attrs.getValue(i);
-                    String[] splitted = schemaWithNS.split("\\s+");
-                    if (splitted.length > 1) {
-                        setSchemaNamespace(splitted[0]);
-                        setSchemaLocation(splitted[1]);
-                    } else
-                        setSchemaNamespace(schemaWithNS);
+                    String[] possibleSchemas = schemaWithNS.split("\\s+");
 
-                    hasNamespace = true;
+                    Arrays.stream(possibleSchemas).forEach(possibleSchema -> {
+                        if (possibleSchema.endsWith(".xsd")) {
+                            schemaLocations.add(possibleSchema);
+                        }
+                    });
                 }
             }
         }
         throw new SAXException("OK");
-
     }
 
     /**
      * Logs error
      * @param e Error
      */
+    @Override
     public void error(SAXParseException e) {
         LOGGER.error("error on finding schema from xml");
     }
@@ -110,6 +105,7 @@ public class SchemaFinder extends DefaultHandler {
      * Logs fatal error
      * @param e Fatal error
      */
+    @Override
     public void fatalError(SAXParseException e) {
         LOGGER.error(Markers.FATAL, "Fatal error on finding schema from xml");
     }
@@ -122,27 +118,8 @@ public class SchemaFinder extends DefaultHandler {
         return this.startTagNamespace;
     }
 
-    /**
-     * Checks if schema has namespace
-     * @return True if schema has namespace
-     */
-    public boolean hasNamespace() {
-        return this.hasNamespace;
+    public List<String> getSchemaLocations() {
+        return schemaLocations;
     }
 
-    public String getSchemaLocation() {
-        return this.schemaLocation;
-    }
-
-    public String getSchemaNamespace() {
-        return schemaNamespace;
-    }
-
-    public void setSchemaNamespace(String schemaNamespace) {
-        this.schemaNamespace = schemaNamespace;
-    }
-
-    public void setSchemaLocation(String schemaLocation) {
-        this.schemaLocation = schemaLocation;
-    }
 }

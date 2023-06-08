@@ -135,7 +135,7 @@ public class WorkqueueRestController {
         String[] header = {"Job ID", "Document URL", "XQuery script", "Job Result", "Status", "Started at", "Instance", "Duration", "Job type", "Worker"};
         csvData.add(header);
         for(JobMetadata entry: jobEntries){
-            String[] row = {entry.getJobId(), entry.getUrl(), entry.getScript_file(), (entry.getResult_file() != null) ? entry.getResult_file() : "*** Not ready ***",
+            String[] row = {entry.getJobId(), entry.getUrl(), String.join(" ", entry.getScript_file()), (entry.getResult_file() != null) ? entry.getResult_file() : "*** Not ready ***",
                     entry.getStatusName(), entry.getTimestamp(), (entry.getInstance()!= null) ? entry.getInstance() : "",
                     (entry.getDurationInProgress() != null) ? entry.getDurationInProgress() : "", (entry.getJobType() != null) ? entry.getJobType() : "",
                     (entry.getJobExecutorName() != null) ? entry.getJobExecutorName() : ""};

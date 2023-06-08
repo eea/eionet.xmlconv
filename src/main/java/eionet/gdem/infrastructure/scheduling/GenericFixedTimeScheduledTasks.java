@@ -266,7 +266,8 @@ public class GenericFixedTimeScheduledTasks {
                 InputAnalyser analyser = new InputAnalyser();
 
                 analyser.parseXML(result);
-                String schemaOrDTD = analyser.getSchemaOrDTD();
+                // get first in case of multiple schema validation job
+                String schemaOrDTD = analyser.getSchemas().get(0);
                 return schemaOrDTD;
             }
         } catch (Exception e) {

@@ -30,6 +30,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.utils.Utils;
+import java.util.Iterator;
 
 /**
  * Builds ValidationService result object. Formats validation errors as HTML.
@@ -39,8 +40,8 @@ import eionet.gdem.utils.Utils;
  */
 public class ValidationServiceFeedback {
 
-    /** XML Schema URL. */
-    private String schema;
+    /** XML Schemas URL. */
+    private List<String> schemas = new ArrayList<>();
     /** Feedback text. */
     StringBuilder feedbackText = new StringBuilder();
     /** List of validation errors and warnings. */
@@ -157,14 +158,22 @@ public class ValidationServiceFeedback {
         appendFeedbackText(text);
         appendFeedback("</p>");
 
-        if (!Utils.isNullStr(getSchema())) {
+        if (!getSchemas().isEmpty()) {
             appendFeedback("<p>");
             appendFeedbackTextProperty("label.validation.result.schema");
-            appendFeedback(" <a href=\"");
-            appendFeedbackText(getSchema());
-            appendFeedback("\">");
-            appendFeedbackText(getSchema());
-            appendFeedback("</a></p>");
+            for (Iterator<String> it = schemas.iterator(); it.hasNext();) {
+                String schema = it.next();
+                appendFeedback(" <a href=\"");
+                appendFeedbackText(schema);
+                appendFeedback("\">");
+                appendFeedbackText(schema);
+                appendFeedback("</a>");
+                if (it.hasNext()) {
+                    appendFeedback(", ");
+                } else {
+                    appendFeedback("</p>");
+                }
+            }
         }
         if (getValidationErrors().size() > 0) {
             // description
@@ -181,10 +190,10 @@ public class ValidationServiceFeedback {
     }
 
     /**
-     * @return the schema
+     * @return the schemas
      */
-    public String getSchema() {
-        return schema;
+    public List<String> getSchemas() {
+        return schemas;
     }
 
     /**
@@ -195,10 +204,10 @@ public class ValidationServiceFeedback {
     }
 
     /**
-     * @param schema the schema to set
+     * @param schemas the schemas to set
      */
-    public void setSchema(String schema) {
-        this.schema = schema;
+    public void setSchemas(List<String> schemas) {
+        this.schemas = schemas;
     }
 
     /**

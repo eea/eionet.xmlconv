@@ -90,10 +90,6 @@ public class RabbitMQMessageFactoryImpl implements RabbitMQMessageFactory {
                 long startTime = System.nanoTime();
                 Integer jobStatus = null;
                 try {
-                    // validate only the first XML Schema
-                    if (scriptFile.contains(" ")) {
-                        scriptFile = StringUtils.substringBefore(scriptFile, " ");
-                    }
                     //change status to processing and add entry to job_history
                     processValidationJob(jobEntry);
                     LOGGER.info("** XML Validation Job starting, ID=" + jobId + " schema: " + scriptFile + " result will be stored to " + resultFile);
