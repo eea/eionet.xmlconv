@@ -420,7 +420,7 @@ public class JobServiceImpl implements JobService {
                 job.getScript_file().add(fileName);
 
                 String schemaId = null;
-                if(job.getScriptId().equals("-1")) {
+                if (job.getScriptId().equals("-1")) {
                     //schema validation
                     try {
                         schemaId = schemaDao.getSchemaID(file);
@@ -438,7 +438,7 @@ public class JobServiceImpl implements JobService {
                 if (fileName.startsWith("gdem")) {
                     fileUrl = Properties.gdemURL + "/tmp/" + job.getScript_file();
                 } else if (fileName.endsWith(".xsd")){
-                    fileUrl = Properties.gdemURL + "/schemas/" + schemaId;
+                    fileUrl = schemaId != null ? Properties.gdemURL + "/schemas/" + schemaId : file;
                 } else {
                     fileUrl = Properties.gdemURL + "/scripts/" + job.getScriptId();
                 }

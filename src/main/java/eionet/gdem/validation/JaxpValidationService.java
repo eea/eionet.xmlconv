@@ -28,14 +28,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import javax.xml.transform.Source;
-import static org.apache.commons.lang3.Range.is;
 
-/**
- *
- */
 public class JaxpValidationService implements ValidationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JaxpValidationService.class);
@@ -144,7 +139,6 @@ public class JaxpValidationService implements ValidationService {
         sf.setErrorHandler(errorHandler);
 
         List<Source> sources = new ArrayList<>();
-        List<String> validatedSchemas = new ArrayList<>();
         for (String schema : schemas) {
             String localSchema = schemaManager.getUplSchemaURL(schema);
             String validatedSchema;
@@ -156,7 +150,6 @@ public class JaxpValidationService implements ValidationService {
                 validatedSchema = schema;
                 validatedSchemasURL.add(schema);
             }
-            validatedSchemas.add(validatedSchema);
 
             try {
                 URL schemaLocationUrl = new URL(validatedSchema);
@@ -165,9 +158,6 @@ public class JaxpValidationService implements ValidationService {
                 LOGGER.info("Malformed schema URL: " + ex.getMessage());
             }
         }
-
-      
-        
         
         try {
             Source[] sourceArray =  new Source[sources.size()];
