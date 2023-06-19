@@ -176,12 +176,16 @@ public class JaxpValidationService implements ValidationService {
             validator.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
             validator.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
             validator.validate(new StreamSource(srcStream));
-
-            eionet.gdem.dto.Schema schemaObj = schemaManager.getSchema(schemaUrl);
-            if (schemaObj != null) {
-                isBlocker = schemaObj.isBlocker();
-            }
             LOGGER.info("Validation completed");
+
+            // Refs #53839 for multiple schema validation, validation blocks delivery if at least one schema is blocker
+            for (String originalSchema : originalSchemas) {
+                eionet.gdem.dto.Schema schemaObj = schemaManager.getSchema(originalSchema);
+                if (schemaObj != null && schemaObj.isBlocker()) {
+                    isBlocker = true;
+                    break;
+                }
+            }
 
             validationFeedback.setValidationErrors(errorHandler.getErrors());
             resultXML = validationFeedback.formatFeedbackText(isBlocker);
