@@ -101,13 +101,14 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                     queries.addAll(queryService.listQueries(possibleMultipleSchema));
                 }
 
-                boolean needsMultipleSchemaValidation = false;
                 if (!Utils.isNullList(queries)) {
                     if (hasMultipleSchemas) {
                         for (Hashtable query : queries) {
                             String query_id = String.valueOf(query.get(ListQueriesMethod.KEY_QUERY_ID));
                             if (String.valueOf(Constants.JOB_VALIDATION).equals(query_id)) {
-                                needsMultipleSchemaValidation = true;
+                                // create single multiple schema validation job
+                                newId = analyzeSingleXMLFile(file, String.valueOf(Constants.JOB_VALIDATION), schema, checkForDuplicateJob, addedThroughRabbitMq, uuid);
+                                result.put(newId, file);
                                 break;
                             }
                         }
@@ -116,15 +117,10 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                     for(Hashtable ht: queries) {
                         String query_id = String.valueOf(ht.get(ListQueriesMethod.KEY_QUERY_ID));
 
-                        if (hasMultipleSchemas && String.valueOf(Constants.JOB_VALIDATION).equals(query_id)) {
-                            if (needsMultipleSchemaValidation) {
-                                // create single multiple schema validation job
-                                newId = analyzeSingleXMLFile(file, String.valueOf(Constants.JOB_VALIDATION), schema, checkForDuplicateJob, addedThroughRabbitMq, uuid);
-                            }
-                        } else {
+                        if (!hasMultipleSchemas || (hasMultipleSchemas && !String.valueOf(Constants.JOB_VALIDATION).equals(query_id))) {
                             newId = analyzeSingleXMLFile(file, query_id, schema, checkForDuplicateJob, addedThroughRabbitMq, uuid);
+                            result.put(newId, file);
                         }
-                        result.put(newId, file);
                     }
                 }
             }
