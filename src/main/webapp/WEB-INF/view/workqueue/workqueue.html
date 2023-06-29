@@ -90,9 +90,11 @@
                             </a>
                         </template>
                         <template #item.script_file="{ item }">
-                            <a target="_blank" :href="item.script_url">
-                                {{ item.script_file }}
-                            </a>
+                            <div v-for="(file, index) in item.script_file">
+                                <a target="_blank" :href="item.script_url[index]">
+                                    {{ file }}
+                                </a>
+                            </div>
                         </template>
                         <template #item.result_file="{ value }">
                             <div v-if="value">

@@ -355,7 +355,6 @@ public class JobServiceImpl implements JobService {
             JobMetadata job = new JobMetadata();
             job.setJobId(entry.getId().toString());
             job.setFileName(entry.getFile());
-            job.setScript_file(entry.getFile().substring(entry.getFile().lastIndexOf(File.separatorChar) + 1));
             job.setStatus(entry.getnStatus());
             job.setTimestamp(entry.getTimestamp().toString());
             job.setScriptId(entry.getQueryId().toString());
@@ -414,30 +413,36 @@ public class JobServiceImpl implements JobService {
                 job.setDurationInProgress(Utils.createFormatForMs(duration));
             }
 
-            String schemaId = null;
-            if(job.getScriptId().equals("-1")) {
-                //schema validation
-                try {
-                    schemaId = schemaDao.getSchemaID(job.getFileName());
-                } catch (SQLException e) {
-                    LOGGER.error("Error when retrieving schema id for schema " + job.getFileName() + " Exception message: " + e.getMessage());
-                }
-                if (schemaId != null) {
-                    job.setScriptId(schemaId);
-                }
-            }
+            // check for possible multiple schemas
+            List<String> files = Arrays.asList(entry.getFile().split("\\s+"));
+            for (String file : files) {
+                String fileName = file.substring(file.lastIndexOf(File.separatorChar) + 1);
+                job.getScript_file().add(fileName);
 
-            /*set up script page url*/
-            if(job.getScript_file() != null){
-                if(job.getScript_file().startsWith("gdem")){
-                    job.setScript_url(Properties.gdemURL + "/tmp/" + job.getScript_file());
+                String schemaId = null;
+                if (job.getScriptId().equals("-1")) {
+                    //schema validation
+                    try {
+                        schemaId = schemaDao.getSchemaID(file);
+                    } catch (SQLException e) {
+                        LOGGER.error("Error when retrieving schema id for schema " + job.getFileName() + " Exception message: " + e.getMessage());
+                    }
+                    if (schemaId != null) {
+                        job.setScriptId(schemaId);
+                    }
                 }
-                else if(job.getScript_file().endsWith(".xsd")){
-                    job.setScript_url(Properties.gdemURL + "/schemas/" + schemaId);
+                
+                String fileUrl;
+
+                // set up script page url
+                if (fileName.startsWith("gdem")) {
+                    fileUrl = Properties.gdemURL + "/tmp/" + job.getScript_file();
+                } else if (fileName.endsWith(".xsd")){
+                    fileUrl = schemaId != null ? Properties.gdemURL + "/schemas/" + schemaId : file;
+                } else {
+                    fileUrl = Properties.gdemURL + "/scripts/" + job.getScriptId();
                 }
-                else{
-                    job.setScript_url(Properties.gdemURL + "/scripts/" + job.getScriptId());
-                }
+                job.getScript_url().add(fileUrl);
             }
 
             job.setFrom_date(entry.getTimestamp().toLocalDateTime().minusDays(1).toString());
@@ -446,7 +451,6 @@ public class JobServiceImpl implements JobService {
             job.setJob_executor_graylog_url(Properties.JOB_EXECUTOR_GRAYLOG + job.getJobId() + "&from=" + job.getFrom_date() + ".000Z&to=" + job.getTo_date() + ".000Z");
 
             jobsList.add(job);
-
         }
         return jobsList;
     }

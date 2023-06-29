@@ -136,18 +136,18 @@ public class ConverterController {
                         throw new RuntimeException(messageService.getMessage(e.getErrorCode()));
                     }
                     // schema or dtd found from header
-                    String schemaOrDTD = analyser.getSchemaOrDTD();
-                    if (schemaOrDTD != null) {
-                        stylesheets = sm.getSchemaStylesheets(schemaOrDTD);
-                        Schema oSchema = new Schema();
-                        oSchema.setSchema(schemaOrDTD);
-                        oSchema.setStylesheets(stylesheets);
-                        schemas.add(oSchema);
-                        cForm.setSchemas(schemas);
-                    }
-                    // did not find schema or dtd from xml header
-                    // compare root elements
-                    else {
+                    if (analyser.getSchemas().isEmpty()) {
+                        for (String schemaOrDTD : analyser.getSchemas()) {
+                            stylesheets = sm.getSchemaStylesheets(schemaOrDTD);
+                            Schema oSchema = new Schema();
+                            oSchema.setSchema(schemaOrDTD);
+                            oSchema.setStylesheets(stylesheets);
+                            schemas.add(oSchema);
+                            cForm.setSchemas(schemas);
+                        }
+                    } else {
+                        // did not find schema or dtd from xml header
+                        // compare root elements
                         String root_elem = analyser.getRootElement();
                         String namespace = analyser.getNamespace();
                         Vector matchedSchemas = rootElemDao.getRootElemMatching(root_elem, namespace);

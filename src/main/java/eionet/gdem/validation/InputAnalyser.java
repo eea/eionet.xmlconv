@@ -27,7 +27,6 @@ import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.http.HttpFileManager;
-import eionet.gdem.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +37,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.List;
 
 /**
  * The class analyses XML file and extracts XML Schema, DTD, namespace and root element information.
@@ -45,13 +45,10 @@ import java.net.MalformedURLException;
 public class InputAnalyser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InputAnalyser.class);
-    private String schemaOrDTD;
+
     private String rootElement;
     private String namespace;
-    private String dtdPublicId;
-    private boolean hasNamespace;
-    private String schemaNamespace;
-    private boolean isDTD;
+    private List<String> schemas;
 
     /**
      * Parse XML and load information from XML.
@@ -127,18 +124,10 @@ public class InputAnalyser {
                 if (!e.getMessage().equals("OK"))
                     throw new SAXException(e);
             }
-            schemaOrDTD = !Utils.isNullStr(handler.getSchemaLocation()) ? handler.getSchemaLocation() : null;
+
+            schemas = handler.getSchemaLocations();
             rootElement = handler.getStartTag();
             namespace = handler.getStartTagNamespace();
-            hasNamespace = handler.hasNamespace();
-            schemaNamespace = handler.getSchemaNamespace();
-
-            // Find DTD, if schema is null
-            if (schemaOrDTD == null) {
-                schemaOrDTD = Utils.isURL(doctypeReader.getDTD()) ? doctypeReader.getDTD() : null;
-                dtdPublicId = doctypeReader.getDTDPublicId();
-                setDTD(true);
-            }
         } catch (SAXParseException e) {
             LOGGER.error("XML Parsing exception: " + e);
             throw (SAXException) e;
@@ -153,10 +142,6 @@ public class InputAnalyser {
         return "OK";
     }
 
-    public String getSchemaOrDTD() {
-        return this.schemaOrDTD;
-    }
-
     public String getRootElement() {
         return this.rootElement;
     }
@@ -165,56 +150,8 @@ public class InputAnalyser {
         return this.namespace;
     }
 
-    /**
-     * Returns if xml has namespace.
-     * @return True if xml has namespace
-     */
-    public boolean hasNamespace() {
-        return this.hasNamespace;
-    }
-
-    public String getSchemaNamespace() {
-        return schemaNamespace;
-    }
-
-    public void setSchemaNamespace(String schemaNamespace) {
-        this.schemaNamespace = schemaNamespace;
-    }
-
-    public boolean isDTD() {
-        return isDTD;
-    }
-
-    public void setDTD(boolean isDTD) {
-        this.isDTD = isDTD;
-    }
-
-    public String getDtdPublicId() {
-        return dtdPublicId;
-    }
-
-    public void setDtdPublicId(String dtdPublicId) {
-        this.dtdPublicId = dtdPublicId;
-    }
-
-    public boolean isHasNamespace() {
-        return hasNamespace;
-    }
-
-    public void setHasNamespace(boolean hasNamespace) {
-        this.hasNamespace = hasNamespace;
-    }
-
-    public void setSchemaOrDTD(String schemaOrDTD) {
-        this.schemaOrDTD = schemaOrDTD;
-    }
-
-    public void setRootElement(String rootElement) {
-        this.rootElement = rootElement;
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
+    public List<String> getSchemas() {
+        return schemas;
     }
 
 }

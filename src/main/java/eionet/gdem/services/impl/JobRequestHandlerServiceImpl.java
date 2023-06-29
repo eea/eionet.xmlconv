@@ -56,7 +56,6 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
     private CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
 
     QueryService queryService;
-    private static final String NOT_HEAVY = "0";
 
     @Autowired
     public JobRequestHandlerServiceImpl() {
@@ -90,17 +89,38 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                 continue;
             }
 
+            List<String> possibleMultipleSchemas = Arrays.asList(schema.split("\\s+"));
+            boolean hasMultipleSchemas = possibleMultipleSchemas.size() > 1;
+
             for (String file: fileList){
                 // get all possible xqueries from db
                 String newId = "-1"; // should not be returned with value -1;
 
-                List<Hashtable> queries = queryService.listQueries(schema);
+                List<Hashtable> queries = new ArrayList<>();
+                for (String possibleMultipleSchema : possibleMultipleSchemas) {
+                    queries.addAll(queryService.listQueries(possibleMultipleSchema));
+                }
 
                 if (!Utils.isNullList(queries)) {
-                    for(Hashtable ht: queries){
-                        String query_id = String.valueOf(ht.get( ListQueriesMethod.KEY_QUERY_ID ));
-                        newId = analyzeSingleXMLFile( file, query_id , schema, checkForDuplicateJob, addedThroughRabbitMq, uuid );
-                        result.put(newId, file);
+                    if (hasMultipleSchemas) {
+                        for (Hashtable query : queries) {
+                            String query_id = String.valueOf(query.get(ListQueriesMethod.KEY_QUERY_ID));
+                            if (String.valueOf(Constants.JOB_VALIDATION).equals(query_id)) {
+                                // create single multiple schema validation job
+                                newId = analyzeSingleXMLFile(file, String.valueOf(Constants.JOB_VALIDATION), schema, checkForDuplicateJob, addedThroughRabbitMq, uuid);
+                                result.put(newId, file);
+                                break;
+                            }
+                        }
+                    }
+                    
+                    for(Hashtable ht: queries) {
+                        String query_id = String.valueOf(ht.get(ListQueriesMethod.KEY_QUERY_ID));
+
+                        if (!hasMultipleSchemas || (hasMultipleSchemas && !String.valueOf(Constants.JOB_VALIDATION).equals(query_id))) {
+                            newId = analyzeSingleXMLFile(file, query_id, schema, checkForDuplicateJob, addedThroughRabbitMq, uuid);
+                            result.put(newId, file);
+                        }
                     }
                 }
             }
@@ -111,28 +131,26 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
     @Override
     public String analyzeSingleXMLFile(String sourceURL, String scriptId, String schema, Boolean checkForDuplicateJob, Boolean addedThroughRabbitMq, String uuid) throws XMLConvException{
         String jobId = null;
-        if(checkForDuplicateJob){
+        if (checkForDuplicateJob) {
             jobId = getJobService().findDuplicateNotCompletedJob(sourceURL, scriptId);
         }
-        if(!Utils.isNullStr(jobId)){
+        if (!Utils.isNullStr(jobId)) {
             return jobId;
-        }
-        else{
+        } else {
             jobId = "-1";
         }
+
         HashMap query;
         String originalSourceURL = sourceURL;
 
         try {
-
-            if ( String.valueOf(Constants.JOB_VALIDATION).equals(scriptId )  ){ // Validation
+            if (String.valueOf(Constants.JOB_VALIDATION).equals(scriptId)) { // Validation
                 query = createMapForJobValidation(sourceURL, schema);
-            }
-            else{
+            } else {
                 query = queryDao.getQueryInfo( scriptId);
             }
 
-            if (isNull(  query ) ){
+            if (isNull(query)) {
                 throw new XMLConvException("Script ID does not exist");
             }
             if ( "0".equals(query.get(QaScriptView.IS_ACTIVE) )){
@@ -147,10 +165,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             String scriptType = (String) query.get(QaScriptView.SCRIPT_TYPE);
             String asynchronousExecutionStr = (String) query.get(QaScriptView.ASYNCHRONOUS_EXECUTION);
             Boolean asynchronousExecution;
-            if(asynchronousExecutionStr != null && asynchronousExecutionStr.equals("1")){
+            if (asynchronousExecutionStr != null && asynchronousExecutionStr.equals("1")) {
                 asynchronousExecution = true;
-            }
-            else{
+            } else {
                 asynchronousExecution = false;
             }
             String fileExtension = getExtension(outputTypes, contentType,scriptType, asynchronousExecution);
@@ -170,14 +187,12 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
                 queryFile =
                         Utils.Replace(queryFile, eionet.gdem.Properties.gdemURL + "/" + Constants.QUERIES_FOLDER,
                                 eionet.gdem.Properties.queriesFolder + File.separator);
-            }
-            else if (queryId != JOB_VALIDATION
+            } else if (queryId != JOB_VALIDATION
                     && ! queryFile.startsWith(eionet.gdem.Properties.gdemURL + "/" + Constants.QUERIES_FOLDER)) {
                 queryFile = eionet.gdem.Properties.queriesFolder + File.separator + queryFile;
             }
 
             jobId = startJobInDbAndSchedule(sourceURL, originalSourceURL, queryFile, resultFile, scriptType, queryId, addedThroughRabbitMq, uuid);
-
         } catch (SQLException e) {
             LOGGER.error("AnalyzeXMLFile:" , e);
             throw new XMLConvException(e.getMessage());
@@ -247,7 +262,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
 
         String jobId = "-1";
         String duplicateIdentifier = null;
-        if(queryId == null) {
+        if (queryId == null) {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, Constants.JOB_FROMSTRING, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
             jobEntry.setXmlSize(sourceSize);
@@ -256,11 +271,10 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
-            if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
+            if (jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
             }
-        }
-        else{
+        } else {
             InternalSchedulingStatus internalSchedulingStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_RECEIVED);
             JobEntry jobEntry = new JobEntry(sourceURL, xqFile, resultFile, Constants.XQ_RECEIVED, queryId, new Timestamp(new Date().getTime()), scriptType, internalSchedulingStatus).setRetryCounter(0);
             jobEntry.setXmlSize(sourceSize);
@@ -271,7 +285,7 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
             jobEntry = getJobService().saveOrUpdate(jobEntry);
             jobId = jobEntry.getId().toString();
             LOGGER.info("Job with id " + jobId + " has been inserted in table T_XQJOBS");
-            if(jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
+            if (jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                 cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
             }
         }
@@ -294,20 +308,20 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
 
     private HashMap<String,String> createMapForJobValidation(String sourceFileURL, String schema) throws XMLConvException {
         HashMap<String,String> query = new HashMap();
-        if ( isEmpty(schema)){
+        if (isEmpty(schema)) {
             InputAnalyser analyser = new InputAnalyser();
             try {
                 analyser.parseXML(sourceFileURL);
-                schema = analyser.getSchemaOrDTD();
+                schema = String.join(" ", analyser.getSchemas());
             } catch (Exception e) {
                 throw new XMLConvException("Could not extract schema");
             }
-            query.put( QaScriptView.QUERY, schema);
+            query.put(QaScriptView.QUERY, schema);
         }
         query.put(QaScriptView.QUERY , schema);
-        query.put( QaScriptView.QUERY_ID , "-1");
-        query.put( QaScriptView.CONTENT_TYPE, DEFAULT_CONTENT_TYPE_ID);
-        query.put( QaScriptView.SCRIPT_TYPE, "xsd");
+        query.put(QaScriptView.QUERY_ID , "-1");
+        query.put(QaScriptView.CONTENT_TYPE, DEFAULT_CONTENT_TYPE_ID);
+        query.put(QaScriptView.SCRIPT_TYPE, "xsd");
         return query;
     }
 
@@ -319,9 +333,9 @@ public class JobRequestHandlerServiceImpl extends RemoteService implements JobRe
      */
     private String getExtension(Vector outputTypes, String content_type,String scriptType, Boolean asynchronousExecution)  {
         String ret = null;
-        if(scriptType.equals( XQScript.SCRIPT_LANG_FME) && asynchronousExecution == true){
+        if (scriptType.equals( XQScript.SCRIPT_LANG_FME) && asynchronousExecution == true) {
             ret ="zip";
-        }else{
+        } else {
             ret = "html";
         }
 

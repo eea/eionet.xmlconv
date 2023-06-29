@@ -26,11 +26,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.xml.transform.Source;
 
-/**
- *
- */
 public class JaxpValidationService implements ValidationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JaxpValidationService.class);
@@ -45,26 +45,20 @@ public class JaxpValidationService implements ValidationService {
 
     private SchemaManager schemaManager = new SchemaManager();
 
-    private String originalSchema;
-    private String validatedSchema;
-    private String validatedSchemaURL;
+    private List<String> originalSchemas = new ArrayList<>();
+    private List<String> validatedSchemasURL = new ArrayList<>();
 
     private String warningMessage;
 
 
     @Override
-    public String getOriginalSchema() {
-        return this.originalSchema;
+    public List<String> getOriginalSchemas() {
+        return this.originalSchemas;
     }
 
     @Override
-    public String getValidatedSchema() {
-        return this.validatedSchema;
-    }
-
-    @Override
-    public String getValidatedSchemaURL() {
-        return this.validatedSchemaURL;
+    public List<String> getValidatedSchemasURL() {
+        return this.validatedSchemasURL;
     }
 
     @Override
@@ -112,24 +106,28 @@ public class JaxpValidationService implements ValidationService {
     public String validateSchema(String sourceUrl, InputStream srcStream, String schemaUrl) throws DCMException, XMLConvException {
 
         String resultXML = "";
-        boolean isDTD = false;
         boolean isBlocker = false;
-        String namespace = "";
 
+        List<String> schemas = new ArrayList<>();;
+        
         if (StringUtils.isEmpty(schemaUrl)) {
             inputAnalyser.parseXML(sourceUrl);
-            schemaUrl = inputAnalyser.getSchemaOrDTD();
-            namespace = inputAnalyser.getNamespace();
+            schemas.addAll(inputAnalyser.getSchemas());
         } else {
-            isDTD = schemaUrl.endsWith("dtd");
+            String[] possibleSchemas = schemaUrl.split("\\s+");
+            Arrays.stream(possibleSchemas).forEach(possibleSchema -> {
+                if (possibleSchema.endsWith(".xsd")) {
+                    schemas.add(possibleSchema);
+                }
+            });
         }
-
-        if (StringUtils.isEmpty(schemaUrl)) {
+        
+        if (schemas.isEmpty()) {
             return validationFeedback.formatFeedbackText("Could not validate XML file. Unable to locate XML Schema reference.", QAFeedbackType.ERROR, true);
         }
-        originalSchema = schemaUrl;
-        validatedSchema = schemaUrl;
-        validationFeedback.setSchema(originalSchema);
+        
+        originalSchemas = schemas;
+        validationFeedback.setSchemas(schemas);
 
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
@@ -140,15 +138,31 @@ public class JaxpValidationService implements ValidationService {
         sf.setResourceResolver(resolver);
         sf.setErrorHandler(errorHandler);
 
-        String schemaFileName = schemaManager.getUplSchemaURL(schemaUrl);
-        if (!StringUtils.equals(schemaUrl, schemaFileName)) {
-            //XXX: replace file://
-            validatedSchema = "file:///".concat(Properties.schemaFolder).concat("/").concat(schemaFileName);
-            validatedSchemaURL = Properties.gdemURL.concat("/schema/").concat(schemaFileName);
-        }
+        List<Source> sources = new ArrayList<>();
+        for (String schema : schemas) {
+            String localSchema = schemaManager.getUplSchemaURL(schema);
+            String validatedSchema;
+            if (!StringUtils.equals(schema, localSchema)) {
+                //XXX: replace file://
+                validatedSchema = "file:///".concat(Properties.schemaFolder).concat("/").concat(localSchema);
+                validatedSchemasURL.add(Properties.gdemURL.concat("/schema/").concat(localSchema));
+            } else {
+                validatedSchema = schema;
+                validatedSchemasURL.add(schema);
+            }
 
+            try {
+                URL schemaLocationUrl = new URL(validatedSchema);
+                sources.add(new StreamSource(schemaLocationUrl.toString()));
+            } catch(MalformedURLException ex) {
+                LOGGER.info("Malformed schema URL: " + ex.getMessage());
+            }
+        }
+        
         try {
-            Schema schema = sf.newSchema(new URL(validatedSchema));
+            Source[] sourceArray =  new Source[sources.size()];
+            sources.toArray(sourceArray);
+            Schema schema = sf.newSchema(sourceArray);
             if (errorHandler.getErrors() != null && errorHandler.getErrors().size() > 0) {
                 validationFeedback.setValidationErrors(errorHandler.getErrors());
                 return validationFeedback.formatFeedbackText("Document is not well-formed: ", QAFeedbackType.ERROR, isBlocker);
@@ -162,16 +176,26 @@ public class JaxpValidationService implements ValidationService {
             validator.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
             validator.setFeature("http://apache.org/xml/features/continue-after-fatal-error", false);
             validator.validate(new StreamSource(srcStream));
-
-            eionet.gdem.dto.Schema schemaObj = schemaManager.getSchema(schemaUrl);
-            if (schemaObj != null) {
-                isBlocker = schemaObj.isBlocker();
-            }
             LOGGER.info("Validation completed");
+
+            // Refs #53839 for multiple schema validation, validation blocks delivery if at least one schema is blocker
+            for (String originalSchema : originalSchemas) {
+                eionet.gdem.dto.Schema schemaObj = schemaManager.getSchema(originalSchema);
+                if (schemaObj != null && schemaObj.isBlocker()) {
+                    isBlocker = true;
+                    break;
+                }
+            }
+
             validationFeedback.setValidationErrors(errorHandler.getErrors());
             resultXML = validationFeedback.formatFeedbackText(isBlocker);
-            resultXML = postProcessor.processQAResult(resultXML, schemaUrl);
-            warningMessage = postProcessor.getWarningMessage(schemaUrl);
+
+            for (String originalSchema : originalSchemas) {
+                resultXML = postProcessor.processQAResult(resultXML, originalSchema);
+                warningMessage = warningMessage == null ?
+                        postProcessor.getWarningMessage(originalSchema) :
+                        warningMessage + " " + postProcessor.getWarningMessage(originalSchema);
+            }
 
         } catch (SAXException e) {
             LOGGER.info("Document is not well-formed: " + e.getMessage());
