@@ -1,7 +1,6 @@
 package eionet.gdem.jpa.service;
 
 import eionet.gdem.jpa.Entities.CdrRequestEntry;
-import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.repositories.CdrRequestsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
