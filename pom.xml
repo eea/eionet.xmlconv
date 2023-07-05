@@ -130,14 +130,6 @@
                                 <ports>
                                     <port>rabbitmq.port:5672</port>
                                 </ports>
-                                <wait>
-                                    <http>
-                                        <url>${docker.container.rabbitmq.ip}:15672</url>
-                                        <method>GET</method>
-                                        <status>200..399</status>
-                                    </http>
-                                    <time>10000</time>
-                                </wait>
                             </run>
                         </image>
                         <image>
