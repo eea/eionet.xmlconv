@@ -129,11 +129,10 @@
                             <run>
                                 <ports>
                                     <port>rabbitmq.port:5672</port>
-                                    <port>rabbitmq.management.port:15672</port>
                                 </ports>
                                 <wait>
                                     <http>
-                                        <url>${docker.host.address}:${rabbitmq.management.port}</url>
+                                        <url>${docker.container.rabbitmq.ip}:15672</url>
                                         <method>GET</method>
                                         <status>200..399</status>
                                     </http>
