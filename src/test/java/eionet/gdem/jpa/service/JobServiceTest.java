@@ -149,7 +149,7 @@ public class JobServiceTest {
         assertThat(jobMetadataListResult.get(0).getJobExecutorName(), is("demoExecutor"));
         assertThat(jobMetadataListResult.get(0).getTimestamp(), is(jobEntry.getTimestamp().toString()));
         assertThat(jobMetadataListResult.get(0).getFileName(), is("test"));
-        assertThat(jobMetadataListResult.get(0).getScript_file(), is("test"));
+        assertThat(jobMetadataListResult.get(0).getScript_file().get(0), is("test"));
         assertThat(jobMetadataListResult.get(0).getStatus(), is(2));
         assertThat(jobMetadataListResult.get(0).getStatusName(), is("PROCESSING"));
         assertThat(jobMetadataListResult.get(0).getScriptId(), is("3"));

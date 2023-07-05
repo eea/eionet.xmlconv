@@ -69,7 +69,7 @@ public class JobRequestHandlerServiceTest {
      */
     @Test
     public void testAnalyzeXMLProtectedMultipleFiles() throws Exception {
-        String schema = "http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1920";
+        String schema = "http://dd.eionet.eu.int/GetSchema?id=TBL1920";
         HashMap map = new HashMap();
         List<String> fileList = new ArrayList<>();
         fileList.add("http://cdr.eionet.europa.eu/test.xml");
@@ -90,7 +90,7 @@ public class JobRequestHandlerServiceTest {
      */
     @Test
     public void testAnalyzeXMLProtectedMMultipleSchemasAndFiles() throws Exception {
-        String schema1 = "http://dd.eionet.eu.int/namespace.jsp?ns_id=200 http://dd.eionet.eu.int/GetSchema?id=TBL1920";
+        String schema1 = "http://dd.eionet.eu.int/GetSchema?id=TBL1920";
         String schema2 = "http://biodiversity.eionet.europa.eu/schemas/dir9243eec/habitats.xsd";
         HashMap map = new HashMap();
         List<String> fileList1 = new ArrayList<>();

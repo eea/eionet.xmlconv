@@ -75,17 +75,18 @@ public class SchemaFinder extends DefaultHandler {
             if (attrName.equalsIgnoreCase(NO_NS_SCHEMA_REFERENCE)) {
                 schemaLocations.add(attrs.getValue(i));
             } else if (attrName.equalsIgnoreCase(SCHEMA_REFERENCE)) {
-                String sch_val = attrs.getValue(i);
+                String xsiSchemaLocationAttributeValue = attrs.getValue(i);
 
-                if (!Utils.isNullStr(sch_val)) {
-                    String schemaWithNS = attrs.getValue(i);
-                    String[] possibleSchemas = schemaWithNS.split("\\s+");
-
-                    Arrays.stream(possibleSchemas).forEach(possibleSchema -> {
-                        if (possibleSchema.endsWith(".xsd")) {
-                            schemaLocations.add(possibleSchema);
+                if (!Utils.isNullStr(xsiSchemaLocationAttributeValue)) {
+                    String[] namespacesAndSchemas = xsiSchemaLocationAttributeValue.split("\\s+");
+                    // Refs #253839 for multiple schemas the xsi:schemaLocation element has the following format
+                    // xsi:schemaLocation="namespace_1 schema_1 namespace_2 schema_2 namespace_n schema_n"
+                    for (int j = 0; j < namespacesAndSchemas.length; j++) {
+                        if (j % 2 != 0) {
+                            // get schema location
+                            schemaLocations.add(namespacesAndSchemas[j]);
                         }
-                    });
+                    }
                 }
             }
         }
