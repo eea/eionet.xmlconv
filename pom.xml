@@ -94,7 +94,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.26.0</version>
+                <version>0.43.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <filter>${valid.images}</filter>
@@ -125,7 +125,7 @@
                         </image>
                         <image>
                             <alias>rabbitmq</alias>
-                            <name>rabbitmq:3-management</name>
+                            <name>rabbitmq@sha256:4170a71045b311c42ed1833202267cb6e0961fcff9f00e495ba421710e16bb1a</name>
                             <run>
                                 <ports>
                                     <port>rabbitmq.port:5672</port>
