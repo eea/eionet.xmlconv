@@ -6,6 +6,7 @@ import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.exceptions.DCMException;
+import eionet.gdem.http.FollowRedirectException;
 import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.qa.QAFeedbackType;
 import eionet.gdem.qa.QAResultPostProcessor;
@@ -152,9 +153,9 @@ public class JaxpValidationService implements ValidationService {
             }
 
             try {
-                URL schemaLocationUrl = new URL(validatedSchema);
+                URL schemaLocationUrl = HttpFileManager.followUrlRedirectIfNeeded(new URL(validatedSchema), null);
                 sources.add(new StreamSource(schemaLocationUrl.toString()));
-            } catch(MalformedURLException ex) {
+            } catch(MalformedURLException | FollowRedirectException ex) {
                 LOGGER.info("Malformed schema URL: " + ex.getMessage());
             }
         }

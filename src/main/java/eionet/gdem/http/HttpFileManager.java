@@ -165,7 +165,7 @@ public class HttpFileManager {
         CustomURI customURL = new CustomURI(srcUrl);
         URL url = customURL.getRawURL();
         try {
-            url = this.followUrlRedirectIfNeeded(url, ticket);
+            url = HttpFileManager.followUrlRedirectIfNeeded(url, ticket);
         } catch (FollowRedirectException e) {
             LOGGER.error( e.getMessage(), e.getCause() );
             throw new IOException("Failed to Redirect URL");
@@ -297,9 +297,9 @@ public class HttpFileManager {
      * @param ticket for basic authorization
      * @return url the Url redirected if required
      * */
-    public URL followUrlRedirectIfNeeded(URL url, String ticket) throws FollowRedirectException {
+    public static URL followUrlRedirectIfNeeded(URL url, String ticket) throws FollowRedirectException {
 
-        LOGGER.info("Checking URL:"+ url.toString()+" for redirects.");
+        LOGGER.info("Checking URL:" + url.toString()+" for redirects.");
         try {
             HttpURLConnection con = (HttpURLConnection)(url.openConnection());
 
@@ -314,13 +314,13 @@ public class HttpFileManager {
             con.connect();
             int responseCode = con.getResponseCode();
             LOGGER.info("URL Redirection Mechanism Response Code :"+ responseCode);
-            if(responseCode==301 || responseCode == 302){
+            if (responseCode == 301 || responseCode == 302 || responseCode == 307){
                 String location = con.getHeaderField( "Location" );
                 LOGGER.info("Redirect Location is:"+location);
                 return new URL(con.getHeaderField("Location"));
             }
         } catch (IOException e) {
-            throw new FollowRedirectException("Error trying to invoke Server with Url:"+url.toString(),e.getCause());
+            throw new FollowRedirectException("Error trying to invoke Server with Url:" + url.toString(), e.getCause());
         }
       return url;
     }
