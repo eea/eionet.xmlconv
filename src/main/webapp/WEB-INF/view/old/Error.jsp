@@ -2,10 +2,10 @@
 
 <c:choose>
   <c:when test="${!empty exceptionMessage}">
-    <div class="error-msg">${status} - ${exceptionMessage}</div>
+    <div class="error-msg">${status} - <c:out value="${exceptionMessage}" /></div>
   </c:when>
   <c:otherwise>
-    <div class="error-msg">${status} - ${reason}</div>
+    <div class="error-msg">${status} - <c:out value="${reason}" /></div>
   </c:otherwise>
 </c:choose>
 
