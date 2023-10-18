@@ -9,8 +9,14 @@ $(document).ready(function() {
         }
     });
     $('#selScriptType').change(function () {
-        var value = $(this).children('option:selected').attr('value');
-        hideOrShowByScriptType(value);
+        const scriptType = $(this).children('option:selected').attr('value');
+        hideOrShowByScriptType(scriptType);
+        const asynchronousExecution = $('input[name="asynchronousExecution"]:checked').val();
+        setResultTypeOptions(scriptType, asynchronousExecution);
+    });
+    $('input[name="asynchronousExecution"]').change(function() {
+        const scriptType = $('#selScriptType').val();
+        setResultTypeOptions(scriptType, $(this).val());
     });
 });
 
@@ -23,6 +29,15 @@ window.onload = function () {
         $('#scriptRulesSection').hide();
     }
 };
+
+function setResultTypeOptions(scriptType, asynchronousExecution) {
+    if (scriptType === 'fme' && asynchronousExecution === "true") {
+        $('#selContentType').val("ZIP");
+        $('#selContentType option:not([value="ZIP"])').prop('disabled', true);
+    } else {
+        $('#selContentType option').prop('disabled', false);
+    }
+}
 
 function hideOrShowByScriptType(value) {
     if (value == 'fme') {

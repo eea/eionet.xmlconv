@@ -23,9 +23,6 @@ public class QAScriptValidator implements Validator {
 
     public void validateAdd(Object o, Errors errors) {
         QAScriptForm form = (QAScriptForm) o;
-        String schemaId = form.getSchemaId();
-        String shortName = form.getShortName();
-        String desc = form.getDescription();
         String schema = form.getSchema();
         String resultType = form.getResultType();
         String scriptType = form.getScriptType();
@@ -38,7 +35,10 @@ public class QAScriptValidator implements Validator {
             if (url == null || url.equals("")) {
                 errors.rejectValue("scriptType", "label.qascript.fme.url.validation");
             }
-            // Other script type validations
+            // async fme scripts have zip as result type
+            if (form.isAsynchronousExecution() && !XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
+                errors.rejectValue("resultType", "label.qascript.async.fme.zip.validation");
+            }
         } else {
             if ((scriptFile == null || scriptFile.getSize() == 0) && Utils.isNullStr(url)) {
                 errors.rejectValue("scriptFile", "label.qascript.file.validation");
@@ -63,19 +63,18 @@ public class QAScriptValidator implements Validator {
 
     public void validateUpdate(Object o, Errors errors) {
         QAScriptForm form = (QAScriptForm) o;
-        String schemaId = form.getSchemaId();
-        String shortName = form.getShortName();
-        String desc = form.getDescription();
-        String schema = form.getSchema();
         String resultType = form.getResultType();
         String scriptType = form.getScriptType();
-        String url = form.getUrl();
         String upperLimit = form.getUpperLimit();
-        MultipartFile scriptFile = form.getScriptFile();
 
         // Zip result type can only be selected for FME scripts
         if (!XQScript.SCRIPT_LANG_FME.equals(scriptType) && XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
             errors.rejectValue("scriptType", "label.qascript.zip.validation");
+        }
+
+        // async fme scripts have zip as result type
+        if (XQScript.SCRIPT_LANG_FME.equals(scriptType) && form.isAsynchronousExecution() && !XQScript.SCRIPT_RESULTTYPE_ZIP.equals(resultType)) {
+            errors.rejectValue("resultType", "label.qascript.async.fme.zip.validation");
         }
 
         if (!XQScript.SCRIPT_LANG_XQUERY3.equals(scriptType) && !XQScript.SCRIPT_LANG_XQUERY1.equals(scriptType)
