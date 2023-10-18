@@ -8,6 +8,11 @@ $(document).ready(function() {
             $("#markedHeavyOtherReasonTxt").val('');
         }
     });
+
+    if ($('input[name="asynchronousExecution"]').length && $('#selScriptType').length) {
+        setResultTypeOptions($('#selScriptType').val(), $('input[name="asynchronousExecution"]:checked').val());
+    }
+
     $('#selScriptType').change(function () {
         const scriptType = $(this).children('option:selected').attr('value');
         hideOrShowByScriptType(scriptType);
