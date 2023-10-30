@@ -63,7 +63,7 @@ public class CdrRequestMessageReceiver implements ChannelAwareMessageListener {
         uuid = cdrMessage.getUUID();
         LOGGER.info("Jobs from cdr queue for envelope url " + cdrMessage.getEnvelopeUrl() + " and UUID " + uuid + " will be scheduled");
         try {
-            qaResults = qaService.scheduleJobs(cdrMessage.getEnvelopeUrl(), false, true, uuid);
+            qaResults = qaService.scheduleJobs(cdrMessage.getEnvelopeUrl(), true, true, uuid);
             CdrRequestEntry cdrRequestEntry = new CdrRequestEntry(uuid, cdrMessage.getEnvelopeUrl(), qaResults.size(), new Timestamp(new Date().getTime()));
             cdrRequestsService.save(cdrRequestEntry);
             cdrResponseMessageFactoryService.createCdrSummaryResponseMessageAndSendToQueue(uuid, cdrMessage.getEnvelopeUrl(), qaResults);
