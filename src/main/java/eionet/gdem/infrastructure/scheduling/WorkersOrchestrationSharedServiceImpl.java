@@ -60,6 +60,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
         List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(serviceId);
         Integer scale = newWorkers;
         if (instances.size() >= maxJobExecutorsAllowed) {
+            LOGGER.info("No new workers will be created since max allowed (" + maxJobExecutorsAllowed + ") exist.");
             return;
         } else if (instances.size() + newWorkers > maxJobExecutorsAllowed) {
             scale = maxJobExecutorsAllowed - instances.size();
@@ -128,6 +129,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
 
         jobExecutorService.deleteByName(worker.getName());
         deleteWorkerHeartBeatQueue(worker.getHeartBeatQueue());
+        LOGGER.info("Deleted worker " + worker.getName() + " from Rancher and database");
     }
 
     @Override
