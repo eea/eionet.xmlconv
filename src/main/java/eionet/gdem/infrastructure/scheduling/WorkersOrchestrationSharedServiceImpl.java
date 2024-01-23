@@ -171,6 +171,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
         }
         List<JobExecutor> readyWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_READY);
         readyWorkers = readyWorkers.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(jobExecutorType)).collect(Collectors.toList());
+        LOGGER.info(readyWorkers.size() + " " + jobExecutorType + " ready workers for " + finalJobs.size() + " jobs");
         if (finalJobs.size() > readyWorkers.size()) {
             Integer newWorkers = finalJobs.size() - readyWorkers.size();
             try {
@@ -191,6 +192,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                 return;
             }
             Integer workersToDelete = readyWorkers.size() - finalJobs.size();
+            LOGGER.info("Preparing to delete " + workersToDelete + " " + jobExecutorType + " workers");
             Integer workersDeleted = 1;
             for (JobExecutor worker : readyWorkers) {
                 while (workersDeleted <= workersToDelete) {
@@ -213,6 +215,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                     break;
                 }
             }
+            LOGGER.info("Deleted " + workersDeleted + " " + jobExecutorType +" workers");
         }
     }
 
