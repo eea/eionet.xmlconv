@@ -90,6 +90,7 @@ public class RestTemplateAndCircuitBreakerAndTaskSchedulerConfig {
         taskScheduler.initialize();
         taskScheduler.setErrorHandler(throwable -> {
             LOGGER.info("Caught exception in TaskScheduler. " + throwable.getMessage());
+            LOGGER.error("Exception stack trace in TaskScheduler: ", throwable);
             //create alert and send it to uns
             Timestamp dateOccurred = new Timestamp(new Date().getTime());
             AlertEntry alertEntry = new AlertEntry().setSeverity(AlertSeverity.CRITICAL).setDescription("Scheduled task failed.").setOccurrenceDate(dateOccurred);
