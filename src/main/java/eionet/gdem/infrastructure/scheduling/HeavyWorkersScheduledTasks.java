@@ -12,8 +12,8 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.PropertiesService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestratorImpl;
+import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +32,12 @@ public class HeavyWorkersScheduledTasks {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeavyWorkersScheduledTasks.class);
     private static final String MAX_HEAVY_JOB_EXECUTORS_ALLOWED = "maxHeavyJobExecutorContainersAllowed";
 
-    private WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService;
-    private ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator;
-    private JobExecutorService jobExecutorService;
-    private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
-    private JobService jobService;
-    private PropertiesService propertiesService;
+    private final WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService;
+    private final ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator;
+    private final JobExecutorService jobExecutorService;
+    private final WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
+    private final JobService jobService;
+    private final PropertiesService propertiesService;
 
     @Autowired
     public HeavyWorkersScheduledTasks(WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService, ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator, JobExecutorService jobExecutorService,
@@ -54,11 +54,9 @@ public class HeavyWorkersScheduledTasks {
      * The task runs every minute and checks how many jobs have internalSchedulingStatus=2 (meaning the job has been added to rabbitmq queue and is waiting
      * for a worker to grab it) and field IS_HEAVY=true and how many heavy workers have status=1 (meaning they are ready to receive a job) and creates or
      * deletes workers accordingly.
-     *
-     * @throws RancherApiException
      */
     @Transactional
-    @Scheduled(cron = "0 */1 * * * *")  //every minute
+    @Scheduled(cron = "0 */1 * * * *")  // every minute
     public void scheduleHeavyWorkersOrchestration() {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
@@ -66,10 +64,10 @@ public class HeavyWorkersScheduledTasks {
         Integer heavyJobExecutorsAllowed = Properties.maxHeavyJobExecutorContainersAllowed;
         try {
             Integer value = (Integer) propertiesService.getValue(MAX_HEAVY_JOB_EXECUTORS_ALLOWED);
-            if (value != null) heavyJobExecutorsAllowed=value;
-            LOGGER.info("Max heavy jobExecutors parameter set to " + heavyJobExecutorsAllowed);
+            if (value != null) heavyJobExecutorsAllowed = value;
+            LOGGER.info("Max heavy jobExecutors parameter set to {}", heavyJobExecutorsAllowed);
         } catch (DatabaseException e) {
-            LOGGER.error("Max heavy jobExecutors parameter set to " + heavyJobExecutorsAllowed + ", because of database error");
+            LOGGER.error("Max heavy jobExecutors parameter set to {}, because of database error", heavyJobExecutorsAllowed);
         }
         workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherHeavyJobExecServiceId, true, JobExecutorType.Heavy, heavyJobExecutorsAllowed);
     }
@@ -78,45 +76,39 @@ public class HeavyWorkersScheduledTasks {
      * Finds heavy jobExecutor instances in rancher that have failed to run correctly (unhealthy state) and updates their status in database
      * with status=2 (FAILED). The task also finds heavy jobExecutors in database that don't exist in rancher and deletes them from database.
      *
-     * @throws RancherApiException
      * @throws DatabaseException
      */
-    @Scheduled(cron = "0 */2 * * * *") //Every 2 minutes
-    public void synchronizeRancherHeavyContainersAndDbEntriesByExistenceAndStatus() throws RancherApiException, DatabaseException {
+    @Scheduled(cron = "0 */2 * * * *") // every 2 minutes
+    public void synchronizeRancherHeavyContainersAndDbEntriesByExistenceAndStatus() throws DatabaseException {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        try {
-            //Retrieve jobExecutor instances names from Rancher
-            List<String> instances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherHeavyJobExecServiceId);
-            workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(instances, true);
+        // Retrieve jobExecutor pods from Rancher
+        List<Pod> pods = servicesRancherApiOrchestrator.getPods(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
+        workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(pods, true);
 
-            List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
-            List<JobExecutor> heavyJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Heavy)).collect(Collectors.toList());
-            workersOrchestrationSharedService.synchronizeRancherContainersWithDbEntries(heavyJobExecutors, instances);
-        } catch (RancherApiException rae) {
-            LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
-            throw rae;
-        }
+        List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
+        List<JobExecutor> heavyJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Heavy)).collect(Collectors.toList());
+        workersOrchestrationSharedService.synchronizeRancherContainersWithDbEntries(heavyJobExecutors, pods);
     }
 
     /**
      * Finds heavy jobs that their heavyRetriesOnFailure have exceeded maxHeavyRetries (meaning the heavy worker has run out of memory maxHeavyRetries times) and marks
      * the jobs as fatal_error (n_status=4 and internal_status=4) and the workers that have been executing them as failed (status=2)
      */
-    @Scheduled(cron = "0 */1 * * * *")  //every minute
+    @Scheduled(cron = "0 */1 * * * *")  // every minute
     public void checkProcessingHeavyJobs() {
-        List<JobEntry> heavyProcessingJobs = jobService.findProcessingJobs().stream().filter(jobEntry -> jobEntry.isHeavy()).collect(Collectors.toList());
+        List<JobEntry> heavyProcessingJobs = jobService.findProcessingJobs().stream().filter(JobEntry::isHeavy).collect(Collectors.toList());
         for (JobEntry jobEntry : heavyProcessingJobs) {
             try {
-                if (jobEntry.getHeavyRetriesOnFailure()!=null && jobEntry.getHeavyRetriesOnFailure()==Properties.maxHeavyRetries.intValue()) {
-                    LOGGER.info("Setting the status of job " + jobEntry.getId() + " to " + Constants.XQ_FATAL_ERR + ", because heavy worker " + jobEntry.getJobExecutorName() + " reached maximum heavy retries");
+                if (jobEntry.getHeavyRetriesOnFailure() != null && jobEntry.getHeavyRetriesOnFailure() == Properties.maxHeavyRetries.intValue()) {
+                    LOGGER.info("Setting the status of job {} to " + Constants.XQ_FATAL_ERR + ", because heavy worker {} reached maximum heavy retries", jobEntry.getId(), jobEntry.getJobExecutorName());
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     jobEntry.setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
                     workerAndJobStatusHandlerService.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_FAILED);
                 }
-            } catch (Exception e) {
-                LOGGER.error("Error while checking processing heavy job with id " + jobEntry.getId());
+            } catch (DatabaseException e) {
+                LOGGER.error("Error while checking processing heavy job with id {}", jobEntry.getId());
             }
         }
     }

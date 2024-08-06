@@ -252,6 +252,15 @@ public class Properties {
     public static String CDR_RESULTS_EXCHANGE;
     public static String CDR_RESULTS_ROUTING_KEY;
 
+    public static String RANCHER_MASTER_URL;
+    public static String RANCHER_NAMESPACE;
+    public static String RANCHER_AUTH_TOKEN;
+    public static String RANCHER_CONVERTERS_POD_NAME;
+    public static String RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME;
+    public static String RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME;
+    public static String RANCHER_SYNC_FME_JOBEXEC_DEPLOYMENT_NAME;
+    public static String RANCHER_ASYNC_FME_JOBEXEC_DEPLOYMENT_NAME;
+
     public static final Long jobsOnDemandLimitBeforeTimeout;
     public static final Long jobsOnDemandUITimeout;
 
@@ -465,6 +474,14 @@ public class Properties {
         jobExecutorRequestsUrl = getStringProperty("jobExecutor.requests.url");
         jobExecutorTimeoutRetrieveEndpoint = getStringProperty("jobExecutor.properties.retrieve.endpoint");
 
+        RANCHER_MASTER_URL = getStringProperty("env.rancher.master.url");
+        RANCHER_NAMESPACE = getStringProperty("env.rancher.namespace");
+        RANCHER_AUTH_TOKEN = getStringProperty("env.rancher.auth.token");
+        RANCHER_CONVERTERS_POD_NAME = getStringProperty("env.rancher.converters.pod.name");
+        RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME = getStringProperty("env.rancher.light.jobExec.deployment.name");
+        RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME = getStringProperty("env.rancher.heavy.jobExec.deployment.name");
+        RANCHER_SYNC_FME_JOBEXEC_DEPLOYMENT_NAME = getStringProperty("env.rancher.sync.fme.jobExec.deployment.name");
+        RANCHER_ASYNC_FME_JOBEXEC_DEPLOYMENT_NAME = getStringProperty("env.rancher.async.fme.jobExec.deployment.name");
     }
 
     /**

@@ -7,6 +7,11 @@ import eionet.gdem.rancher.exception.RancherApiTimoutException;
 import eionet.gdem.rancher.model.RancherApiNewServiceRequestBody;
 import eionet.gdem.rancher.model.ServiceApiRequestBody;
 import eionet.gdem.rancher.model.ServiceApiResponse;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.StatusDetails;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.utils.PodStatusUtil;
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +31,72 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     private RestTemplate restTemplate;
     private RancherApiNewServiceRequestBodyCreator rancherApiNewServiceRequestBodyCreator;
     private String rancherApiUrl;
+    private final KubernetesClient kubernetesClient;
     private static final Integer TIME_LIMIT = 60000;
     private static final long TIME_WAITING_BETWEEN_RANCHER_API_CALLS = 3000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServicesRancherApiOrchestratorImpl.class);
 
     @Autowired
-    public ServicesRancherApiOrchestratorImpl(RestTemplate restTemplate, RancherApiNewServiceRequestBodyCreator rancherApiNewServiceRequestBodyCreator) {
+    public ServicesRancherApiOrchestratorImpl(RestTemplate restTemplate,
+                                              RancherApiNewServiceRequestBodyCreator rancherApiNewServiceRequestBodyCreator,
+                                              KubernetesClient kubernetesClient) {
         this.restTemplate = restTemplate;
         this.rancherApiNewServiceRequestBodyCreator = rancherApiNewServiceRequestBodyCreator;
+        this.kubernetesClient = kubernetesClient;
         rancherApiUrl = Properties.rancherApiUrl + "/services/";
+    }
+
+    @Override
+    public Deployment getDeploymentByName(String name) {
+        return kubernetesClient.apps().deployments()
+                .inNamespace(Properties.RANCHER_NAMESPACE)
+                .withName(name)
+                .get();
+    }
+
+    @Override
+    public Deployment scaleDeployment(String deploymentName, int replicas) {
+        return kubernetesClient.apps().deployments()
+                .inNamespace(Properties.RANCHER_NAMESPACE)
+                .withName(deploymentName)
+                .scale(replicas);
+    }
+
+    @Override
+    public Pod getPod(String podName) {
+        return kubernetesClient.pods()
+                .inNamespace(Properties.RANCHER_NAMESPACE)
+                .withName(podName)
+                .get();
+    }
+
+    @Override
+    public List<StatusDetails> deletePod(String podName) {
+        return kubernetesClient.pods()
+                .inNamespace(Properties.RANCHER_NAMESPACE)
+                .withName(podName)
+                .delete();
+    }
+
+    @Override
+    public List<Pod> getPods(String deploymentName) {
+        return kubernetesClient.pods()
+                .inNamespace(Properties.RANCHER_NAMESPACE)
+                .withLabels(getDeploymentByName(deploymentName).getSpec().getSelector().getMatchLabels())
+                .list()
+                .getItems();
+    }
+
+    @Override
+    public Integer getRunningPods(String deploymentName) {
+        Integer runningPods = 0;
+        for (Pod pod : getPods(deploymentName)) {
+            if (PodStatusUtil.isRunning(pod)) {
+                runningPods++;
+            }
+        }
+        return runningPods;
     }
 
     @Override
