@@ -153,7 +153,8 @@ public class JaxpValidationService implements ValidationService {
             }
 
             try {
-                URL schemaLocationUrl = HttpFileManager.followUrlRedirectIfNeeded(new URL(validatedSchema), null);
+                URL schemaLocationUrl = validatedSchema.startsWith("file:///") ?
+                        new URL(validatedSchema) : HttpFileManager.followUrlRedirectIfNeeded(new URL(validatedSchema), null);
                 sources.add(new StreamSource(schemaLocationUrl.toString()));
             } catch(MalformedURLException | FollowRedirectException ex) {
                 LOGGER.info("Malformed schema URL: " + ex.getMessage());
