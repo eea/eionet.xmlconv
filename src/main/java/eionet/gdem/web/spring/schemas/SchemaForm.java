@@ -46,6 +46,16 @@ public class SchemaForm {
 
     private String uplSchemaId;
 
+    private boolean deleteUploadedSchema;
+
+    public boolean isDeleteUploadedSchema() {
+        return deleteUploadedSchema;
+    }
+
+    public void setDeleteUploadedSchema(boolean deleteUploadedSchema) {
+        this.deleteUploadedSchema = deleteUploadedSchema;
+    }
+
     public String getDefaultSchemaLang() {
         return Schema.getDefaultSchemaLang();
     }

@@ -8,7 +8,7 @@
 <h1><spring:message code="label.schema.edit"/></h1>
 
 <form:form servletRelativeAction="/schemas" method="post" enctype="multipart/form-data" modelAttribute="form">
-  <form:errors path="*" cssClass="error-msg" element="div"/>
+  <form:errors path="*" cssClass="error-msg" element="div" htmlEscape="false"/>
   <fieldset class="fieldset">
     <legend><spring:message code="label.schema.fldset.properties"/></legend>
     <div class="row">
@@ -96,6 +96,54 @@
       </div>
     </c:if>
   </fieldset>
+
+  <fieldset class="fieldset">
+    <legend><spring:message code="label.schema.fldset.localfile"/></legend>
+    <c:if test="${!empty form.uplSchemaFileName}">
+      <div class="row">
+        <div class="columns small-4">
+          <label class="question" for="txtSchemaFile">
+            <spring:message code="label.uplSchema.schemaFile"/>
+          </label>
+        </div>
+        <div class="columns small-8">
+          <a href="${form.uplSchemaFileUrl}" title="${form.uplSchemaFileUrl}">${form.uplSchemaFileUrl}</a>&#160;
+          <c:if test="${form.lastModified}">
+            &#160;&#160;(<spring:message code="label.lastmodified"/>: ${form.lastModified})
+          </c:if>
+          <c:if test="${rootElements.xsddPrm}">
+            <label class="question" for="deleteUploadedSchema">
+             Delete Uploaded file
+            </label>
+            <form:checkbox path="deleteUploadedSchema" id="deleteUploadedSchema" name="deleteUploadedSchema" />
+            <script type="text/javascript">
+              $(document).ready(function() {
+                if ($('#deleteUploadedSchema').is(':checked')) {
+                  $('.schemaFileUploadRow').hide();
+                }
+                $('#deleteUploadedSchema').change(function() {
+                  $('.schemaFileUploadRow').toggle(!this.checked);
+                });
+              });
+            </script>
+          </c:if>
+        </div>
+      </div>
+    </c:if>
+    <c:if test="${rootElements.xsduPrm}">
+      <div class="row schemaFileUploadRow">
+        <div class="columns small-4">
+          <label class="question" for="txtSchemaFile">
+            <spring:message code="label.schema.add.file"/>
+          </label>
+        </div>
+        <div class="columns small-8">
+          <input type="file" name="schemaFile" size="20" style="width:400px" id="txtSchemaFile"/>
+        </div>
+      </div>
+    </c:if>
+  </fieldset>
+
   <c:if test="${rootElements.xsduPrm}">
     <button type="submit" class="button" name="update">
       <spring:message code="label.schema.save"/>
@@ -107,56 +155,6 @@
       <spring:message code="label.schema.delete"/>
     </button>
   </c:if>
-
-  <fieldset class="fieldset">
-    <legend><spring:message code="label.schema.fldset.localfile"/></legend>
-    <div class="row">
-      <div class="columns small-4">
-        <label class="question" for="txtSchemaFile">
-          <spring:message code="label.uplSchema.schemaFile"/>
-        </label>
-      </div>
-      <div class="columns small-8">
-        <c:if test="${!empty form.uplSchemaFileName}">
-          <a href="${form.uplSchemaFileUrl}" title="${form.uplSchemaFileUrl}">${form.uplSchemaFileUrl}</a>&#160;
-          <c:if test="${form.lastModified}">
-            &#160;&#160;(<spring:message code="label.lastmodified"/>: ${form.lastModified})
-          </c:if>
-        </c:if>
-      </div>
-    </div>
-    <c:if test="${rootElements.xsduPrm}">
-      <div class="row">
-        <input type="file" name="schemaFile" size="20" style="width:400px" id="txtSchemaFile"/>
-      </div>
-    </c:if>
-    <c:if test="${rootElements.xsduPrm}">
-      <button type="submit" class="button" name="update">
-        <spring:message code="label.uplSchema.upload"/>
-      </button>
-    </c:if>
-    <c:if test="${form.uplSchemaFileName}">
-      <c:if test="${rootElements.xsddPrm}">
-        <button type="submit" name="delete">
-          <spring:message code="label.schema.deleteFile"/>
-        </button>
-      </c:if>
-      <c:if test="${rootElements.xsduPrm}">
-        <c:if test="${rootElements.schemaIdRemoteUrl}">
-          <button type="submit" name="diff">
-            <spring:message code="label.uplSchema.checkupdates"/>
-          </button>
-        </c:if>
-      </c:if>
-    </c:if>
-    <c:if test="${!form.uplSchemaFileName}">
-      <c:if test="${rootElements.schemaIdRemoteUrl}">
-        <button type="submit" name="diff">
-          <spring:message code="label.uplSchema.createcopy"/>
-        </button>
-      </c:if>
-    </c:if>
-  </fieldset>
 
   <%--TODO fix all ifs and UI--%>
 
@@ -242,6 +240,7 @@
     <form:hidden path="schemaId"/>
     <form:hidden path="uplSchemaFileName"/>
     <form:hidden path="uplSchemaId"/>
+    <form:hidden path="uplSchemaFileUrl"/>
       <%--<form:hidden path="schema"/>--%>
   </div>
 </form:form>
