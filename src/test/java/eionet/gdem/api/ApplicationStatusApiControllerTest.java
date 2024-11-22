@@ -1,12 +1,9 @@
 package eionet.gdem.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eionet.gdem.SchedulingConstants;
 import eionet.gdem.api.model.ApplicationStatus;
 import eionet.gdem.api.model.JobExecutorReportStatus;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
-import eionet.gdem.rancher.model.ContainerData;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import eionet.gdem.test.ApplicationTestContext;
 import org.hamcrest.MatcherAssert;
@@ -26,9 +23,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -47,8 +41,6 @@ public class ApplicationStatusApiControllerTest {
     @Mock
     private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
     @Mock
-    private ContainersRancherApiOrchestrator containersRancherApiOrchestrator;
-    @Mock
     private RabbitTemplate rabbitTemplate;
 
     @Spy
@@ -66,12 +58,7 @@ public class ApplicationStatusApiControllerTest {
         doNothing().when(jobExecutorRepository).checkConnection();
         doNothing().when(rabbitTemplate).convertAndSend(anyString(),anyString(),anyString());
         when(rabbitTemplate.receiveAndConvert(anyString())).thenReturn("healthCheck");
-        List<String> instances = new ArrayList<>();
-        instances.add("li154784");
-        when(servicesRancherApiOrchestrator.getContainerInstances(anyString())).thenReturn(instances);
-        ContainerData containerData = new ContainerData();
-        containerData.setState(SchedulingConstants.CONTAINER_STATE_ENUM.RUNNING.getValue());
-        when(containersRancherApiOrchestrator.getContainerInfoById(anyString())).thenReturn(containerData);
+        when(servicesRancherApiOrchestrator.getRunningPods(anyString())).thenReturn(1);
         JobExecutorReportStatus jobExecutorReportStatus = new JobExecutorReportStatus();
         jobExecutorReportStatus.setLightJobExecutorInstancesRunning(1).setHeavyJobExecutorInstancesRunning(1).setFmeSyncJobExecutorInstancesRunning(1).setFmeAsyncJobExecutorInstancesRunning(1);
         ObjectMapper mapper = new ObjectMapper();

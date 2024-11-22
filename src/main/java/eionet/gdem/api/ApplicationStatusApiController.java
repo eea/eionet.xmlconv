@@ -5,7 +5,6 @@ import eionet.gdem.api.model.ApplicationStatus;
 import eionet.gdem.api.model.JobExecutorReportStatus;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
-import io.fabric8.kubernetes.client.utils.PodStatusUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -70,7 +69,7 @@ public class ApplicationStatusApiController {
     }
 
     private String getRancherConnection() {
-        return PodStatusUtil.isRunning(servicesRancherApiOrchestrator.getPod(Properties.RANCHER_CONVERTERS_POD_NAME))
+        return servicesRancherApiOrchestrator.getRunningPods(Properties.RANCHER_CONVERTERS_DEPLOYMENT_NAME) > 0
                 ? ApplicationStatus.Status.UP.getValue()
                 : ApplicationStatus.Status.DOWN.getValue();
     }
