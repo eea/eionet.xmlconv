@@ -1104,4 +1104,16 @@
             <column name="NAME"/>
         </createIndex>
     </changeSet>
+    <changeSet author="stamojoh" id="rev-95">
+        <comment>
+            Delete CONTAINER_ID column not used in Rancher 2.x
+            Increase NAME column size to support kubernetes max length pod names
+        </comment>
+        <dropColumn tableName="JOB_EXECUTOR" columnName="CONTAINER_ID" />
+        <dropColumn tableName="JOB_EXECUTOR_HISTORY" columnName="CONTAINER_ID" />
+        <sql>
+            ALTER TABLE JOB_EXECUTOR MODIFY COLUMN NAME varchar(100);
+            ALTER TABLE JOB_EXECUTOR_HISTORY MODIFY COLUMN NAME varchar(100);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

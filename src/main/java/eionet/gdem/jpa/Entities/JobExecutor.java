@@ -17,9 +17,6 @@ public class JobExecutor {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "CONTAINER_ID")
-    private String containerId;
-
     @Column(name = "STATUS")
     private Integer status;
 
@@ -45,18 +42,16 @@ public class JobExecutor {
         this.jobId = jobId;
     }
 
-    public JobExecutor(String name, String containerId, Integer status, String heartBeatQueue) {
+    public JobExecutor(String name, Integer status, String heartBeatQueue) {
         this.name = name;
-        this.containerId = containerId;
         this.status = status;
         this.heartBeatQueue = heartBeatQueue;
     }
 
-    public JobExecutor(String name, Integer status, Integer jobId, String containerId, String heartBeatQueue) {
+    public JobExecutor(String name, Integer status, Integer jobId, String heartBeatQueue) {
         this.name = name;
         this.status = status;
         this.jobId = jobId;
-        this.containerId = containerId;
         this.heartBeatQueue = heartBeatQueue;
     }
 
@@ -93,15 +88,6 @@ public class JobExecutor {
 
     public JobExecutor setJobId(Integer jobId) {
         this.jobId = jobId;
-        return this;
-    }
-
-    public String getContainerId() {
-        return containerId;
-    }
-
-    public JobExecutor setContainerId(String containerId) {
-        this.containerId = containerId;
         return this;
     }
 
