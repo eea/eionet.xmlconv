@@ -69,11 +69,11 @@ public class HeavyWorkersScheduledTasks {
         } catch (DatabaseException e) {
             LOGGER.error("Max heavy jobExecutors parameter set to {}, because of database error", heavyJobExecutorsAllowed);
         }
-        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherHeavyJobExecServiceId, true, JobExecutorType.Heavy, heavyJobExecutorsAllowed);
+        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME, true, JobExecutorType.Heavy, heavyJobExecutorsAllowed);
     }
 
     /**
-     * Finds heavy jobExecutor instances in rancher that have failed to run correctly (unhealthy state) and updates their status in database
+     * Finds heavy jobExecutor pods in rancher that have failed to run correctly (unhealthy state) and updates their status in database
      * with status=2 (FAILED). The task also finds heavy jobExecutors in database that don't exist in rancher and deletes them from database.
      *
      * @throws DatabaseException
@@ -83,13 +83,14 @@ public class HeavyWorkersScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        // Retrieve jobExecutor pods from Rancher
-        List<Pod> pods = servicesRancherApiOrchestrator.getPods(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
-        workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(pods, true);
+        // Retrieve jobExecutor failed pods from Rancher
+        List<Pod> failedPods = servicesRancherApiOrchestrator.getPods(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
+        workersOrchestrationSharedService.updateDbStatusForFailedPods(failedPods, true);
 
         List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
         List<JobExecutor> heavyJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Heavy)).collect(Collectors.toList());
-        workersOrchestrationSharedService.synchronizeRancherContainersWithDbEntries(heavyJobExecutors, pods);
+        List<String> podNames = servicesRancherApiOrchestrator.getPodNames(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
+        workersOrchestrationSharedService.synchronizeRancherPodsWithDbEntries(heavyJobExecutors, podNames);
     }
 
     /**

@@ -58,11 +58,11 @@ public class LightWorkersScheduledTasks {
         } catch (DatabaseException e) {
             LOGGER.error("Max light jobExecutors parameter set to {}, because of database error", lightJobExecutorsAllowed);
         }
-        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherLightJobExecServiceId, false, JobExecutorType.Light, lightJobExecutorsAllowed);
+        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME, false, JobExecutorType.Light, lightJobExecutorsAllowed);
     }
 
     /**
-     * Finds light jobExecutor instances in rancher that have failed to run correctly (unhealthy state) and updates their status in database
+     * Finds light jobExecutor pods in rancher that have failed to run correctly (unhealthy state) and updates their status in database
      * with status=2 (FAILED). The task also finds light jobExecutors in database that don't exist in rancher and deletes them from database.
      *
      * @throws DatabaseException
@@ -72,12 +72,13 @@ public class LightWorkersScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        // Retrieve jobExecutor pods from Rancher
-        List<Pod> pods = servicesOrchestrator.getPods(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
-        workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(pods, false);
+        // Retrieve jobExecutor failed pods from Rancher
+        List<Pod> failedPods = servicesOrchestrator.getPods(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
+        workersOrchestrationSharedService.updateDbStatusForFailedPods(failedPods, false);
 
         List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
         List<JobExecutor> lightJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
-        workersOrchestrationSharedService.synchronizeRancherContainersWithDbEntries(lightJobExecutors, pods);
+        List<String> podNames = servicesOrchestrator.getPodNames(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
+        workersOrchestrationSharedService.synchronizeRancherPodsWithDbEntries(lightJobExecutors, podNames);
     }
 }

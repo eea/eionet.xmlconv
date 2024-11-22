@@ -50,13 +50,13 @@ public interface WorkersOrchestrationSharedService {
     void scheduleWorkersOrchestration(String deploymentName, boolean isHeavy, JobExecutorType jobExecutorType, Integer maxJobExecutorsAllowed);
 
     /**
-     * finds jobExecutor instances in rancher that have failed to run correctly (unhealthy state) and updates their status in database
+     * finds jobExecutor pods in rancher that have failed to run correctly (unhealthy state) and updates their status in database
      * with status=2 (FAILED)
      * @param pods
      * @param isHeavy
      * @throws RancherApiException
      */
-    void updateDbContainersHealthStatusFromRancher(List<Pod> pods, boolean isHeavy);
+    void updateDbStatusForFailedPods(List<Pod> pods, boolean isHeavy);
 
     /**
      * deletes from database jobExecutor instances that don't exist in rancher
@@ -64,7 +64,7 @@ public interface WorkersOrchestrationSharedService {
      * @param jobExecutors
      * @param pods
      */
-    void synchronizeRancherContainersWithDbEntries(List<JobExecutor> jobExecutors, List<Pod> pods);
+    void synchronizeRancherPodsWithDbEntries(List<JobExecutor> jobExecutors, List<String> podNames);
 
     /**
      * deletes worker's heart beat queue from rabbitmq

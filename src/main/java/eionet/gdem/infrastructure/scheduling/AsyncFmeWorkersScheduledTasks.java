@@ -63,7 +63,7 @@ public class AsyncFmeWorkersScheduledTasks {
     }
 
     /**
-     * Finds asynchronous fme jobExecutor instances in rancher that have failed to run correctly (unhealthy state) and updates their status in database
+     * Finds asynchronous fme jobExecutor pods in rancher that have failed to run correctly (unhealthy state) and updates their status in database
      * with status=2 (FAILED). The task also finds asynchronous fme jobExecutors in database that don't exist in rancher and deletes them from database.
      *
      * @throws DatabaseException
@@ -73,12 +73,13 @@ public class AsyncFmeWorkersScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        // Retrieve jobExecutor pods from Rancher
-        List<Pod> pods = servicesRancherApiOrchestrator.getPods(Properties.RANCHER_ASYNC_FME_JOBEXEC_DEPLOYMENT_NAME);
-        workersOrchestrationSharedService.updateDbContainersHealthStatusFromRancher(pods, true);
+        // Retrieve jobExecutor failed pods from Rancher
+        List<Pod> failedPods = servicesRancherApiOrchestrator.getFailedPods(Properties.RANCHER_ASYNC_FME_JOBEXEC_DEPLOYMENT_NAME);
+        workersOrchestrationSharedService.updateDbStatusForFailedPods(failedPods, true);
 
         List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
         List<JobExecutor> asyncFmeJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Async_fme)).collect(Collectors.toList());
-        workersOrchestrationSharedService.synchronizeRancherContainersWithDbEntries(asyncFmeJobExecutors, pods);
+        List<String> podNames = servicesRancherApiOrchestrator.getPodNames(Properties.RANCHER_ASYNC_FME_JOBEXEC_DEPLOYMENT_NAME);
+        workersOrchestrationSharedService.synchronizeRancherPodsWithDbEntries(asyncFmeJobExecutors, podNames);
     }
 }

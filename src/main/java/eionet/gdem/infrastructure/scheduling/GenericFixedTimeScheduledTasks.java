@@ -341,26 +341,25 @@ public class GenericFixedTimeScheduledTasks {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
-        try {
-            List<String> lightInstances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherLightJobExecServiceId);
-            List<String> heavyInstances = servicesRancherApiOrchestrator.getContainerInstances(Properties.rancherHeavyJobExecServiceId);
-            List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
-            List<JobExecutor> jobExecutorsWithUnknownStatus = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Unknown)).collect(Collectors.toList());
-            for (JobExecutor jobExecutor : jobExecutorsWithUnknownStatus) {
-                if (!lightInstances.contains(jobExecutor.getContainerId()) && !heavyInstances.contains(jobExecutor.getContainerId())) {
-                    LOGGER.info("Container retrieved form Database  with ID:" + jobExecutor.getContainerId() + " and name:" + jobExecutor.getName() +
-                            " doesn't exist on rancher.Proceeding with deletion from Database");
-                    try {
-                        jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
-                        workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
-                    } catch (DatabaseException e) {
-                        LOGGER.error("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus failed for jobExecutor with name " + jobExecutor.getName());
-                    }
+
+        List<String> lightInstances = servicesRancherApiOrchestrator.getPodNames(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
+        List<String> heavyInstances = servicesRancherApiOrchestrator.getPodNames(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
+        List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
+        List<JobExecutor> jobExecutorsWithUnknownStatus = jobExecutors
+                .stream()
+                .filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Unknown))
+                .collect(Collectors.toList());
+
+        for (JobExecutor jobExecutor : jobExecutorsWithUnknownStatus) {
+            if (!lightInstances.contains(jobExecutor.getName()) && !heavyInstances.contains(jobExecutor.getName())) {
+                LOGGER.info("Pod retrieved form database with name: {} doesn't exist on rancher. Proceeding with deletion from database", jobExecutor.getName());
+                try {
+                    jobExecutorService.deleteByName(jobExecutor.getName());
+                    workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
+                } catch (DatabaseException e) {
+                    LOGGER.error("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus failed for jobExecutor with name: {}", jobExecutor.getName());
                 }
             }
-        } catch (RancherApiException e) {
-            LOGGER.error("RancherApiException: Could not retrieve job Executor instances info from Rancher");
-            throw e;
         }
     }
 

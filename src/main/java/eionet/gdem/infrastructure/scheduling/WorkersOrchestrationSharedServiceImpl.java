@@ -1,5 +1,6 @@
 package eionet.gdem.infrastructure.scheduling;
 
+import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
@@ -198,37 +199,34 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     }
 
     @Override
-    public void updateDbContainersHealthStatusFromRancher(List<Pod> pods, boolean isHeavy) {
-        for (Pod pod : pods) {
-            if (!PodStatusUtil.isInitializing(pod) && !PodStatusUtil.isRunning(pod)) {
-                // update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
-                String podName = pod.getMetadata().getName();
-                String heartBeatQueue = podName + "-queue";
-                JobExecutor jobExecutor = new JobExecutor(podName, pod.getMetadata().getUid(), SchedulingConstants.WORKER_FAILED, heartBeatQueue);
-                try {
-                    if (isHeavy) {
-                        LOGGER.info("Task synchronizeRancherHeavyContainersAndDbEntriesByExistenceAndStatus: setting status of pod with name {} to WORKER_FAILED", podName);
-                    } else {
-                        LOGGER.info("Task synchronizeRancherLightContainersAndDbEntriesByExistenceAndStatus: setting status of pod with name {} to WORKER_FAILED", podName);
-                    }
-                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(podName, pod.getMetadata().getUid(), SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
-                    workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
-                } catch (DatabaseException e) {
-                    LOGGER.error("Task failed for jobExecutor with name {}", podName);
+    public void updateDbStatusForFailedPods(List<Pod> failedPods, boolean isHeavy) {
+        for (Pod pod : failedPods) {
+            // update table JOB_EXECUTOR insert row with status failed and add history entry to JOB_EXECUTOR_HISTORY.
+            String podName = pod.getMetadata().getName();
+            String heartBeatQueue = podName + "-queue";
+            JobExecutor jobExecutor = new JobExecutor(podName, SchedulingConstants.WORKER_FAILED, heartBeatQueue);
+            try {
+                if (isHeavy) {
+                    LOGGER.info("Task synchronizeRancherHeavyContainersAndDbEntriesByExistenceAndStatus: setting status of pod with name {} to WORKER_FAILED", podName);
+                } else {
+                    LOGGER.info("Task synchronizeRancherLightContainersAndDbEntriesByExistenceAndStatus: setting status of pod with name {} to WORKER_FAILED", podName);
                 }
+                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(podName, pod.getMetadata().getUid(), SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
+                workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
+            } catch (DatabaseException e) {
+                LOGGER.error("Task failed for jobExecutor with name {}", podName);
             }
         }
     }
 
     @Override
-    public void synchronizeRancherContainersWithDbEntries(List<JobExecutor> jobExecutors, List<Pod> pods) {
-        List<String> podUids = pods.stream().map(p -> p.getMetadata().getUid()).collect(Collectors.toList());
+    public void synchronizeRancherPodsWithDbEntries(List<JobExecutor> jobExecutors, List<String> podNames) {
         for (JobExecutor jobExecutor : jobExecutors) {
-            if (!podUids.contains(jobExecutor.getContainerId())) {
-                LOGGER.info("Container retrieved form Database with ID: {} and name: {} doesn't exist on rancher. " +
-                        "Proceeding with deletion from Database", jobExecutor.getContainerId(), jobExecutor.getName());
+            if (!podNames.contains(jobExecutor.getName())) {
+                LOGGER.info("Worker retrieved form database with name: {} doesn't exist on rancher. " +
+                        "Proceeding with deletion from database.", jobExecutor.getName());
                 try {
-                    jobExecutorService.deleteByContainerId(jobExecutor.getContainerId());
+                    jobExecutorService.deleteByName(jobExecutor.getName());
                     deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
                 } catch (DatabaseException e) {
                     LOGGER.error("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus failed for jobExecutor with name {}", jobExecutor.getName());
