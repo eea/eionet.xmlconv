@@ -277,6 +277,8 @@ public class Properties {
     public static String jobExecutorRequestsUrl;
     public static String jobExecutorTimeoutRetrieveEndpoint;
 
+    public static final String POD_FAILED_PHASE = "Failed";
+
     static {
         configurationService = (ConfigurationPropertyResolver) SpringApplicationContext.getBean("configurationPropertyResolver");
         // filesystem properties

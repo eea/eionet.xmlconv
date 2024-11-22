@@ -12,12 +12,11 @@ import java.util.List;
 public interface ServicesRancherApiOrchestrator {
 
     /**
-     * Lists all container instances of service with id serviceId
-     * @param serviceId
-     * @return
-     * @throws RancherApiException
+     * Get list of pod names for a deployment
+     * @param deploymentName the deployment unique name
+     * @return the list of pod names
      */
-    List<String> getContainerInstances(String serviceId) throws RancherApiException;
+    List<String> getPodNames(String deploymentName);
 
     /**
      * Returns information of service with id serviceId
@@ -95,4 +94,11 @@ public interface ServicesRancherApiOrchestrator {
      * @return number of running pods
      */
     Integer getRunningPods(String deploymentName);
+
+    /**
+     * Get list of failed pods for a deployment
+     * @param deploymentName the deployment unique name
+     * @return the list of failed pods
+     */
+    List<Pod> getFailedPods(String deploymentName);
 }

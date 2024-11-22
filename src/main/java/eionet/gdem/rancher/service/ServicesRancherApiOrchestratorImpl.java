@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrchestrator {
@@ -89,24 +90,27 @@ public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrc
     }
 
     @Override
-    public Integer getRunningPods(String deploymentName) {
-        Integer runningPods = 0;
-        for (Pod pod : getPods(deploymentName)) {
-            if (PodStatusUtil.isRunning(pod)) {
-                runningPods++;
-            }
-        }
-        return runningPods;
+    public List<Pod> getFailedPods(String deploymentName) {
+        return getPods(deploymentName)
+                .stream()
+                .filter(pod -> Properties.POD_FAILED_PHASE.equals(pod.getStatus().getPhase()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> getContainerInstances(String serviceId) throws RancherApiException {
-        ServiceApiResponse response = getServiceInfo(serviceId);
-        if (response.getInstanceIds()==null) {
-            return new ArrayList<>();
-        } else {
-            return response.getInstanceIds();
-        }
+    public Integer getRunningPods(String deploymentName) {
+        return (int) getPods(deploymentName)
+                .stream()
+                .filter(PodStatusUtil::isRunning)
+                .count();
+    }
+
+    @Override
+    public List<String> getPodNames(String deploymentName) {
+        return getPods(deploymentName)
+                .stream()
+                .map(pod -> pod.getMetadata().getName())
+                .collect(Collectors.toList());
     }
 
     @Override
