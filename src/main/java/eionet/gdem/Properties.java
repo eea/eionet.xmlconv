@@ -193,10 +193,6 @@ public class Properties {
     public static final Integer rancherJobExecutorServiceScale;
     public static final Long rancherJobExecServiceMemory;
     public static final Long rancherJobExecServiceMemoryReservation;
-    public static final String rancherLightJobExecServiceId;
-    public static final String rancherHeavyJobExecServiceId;
-    public static final String rancherSyncFmeJobExecServiceId;
-    public static final String rancherAsyncFmeJobExecServiceId;
     public static final boolean enableJobExecRancherScheduledTask;
     public static final Integer maxLightJobExecutorContainersAllowed;
     public static final Integer maxHeavyJobExecutorContainersAllowed;
@@ -391,10 +387,6 @@ public class Properties {
         rancherJobExecutorServiceScale = getIntProperty("env.rancher.api.jobExecutor.service.scale");
         rancherJobExecServiceMemory = getLongProperty("env.rancher.api.jobExec.service.memory");
         rancherJobExecServiceMemoryReservation = getLongProperty("env.rancher.api.jobExec.service.memoryReservation");
-        rancherLightJobExecServiceId = getStringProperty("env.rancher.api.light.jobExec.service.id");
-        rancherHeavyJobExecServiceId = getStringProperty("env.rancher.api.heavy.jobExec.service.id");
-        rancherSyncFmeJobExecServiceId = getStringProperty("env.rancher.api.sync.fme.jobExec.service.id");
-        rancherAsyncFmeJobExecServiceId = getStringProperty("env.rancher.api.async.fme.jobExec.service.id");
         enableJobExecRancherScheduledTask = Boolean.parseBoolean(getStringProperty("env.enable.jobExecutor.rancher.scheduled.task"));
         maxLightJobExecutorContainersAllowed = getIntProperty("env.max.light.jobExecutor.containers.allowed");
         maxHeavyJobExecutorContainersAllowed = getIntProperty("env.max.heavy.jobExecutor.containers.allowed");
