@@ -37,7 +37,7 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
         try {
             return repository.findByName(name);
         } catch (Exception e) {
-            LOGGER.error("Database exception when retrieving history for container with name: {}.", name);
+            LOGGER.error("Database exception when retrieving history for job executor with name: {}.", name);
             throw new DatabaseException(e);
         }
     }
