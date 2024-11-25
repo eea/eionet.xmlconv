@@ -33,12 +33,12 @@ $(document).ready(function() {
 function format ( row, tr ) {
     var d = row.data();
     // `d` is the original data object for the row
-    var containerId = d[0];
-    //ajax call to get data by containerId
+    var jobExecutorName = d[0];
+    // ajax call to get data by job executor name
     $.ajax({
         async: false,
         type: "POST",
-        url: 'jobExecutorInstancesView/getJobExecutorDetails/'+containerId,
+        url: 'jobExecutorInstancesView/getJobExecutorDetails/' + jobExecutorName,
         contentType : 'application/json; charset=utf-8',
         success: function (result) {
             var additionalInfo = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
