@@ -62,7 +62,7 @@ public interface WorkersOrchestrationSharedService {
      * deletes from database jobExecutor instances that don't exist in rancher
      *
      * @param jobExecutors
-     * @param pods
+     * @param podNames
      */
     void synchronizeRancherPodsWithDbEntries(List<JobExecutor> jobExecutors, List<String> podNames);
 
