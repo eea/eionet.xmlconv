@@ -59,7 +59,7 @@ public class SyncFmeWorkersScheduledTasks {
         } catch (DatabaseException e) {
             LOGGER.error("Max synchronous fme jobExecutors parameter set to {}, because of database error", syncFmeJobExecutorsAllowed);
         }
-        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.rancherSyncFmeJobExecServiceId, false, JobExecutorType.Sync_fme, syncFmeJobExecutorsAllowed);
+        workersOrchestrationSharedService.scheduleWorkersOrchestration(Properties.RANCHER_SYNC_FME_JOBEXEC_DEPLOYMENT_NAME, false, JobExecutorType.Sync_fme, syncFmeJobExecutorsAllowed);
     }
 
     /**
