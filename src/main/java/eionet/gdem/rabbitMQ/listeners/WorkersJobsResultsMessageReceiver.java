@@ -67,16 +67,6 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             WorkerJobInfoRabbitMQResponseMessage response = mapper.readValue(messageBody, WorkerJobInfoRabbitMQResponseMessage.class);
 
-            String containerId="";
-            if (Properties.enableJobExecRancherScheduledTask) {
-                try {
-                    containerId = containersOrchestrator.getContainerId(response.getJobExecutorName());
-                } catch (RancherApiException e) {
-                    //rancher occasionally might get unresponsive
-                    LOGGER.error("Error during retrieval of jobExecutor " + response.getJobExecutorName() + " containerId");
-                }
-            }
-
             script = response.getScript();
             JobEntry jobEntry = jobService.findById(Integer.parseInt(script.getJobId()));
 
@@ -85,8 +75,8 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                 return;
             }
 
-            JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), containerId, response.getHeartBeatQueue()).setJobExecutorType(response.getJobExecutorType());
-            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
+            JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), response.getHeartBeatQueue()).setJobExecutorType(response.getJobExecutorType());
+            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), response.getJobExecutorStatus(), Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
             jobExecutorHistory.setJobExecutorType(response.getJobExecutorType());
             InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_PROCESSING);
             jobEntry.setJobExecutorName(response.getJobExecutorName());
@@ -160,7 +150,7 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
                         return;
                     }
                     lightJobExecutor.setStatus(SchedulingConstants.WORKER_FAILED);
-                    JobExecutorHistory lightJobExecutorHistory = new JobExecutorHistory(lightJobExecutor.getName(), lightJobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, lightJobExecutor.getJobId(), new Timestamp(new Date().getTime()), lightJobExecutor.getHeartBeatQueue());
+                    JobExecutorHistory lightJobExecutorHistory = new JobExecutorHistory(lightJobExecutor.getName(), SchedulingConstants.WORKER_FAILED, lightJobExecutor.getJobId(), new Timestamp(new Date().getTime()), lightJobExecutor.getHeartBeatQueue());
                     lightJobExecutorHistory.setJobExecutorType(lightJobExecutor.getJobExecutorType());
                     saveOrUpdateJobExecutor(lightJobExecutor, lightJobExecutorHistory);
                 }

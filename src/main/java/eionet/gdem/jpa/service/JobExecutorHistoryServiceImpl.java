@@ -33,11 +33,11 @@ public class JobExecutorHistoryServiceImpl implements JobExecutorHistoryService{
     }
 
     @Override
-    public List<JobExecutorHistory> getJobExecutorHistoryEntriesById(String containerId) throws DatabaseException {
+    public List<JobExecutorHistory> getJobExecutorHistoryEntriesByName(String name) throws DatabaseException {
         try {
-            return repository.findByContainerId(containerId);
+            return repository.findByName(name);
         } catch (Exception e) {
-            LOGGER.error("Database exception when retrieving history for container with id " + containerId);
+            LOGGER.error("Database exception when retrieving history for container with name: {}.", name);
             throw new DatabaseException(e);
         }
     }

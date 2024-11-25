@@ -211,7 +211,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                 } else {
                     LOGGER.info("Task synchronizeRancherLightContainersAndDbEntriesByExistenceAndStatus: setting status of pod with name {} to WORKER_FAILED", podName);
                 }
-                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(podName, pod.getMetadata().getUid(), SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
+                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(podName, SchedulingConstants.WORKER_FAILED, new Timestamp(new Date().getTime()), heartBeatQueue);
                 workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
             } catch (DatabaseException e) {
                 LOGGER.error("Task failed for jobExecutor with name {}", podName);

@@ -48,9 +48,9 @@ public class JobExecutorInstancesController {
         return "/admin/jobExecutorInstancesView";
     }
 
-    @PostMapping(value ="/getJobExecutorDetails/{containerId}")
+    @PostMapping(value ="/getJobExecutorDetails/{name}")
     @ResponseBody
-    public List<JobExecutorHistory> getJobExecutorHistoryEntriesById(@PathVariable String containerId) throws DatabaseException {
-        return jobExecutorHistoryService.getJobExecutorHistoryEntriesById(containerId);
+    public List<JobExecutorHistory> getJobExecutorHistoryEntriesByName(@PathVariable String name) throws DatabaseException {
+        return jobExecutorHistoryService.getJobExecutorHistoryEntriesByName(name);
     }
 }

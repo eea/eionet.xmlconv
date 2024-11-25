@@ -59,25 +59,9 @@ public class JobExecutorServiceImpl implements JobExecutorService {
         }
     }
 
-    @Transactional
-    @Override
-    public void deleteByContainerId(String containerId) throws DatabaseException {
-        try {
-            this.jobExecutorRepository.deleteByContainerId(containerId);
-        } catch (Exception e) {
-            LOGGER.error("Database exception when deleting jobExecutor with id " + containerId);
-            throw new DatabaseException(e);
-        }
-    }
-
     @Override
     public List<JobExecutor> findByStatus(Integer status) {
         return jobExecutorRepository.findByStatus(status);
-    }
-
-    @Override
-    public List<JobExecutor> findByStatusAndJobExecutorType(Integer status, JobExecutorType jobExecutorType) {
-        return jobExecutorRepository.findByStatusAndJobExecutorType(status, jobExecutorType);
     }
 
     @Override

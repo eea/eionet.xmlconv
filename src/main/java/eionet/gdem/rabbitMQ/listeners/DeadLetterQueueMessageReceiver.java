@@ -89,16 +89,6 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                 return;
             }
 
-            String containerId="";
-            if (Properties.enableJobExecRancherScheduledTask) {
-                try {
-                    containerId = containersOrchestrator.getContainerId(deadLetterMessage.getJobExecutorName());
-                } catch (RancherApiException e) {
-                    //rancher occasionally might get unresponsive
-                    LOGGER.error("Error during retrieval of jobExecutor " + deadLetterMessage.getJobExecutorName() + " containerId");
-                }
-            }
-
             if(deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.CANCELLED_BY_USER){
                 LOGGER.info("Job " + script.getJobId() + " was cancelled by user");
             } else if (deadLetterMessage.getErrorStatus()!=null && deadLetterMessage.getErrorStatus() == Constants.XQ_INTERRUPTED) {
@@ -115,8 +105,8 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     deadLetterMessage.setJobExecutionRetries(retriesCnt + 1);
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
                     jobEntry.setnStatus(Constants.XQ_PROCESSING).setIntSchedulingStatus(internalStatus).setJobExecutorName(null).setWorkerRetries(retriesCnt+1).setTimestamp(new Timestamp(new Date().getTime()));
-                    JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), containerId, deadLetterMessage.getHeartBeatQueue());
-                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
+                    JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), deadLetterMessage.getHeartBeatQueue());
+                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
                     Thread.sleep(RETRY_DELAY);
                     workerAndJobStatusHandlerService.resendMessageToWorker(jobEntry, deadLetterMessage, jobExecutor, jobExecutorHistory);
                 }
@@ -125,8 +115,8 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     LOGGER.info("Reached maximum retries of job execution for job: " + script.getJobId());
                     InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_CANCELLED);
                     jobEntry.setJobExecutorName(deadLetterMessage.getJobExecutorName()).setWorkerRetries(Constants.MAX_SCRIPT_EXECUTION_RETRIES).setnStatus(Constants.XQ_FATAL_ERR).setIntSchedulingStatus(internalStatus).setTimestamp(new Timestamp(new Date().getTime()));
-                    JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), containerId, deadLetterMessage.getHeartBeatQueue());
-                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), containerId, SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
+                    JobExecutor jobExecutor = new JobExecutor(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), deadLetterMessage.getHeartBeatQueue());
+                    JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(deadLetterMessage.getJobExecutorName(), SchedulingConstants.WORKER_READY, Integer.parseInt(script.getJobId()), new Timestamp(new Date().getTime()), deadLetterMessage.getHeartBeatQueue());
                     Thread.sleep(RETRY_DELAY);
                     workerAndJobStatusHandlerService.updateJobAndJobHistoryEntries(jobEntry);
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);

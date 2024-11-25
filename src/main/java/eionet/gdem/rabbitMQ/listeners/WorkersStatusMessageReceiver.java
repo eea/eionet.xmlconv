@@ -46,19 +46,9 @@ public class WorkersStatusMessageReceiver implements MessageListener {
             ObjectMapper mapper =new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             WorkerStateRabbitMQResponseMessage response = mapper.readValue(messageBody, WorkerStateRabbitMQResponseMessage.class);
 
-            String containerId="";
-            if (Properties.enableJobExecRancherScheduledTask) {
-                try {
-                    containerId = containersOrchestrator.getContainerId(response.getJobExecutorName());
-                } catch (RancherApiException e) {
-                    //rancher occasionally might get unresponsive
-                    LOGGER.error("Error during retrieval of jobExecutor " + response.getJobExecutorName() + " containerId");
-                }
-            }
-
-            JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), response.getHeartBeatQueue());
+            JobExecutor jobExecutor = new JobExecutor(response.getJobExecutorName(), response.getJobExecutorStatus(), response.getHeartBeatQueue());
             jobExecutor.setJobExecutorType(response.getJobExecutorType());
-            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), containerId, response.getJobExecutorStatus(), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
+            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(response.getJobExecutorName(), response.getJobExecutorStatus(), new Timestamp(new Date().getTime()), response.getHeartBeatQueue());
             jobExecutorHistory.setJobExecutorType(response.getJobExecutorType());
             workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
         } catch (Exception e) {

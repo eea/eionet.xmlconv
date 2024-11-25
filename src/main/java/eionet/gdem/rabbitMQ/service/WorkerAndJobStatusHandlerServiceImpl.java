@@ -103,7 +103,7 @@ public class WorkerAndJobStatusHandlerServiceImpl implements WorkerAndJobStatusH
             JobExecutor jobExecutor = jobExecutorService.findByName(jobEntry.getJobExecutorName());
             if (jobExecutor!=null) {
                 jobExecutor.setStatus(workerStatus);
-                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), workerStatus, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), workerStatus, jobEntry.getId(), new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
                 this.updateJobExecutorAndJobExecutorHistory(jobExecutor, jobExecutorHistory);
             }
         }

@@ -18,13 +18,9 @@ public interface JobExecutorRepository extends JpaRepository<JobExecutor, Intege
 
     List<JobExecutor> findByStatus(Integer status);
 
-    List<JobExecutor> findByStatusAndJobExecutorType(Integer status, JobExecutorType jobExecutorType);
-
     JobExecutor findByName(String name);
 
     void deleteByName(String name);
-
-    void deleteByContainerId(String containerId);
 
     @Query(value = "SELECT * FROM JOB_EXECUTOR WHERE JOB_ID= :jobId", nativeQuery=true)
     List<JobExecutor> findJobExecutorsByJobId(@Param("jobId") Integer jobId);

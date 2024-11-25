@@ -7,10 +7,8 @@ import java.util.List;
 
 public interface JobExecutorHistoryRepository extends JpaRepository<JobExecutorHistory, Integer> {
 
-    /* Retrieves the entry by its containerId */
-    List<JobExecutorHistory> findByContainerId(String containerId);
+    List<JobExecutorHistory> findByName(String name);
 
-    /* Retrieves the entry by its jobId */
     List<JobExecutorHistory> findByJobId(Integer jobId);
 
 }

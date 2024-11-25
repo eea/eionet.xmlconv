@@ -14,11 +14,7 @@ public interface JobExecutorService {
 
     List<JobExecutor> listJobExecutor() throws DatabaseException;
 
-    void deleteByContainerId(String containerId) throws DatabaseException;
-
     List<JobExecutor> findByStatus(Integer status);
-
-    List<JobExecutor> findByStatusAndJobExecutorType(Integer status, JobExecutorType jobExecutorType);
 
     void deleteByName(String name) throws DatabaseException;
 

@@ -264,7 +264,6 @@ public class WorkqueueManager {
      */
     public static void restartJobs(String[] jobIds) throws XMLConvException {
         LOGGER.info("Request to restart jobs " + Utils.stringArray2String(jobIds, "," ) );
-        QueryService queryService = new QueryService();
         List<String> jobsToRestart = new ArrayList<>();
         try{
             if (jobIds.length > 0) {
@@ -277,11 +276,11 @@ public class WorkqueueManager {
                     JobEntry jobEntry = getJobServiceBean().findById(jobIdInt);
                     String status = jobData[3];
                     if(status.equals(String.valueOf(Constants.XQ_PROCESSING))){
-                        //make job_executor status failed
+                        // make job_executor status failed
                         if (jobEntry.getJobExecutorName()!=null) {
                             JobExecutor jobExecutor = getJobExecutorServiceBean().findByName(jobEntry.getJobExecutorName());
                             jobExecutor.setJobId(jobIdInt).setStatus(SchedulingConstants.WORKER_FAILED).setName(jobEntry.getJobExecutorName());
-                            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), jobExecutor.getContainerId(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
+                            JobExecutorHistory jobExecutorHistory = new JobExecutorHistory(jobEntry.getJobExecutorName(), SchedulingConstants.WORKER_FAILED, jobIdInt, new Timestamp(new Date().getTime()), jobExecutor.getHeartBeatQueue());
                             getWorkerAndJobStatusHandlerService().saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
 
                             InternalSchedulingStatus internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
