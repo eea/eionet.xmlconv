@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ServicesRancherApiOrchestratorImpl implements ServicesRancherApiOrchestrator {
+public class RancherApiServiceImpl implements RancherApiService {
 
     private final KubernetesClient kubernetesClient;
 
     @Autowired
-    public ServicesRancherApiOrchestratorImpl(KubernetesClient kubernetesClient) {
+    public RancherApiServiceImpl(KubernetesClient kubernetesClient) {
         this.kubernetesClient = kubernetesClient;
     }
 

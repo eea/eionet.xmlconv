@@ -12,7 +12,7 @@ import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.jpa.service.PropertiesService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestratorImpl;
+import eionet.gdem.rancher.service.RancherApiService;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,18 +32,22 @@ public class HeavyWorkersScheduledTasks {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeavyWorkersScheduledTasks.class);
     private static final String MAX_HEAVY_JOB_EXECUTORS_ALLOWED = "maxHeavyJobExecutorContainersAllowed";
 
-    private final WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService;
-    private final ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator;
+    private final WorkersOrchestrationSharedService workersOrchestrationSharedService;
+    private final RancherApiService rancherApiService;
     private final JobExecutorService jobExecutorService;
     private final WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
     private final JobService jobService;
     private final PropertiesService propertiesService;
 
     @Autowired
-    public HeavyWorkersScheduledTasks(WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService, ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator, JobExecutorService jobExecutorService,
-                                       WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, JobService jobService, PropertiesService propertiesService) {
+    public HeavyWorkersScheduledTasks(WorkersOrchestrationSharedService workersOrchestrationSharedService,
+                                      RancherApiService rancherApiService,
+                                      JobExecutorService jobExecutorService,
+                                      WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService,
+                                      JobService jobService,
+                                      PropertiesService propertiesService) {
         this.workersOrchestrationSharedService = workersOrchestrationSharedService;
-        this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
+        this.rancherApiService = rancherApiService;
         this.jobExecutorService = jobExecutorService;
         this.workerAndJobStatusHandlerService = workerAndJobStatusHandlerService;
         this.propertiesService = propertiesService;
@@ -84,12 +88,12 @@ public class HeavyWorkersScheduledTasks {
             return;
         }
         // Retrieve jobExecutor failed pods from Rancher
-        List<Pod> failedPods = servicesRancherApiOrchestrator.getPods(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
+        List<Pod> failedPods = rancherApiService.getPods(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
         workersOrchestrationSharedService.updateDbStatusForFailedPods(failedPods, true);
 
         List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
         List<JobExecutor> heavyJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Heavy)).collect(Collectors.toList());
-        List<String> podNames = servicesRancherApiOrchestrator.getPodNames(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
+        List<String> podNames = rancherApiService.getPodNames(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
         workersOrchestrationSharedService.synchronizeRancherPodsWithDbEntries(heavyJobExecutors, podNames);
     }
 

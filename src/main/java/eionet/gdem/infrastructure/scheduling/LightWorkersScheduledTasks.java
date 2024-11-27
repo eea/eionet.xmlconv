@@ -7,7 +7,7 @@ import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.PropertiesService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import eionet.gdem.rancher.service.RancherApiService;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +25,17 @@ public class LightWorkersScheduledTasks {
     private static final Logger LOGGER = LoggerFactory.getLogger(LightWorkersScheduledTasks.class);
     private static final String MAX_LIGHT_JOB_EXECUTORS_ALLOWED = "maxLightJobExecutorContainersAllowed";
 
-    private final ServicesRancherApiOrchestrator servicesOrchestrator;
+    private final RancherApiService rancherApiService;
     private final JobExecutorService jobExecutorService;
     private final WorkersOrchestrationSharedService workersOrchestrationSharedService;
     private final PropertiesService propertiesService;
 
     @Autowired
-    public LightWorkersScheduledTasks(ServicesRancherApiOrchestrator servicesOrchestrator, JobExecutorService jobExecutorService,
-                                      WorkersOrchestrationSharedService workersOrchestrationSharedService, PropertiesService propertiesService) {
-        this.servicesOrchestrator = servicesOrchestrator;
+    public LightWorkersScheduledTasks(RancherApiService rancherApiService,
+                                      JobExecutorService jobExecutorService,
+                                      WorkersOrchestrationSharedService workersOrchestrationSharedService,
+                                      PropertiesService propertiesService) {
+        this.rancherApiService = rancherApiService;
         this.jobExecutorService = jobExecutorService;
         this.workersOrchestrationSharedService = workersOrchestrationSharedService;
         this.propertiesService = propertiesService;
@@ -73,12 +75,12 @@ public class LightWorkersScheduledTasks {
             return;
         }
         // Retrieve jobExecutor failed pods from Rancher
-        List<Pod> failedPods = servicesOrchestrator.getPods(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
+        List<Pod> failedPods = rancherApiService.getPods(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
         workersOrchestrationSharedService.updateDbStatusForFailedPods(failedPods, false);
 
         List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
         List<JobExecutor> lightJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Light)).collect(Collectors.toList());
-        List<String> podNames = servicesOrchestrator.getPodNames(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
+        List<String> podNames = rancherApiService.getPodNames(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
         workersOrchestrationSharedService.synchronizeRancherPodsWithDbEntries(lightJobExecutors, podNames);
     }
 }

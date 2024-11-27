@@ -6,7 +6,7 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 
 import java.util.List;
 
-public interface ServicesRancherApiOrchestrator {
+public interface RancherApiService {
 
     /**
      * Get list of pod names for a deployment

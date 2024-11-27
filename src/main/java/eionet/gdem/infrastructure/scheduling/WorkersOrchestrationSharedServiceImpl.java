@@ -10,7 +10,7 @@ import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import eionet.gdem.rancher.service.RancherApiService;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkersOrchestrationSharedServiceImpl.class);
 
-    private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
+    private RancherApiService rancherApiService;
     private JobExecutorService jobExecutorService;
     private JobService jobService;
     private RabbitAdmin rabbitAdmin;
@@ -40,14 +40,14 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     private QueryJpaService queryJpaService;
 
     @Autowired
-    public WorkersOrchestrationSharedServiceImpl(ServicesRancherApiOrchestrator servicesRancherApiOrchestrator,
+    public WorkersOrchestrationSharedServiceImpl(RancherApiService rancherApiService,
                                                  JobExecutorService jobExecutorService,
                                                  JobService jobService,
                                                  RabbitAdmin rabbitAdmin,
                                                  WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService,
                                                  CircuitBreaker circuitBreaker,
                                                  QueryJpaService queryJpaService) {
-        this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
+        this.rancherApiService = rancherApiService;
         this.jobExecutorService = jobExecutorService;
         this.jobService = jobService;
         this.rabbitAdmin = rabbitAdmin;
@@ -58,7 +58,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
 
     @Override
     public void createWorkers(String deploymentName, Integer newWorkers, Integer maxJobExecutorsAllowed) {
-        Integer runningPods = servicesRancherApiOrchestrator.getRunningPods(deploymentName);
+        Integer runningPods = rancherApiService.getRunningPods(deploymentName);
         if (runningPods >= maxJobExecutorsAllowed) {
             LOGGER.info("No new workers will be created since max allowed ({}) exist.", maxJobExecutorsAllowed);
             return;
@@ -68,7 +68,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                 maxJobExecutorsAllowed - runningPods : newWorkers;
 
         Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
-            servicesRancherApiOrchestrator.scaleDeployment(deploymentName, scale);
+            rancherApiService.scaleDeployment(deploymentName, scale);
         });
         decorateRunnable.run();
         LOGGER.info("Created {} new worker(s)", scale);
@@ -87,9 +87,9 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
         List<JobExecutor> jobExecutorsWithUnknownType = totalFailedWorkers.stream()
                 .filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Unknown)).collect(Collectors.toList());
 
-        Map<String, String> deploymentLabels = servicesRancherApiOrchestrator.getDeploymentByName(deploymentName).getSpec().getSelector().getMatchLabels();
+        Map<String, String> deploymentLabels = rancherApiService.getDeploymentByName(deploymentName).getSpec().getSelector().getMatchLabels();
         for (JobExecutor jobExec : jobExecutorsWithUnknownType) {
-            Map<String, String> podLabels = servicesRancherApiOrchestrator.getPod(jobExec.getName()).getMetadata().getLabels();
+            Map<String, String> podLabels = rancherApiService.getPod(jobExec.getName()).getMetadata().getLabels();
             if (deploymentLabels.equals(podLabels)) {
                 failedWorkersToBeDeleted.add(jobExec);
             }
@@ -103,10 +103,10 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             }
         }
 
-        Integer runningPods = servicesRancherApiOrchestrator.getRunningPods(deploymentName);
+        Integer runningPods = rancherApiService.getRunningPods(deploymentName);
         if (runningPods == 0) {
             Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
-                servicesRancherApiOrchestrator.scaleDeployment(deploymentName, 1);
+                rancherApiService.scaleDeployment(deploymentName, 1);
             });
             decorateRunnable.run();
         }
@@ -115,7 +115,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     @Override
     public void deleteFromRancherAndDatabase(JobExecutor worker) throws DatabaseException {
         Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
-            servicesRancherApiOrchestrator.deletePod(worker.getName());
+            rancherApiService.deletePod(worker.getName());
         });
         decorateRunnable.run();
 
@@ -170,7 +170,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             Integer newWorkers = finalJobs.size() - readyWorkers.size();
             this.createWorkers(deploymentName, newWorkers, maxJobExecutorsAllowed);
         } else if (finalJobs.size() < readyWorkers.size()) {
-            Integer runningPods = servicesRancherApiOrchestrator.getRunningPods(deploymentName);
+            Integer runningPods = rancherApiService.getRunningPods(deploymentName);
             if (runningPods == 1) {
                 return;
             }
@@ -180,7 +180,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             int workersDeleted = 1;
             for (JobExecutor worker : readyWorkers) {
                 while (workersDeleted <= workersToDelete) {
-                    runningPods = servicesRancherApiOrchestrator.getRunningPods(deploymentName);
+                    runningPods = rancherApiService.getRunningPods(deploymentName);
                     if (runningPods == 1) {
                         LOGGER.info("Only one worker instance found. No deletion required. Task Exiting.");
                         return;

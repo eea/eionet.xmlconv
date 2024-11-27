@@ -21,7 +21,7 @@ import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import eionet.gdem.rancher.service.RancherApiService;
 import eionet.gdem.services.JobResultHandlerService;
 import eionet.gdem.utils.Utils;
 import eionet.gdem.validation.InputAnalyser;
@@ -67,7 +67,7 @@ public class GenericFixedTimeScheduledTasks {
     @Autowired
     private QueryMetadataService queryMetadataService;
     @Autowired
-    private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
+    private RancherApiService rancherApiService;
     @Autowired
     private JobExecutorService jobExecutorService;
     @Autowired
@@ -342,8 +342,8 @@ public class GenericFixedTimeScheduledTasks {
             return;
         }
 
-        List<String> lightInstances = servicesRancherApiOrchestrator.getPodNames(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
-        List<String> heavyInstances = servicesRancherApiOrchestrator.getPodNames(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
+        List<String> lightInstances = rancherApiService.getPodNames(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME);
+        List<String> heavyInstances = rancherApiService.getPodNames(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
         List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
         List<JobExecutor> jobExecutorsWithUnknownStatus = jobExecutors
                 .stream()

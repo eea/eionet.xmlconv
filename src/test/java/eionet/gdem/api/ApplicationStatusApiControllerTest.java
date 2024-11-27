@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.api.model.ApplicationStatus;
 import eionet.gdem.api.model.JobExecutorReportStatus;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
+import eionet.gdem.rancher.service.RancherApiService;
 import eionet.gdem.test.ApplicationTestContext;
 import org.hamcrest.MatcherAssert;
 import org.junit.Before;
@@ -39,7 +39,7 @@ public class ApplicationStatusApiControllerTest {
     @Mock
     private JobExecutorRepository jobExecutorRepository;
     @Mock
-    private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
+    private RancherApiService rancherApiService;
     @Mock
     private RabbitTemplate rabbitTemplate;
 
@@ -58,7 +58,7 @@ public class ApplicationStatusApiControllerTest {
         doNothing().when(jobExecutorRepository).checkConnection();
         doNothing().when(rabbitTemplate).convertAndSend(anyString(),anyString(),anyString());
         when(rabbitTemplate.receiveAndConvert(anyString())).thenReturn("healthCheck");
-        when(servicesRancherApiOrchestrator.getRunningPods(anyString())).thenReturn(1);
+        when(rancherApiService.getRunningPods(anyString())).thenReturn(1);
         JobExecutorReportStatus jobExecutorReportStatus = new JobExecutorReportStatus();
         jobExecutorReportStatus.setLightJobExecutorInstancesRunning(1).setHeavyJobExecutorInstancesRunning(1).setFmeSyncJobExecutorInstancesRunning(1).setFmeAsyncJobExecutorInstancesRunning(1);
         ObjectMapper mapper = new ObjectMapper();
@@ -77,31 +77,4 @@ public class ApplicationStatusApiControllerTest {
         MatcherAssert.assertThat(content.getJobExecutorReportStatus().getFmeSyncJobExecutorInstancesRunning(), is(1));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -6,7 +6,7 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.PropertiesService;
 import eionet.gdem.jpa.utils.JobExecutorType;
-import eionet.gdem.rancher.service.ServicesRancherApiOrchestratorImpl;
+import eionet.gdem.rancher.service.RancherApiService;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,18 +24,18 @@ public class SyncFmeWorkersScheduledTasks {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncFmeWorkersScheduledTasks.class);
     private static final String MAX_SYNC_FME_JOB_EXECUTORS_ALLOWED = "maxSyncFmeJobExecutorContainersAllowed";
 
-    private final WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService;
-    private final ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator;
+    private final WorkersOrchestrationSharedService workersOrchestrationSharedService;
+    private final RancherApiService rancherApiService;
     private final JobExecutorService jobExecutorService;
     private final PropertiesService propertiesService;
 
     @Autowired
-    public SyncFmeWorkersScheduledTasks(WorkersOrchestrationSharedServiceImpl workersOrchestrationSharedService,
-                                        ServicesRancherApiOrchestratorImpl servicesRancherApiOrchestrator,
+    public SyncFmeWorkersScheduledTasks(WorkersOrchestrationSharedService workersOrchestrationSharedService,
+                                        RancherApiService rancherApiService,
                                         JobExecutorService jobExecutorService,
                                         PropertiesService propertiesService) {
         this.workersOrchestrationSharedService = workersOrchestrationSharedService;
-        this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
+        this.rancherApiService = rancherApiService;
         this.jobExecutorService = jobExecutorService;
         this.propertiesService = propertiesService;
     }
@@ -74,12 +74,12 @@ public class SyncFmeWorkersScheduledTasks {
             return;
         }
         // Retrieve jobExecutor failed pods from Rancher
-        List<Pod> failedPods = servicesRancherApiOrchestrator.getPods(Properties.RANCHER_SYNC_FME_JOBEXEC_DEPLOYMENT_NAME);
+        List<Pod> failedPods = rancherApiService.getPods(Properties.RANCHER_SYNC_FME_JOBEXEC_DEPLOYMENT_NAME);
         workersOrchestrationSharedService.updateDbStatusForFailedPods(failedPods, true);
 
         List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
         List<JobExecutor> syncFmeJobExecutors = jobExecutors.stream().filter(jobExecutor -> jobExecutor.getJobExecutorType().equals(JobExecutorType.Sync_fme)).collect(Collectors.toList());
-        List<String> podNames = servicesRancherApiOrchestrator.getPodNames(Properties.RANCHER_SYNC_FME_JOBEXEC_DEPLOYMENT_NAME);
+        List<String> podNames = rancherApiService.getPodNames(Properties.RANCHER_SYNC_FME_JOBEXEC_DEPLOYMENT_NAME);
         workersOrchestrationSharedService.synchronizeRancherPodsWithDbEntries(syncFmeJobExecutors, podNames);
     }
 }
