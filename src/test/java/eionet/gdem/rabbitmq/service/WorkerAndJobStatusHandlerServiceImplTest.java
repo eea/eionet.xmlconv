@@ -54,7 +54,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         MockitoAnnotations.initMocks(this);
         internalStatus = new InternalSchedulingStatus(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         jobEntry = new JobEntry().setId(100).setJobExecutorName("demoJobExecutor");
-        jobExecutor = new JobExecutor().setContainerId("123456").setHeartBeatQueue("demoJobExecutor-queue");
+        jobExecutor = new JobExecutor().setName("demoJobExecutor").setHeartBeatQueue("demoJobExecutor-queue");
         jobExecutorHistory = new JobExecutorHistory();
         doNothing().when(jobHistoryService).updateJobHistory(any(JobEntry.class));
         doNothing().when(jobExecutorService).saveOrUpdateJobExecutor(any(JobExecutor.class));
@@ -96,32 +96,4 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         workerAndJobStatusHandlerServiceImpl.resendMessageToWorker(jobEntry, workerJobRabbitMQRequestMessage, jobExecutor, jobExecutorHistory);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

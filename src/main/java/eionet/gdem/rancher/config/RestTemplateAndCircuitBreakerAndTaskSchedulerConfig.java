@@ -53,17 +53,6 @@ public class RestTemplateAndCircuitBreakerAndTaskSchedulerConfig {
         return new RestTemplate(httpRequestFactory);
     }
 
-    public static HttpHeaders getHeaders() {
-        String credentials = Properties.rancherApiAccessKey + ":" + Properties.rancherApiSecretKey;
-        String encodedCredentials =
-                new String(Base64.encodeBase64(credentials.getBytes()));
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Basic " + encodedCredentials);
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return httpHeaders;
-    }
-
     @Bean
     CircularEventConsumer circularEventConsumer() {
         CircularEventConsumer<CircuitBreakerEvent> circularEventConsumer =

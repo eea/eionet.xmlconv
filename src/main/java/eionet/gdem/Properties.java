@@ -185,14 +185,6 @@ public class Properties {
 
     public static final boolean enableXqueryCrCallsInterception ;
 
-    public static final String rancherApiUrl;
-    public static final String rancherApiAccessKey;
-    public static final String rancherApiSecretKey;
-    public static final String rancherJobExecutorImageUuid;
-    public static final String rancherJobExecutorStackId;
-    public static final Integer rancherJobExecutorServiceScale;
-    public static final Long rancherJobExecServiceMemory;
-    public static final Long rancherJobExecServiceMemoryReservation;
     public static final boolean enableJobExecRancherScheduledTask;
     public static final Integer maxLightJobExecutorContainersAllowed;
     public static final Integer maxHeavyJobExecutorContainersAllowed;
@@ -272,8 +264,6 @@ public class Properties {
     public static String fmePassword;
     public static String fmeToken;
 
-    public static String rancherContainerMetadataUrl;
-
     public static String jobExecutorRequestsUrl;
     public static String jobExecutorTimeoutRetrieveEndpoint;
 
@@ -329,7 +319,7 @@ public class Properties {
         qaValidationXmlUpperLimit = getIntProperty("qa.validation.xml.upper_limit");
         // external QA program timeout
         qaTimeout = getIntProperty("external.qa.timeout");
-        // exteranal QA program
+        // external QA program
         xgawkCommand = getStringProperty("external.qa.command.xgawk");
 
         dateFormatPattern = getStringProperty("date.format.pattern");
@@ -381,14 +371,6 @@ public class Properties {
         mockCrUrl = getStringProperty("config.cr.mockCrUrl");
         enableXqueryCrCallsInterception =Boolean.parseBoolean(getStringProperty("config.enableXqueryCrCallsInterception"));
 
-        rancherApiUrl = getStringProperty("env.rancher.api.url");
-        rancherApiAccessKey = getStringProperty("env.rancher.api.accessKey");
-        rancherApiSecretKey = getStringProperty("env.rancher.api.secretKey");
-        rancherJobExecutorImageUuid = getStringProperty("env.rancher.api.jobExecutor.imageUuid");
-        rancherJobExecutorStackId = getStringProperty("env.rancher.api.jobExecutor.stackId");
-        rancherJobExecutorServiceScale = getIntProperty("env.rancher.api.jobExecutor.service.scale");
-        rancherJobExecServiceMemory = getLongProperty("env.rancher.api.jobExec.service.memory");
-        rancherJobExecServiceMemoryReservation = getLongProperty("env.rancher.api.jobExec.service.memoryReservation");
         enableJobExecRancherScheduledTask = Boolean.parseBoolean(getStringProperty("env.enable.jobExecutor.rancher.scheduled.task"));
         maxLightJobExecutorContainersAllowed = getIntProperty("env.max.light.jobExecutor.containers.allowed");
         maxHeavyJobExecutorContainersAllowed = getIntProperty("env.max.heavy.jobExecutor.containers.allowed");
@@ -462,8 +444,6 @@ public class Properties {
         fmeUser = getStringProperty("env.fme.user");
         fmePassword = getStringProperty("env.fme.password");
         fmeToken = getStringProperty("env.fme.token");
-
-        rancherContainerMetadataUrl = getStringProperty("env.rancher.container.metadata.url");
 
         jobExecutorRequestsUrl = getStringProperty("jobExecutor.requests.url");
         jobExecutorTimeoutRetrieveEndpoint = getStringProperty("jobExecutor.properties.retrieve.endpoint");

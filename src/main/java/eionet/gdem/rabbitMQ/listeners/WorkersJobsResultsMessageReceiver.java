@@ -3,7 +3,6 @@ package eionet.gdem.rabbitMQ.listeners;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Constants;
-import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
@@ -18,8 +17,6 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.model.WorkerJobInfoRabbitMQResponseMessage;
 import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.utils.StatusUtils;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
@@ -42,9 +39,6 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
 
     /** */
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkersJobsResultsMessageReceiver.class);
-
-    @Autowired
-    private ContainersRancherApiOrchestrator containersOrchestrator;
 
     @Autowired
     private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
@@ -165,16 +159,3 @@ public class WorkersJobsResultsMessageReceiver implements MessageListener {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

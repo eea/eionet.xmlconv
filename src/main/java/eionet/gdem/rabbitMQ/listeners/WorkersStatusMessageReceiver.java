@@ -2,15 +2,12 @@ package eionet.gdem.rabbitMQ.listeners;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eionet.gdem.Properties;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.rabbitMQ.model.WorkerStateRabbitMQResponseMessage;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -30,14 +27,10 @@ public class WorkersStatusMessageReceiver implements MessageListener {
     @Autowired
     JobExecutorHistoryService jobExecutorHistoryService;
 
-    /** */
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorkersStatusMessageReceiver.class);
-
-    @Autowired
-    private ContainersRancherApiOrchestrator containersOrchestrator;
-
     @Autowired
     private WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkersStatusMessageReceiver.class);
 
     @Override
     public void onMessage(Message message) {
@@ -57,16 +50,3 @@ public class WorkersStatusMessageReceiver implements MessageListener {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

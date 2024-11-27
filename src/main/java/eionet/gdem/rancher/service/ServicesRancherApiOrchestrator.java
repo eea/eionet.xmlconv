@@ -1,8 +1,5 @@
 package eionet.gdem.rancher.service;
 
-import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.model.ServiceApiRequestBody;
-import eionet.gdem.rancher.model.ServiceApiResponse;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.StatusDetails;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -17,39 +14,6 @@ public interface ServicesRancherApiOrchestrator {
      * @return the list of pod names
      */
     List<String> getPodNames(String deploymentName);
-
-    /**
-     * Returns information of service with id serviceId
-     * @param serviceId
-     * @return
-     * @throws RancherApiException
-     */
-    ServiceApiResponse getServiceInfo(String serviceId) throws RancherApiException;
-
-    /**
-     * Scales up or down container instances of service with id serviceId
-     * @param serviceId
-     * @param serviceApiRequestBody
-     * @return
-     * @throws RancherApiException
-     */
-    ServiceApiResponse scaleUpOrDownContainerInstances(String serviceId, ServiceApiRequestBody serviceApiRequestBody) throws RancherApiException;
-
-    /**
-     * Creates a new service
-     * @param serviceName
-     * @return
-     * @throws RancherApiException
-     */
-    ServiceApiResponse createService(String serviceName) throws RancherApiException;
-
-    /**
-     * Deletes service with id serviceId
-     * @param serviceId
-     * @return
-     * @throws RancherApiException
-     */
-    ServiceApiResponse deleteService(String serviceId) throws RancherApiException;
 
     /**
      * Get pod by unique pod name

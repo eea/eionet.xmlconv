@@ -1,6 +1,5 @@
 package eionet.gdem.infrastructure.scheduling;
 
-import eionet.gdem.Properties;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.jpa.Entities.*;
 import eionet.gdem.jpa.errors.DatabaseException;
@@ -11,10 +10,8 @@ import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
 import eionet.gdem.rancher.service.ServicesRancherApiOrchestrator;
 import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.utils.PodStatusUtil;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +32,6 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkersOrchestrationSharedServiceImpl.class);
 
     private ServicesRancherApiOrchestrator servicesRancherApiOrchestrator;
-    private ContainersRancherApiOrchestrator containersRancherApiOrchestrator;
     private JobExecutorService jobExecutorService;
     private JobService jobService;
     private RabbitAdmin rabbitAdmin;
@@ -44,10 +40,14 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     private QueryJpaService queryJpaService;
 
     @Autowired
-    public WorkersOrchestrationSharedServiceImpl(ServicesRancherApiOrchestrator servicesRancherApiOrchestrator, ContainersRancherApiOrchestrator containersRancherApiOrchestrator, JobExecutorService jobExecutorService,
-                                                 JobService jobService, RabbitAdmin rabbitAdmin, WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService, CircuitBreaker circuitBreaker, QueryJpaService queryJpaService) {
+    public WorkersOrchestrationSharedServiceImpl(ServicesRancherApiOrchestrator servicesRancherApiOrchestrator,
+                                                 JobExecutorService jobExecutorService,
+                                                 JobService jobService,
+                                                 RabbitAdmin rabbitAdmin,
+                                                 WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService,
+                                                 CircuitBreaker circuitBreaker,
+                                                 QueryJpaService queryJpaService) {
         this.servicesRancherApiOrchestrator = servicesRancherApiOrchestrator;
-        this.containersRancherApiOrchestrator = containersRancherApiOrchestrator;
         this.jobExecutorService = jobExecutorService;
         this.jobService = jobService;
         this.rabbitAdmin = rabbitAdmin;

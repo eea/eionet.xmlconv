@@ -13,9 +13,6 @@ import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.exception.RancherApiException;
-import eionet.gdem.rancher.service.ContainersRancherApiOrchestrator;
-import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +34,6 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
     @Autowired
     WorkerAndJobStatusHandlerService workerAndJobStatusHandlerService;
-
-    @Autowired
-    private ContainersRancherApiOrchestrator containersOrchestrator;
 
     @Autowired
     HandleHeavyJobsService handleHeavyJobsService;
@@ -132,20 +126,3 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

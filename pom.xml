@@ -100,7 +100,7 @@
                                 </env>
                                 <wait>
                                     <tcp>
-                                        <mode>direct</mode>
+                                        <mode>mapped</mode>
                                         <ports>
                                             <port>3306</port>
                                         </ports>
@@ -144,7 +144,7 @@
                                 </ports>
                                 <wait>
                                     <tcp>
-                                        <mode>direct</mode>
+                                        <mode>mapped</mode>
                                         <ports>
                                             <port>80</port>
                                         </ports>
