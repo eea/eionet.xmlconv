@@ -44,7 +44,7 @@ public class CdrRequestMessageReceiver implements ChannelAwareMessageListener {
     @Override
     public void onMessage(Message message, Channel channel) throws IOException {
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        if(message == null || message.getBody() == null){
+        if (message == null || message.getBody() == null) {
             LOGGER.error("Error during cdr message processing. Message was empty");
             return;
         }
@@ -55,21 +55,20 @@ public class CdrRequestMessageReceiver implements ChannelAwareMessageListener {
         CdrJobRequestMessage cdrMessage = null;
         try {
             cdrMessage = mapper.readValue(messageBody, CdrJobRequestMessage.class);
-        }
-        catch (Exception e){
-            LOGGER.error("Error during cdr message processing. Exception message is:  " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error during cdr message processing. Exception message is: {}", e.getMessage());
             return;
         }
         uuid = cdrMessage.getUUID();
-        LOGGER.info("Jobs from cdr queue for envelope url " + cdrMessage.getEnvelopeUrl() + " and UUID " + uuid + " will be scheduled");
+        LOGGER.info("Jobs from cdr queue for envelope url {} and UUID {} will be scheduled", cdrMessage.getEnvelopeUrl(), uuid);
         try {
             qaResults = qaService.scheduleJobs(cdrMessage.getEnvelopeUrl(), true, true, uuid);
             CdrRequestEntry cdrRequestEntry = new CdrRequestEntry(uuid, cdrMessage.getEnvelopeUrl(), qaResults.size(), new Timestamp(new Date().getTime()));
             cdrRequestsService.save(cdrRequestEntry);
             cdrResponseMessageFactoryService.createCdrSummaryResponseMessageAndSendToQueue(uuid, cdrMessage.getEnvelopeUrl(), qaResults);
-            LOGGER.info("There are " + qaResults.size() + " jobs that have been scheduled for envelope url " + cdrMessage.getEnvelopeUrl() + " and UUID " + uuid);
+            LOGGER.info("There are {} jobs that have been scheduled for envelope url {} and UUID {}", qaResults.size(), cdrMessage.getEnvelopeUrl(), uuid);
         } catch (Exception e) {
-            LOGGER.error("Error during job scheduling for cdr message. Exception message is:  " + e.getMessage());
+            LOGGER.error("Error during job scheduling for cdr message. Exception message is: {}", e.getMessage());
             CdrJobDeadLetterQueueMessage dlqMessage = new CdrJobDeadLetterQueueMessage(cdrMessage.getEnvelopeUrl(), cdrMessage.getUUID(), e.getMessage());
             cdrJobResultMessageSender.sendMessageToDeadLetterQueue(dlqMessage);
         }
