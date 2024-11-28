@@ -1,8 +1,6 @@
 package eionet.gdem.jpa.repositories;
 
 import eionet.gdem.jpa.Entities.JobExecutor;
-import eionet.gdem.jpa.utils.JobExecutorType;
-import net.sf.ehcache.search.parser.MValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
