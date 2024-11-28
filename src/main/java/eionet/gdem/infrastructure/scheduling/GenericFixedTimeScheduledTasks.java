@@ -20,7 +20,6 @@ import eionet.gdem.rabbitMQ.model.WorkerHeartBeatMessage;
 import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.HeartBeatMsgHandlerService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.RancherApiService;
 import eionet.gdem.services.JobResultHandlerService;
 import eionet.gdem.utils.Utils;
@@ -337,7 +336,7 @@ public class GenericFixedTimeScheduledTasks {
      * Runs every 2 minutes and checks if a worker with unknown type exists in light and heavy rancher services and if not, deletes it from database
      */
     @Scheduled(cron = "0 */2 * * * *")  //every 2 minutes
-    public void synchronizeWorkersWithUnknownTypeDbEntriesAndRancher() throws DatabaseException, RancherApiException {
+    public void synchronizeWorkersWithUnknownTypeDbEntriesAndRancher() throws DatabaseException {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }
@@ -458,23 +457,22 @@ public class GenericFixedTimeScheduledTasks {
     public void schedulePeriodicHandlingOfPendingCdrJobs() {
         LOGGER.info("Task for handling pending cdr jobs is running");
         List<PendingCdrJobEntry> pendingCdrJobEntries = pendingCdrJobsService.getAllPendingEntries();
-        for(PendingCdrJobEntry entry: pendingCdrJobEntries){
+        for (PendingCdrJobEntry entry: pendingCdrJobEntries) {
             JobEntry jobEntry = null;
             try {
                 jobEntry = jobService.findById(entry.getJobId());
-                if(jobEntry == null){
-                    //delete the entry from the PENDING_CDR_JOBS table
+                if (jobEntry == null) {
+                    // delete the entry from the PENDING_CDR_JOBS table
                     LOGGER.info("Job with id " + entry.getJobId() + " has been removed from the T_XQJOBS table and will also be removed from PENDING_CDR_JOBS table");
                     pendingCdrJobsService.removePendingEntry(entry.getId());
                     continue;
                 }
                 LOGGER.info("Checking if pending job with id " + jobEntry.getId() + " can be sent to the results queue");
                 Boolean jobWasSentToResultQueue = cdrResponseMessageFactoryService.handleReadyOrFailedJobsAndSendToCdr(jobEntry);
-                if (jobWasSentToResultQueue){
+                if (jobWasSentToResultQueue) {
                     LOGGER.info("Job with id " + jobEntry.getId() + " has been sent to the results queue and will be removed from PENDING_CDR_JOBS table");
                     pendingCdrJobsService.removePendingEntry(entry.getId());
-                }
-                else{
+                } else {
                     LOGGER.info("Job with id " + jobEntry.getId() + " is not ready to be be sent to the results queue yet");
                 }
             } catch (Exception e) {

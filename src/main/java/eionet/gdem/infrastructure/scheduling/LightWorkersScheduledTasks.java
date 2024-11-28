@@ -6,7 +6,6 @@ import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorService;
 import eionet.gdem.jpa.service.PropertiesService;
 import eionet.gdem.jpa.utils.JobExecutorType;
-import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.RancherApiService;
 import io.fabric8.kubernetes.api.model.Pod;
 import org.slf4j.Logger;
@@ -70,7 +69,7 @@ public class LightWorkersScheduledTasks {
      * @throws DatabaseException
      */
     @Scheduled(cron = "0 */2 * * * *") // every 2 minutes
-    public void synchronizeRancherLightContainersAndDbEntriesByExistenceAndStatus() throws RancherApiException, DatabaseException {
+    public void synchronizeRancherLightContainersAndDbEntriesByExistenceAndStatus() throws DatabaseException {
         if (!Properties.enableJobExecRancherScheduledTask) {
             return;
         }

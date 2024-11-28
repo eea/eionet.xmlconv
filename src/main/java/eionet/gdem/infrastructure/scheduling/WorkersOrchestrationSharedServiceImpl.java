@@ -9,7 +9,6 @@ import eionet.gdem.jpa.service.QueryJpaService;
 import eionet.gdem.jpa.utils.JobExecutorType;
 import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
-import eionet.gdem.rancher.exception.RancherApiException;
 import eionet.gdem.rancher.service.RancherApiService;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -75,7 +74,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     }
 
     @Override
-    public void deleteFailedWorkers(String deploymentName, JobExecutorType jobExecutorType) throws RancherApiException {
+    public void deleteFailedWorkers(String deploymentName, JobExecutorType jobExecutorType) {
         List<JobExecutor> totalFailedWorkers = jobExecutorService.findByStatus(SchedulingConstants.WORKER_FAILED);
 
         // find failed workers by jobExecutorType
@@ -126,12 +125,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
 
     @Override
     public void scheduleWorkersOrchestration(String deploymentName, boolean isHeavy, JobExecutorType jobExecutorType, Integer maxJobExecutorsAllowed) {
-        try {
-            this.deleteFailedWorkers(deploymentName, jobExecutorType);
-        } catch (RancherApiException e) {
-            LOGGER.error("Error during deletion of failed workers");
-            return;
-        }
+        this.deleteFailedWorkers(deploymentName, jobExecutorType);
 
         InternalSchedulingStatus internalStatus = new InternalSchedulingStatus().setId(SchedulingConstants.INTERNAL_STATUS_QUEUED);
         List<JobEntry> jobs = jobService.findByIntSchedulingStatusAndIsHeavy(internalStatus, isHeavy);

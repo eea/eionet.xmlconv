@@ -3,7 +3,6 @@ package eionet.gdem.infrastructure.scheduling;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.utils.JobExecutorType;
-import eionet.gdem.rancher.exception.RancherApiException;
 import io.fabric8.kubernetes.api.model.Pod;
 
 import java.util.List;
@@ -16,27 +15,24 @@ public interface WorkersOrchestrationSharedService {
      * @param deploymentName
      * @param newWorkers
      * @param maxJobExecutorsAllowed
-     * @throws RancherApiException
      */
-    void createWorkers(String deploymentName, Integer newWorkers, Integer maxJobExecutorsAllowed) throws RancherApiException;
+    void createWorkers(String deploymentName, Integer newWorkers, Integer maxJobExecutorsAllowed);
 
     /**
      * deletes workers that have failed to run correctly
      *
      * @param deploymentName
-     * @throws RancherApiException
-     * @throws DatabaseException
+     * @param jobExecutorType
      */
-    void deleteFailedWorkers(String deploymentName, JobExecutorType jobExecutorType) throws RancherApiException, DatabaseException;
+    void deleteFailedWorkers(String deploymentName, JobExecutorType jobExecutorType);
 
     /**
      * deletes worker from rancher and JOB_EXECUTOR table
      *
      * @param worker
-     * @throws RancherApiException
      * @throws DatabaseException
      */
-    void deleteFromRancherAndDatabase(JobExecutor worker) throws RancherApiException, DatabaseException;
+    void deleteFromRancherAndDatabase(JobExecutor worker) throws DatabaseException;
 
     /**
      * checks how many jobs have internalSchedulingStatus=2 (meaning the job has been added to rabbitmq queue and is waiting for a worker to grab it)
@@ -54,7 +50,6 @@ public interface WorkersOrchestrationSharedService {
      * with status=2 (FAILED)
      * @param pods
      * @param isHeavy
-     * @throws RancherApiException
      */
     void updateDbStatusForFailedPods(List<Pod> pods, boolean isHeavy);
 
