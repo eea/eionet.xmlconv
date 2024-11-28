@@ -68,6 +68,7 @@ public class AsyncFmeWorkersScheduledTasks {
      *
      * @throws DatabaseException
      */
+    @Transactional
     @Scheduled(cron = "0 */2 * * * *") // every 2 minutes
     public void synchronizeRancherAsyncFmeContainersAndDbEntriesByExistenceAndStatus() throws DatabaseException {
         if (!Properties.enableJobExecRancherScheduledTask) {

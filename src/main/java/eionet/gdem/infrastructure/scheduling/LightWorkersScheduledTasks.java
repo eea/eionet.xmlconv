@@ -68,6 +68,7 @@ public class LightWorkersScheduledTasks {
      *
      * @throws DatabaseException
      */
+    @Transactional
     @Scheduled(cron = "0 */2 * * * *") // every 2 minutes
     public void synchronizeRancherLightContainersAndDbEntriesByExistenceAndStatus() throws DatabaseException {
         if (!Properties.enableJobExecRancherScheduledTask) {
