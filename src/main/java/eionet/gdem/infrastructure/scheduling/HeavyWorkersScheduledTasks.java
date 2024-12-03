@@ -89,7 +89,7 @@ public class HeavyWorkersScheduledTasks {
             return;
         }
         // Retrieve jobExecutor failed pods from Rancher
-        List<Pod> failedPods = rancherApiService.getPods(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
+        List<Pod> failedPods = rancherApiService.getFailedPods(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME);
         workersOrchestrationSharedService.updateDbStatusForFailedPods(failedPods, true);
 
         List<JobExecutor> jobExecutors = jobExecutorService.listJobExecutor();
