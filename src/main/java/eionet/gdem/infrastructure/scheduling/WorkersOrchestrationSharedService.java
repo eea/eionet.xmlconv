@@ -30,9 +30,10 @@ public interface WorkersOrchestrationSharedService {
      * deletes worker from rancher and JOB_EXECUTOR table
      *
      * @param worker
+     * @param deploymentName
      * @throws DatabaseException
      */
-    void deleteFromRancherAndDatabase(JobExecutor worker) throws DatabaseException;
+    void deleteFromRancherAndDatabase(JobExecutor worker, String deploymentName) throws DatabaseException;
 
     /**
      * checks how many jobs have internalSchedulingStatus=2 (meaning the job has been added to rabbitmq queue and is waiting for a worker to grab it)

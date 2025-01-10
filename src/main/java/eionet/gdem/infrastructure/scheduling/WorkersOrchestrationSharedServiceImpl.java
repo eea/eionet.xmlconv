@@ -11,6 +11,7 @@ import eionet.gdem.qa.XQScript;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
 import eionet.gdem.rancher.service.RancherApiService;
 import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +97,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
 
         for (JobExecutor worker : failedWorkersToBeDeleted) {
             try {
-                deleteFromRancherAndDatabase(worker);
+                deleteFromRancherAndDatabase(worker, deploymentName);
             } catch (DatabaseException e) {
                 LOGGER.error("Error during deletion of failed worker {}", worker.getName());
             }
@@ -112,14 +113,21 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     }
 
     @Override
-    public void deleteFromRancherAndDatabase(JobExecutor worker) throws DatabaseException {
+    public void deleteFromRancherAndDatabase(JobExecutor worker, String deploymentName) throws DatabaseException {
         Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
+            // scale down the deployment (reduce replicas) so that Kubernetes does not recreate the pods
+            int currentReplicas = rancherApiService.getDeploymentByName(deploymentName).getSpec().getReplicas();
+            int newReplicas = currentReplicas <= 1 ? 1 : currentReplicas - 1;
+            rancherApiService.scaleDeployment(deploymentName, newReplicas);
+
+            // delete the pod from Rancher
             rancherApiService.deletePod(worker.getName());
+            // delete the heart beat queue
+            deleteWorkerHeartBeatQueue(worker.getHeartBeatQueue());
         });
         decorateRunnable.run();
 
         jobExecutorService.deleteByName(worker.getName());
-        deleteWorkerHeartBeatQueue(worker.getHeartBeatQueue());
         LOGGER.info("Deleted worker {} from Rancher and database", worker.getName());
     }
 
@@ -180,7 +188,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                         return;
                     }
                     try {
-                        this.deleteFromRancherAndDatabase(worker);
+                        this.deleteFromRancherAndDatabase(worker, deploymentName);
                     } catch (DatabaseException e) {
                         LOGGER.error("Error Deleting worker {}. Exception: {}", worker.getName(), e);
                     }
