@@ -6,10 +6,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- *
- */
 public class UploadSchemaFormValidator implements Validator {
+
     @Override
     public boolean supports(Class<?> aClass) {
         return UploadSchemaForm.class.equals(aClass);
@@ -19,11 +17,7 @@ public class UploadSchemaFormValidator implements Validator {
     public void validate(Object o, Errors errors) {
         UploadSchemaForm form = (UploadSchemaForm) o;
         MultipartFile schemaFile = form.getSchemaFile();
-        String desc = form.getDescription();
         String schemaUrl = form.getSchemaUrl();
-        boolean doValidation = form.isDoValidation();
-        String schemaLang = form.getSchemaLang();
-        boolean blocker = form.isBlockerValidation();
         Long maxExecutionTime = form.getMaxExecutionTime();
 
         if ((schemaFile == null || schemaFile.getSize() == 0) && Utils.isNullStr(schemaUrl)) {

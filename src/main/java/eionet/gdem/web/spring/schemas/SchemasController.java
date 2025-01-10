@@ -86,7 +86,6 @@ public class SchemasController {
                             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         SpringMessages messages = new SpringMessages();
-
         String user = (String) httpServletRequest.getSession().getAttribute("user");
 
         try {
@@ -125,7 +124,7 @@ public class SchemasController {
             // Add row to T_SCHEMA table
             String schemaID = sm.addSchema(user, schemaUrl, desc, schemaLang, doValidation, blocker, maxExecutionTime);
             if (schemaFile != null && schemaFile.getSize() > 0) {
-                // Change the filename to schema-UniqueIDxsd
+                // Change the filename to schema-UniqueID.xsd
                 fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaID, Utils.extractExtension(schemaFile.getOriginalFilename()));
                 // Add row to T_UPL_SCHEMA table
                 sm.addUplSchema(user, schemaFile, fileName, schemaID);
@@ -250,6 +249,7 @@ public class SchemasController {
                              BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
         SpringMessages messages = new SpringMessages();
 
+        MultipartFile schemaFile = form.getSchemaFile();
         String schemaId = form.getSchemaId();
         String schema = form.getSchema();
         String description = form.getDescription();
@@ -259,25 +259,40 @@ public class SchemasController {
         Date expireDate = form.getExpireDate();
         boolean blocker = form.isBlocker();
         Long maxExecutionTime = form.getMaxExecutionTime();
-
-        new SchemaFormValidator().validate(form, bindingResult);
-        model.addAttribute("schemaId", schemaId);
-        if (bindingResult.hasErrors()) {
-            return "/schemas/edit";
-        }
-
         String user = (String) session.getAttribute("user");
+        SchemaManager sm = new SchemaManager();
 
         try {
-            SchemaManager sm = new SchemaManager();
+            SchemaElemHolder seHolder = sm.getSchemaElems(user, schemaId);
+            if (seHolder == null || seHolder.getSchema() == null) {
+                throw new DCMException(BusinessConstants.EXCEPTION_SCHEMA_NOT_EXIST);
+            }
+
+            new SchemaFormValidator().validate(form, bindingResult);
+            model.addAttribute("schemaId", schemaId);
+            model.addAttribute("rootElements", seHolder);
+            if (bindingResult.hasErrors()) {
+                return "/schemas/edit";
+            }
+
             String schemaIdByUrl = sm.getSchemaId(schema);
             if (schemaIdByUrl != null && !schemaIdByUrl.equals(schemaId)) {
-                String schemaTargetUrl = String.format("viewSchemaForm?schemaId=%s", schemaIdByUrl);
-                bindingResult.reject(messageService.getMessage("label.schema.url.exists", schemaTargetUrl));
+                String schemaTargetUrl = String.format("/schemas/%s", schemaIdByUrl);
+                bindingResult.reject("label.schema.url.exists", new String[] { schemaTargetUrl }, null);
                 return "/schemas/edit";
             }
 
             sm.update(user, schemaId, schema, description, schemaLang, doValidation, dtdId, expireDate, blocker, maxExecutionTime);
+            if (form.isDeleteUploadedSchema()) {
+                sm.deleteUplSchema(user, schemaId, false);
+            }
+            if (schemaFile != null && schemaFile.getSize() > 0) {
+                sm.deleteUplSchema(user, schemaId, false);
+                // Change the filename to schema-UniqueID.xsd
+                String fileName = sm.generateSchemaFilenameByID(Properties.schemaFolder, schemaId, Utils.extractExtension(schemaFile.getOriginalFilename()));
+                // Add row to T_UPL_SCHEMA table
+                sm.addUplSchema(user, schemaFile, fileName, schemaId);
+            }
             messages.add(messageService.getMessage("label.schema.updated"));
 
             QAScriptListLoader.reloadList(httpServletRequest);

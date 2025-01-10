@@ -299,7 +299,7 @@ public class HttpFileManager {
      * */
     public static URL followUrlRedirectIfNeeded(URL url, String ticket) throws FollowRedirectException {
 
-        LOGGER.info("Checking URL:" + url.toString()+" for redirects.");
+        LOGGER.info("Checking URL: " + url.toString() + " for redirects.");
         try {
             HttpURLConnection con = (HttpURLConnection)(url.openConnection());
 
@@ -313,14 +313,14 @@ public class HttpFileManager {
             con.setInstanceFollowRedirects(false);
             con.connect();
             int responseCode = con.getResponseCode();
-            LOGGER.info("URL Redirection Mechanism Response Code :"+ responseCode);
-            if (responseCode == 301 || responseCode == 302 || responseCode == 307){
+            LOGGER.info("URL Redirection Mechanism Response Code: " + responseCode);
+            if (responseCode == 301 || responseCode == 302 || responseCode == 307 || responseCode == 308){
                 String location = con.getHeaderField( "Location" );
-                LOGGER.info("Redirect Location is:"+location);
+                LOGGER.info("Redirect Location is: " + location);
                 return new URL(con.getHeaderField("Location"));
             }
         } catch (IOException e) {
-            throw new FollowRedirectException("Error trying to invoke Server with Url:" + url.toString(), e.getCause());
+            throw new FollowRedirectException("Error trying to invoke Server with Url: " + url.toString(), e.getCause());
         }
       return url;
     }
