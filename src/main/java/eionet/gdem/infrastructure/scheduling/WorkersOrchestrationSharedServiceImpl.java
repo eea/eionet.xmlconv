@@ -64,13 +64,14 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             return;
         }
 
-        final int scale = (runningPods + newWorkers > maxJobExecutorsAllowed) ?
-                maxJobExecutorsAllowed - runningPods : newWorkers;
+        final int replicas = (runningPods + newWorkers > maxJobExecutorsAllowed) ?
+                maxJobExecutorsAllowed : runningPods + newWorkers;
 
         Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
-            rancherApiService.scaleDeployment(deploymentName, scale);
+            rancherApiService.scaleDeployment(deploymentName, replicas);
         });
         decorateRunnable.run();
+        int scale = replicas - runningPods;
         LOGGER.info("Created {} new worker(s)", scale);
     }
 
