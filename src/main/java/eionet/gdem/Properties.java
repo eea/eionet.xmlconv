@@ -118,8 +118,6 @@ public class Properties {
     public static String hostname = null;
     /** Is Rancher Boolean. */
     public static int isRancher = 0;
-    /** url for rancher metadata queries. */
-    public static String rancherMetadataUrl;
 
     /** XGawk program executable command. */
     public static String xgawkCommand = null;
@@ -328,7 +326,6 @@ public class Properties {
 
         hostname = getStringProperty("config.hostname") == null ? "hostname_not_set" : getStringProperty("config.hostname");
         isRancher = getIntProperty("config.isRancher");
-        rancherMetadataUrl = getStringProperty("rancher.metadata.url");
 
         longRunningJobThreshold = getLongProperty("env.long.running.jobs.threshold");
 

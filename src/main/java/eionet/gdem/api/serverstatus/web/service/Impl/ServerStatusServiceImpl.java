@@ -1,28 +1,19 @@
 package eionet.gdem.api.serverstatus.web.service.Impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eionet.gdem.Properties;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.api.serverstatus.web.service.ServerStatusObject;
 import eionet.gdem.api.serverstatus.web.service.ServerStatusService;
-import eionet.gdem.web.spring.workqueue.IXQJobDao;
+import eionet.gdem.rancher.service.RancherApiService;
 import eionet.gdem.services.impl.QueueJobsServiceImpl;
+import eionet.gdem.web.spring.workqueue.IXQJobDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collections;
 
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.isNull;
@@ -35,6 +26,8 @@ import static java.util.Objects.isNull;
 public class ServerStatusServiceImpl implements ServerStatusService {
     
     private IXQJobDao ixqJobDao;
+    private final RancherApiService rancherApiService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(QueueJobsServiceImpl.class);
 
     private static class isRancher {
@@ -42,35 +35,29 @@ public class ServerStatusServiceImpl implements ServerStatusService {
     }
 
     @Autowired
-    public ServerStatusServiceImpl(@Qualifier("xqJobDao") IXQJobDao ixqJobDao) {
+    public ServerStatusServiceImpl(@Qualifier("xqJobDao") IXQJobDao ixqJobDao, RancherApiService rancherApiService) {
         this.ixqJobDao = ixqJobDao;
+        this.rancherApiService = rancherApiService;
     }
 
     @Override
     public ServerStatusObject getServerStatus() throws XMLConvException {
-
-        ServerStatusObject res = new ServerStatusObject () ;
-        
-        if ( isRancher.IS_RANCHER == 1 ) {
-            try {
-                getRancherInfo ( res );
-            } catch (IOException ex) {
-                LOGGER.error( "getRancherInfo: ", ex );
-                res = new ServerStatusObject () ;
-            }
+        ServerStatusObject res = new ServerStatusObject() ;
+        if (isRancher.IS_RANCHER == 1) {
+            getRancherInfo(res);
         }
-        return getWorkqueueInfo( res );
+        return getWorkqueueInfo(res);
         
     }
     
-    private ServerStatusObject getWorkqueueInfo ( ServerStatusObject res ) {
+    private ServerStatusObject getWorkqueueInfo(ServerStatusObject res) {
         try {
-            String [] [] queryResults = ixqJobDao.getJobsSumInstanceAndStatus();
-            if ( isNull(queryResults) ) {
-                return ( isRancher.IS_RANCHER == 1) ? res : null;
+            String[][] queryResults = ixqJobDao.getJobsSumInstanceAndStatus();
+            if (isNull(queryResults)) {
+                return (isRancher.IS_RANCHER == 1) ? res : null;
             }
-            for ( int i = 0 ; i < queryResults.length ; i ++ ) {
-                res.insertJobStatusByInstance(queryResults [i][0], queryResults [i][1], parseInt ( queryResults [i][2]) );
+            for (int i = 0; i < queryResults.length; i ++) {
+                res.insertJobStatusByInstance(queryResults[i][0], queryResults[i][1], parseInt(queryResults[i][2]));
             }
             return res;
 
@@ -80,30 +67,18 @@ public class ServerStatusServiceImpl implements ServerStatusService {
         }
     }
     
-    private void getRancherInfo( ServerStatusObject res ) throws IOException {
-                
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setAccept(Collections.singletonList(new MediaType("application","json")));
-        HttpEntity<?> requestEntity = new HttpEntity<>(requestHeaders);
-
-        // Create a new RestTemplate instance
-        RestTemplate restTemplate = new RestTemplate();
-
-        // Add the Jackson message converter
-        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-
-        // Make the HTTP GET request
-        ResponseEntity<  String  > responseEntity = restTemplate.exchange( Properties.rancherMetadataUrl , HttpMethod.GET, requestEntity, String.class );
-        String responseBody = responseEntity.getBody();
-
-        ObjectMapper mapper = new ObjectMapper();
-        
-        RancherStatus[] rancherStatus = mapper.readValue( responseBody , RancherStatus[].class );
-        
-        for (int i = 0; i < rancherStatus.length ; i ++) {
-            res.insertHealthStatusByInstance( rancherStatus[i].getName(), rancherStatus[i].getHealth_state() + " / " + rancherStatus[i].getState());
-        }
-        
+    private void getRancherInfo(ServerStatusObject res) {
+        getWorkerInfo(Properties.RANCHER_LIGTH_JOBEXEC_DEPLOYMENT_NAME, res);
+        getWorkerInfo(Properties.RANCHER_HEAVY_JOBEXEC_DEPLOYMENT_NAME, res);
+        getWorkerInfo(Properties.RANCHER_SYNC_FME_JOBEXEC_DEPLOYMENT_NAME, res);
+        getWorkerInfo(Properties.RANCHER_ASYNC_FME_JOBEXEC_DEPLOYMENT_NAME, res);
     }
-    
+
+    private void getWorkerInfo(String deploymentName, ServerStatusObject res) {
+        rancherApiService.getPods(deploymentName).forEach(
+                pod -> res.insertHealthStatusByInstance(
+                        pod.getMetadata().getName(),
+                        (pod.getStatus() != null) ? pod.getStatus().getPhase() : "Unknown")
+        );
+    }
 }

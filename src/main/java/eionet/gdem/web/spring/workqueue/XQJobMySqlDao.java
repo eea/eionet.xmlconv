@@ -63,7 +63,7 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
 
     private static final String qLastActiveJobTime = qXQJobDataBase + " WHERE "+ STATUS_FLD + "=" + Constants.XQ_PROCESSING + " ORDER BY TIME_STAMP desc limit 1";
     
-    private static final String qJobsByInstanceAndStatus = "SELECT INSTANCE, N_STATUS, COUNT(*) as JOBS_SUM FROM T_XQJOBS GROUP BY INSTANCE, N_STATUS";
+    private static final String qJobsByExecutorAndStatus = "SELECT JOB_EXECUTOR_NAME, N_STATUS, COUNT(*) as JOBS_SUM FROM T_XQJOBS GROUP BY JOB_EXECUTOR_NAME, N_STATUS";
 
     private static final String qJobsObject = "SELECT *" + " FROM " + WQ_TABLE + " WHERE " + STATUS_FLD + "= ?" + " AND " + INTERNAL_STATUS_ID_FLD + " = ?";
 
@@ -140,12 +140,12 @@ public class XQJobMySqlDao extends MySqlBaseDao implements IXQJobDao, Constants 
         String[][] s;
 
         if (isDebugMode) {
-            LOGGER.debug("Query is " + qJobsByInstanceAndStatus);
+            LOGGER.debug("Query is " + qJobsByExecutorAndStatus);
         }
 
         try {
             conn = getConnection();
-            pstmt = conn.prepareStatement(qJobsByInstanceAndStatus);
+            pstmt = conn.prepareStatement(qJobsByExecutorAndStatus);
             rs = pstmt.executeQuery();
             String[][] r = getResults(rs);
             if (r.length == 0) {

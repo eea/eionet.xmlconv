@@ -40,9 +40,12 @@
     for (var i = 0 ; i < data.serverStatus.length ; i++ ) {
       displayRow = { instanceName : "null" ,
         jobs_by_status_0 : 0,
-        jobs_by_status_1 : 0,
         jobs_by_status_2 : 0,
         jobs_by_status_3 : 0,
+        jobs_by_status_4 : 0,
+        jobs_by_status_7 : 0,
+        jobs_by_status_8 : 0,
+        jobs_by_status_9 : 0,
         health : null
       }
       temp = data.serverStatus[i] ;
@@ -80,11 +83,14 @@
 <table id="t_serverStatus" class="datatable results">
   <thead>
   <tr>
-    <th>Instance Name</th>
+    <th>Pod Name</th>
     <th>#Jobs with Status 0<br/>(received)</th>
-    <th>#Jobs with Status 1<br/>(downloading)</th>
-    <th>#Jobs with Status 2<br/>(working)</th>
+    <th>#Jobs with Status 2<br/>(processing)</th>
     <th>#Jobs with Status 3<br/>(finished)</th>
+    <th>#Jobs with Status 4<br/>(fatal error)</th>
+    <th>#Jobs with Status 7<br/>(interrupted)</th>
+    <th>#Jobs with Status 8<br/>(deleted)</th>
+    <th>#Jobs with Status 7<br/>(cancelled by user)</th>
     <th>Health</th>
   </tr>
   </thead>
@@ -94,4 +100,4 @@
 <input type="button" value="Refresh" onclick="return fetchServerData();"/>
 </br>
 <div id="timestamp"></div>
-<div>Current instance name: <%=Properties.getHostname()%></div>
+<div>Application pod name: <%=Properties.getHostname()%></div>

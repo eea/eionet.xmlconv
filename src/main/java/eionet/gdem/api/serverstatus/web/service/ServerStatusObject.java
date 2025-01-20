@@ -68,22 +68,19 @@ public class ServerStatusObject implements Serializable {
     }
     
     public void insertJobStatusByInstance ( String instanceName, String jobStatus , Integer jobCount){
+        if (isNull(instanceName)) instanceName = "N/A (schema validations or not assigned yet)";
         
-        if ( isNull(instanceName)) instanceName = "null";
-        
-        if ( isNull( serverMap.get ( instanceName ) ) ){
-            ServerStatus newElem = new ServerStatus ();
-            newElem.instanceName = instanceName ;
-            newElem.health = "NA";
-            newElem.jobs_by_status = new ArrayList <jobsByStatus> () ;
-            newElem.jobs_by_status.add( new jobsByStatus(jobStatus , jobCount));
-            this.serverStatus.add( newElem );
-            serverMap.put( instanceName , this.serverStatus.size() - 1 );
+        if (isNull(serverMap.get(instanceName))) {
+            ServerStatus newElem = new ServerStatus();
+            newElem.instanceName = instanceName;
+            newElem.health = "N/A";
+            newElem.jobs_by_status = new ArrayList <jobsByStatus>() ;
+            newElem.jobs_by_status.add(new jobsByStatus(jobStatus, jobCount));
+            this.serverStatus.add(newElem);
+            serverMap.put(instanceName, this.serverStatus.size() - 1);
+        } else {
+            this.serverStatus.get(serverMap.get(instanceName)).jobs_by_status.add( new jobsByStatus(jobStatus, jobCount));
         }
-        else {
-            this.serverStatus.get( serverMap.get ( instanceName ) ).jobs_by_status.add( new jobsByStatus(jobStatus , jobCount) );
-        }
-        
     }
     
     public void insertHealthStatusByInstance ( String instanceName, String healthStatus ){
