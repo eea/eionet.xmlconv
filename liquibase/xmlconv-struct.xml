@@ -1112,8 +1112,10 @@
         <dropColumn tableName="JOB_EXECUTOR" columnName="CONTAINER_ID" />
         <dropColumn tableName="JOB_EXECUTOR_HISTORY" columnName="CONTAINER_ID" />
         <sql>
-            ALTER TABLE JOB_EXECUTOR MODIFY COLUMN NAME varchar(100);
-            ALTER TABLE JOB_EXECUTOR_HISTORY MODIFY COLUMN NAME varchar(100);
+            ALTER TABLE JOB_EXECUTOR MODIFY COLUMN NAME varchar(200);
+            ALTER TABLE JOB_EXECUTOR_HISTORY MODIFY COLUMN NAME varchar(200);
+            ALTER TABLE JOB_HISTORY MODIFY COLUMN JOB_EXECUTOR_NAME varchar(200);
+            ALTER TABLE T_XQJOBS MODIFY COLUMN JOB_EXECUTOR_NAME varchar(200);
         </sql>
     </changeSet>
 </databaseChangeLog>
