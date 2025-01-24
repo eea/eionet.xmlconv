@@ -226,7 +226,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
     public void synchronizeRancherPodsWithDbEntries(List<JobExecutor> jobExecutors, List<String> podNames) {
         for (JobExecutor jobExecutor : jobExecutors) {
             if (!podNames.contains(jobExecutor.getName())) {
-                LOGGER.info("Worker retrieved form database with name: {} doesn't exist on rancher. " +
+                LOGGER.info("Worker retrieved from database with name: {} doesn't exist on rancher. " +
                         "Proceeding with deletion from database.", jobExecutor.getName());
                 try {
                     jobExecutorService.deleteByName(jobExecutor.getName());

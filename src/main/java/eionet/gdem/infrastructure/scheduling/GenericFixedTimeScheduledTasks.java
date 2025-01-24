@@ -351,7 +351,7 @@ public class GenericFixedTimeScheduledTasks {
 
         for (JobExecutor jobExecutor : jobExecutorsWithUnknownStatus) {
             if (!lightInstances.contains(jobExecutor.getName()) && !heavyInstances.contains(jobExecutor.getName())) {
-                LOGGER.info("Pod retrieved form database with name: {} doesn't exist on rancher. Proceeding with deletion from database", jobExecutor.getName());
+                LOGGER.info("Pod retrieved from database with name: {} doesn't exist on rancher. Proceeding with deletion from database", jobExecutor.getName());
                 try {
                     jobExecutorService.deleteByName(jobExecutor.getName());
                     workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
