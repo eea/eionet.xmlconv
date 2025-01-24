@@ -5,8 +5,6 @@ import eionet.gdem.jpa.Entities.AlertEntry;
 import eionet.gdem.jpa.enums.AlertSeverity;
 import eionet.gdem.jpa.service.AlertService;
 import eionet.gdem.notifications.UNSEventSender;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -99,12 +97,8 @@ public class RestTemplateAndCircuitBreakerAndTaskSchedulerConfig {
 
     @Bean
     public KubernetesClient kubernetesClient() {
-        Config config = new ConfigBuilder()
-                .withMasterUrl(Properties.RANCHER_MASTER_URL)
-                .withNamespace(Properties.RANCHER_NAMESPACE)
-                .withOauthToken(Properties.RANCHER_AUTH_TOKEN)
-                .build();
-        return new KubernetesClientBuilder().withConfig(config).build();
+        // reads the in-cluster configuration (service account token, CA certificate, API server URL, namespace etc.)
+        return new KubernetesClientBuilder().build();
     }
 
 }

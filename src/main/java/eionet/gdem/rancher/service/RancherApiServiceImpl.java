@@ -24,40 +24,42 @@ public class RancherApiServiceImpl implements RancherApiService {
 
     @Override
     public Deployment getDeploymentByName(String name) {
-        return kubernetesClient.apps().deployments()
-                .inNamespace(Properties.RANCHER_NAMESPACE)
+        return kubernetesClient
+                .apps()
+                .deployments()
                 .withName(name)
                 .get();
     }
 
     @Override
     public Deployment scaleDeployment(String deploymentName, int replicas) {
-        return kubernetesClient.apps().deployments()
-                .inNamespace(Properties.RANCHER_NAMESPACE)
+        return kubernetesClient
+                .apps()
+                .deployments()
                 .withName(deploymentName)
                 .scale(replicas);
     }
 
     @Override
     public Pod getPod(String podName) {
-        return kubernetesClient.pods()
-                .inNamespace(Properties.RANCHER_NAMESPACE)
+        return kubernetesClient
+                .pods()
                 .withName(podName)
                 .get();
     }
 
     @Override
     public List<StatusDetails> deletePod(String podName) {
-        return kubernetesClient.pods()
-                .inNamespace(Properties.RANCHER_NAMESPACE)
+        return kubernetesClient
+                .pods()
                 .withName(podName)
                 .delete();
     }
 
     @Override
     public List<Pod> getPods(String deploymentName) {
-        return kubernetesClient.pods()
-                .inNamespace(Properties.RANCHER_NAMESPACE)
+        return kubernetesClient
+                .pods()
                 .withLabels(getDeploymentByName(deploymentName).getSpec().getSelector().getMatchLabels())
                 .list()
                 .getItems();
