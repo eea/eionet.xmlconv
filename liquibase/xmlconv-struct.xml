@@ -1118,4 +1118,12 @@
             ALTER TABLE T_XQJOBS MODIFY COLUMN JOB_EXECUTOR_NAME varchar(200);
         </sql>
     </changeSet>
+    <changeSet author="stamojoh" id="rev-96">
+        <comment>
+            Increase JOB_EXECUTOR_NAME column size to support kubernetes max length pod names
+        </comment>
+        <sql>
+            ALTER TABLE WORKER_HEART_BEAT_MSG MODIFY COLUMN JOB_EXECUTOR_NAME varchar(200);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
