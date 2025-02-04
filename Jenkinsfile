@@ -48,12 +48,13 @@ pipeline {
       post {
         always {
             junit 'target/failsafe-reports/*.xml'
-            jacoco(
-                execPattern: 'target/*.exec',
-                classPattern: 'target/classes',
-                sourcePattern: 'src/main/java',
-                exclusionPattern: 'src/test*'
-            )
+            recordCoverage(tools: [[parser: 'JACOCO']],
+               id: 'jacoco', name: 'JaCoCo Coverage',
+               sourceCodeRetention: 'EVERY_BUILD',
+               ignoreParsingErrors: true,
+               qualityGates: [
+                 [threshold: 5.0, metric: 'LINE', baseline: 'PROJECT', unstable: true],
+                 [threshold: 5.0, metric: 'BRANCH', baseline: 'PROJECT', unstable: true]])
             publishHTML target:[
                allowMissing: false,
                alwaysLinkToLastBuild: false,
