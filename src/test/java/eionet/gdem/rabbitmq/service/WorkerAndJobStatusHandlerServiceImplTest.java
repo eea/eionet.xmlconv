@@ -83,7 +83,7 @@ public class WorkerAndJobStatusHandlerServiceImplTest {
         when(jobService.saveOrUpdate(any(JobEntry.class))).thenReturn(jobEntry);
         when(jobExecutorService.findByName(anyString())).thenReturn(jobExecutor);
         workerAndJobStatusHandlerServiceImpl.handleCancelledJob(jobEntry, SchedulingConstants.WORKER_READY);
-        verify(jobExecutorService).findByName(anyString());
+        verify(jobExecutorService, times(2)).findByName(anyString());
     }
 
     @Test

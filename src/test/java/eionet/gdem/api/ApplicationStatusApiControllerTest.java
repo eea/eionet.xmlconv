@@ -1,6 +1,7 @@
 package eionet.gdem.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eionet.gdem.Properties;
 import eionet.gdem.api.model.ApplicationStatus;
 import eionet.gdem.api.model.JobExecutorReportStatus;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
@@ -58,7 +59,7 @@ public class ApplicationStatusApiControllerTest {
         doNothing().when(jobExecutorRepository).checkConnection();
         doNothing().when(rabbitTemplate).convertAndSend(anyString(),anyString(),anyString());
         when(rabbitTemplate.receiveAndConvert(anyString())).thenReturn("healthCheck");
-        when(rancherApiService.getRunningPods(anyString())).thenReturn(1);
+        when(rancherApiService.getRunningPods(Properties.RANCHER_CONVERTERS_DEPLOYMENT_NAME)).thenReturn(1);
         JobExecutorReportStatus jobExecutorReportStatus = new JobExecutorReportStatus();
         jobExecutorReportStatus.setLightJobExecutorInstancesRunning(1).setHeavyJobExecutorInstancesRunning(1).setFmeSyncJobExecutorInstancesRunning(1).setFmeAsyncJobExecutorInstancesRunning(1);
         ObjectMapper mapper = new ObjectMapper();
