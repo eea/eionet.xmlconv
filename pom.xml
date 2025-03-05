@@ -13,7 +13,7 @@
         <tomcat.version>9.0.24</tomcat.version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
         <spring.version>5.3.39</spring.version>
-        <spring-security-version>5.6.3</spring-security-version>
+        <spring-security-version>5.8.16</spring-security-version>
         <liquibase.changeLogFile>liquibase/xmlconv-struct.xml</liquibase.changeLogFile>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
@@ -1174,13 +1174,13 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-messaging</artifactId>
-                <version>5.3.19</version>
+                <version>${spring.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-websocket</artifactId>
-                <version>5.3.19</version>
+                <version>${spring.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.session/spring-session -->
             <dependency>
