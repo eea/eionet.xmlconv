@@ -50,17 +50,10 @@
     <property name="poolName" value="springHikariCP" />
     <property name="minimumIdle" value="5"/>
     <property name="maximumPoolSize" value="30"/>
-    <property name="dataSourceClassName" value="com.mysql.cj.jdbc.MysqlDataSource"/>
-    <property name="dataSourceProperties">
-      <props>
-        <prop key="url">${test.db.jdbcurl}</prop>
-        <prop key="user">${test.db.user}</prop>
-        <prop key="password">${test.db.password}</prop>
-        <!--<prop key="cachePrepStmts">true</prop>-->
-        <!--<prop key="prepStmtCacheSize">250</prop>-->
-        <!--<prop key="prepStmtCacheSqlLimit">2048</prop>-->
-      </props>
-    </property>
+    <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+    <property name="jdbcUrl" value="${test.db.jdbcurl}"/>
+    <property name="username" value="${test.db.user}"/>
+    <property name="password" value="${test.db.password}"/>
   </bean>
 
   <!-- TESTING JOOQ LIBRARY - REMOVE ALL FOLLOWING STATEMENTS IF WE WONT NEED JOOQ -->

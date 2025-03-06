@@ -32,17 +32,6 @@
         <property name="jdbcUrl" value="${db.url}"/>
         <property name="username" value="${db.user}"/>
         <property name="password" value="${db.pwd}"/>
-
-        <property name="dataSourceProperties">
-            <props>
-                <prop key="url">${db.url}</prop>
-                <prop key="user">${db.user}</prop>
-                <prop key="password">${db.pwd}</prop>
-                <!--<prop key="cachePrepStmts">true</prop>-->
-                <!--<prop key="prepStmtCacheSize">250</prop>-->
-                <!--<prop key="prepStmtCacheSqlLimit">2048</prop>-->
-            </props>
-        </property>
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
