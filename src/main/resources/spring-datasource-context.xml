@@ -28,7 +28,7 @@
         <property name="poolName" value="springHikariCP"/>
         <property name="minimumIdle" value="5"/>
         <property name="maximumPoolSize" value="30"/>
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="jdbcUrl" value="${db.url}"/>
         <property name="username" value="${db.user}"/>
         <property name="password" value="${db.pwd}"/>

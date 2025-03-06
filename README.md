@@ -40,7 +40,7 @@ This way, whatever the local.properties the app was built with, it can run at an
 A helpful configuration key named initial.admin can be set to bootstrap in the ACLs the initial administrators at runtime. 
 In case you want to provide environmentally the key/value pairs you have to set CATALINA_OPTS in Tomcat with the key/value pairs you want to set:
 
-e.g. CATALINA_OPTS=-Dapp.home=/opt/xmlconv -Dapp.host=converstest.eionet.europa.eu -Dconfig.db.jdbcurl=jdbc:mysql://mysql:3306/xmlconv -Dconfig.db.driver=com.mysql.jdbc.Driver -Dconfig.db.user=root -Dconfig.db.password=xxxxx -Dbasexserver.host=basex -Dbasexserver.port=1984 -Dbasexserver.user=admin -Dbasexserver.password=admin
+e.g. CATALINA_OPTS=-Dapp.home=/opt/xmlconv -Dapp.host=converstest.eionet.europa.eu -Dconfig.db.jdbcurl=jdbc:mysql://mysql:3306/xmlconv -Dconfig.db.driver=com.mysql.cj.jdbc.Driver -Dconfig.db.user=root -Dconfig.db.password=xxxxx -Dbasexserver.host=basex -Dbasexserver.port=1984 -Dbasexserver.user=admin -Dbasexserver.password=admin
 
 ### Docker configuration
 
