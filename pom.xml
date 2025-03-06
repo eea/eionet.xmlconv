@@ -90,7 +90,7 @@
                     <images>
                         <image>
                             <alias>mysql</alias>
-                            <name>mysql:8.0.41</name>
+                            <name>mysql:5.5</name>
                             <run>
                                 <ports>
                                     <port>mysql.port:3306</port>
