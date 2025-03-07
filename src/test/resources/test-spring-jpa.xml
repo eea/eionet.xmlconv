@@ -10,8 +10,6 @@
     <!--<context:annotation-config/>-->
     <!--<context:component-scan base-package="eionet.gdem" />-->
 
-    <import resource="classpath:test-spring-datasource.xml" />
-
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="transactionAwareDataSource"/>
         <property name="packagesToScan" value="eionet.gdem" />
