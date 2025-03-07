@@ -10,7 +10,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <env>default</env>
         <java_version>11</java_version>
-        <tomcat.version>9.0.24</tomcat.version>
         <checkstyle.config.location>${basedir}/docs/checkstyle.xml</checkstyle.config.location>
         <spring.version>5.3.39</spring.version>
         <spring-security-version>5.8.16</spring-security-version>
@@ -474,30 +473,6 @@
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>3.1.0</version>
-                <scope>provided</scope>
-            </dependency>
-<!--            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jsp-api</artifactId>
-                <version>2.0</version>
-                <scope>provided</scope>
-            </dependency>-->
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-el-api</artifactId>
-                <version>${tomcat.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-servlet-api</artifactId>
-                <version>${tomcat.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-jsp-api</artifactId>
-                <version>${tomcat.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
