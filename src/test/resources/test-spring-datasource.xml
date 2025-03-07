@@ -106,7 +106,7 @@
   <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
     <property name="showSql" value="true"/>
     <property name="generateDdl" value="false" />
-    <property name="databasePlatform" value="org.hibernate.dialect.MySQL55Dialect" />
+    <property name="databasePlatform" value="org.hibernate.dialect.MySQL8Dialect" />
   </bean>
 
   <bean id="transactionManager" primary="true" class="org.springframework.orm.jpa.JpaTransactionManager" >
