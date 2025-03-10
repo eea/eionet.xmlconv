@@ -11,8 +11,8 @@
 </style>
 <script type="text/javascript" src="/resources/js/scripts.js"></script>
 <script type="text/javascript" src="/static/webjars/vue/2.6.14/vue.min.js"></script>
-<script type="text/javascript" src="/static/webjars/vuetify/2.6.1/dist/vuetify.js"></script>
-<link type="text/css" href="/static/webjars/vuetify/2.6.1/dist/vuetify.min.css" rel="stylesheet">
+<script type="text/javascript" src="/static/webjars/vuetify/2.6.13/dist/vuetify.js"></script>
+<link type="text/css" href="/static/webjars/vuetify/2.6.13/dist/vuetify.min.css" rel="stylesheet">
 <link type="text/css" href="/static/webjars/mdi__font/6.2.95/css/materialdesignicons.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/static/css/vueTable.css"/>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
