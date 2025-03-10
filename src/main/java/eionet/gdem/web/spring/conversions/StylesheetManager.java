@@ -21,32 +21,23 @@
 
 package eionet.gdem.web.spring.conversions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import eionet.gdem.SpringApplicationContext;
-import org.apache.commons.io.FileUtils;
-
-
-
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.GDEMServices;
-import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.web.spring.schemas.ISchemaDao;
 import eionet.gdem.web.spring.stylesheet.ConvTypeHolder;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  *

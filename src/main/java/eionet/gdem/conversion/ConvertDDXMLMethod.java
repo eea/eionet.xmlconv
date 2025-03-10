@@ -20,20 +20,6 @@
  */
 package eionet.gdem.conversion;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Hashtable;
-import java.util.Vector;
-
-import eionet.gdem.http.CustomURI;
-import eionet.gdem.http.HttpFileManager;
-import eionet.gdem.utils.cdr.UrlUtils;
-import eionet.gdem.utils.file.CustomFileUtils;
-import org.apache.commons.io.IOUtils;
-
-
-
 import eionet.gdem.XMLConvException;
 import eionet.gdem.conversion.spreadsheet.DDXMLConverter;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
@@ -41,9 +27,18 @@ import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionLogDto;
 import eionet.gdem.dto.ConversionResultDto;
 import eionet.gdem.dto.ConvertedFileDto;
+import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.utils.Utils;
+import eionet.gdem.utils.cdr.UrlUtils;
+import eionet.gdem.utils.file.CustomFileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * DDXML Conversion method class.

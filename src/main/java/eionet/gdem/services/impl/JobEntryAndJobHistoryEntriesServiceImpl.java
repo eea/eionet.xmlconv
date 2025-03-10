@@ -1,18 +1,15 @@
 package eionet.gdem.services.impl;
 
-import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobService;
 import eionet.gdem.services.JobHistoryService;
 import eionet.gdem.web.spring.workqueue.EntriesForPageObject;
-import eionet.gdem.web.spring.workqueue.JobEntryAndJobHistoryEntriesObject;
 import eionet.gdem.web.spring.workqueue.JobHistoryMetadata;
 import eionet.gdem.web.spring.workqueue.JobMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

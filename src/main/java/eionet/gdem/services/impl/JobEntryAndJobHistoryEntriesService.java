@@ -2,11 +2,8 @@ package eionet.gdem.services.impl;
 
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.web.spring.workqueue.EntriesForPageObject;
-import eionet.gdem.web.spring.workqueue.JobEntryAndJobHistoryEntriesObject;
 import eionet.gdem.web.spring.workqueue.JobHistoryMetadata;
-import eionet.gdem.web.spring.workqueue.JobMetadata;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface JobEntryAndJobHistoryEntriesService {

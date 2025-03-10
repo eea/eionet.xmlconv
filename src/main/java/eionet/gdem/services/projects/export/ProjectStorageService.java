@@ -3,7 +3,6 @@ package eionet.gdem.services.projects.export;
 import eionet.gdem.Properties;
 import eionet.gdem.data.projects.Project;
 import eionet.gdem.data.projects.ProjectService;
-import eionet.gdem.services.projects.export.gson.GsonMetadata;
 import eionet.gdem.services.projects.export.jackson.JacksonMetadata;
 import eionet.gdem.services.projects.export.jackson.JacksonMetadataProcessor;
 import org.apache.commons.io.IOUtils;

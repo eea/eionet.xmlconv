@@ -2,7 +2,6 @@ package eionet.gdem.utils.xml;
 
 import com.ximpleware.*;
 
-import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

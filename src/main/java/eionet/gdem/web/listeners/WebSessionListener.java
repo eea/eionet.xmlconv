@@ -3,11 +3,9 @@ package eionet.gdem.web.listeners;
 import eionet.gdem.Properties;
 
 import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.io.File;
-import java.io.FilenameFilter;
 
 /**
  * Session listener.

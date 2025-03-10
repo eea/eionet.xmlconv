@@ -1,9 +1,5 @@
 package eionet.gdem.web.spring.scripts;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  *
  *

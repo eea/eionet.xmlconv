@@ -2,7 +2,6 @@ package eionet.gdem.services.impl;
 
 import eionet.gdem.Properties;
 import eionet.gdem.*;
-import eionet.gdem.api.qa.service.QaService;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;

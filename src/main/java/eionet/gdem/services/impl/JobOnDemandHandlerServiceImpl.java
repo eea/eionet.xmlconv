@@ -3,7 +3,6 @@ package eionet.gdem.services.impl;
 import eionet.gdem.Constants;
 import eionet.gdem.SchedulingConstants;
 import eionet.gdem.XMLConvException;
-import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.jpa.Entities.InternalSchedulingStatus;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;

@@ -8,7 +8,6 @@ import eionet.gdem.dto.Stylesheet;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.Utils;
-import eionet.gdem.web.spring.SpringMessages;
 import eionet.gdem.web.spring.conversions.ConversionForm;
 import eionet.gdem.web.spring.schemas.IRootElemDao;
 import eionet.gdem.web.spring.schemas.SchemaManager;

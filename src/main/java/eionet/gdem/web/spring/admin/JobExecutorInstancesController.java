@@ -4,7 +4,6 @@ import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.Entities.JobExecutorHistory;
-import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.service.JobExecutorHistoryService;
 import eionet.gdem.jpa.service.JobExecutorService;

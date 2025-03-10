@@ -3,7 +3,6 @@ package eionet.gdem.services;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.JobHistoryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.qa.XQScript;
 
 import java.util.List;
 

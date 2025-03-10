@@ -24,16 +24,6 @@
 
 package eionet.gdem.conversion;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.RemoteService;
 import eionet.gdem.dto.ConversionResultDto;
@@ -43,6 +33,14 @@ import eionet.gdem.utils.xml.XMLUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * Conversion Service Facade. The service is able to execute different conversions that are called through XML/RPC and HTTP POST and

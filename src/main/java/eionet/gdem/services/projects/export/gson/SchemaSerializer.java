@@ -6,7 +6,6 @@ import com.google.gson.JsonSerializer;
 import eionet.gdem.data.schemata.Schema;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  *

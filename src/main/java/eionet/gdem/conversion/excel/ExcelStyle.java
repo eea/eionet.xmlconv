@@ -23,7 +23,6 @@
 
 package eionet.gdem.conversion.excel;
 
-import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 /**

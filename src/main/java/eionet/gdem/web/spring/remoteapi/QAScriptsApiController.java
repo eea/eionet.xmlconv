@@ -4,7 +4,6 @@ import eionet.gdem.Constants;
 import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.XMLConvException;
 import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
-import eionet.gdem.qa.QueryService;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.utils.Utils;

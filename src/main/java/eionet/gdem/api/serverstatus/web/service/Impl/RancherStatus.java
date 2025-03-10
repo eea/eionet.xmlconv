@@ -1,7 +1,6 @@
 package eionet.gdem.api.serverstatus.web.service.Impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.List;
 
 /**
  *

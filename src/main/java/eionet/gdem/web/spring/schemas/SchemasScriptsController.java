@@ -3,7 +3,6 @@ package eionet.gdem.web.spring.schemas;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.qa.XQScript;
-import eionet.gdem.services.GDEMServices;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.web.listeners.AppServletContextListener;
 import eionet.gdem.web.spring.SpringMessages;
@@ -22,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Date;
 
 /**
  *

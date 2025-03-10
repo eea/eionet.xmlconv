@@ -3,19 +3,10 @@
  */
 package eionet.gdem.conversion;
 
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
-
-
-
-import eionet.gdem.XMLConvException;
 import eionet.gdem.Properties;
-import eionet.gdem.dcm.Conversion;
+import eionet.gdem.XMLConvException;
 import eionet.gdem.datadict.DDServiceClient;
+import eionet.gdem.dcm.Conversion;
 import eionet.gdem.dcm.remote.RemoteServiceMethod;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.dto.DDDatasetTable;
@@ -23,6 +14,8 @@ import eionet.gdem.services.GDEMServices;
 import eionet.gdem.web.spring.conversions.IConvTypeDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Implementation of listConversions method.

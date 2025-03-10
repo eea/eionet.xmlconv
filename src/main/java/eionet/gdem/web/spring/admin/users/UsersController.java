@@ -1,12 +1,7 @@
 package eionet.gdem.web.spring.admin.users;
 
-import eionet.acl.AccessController;
-import eionet.acl.AclInitializerImpl;
-import eionet.acl.AclProperties;
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
-import eionet.gdem.SpringApplicationContext;
-import eionet.gdem.configuration.CopyAclFiles;
 import eionet.gdem.exceptions.AclLibraryAccessControllerModifiedException;
 import eionet.gdem.exceptions.AclPropertiesInitializationException;
 import eionet.gdem.security.acl.AccessListService;
@@ -19,23 +14,17 @@ import eionet.propertyplaceholderresolver.UnresolvedPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URISyntaxException;
-import java.security.Security;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/users")

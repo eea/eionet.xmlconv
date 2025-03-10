@@ -6,7 +6,6 @@ import eionet.gdem.dto.Schema;
 import eionet.gdem.qa.QueryService;
 import org.w3c.dom.Document;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**

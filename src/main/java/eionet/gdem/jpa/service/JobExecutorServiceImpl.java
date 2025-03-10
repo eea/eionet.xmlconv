@@ -3,12 +3,10 @@ package eionet.gdem.jpa.service;
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.jpa.repositories.JobExecutorRepository;
-import eionet.gdem.jpa.utils.JobExecutorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

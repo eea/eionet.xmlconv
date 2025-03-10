@@ -2,7 +2,6 @@ package eionet.gdem.services.impl;
 
 import eionet.acl.AccessController;
 import eionet.acl.AclProperties;
-import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.exceptions.AclAccessControllerInitializationException;
 import eionet.gdem.exceptions.AclLibraryAccessControllerModifiedException;
 import eionet.gdem.exceptions.AclPropertiesInitializationException;

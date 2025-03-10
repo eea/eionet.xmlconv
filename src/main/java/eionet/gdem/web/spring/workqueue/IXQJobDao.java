@@ -1,7 +1,6 @@
 package eionet.gdem.web.spring.workqueue;
 
 import java.sql.SQLException;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Map;
 

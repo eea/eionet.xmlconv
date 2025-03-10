@@ -29,7 +29,6 @@ import eionet.gdem.dto.BackupDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.jpa.Entities.QueryBackupEntry;
 import eionet.gdem.jpa.service.QueryBackupService;
-import eionet.gdem.jpa.service.QueryHistoryService;
 import eionet.gdem.services.GDEMServices;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;

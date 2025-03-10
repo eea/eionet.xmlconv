@@ -1,9 +1,6 @@
 package eionet.gdem.aop;
 
-import eionet.gdem.SpringApplicationContext;
 import eionet.gdem.api.websockets.WebSocketWorkqueueController;
-import eionet.gdem.jpa.service.JobService;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;

@@ -2,7 +2,6 @@ package eionet.gdem.jpa.Entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigInteger;
 
 @Entity
 @Table(name = "QUERY_METADATA")

@@ -1,7 +1,6 @@
 package eionet.gdem.web.spring.workqueue;
 
 import eionet.gdem.jpa.Entities.JobEntry;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 

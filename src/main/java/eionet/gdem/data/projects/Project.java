@@ -1,7 +1,6 @@
 package eionet.gdem.data.projects;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import eionet.gdem.data.obligations.Obligation;
 import eionet.gdem.data.schemata.Schema;
@@ -11,7 +10,6 @@ import eionet.gdem.data.transformations.Transformation;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
 import java.util.Set;
 
 /**

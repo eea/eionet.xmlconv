@@ -2,7 +2,6 @@ package eionet.gdem.web.spring.admin;
 
 import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
-import eionet.gdem.Properties;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.utils.SecurityUtil;
 import eionet.gdem.utils.ThymeleafUtils;

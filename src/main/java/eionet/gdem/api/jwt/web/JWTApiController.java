@@ -2,11 +2,8 @@ package eionet.gdem.api.jwt.web;
 
 import eionet.gdem.Properties;
 import eionet.gdem.api.jwt.service.JWTService;
-import eionet.gdem.api.jwt.service.impl.JWTServiceImpl;
 import eionet.gdem.api.qa.web.QaController;
-import eionet.gdem.security.errors.JWTException;
 import eionet.gdem.services.AclOperationsService;
-import eionet.gdem.services.MessageService;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;

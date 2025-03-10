@@ -4,7 +4,7 @@ package eionet.gdem.web.spring.schemas;
 import eionet.gdem.dto.Schema;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
-import java.text.ParseException;
+
 import java.util.Date;
 
 public class SchemaForm {

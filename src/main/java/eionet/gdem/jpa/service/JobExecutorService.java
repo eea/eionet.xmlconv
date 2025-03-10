@@ -2,7 +2,6 @@ package eionet.gdem.jpa.service;
 
 import eionet.gdem.jpa.Entities.JobExecutor;
 import eionet.gdem.jpa.errors.DatabaseException;
-import eionet.gdem.jpa.utils.JobExecutorType;
 
 import java.util.List;
 
