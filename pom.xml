@@ -87,7 +87,7 @@
                     <images>
                         <image>
                             <alias>mysql</alias>
-                            <name>mysql:5.7</name>
+                            <name>mysql:8.0.42</name>
                             <run>
                                 <ports>
                                     <port>mysql.port:3306</port>
