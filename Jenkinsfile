@@ -43,7 +43,7 @@ pipeline {
         not { buildingTag() }
       }
       steps {
-            sh '''mvn clean -B -V -P docker verify pmd:pmd pmd:cpd spotbugs:spotbugs checkstyle:checkstyle '''
+            sh '''mvn clean -B -V -P docker -Denv=jenkins verify pmd:pmd pmd:cpd spotbugs:spotbugs checkstyle:checkstyle '''
       }
       post {
         always {
