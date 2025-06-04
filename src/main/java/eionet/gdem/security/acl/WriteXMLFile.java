@@ -14,7 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.security.acl.Group;
+import eionet.acl.Group;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;

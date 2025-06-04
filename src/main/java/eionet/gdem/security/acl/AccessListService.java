@@ -20,14 +20,14 @@ public class AccessListService {
 
     public HashMap<String, List<String>> getGroups() throws SignOnException, SQLException {
 
-        HashMap<String, java.security.acl.Group> groups = new HashMap<>();
+        HashMap<String, eionet.acl.Group> groups = new HashMap<>();
         HashMap<String, Principal> users = new HashMap<>();
 
         PersistenceFile persistenceFile = new PersistenceFile();
         persistenceFile.readGroups(groups, users);
 
         HashMap<String, List<String>> groupz = new HashMap<>();
-        for (Map.Entry<String, java.security.acl.Group> group : groups.entrySet()) {
+        for (Map.Entry<String, eionet.acl.Group> group : groups.entrySet()) {
             List<String> userz = new ArrayList<>();
             for (Enumeration<?> e =  group.getValue().members(); e.hasMoreElements();) {
                 userz.add(e.nextElement().toString());
@@ -39,7 +39,7 @@ public class AccessListService {
     }
 
     public void writeGroups(List<Group> formGroups) throws SignOnException {
-        HashMap<String, java.security.acl.Group> groups;
+        HashMap<String, eionet.acl.Group> groups;
         Hashtable groupsTable = new Hashtable();
 
 

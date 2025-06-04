@@ -10,7 +10,6 @@ import eionet.gdem.dto.CrFileDto;
 import eionet.gdem.dto.QAScript;
 import eionet.gdem.dto.Schema;
 import eionet.gdem.exceptions.DCMException;
-import eionet.gdem.http.HttpFileManager;
 import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.repositories.JobRepository;
 import eionet.gdem.qa.IQueryDao;
