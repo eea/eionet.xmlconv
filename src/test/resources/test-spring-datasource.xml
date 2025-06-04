@@ -48,8 +48,12 @@
 
   <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
     <property name="poolName" value="springHikariCP" />
-    <property name="minimumIdle" value="5"/>
-    <property name="maximumPoolSize" value="30"/>
+    <property name="minimumIdle" value="1"/>
+    <property name="maximumPoolSize" value="10"/>
+    <property name="connectionTimeout" value="30000"/>
+    <property name="initializationFailTimeout" value="0"/>
+    <property name="validationTimeout" value="10000"/>
+    <property name="connectionTestQuery" value="SELECT 1"/>
     <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
     <property name="jdbcUrl" value="${test.db.jdbcurl}"/>
     <property name="username" value="${test.db.user}"/>
