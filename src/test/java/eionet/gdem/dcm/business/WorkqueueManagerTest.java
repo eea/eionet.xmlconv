@@ -112,7 +112,7 @@ public class WorkqueueManagerTest {
             String jobId = jobIds.get(i);
             WorkqueueJob job = wqm.getWqJob(jobId);
             assertEquals(sourceUrl, job.getUrl());
-            int scriptId = new Integer(job.getScriptId());
+            int scriptId = Integer.parseInt(job.getScriptId());
             assertTrue(scriptId > 0 || scriptId == -1); // related with script
                                                         // or it is validation
                                                         // job
