@@ -232,7 +232,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                     jobExecutorService.deleteByName(jobExecutor.getName());
                     deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
                 } catch (DatabaseException e) {
-                    LOGGER.error("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus failed for jobExecutor with name {}", jobExecutor.getName());
+                    LOGGER.error("Task synchronizeRancherPodsWithDbEntries failed for jobExecutor with name {}", jobExecutor.getName());
                 }
             }
         }

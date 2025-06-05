@@ -356,7 +356,8 @@ public class GenericFixedTimeScheduledTasks {
                     jobExecutorService.deleteByName(jobExecutor.getName());
                     workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
                 } catch (DatabaseException e) {
-                    LOGGER.error("Task synchronizeRancherContainersAndDbEntriesByExistenceAndStatus failed for jobExecutor with name: {}", jobExecutor.getName());
+                    LOGGER.error("Task synchronizeWorkersWithUnknownTypeDbEntriesAndRancher failed for jobExecutor with name: {}. Error: {}",
+                            jobExecutor.getName(), e.getMessage());
                 }
             }
         }
