@@ -335,6 +335,7 @@ public class GenericFixedTimeScheduledTasks {
     /**
      * Runs every 2 minutes and checks if a worker with unknown type exists in light and heavy rancher services and if not, deletes it from database
      */
+    @Transactional
     @Scheduled(cron = "0 */2 * * * *")  //every 2 minutes
     public void synchronizeWorkersWithUnknownTypeDbEntriesAndRancher() throws DatabaseException {
         if (!Properties.enableJobExecRancherScheduledTask) {
