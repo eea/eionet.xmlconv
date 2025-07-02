@@ -43,18 +43,15 @@ public class AsyncFmeJobServiceImpl implements AsyncFmeJobService {
     @Override
     public void cancelJobOnFMEServer(Long fmeJobId) {
         HttpHeaders headers = getHttpHeaders();
-        String credentials = Properties.fmeUser + ":" + Properties.fmePassword;
-        String encodedCredentials =
-                new String(Base64.encodeBase64(credentials.getBytes()));
-        headers.add("Authorization", "Basic " + encodedCredentials);
+        headers.add("Authorization", FME_TOKEN_HEADER + Properties.fmeToken);
 
         HttpEntity<Object> entity = new HttpEntity<>(headers);
         try {
             ResponseEntity<String> response = restTemplate.exchange(Properties.fmeUrl + "/active/" + fmeJobId, HttpMethod.DELETE, entity, String.class);
             int statusCode = response.getStatusCode().value();
-            if (statusCode==HttpStatus.NO_CONTENT.value()) {
+            if (statusCode == HttpStatus.NO_CONTENT.value()) {
                 LOGGER.info("Fme asynchronous job with fme job id " + fmeJobId + " successfully cancelled in fme server");
-            } else if (statusCode==HttpStatus.NOT_FOUND.value()) {
+            } else if (statusCode == HttpStatus.NOT_FOUND.value()) {
                 LOGGER.info("Fme asynchronous job with fme job id " + fmeJobId + " not found in fme server");
             }
         } catch (Exception e) {
@@ -64,7 +61,7 @@ public class AsyncFmeJobServiceImpl implements AsyncFmeJobService {
 
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        List<MediaType> mediaTypes = new ArrayList();
+        List<MediaType> mediaTypes = new ArrayList<>();
         mediaTypes.add(MediaType.APPLICATION_JSON);
         headers.setAccept(mediaTypes);
         return headers;

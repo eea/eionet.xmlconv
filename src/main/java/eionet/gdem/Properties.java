@@ -255,8 +255,6 @@ public class Properties {
     public static Long maxMsForProcessingDuplicateSchemaValidation;
 
     public static String fmeUrl;
-    public static String fmeUser;
-    public static String fmePassword;
     public static String fmeToken;
 
     public static String jobExecutorRequestsUrl;
@@ -435,8 +433,6 @@ public class Properties {
         maxMsForProcessingDuplicateSchemaValidation = getLongProperty("schema.validation.duplicates.processing.threshold");
 
         fmeUrl = getStringProperty("env.fme.url");
-        fmeUser = getStringProperty("env.fme.user");
-        fmePassword = getStringProperty("env.fme.password");
         fmeToken = getStringProperty("env.fme.token");
 
         jobExecutorRequestsUrl = getStringProperty("jobExecutor.requests.url");
