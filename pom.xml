@@ -330,14 +330,6 @@
                         <filter>${basedir}/${env}.properties</filter>
                     </filters>
                     <webResources>
-                        <!--<resource>
-                            <directory>${basedir}/src/main/webapp/META-INF</directory>
-                            <filtering>false</filtering>
-                            <targetPath>META-INF</targetPath>
-                            <includes>
-                                <include>context.xml</include>
-                            </includes>
-                        </resource>-->
                         <resource>
                             <directory>${basedir}/src/main/webapp/WEB-INF</directory>
                             <filtering>false</filtering>
@@ -521,18 +513,6 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.19.0</version>
             </dependency>
-            <!--dependency>
-                <groupId>com.sun</groupId>
-                <artifactId>tools</artifactId>
-                <version>1.6.0</version>
-                <scope>system</scope>
-                <systemPath>/var/jenkins_home/worker/tools/hudson.model.JDK/Java11/openlogic-openjdk-11.0.9.1+1-linux-x64/lib/tools.jar</systemPath>
-            </dependency-->
-            <!--<dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>1.5</version>
-            </dependency>-->
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
@@ -590,16 +570,6 @@
                 <artifactId>xml-resolver</artifactId>
                 <version>1.2</version>
             </dependency>
-            <!--<dependency>
-                <groupId>stax</groupId>
-                <artifactId>stax-api</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-                <version>1.6.1</version>
-            </dependency>-->
             <dependency>
                 <groupId>com.wutka</groupId>
                 <artifactId>dtdparser</artifactId>
@@ -809,7 +779,6 @@
                 <version>3.25.0-GA</version>
             </dependency>
 
-
             <dependency>
                 <groupId>org.apache.tiles</groupId>
                 <artifactId>tiles-extras</artifactId>
@@ -833,18 +802,12 @@
                 <version>3.0.4.RELEASE</version>
             </dependency>
 
-
             <!-- Database dependencies -->
             <dependency>
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
                 <version>8.4.0</version>
             </dependency>
-            <!--<dependency>
-                <groupId>org.mariadb.jdbc</groupId>
-                <artifactId>mariadb-java-client</artifactId>
-                <version>2.1.2</version>
-            </dependency> -->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
@@ -906,13 +869,7 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.25</version>
             </dependency>
-            <!-- Intercepts logging from log4j and redirects it to slf4j -->
-            <!-- Remove if not needed any more-->
-<!--            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.25</version>
-            </dependency>-->
+
             <!-- Intercepts logging from apache commons logging and redirects it to slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -957,7 +914,6 @@
                 <artifactId>json-path-assert</artifactId>
                 <version>2.2.0</version>
             </dependency>
-
 
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -1096,7 +1052,6 @@
                 <version>1.3.2</version>
             </dependency>
 
-
             <!-- https://mvnrepository.com/artifact/org.json/json -->
             <dependency>
                 <groupId>org.json</groupId>
@@ -1223,13 +1178,6 @@
                  <groupId>org.owasp</groupId>
                  <artifactId>dependency-check-maven</artifactId>
                  <version>3.2.1</version>
-                 <!--<executions>
-                     <execution>
-                         <goals>
-                             <goal>check</goal>
-                         </goals>
-                     </execution>
-                 </executions>-->
             </plugin>
         </plugins>
     </reporting>
