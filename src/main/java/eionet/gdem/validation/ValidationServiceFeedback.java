@@ -24,12 +24,11 @@ package eionet.gdem.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import eionet.gdem.Properties;
 import eionet.gdem.dto.ValidateDto;
 import eionet.gdem.qa.QAFeedbackType;
-import eionet.gdem.utils.Utils;
 import java.util.Iterator;
 
 /**

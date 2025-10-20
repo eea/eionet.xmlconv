@@ -20,7 +20,7 @@ import eionet.gdem.validation.ValidationService;
 import eionet.gdem.web.spring.schemas.SchemaManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

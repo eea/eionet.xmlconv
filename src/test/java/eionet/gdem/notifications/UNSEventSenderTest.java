@@ -3,12 +3,11 @@ package eionet.gdem.notifications;
 import eionet.gdem.Properties;
 import eionet.gdem.test.ApplicationTestContext;
 import eionet.gdem.test.TestUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -17,7 +16,6 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationTestContext.class })

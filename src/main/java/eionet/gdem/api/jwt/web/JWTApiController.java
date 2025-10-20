@@ -4,7 +4,7 @@ import eionet.gdem.Properties;
 import eionet.gdem.api.jwt.service.JWTService;
 import eionet.gdem.api.qa.web.QaController;
 import eionet.gdem.services.AclOperationsService;
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

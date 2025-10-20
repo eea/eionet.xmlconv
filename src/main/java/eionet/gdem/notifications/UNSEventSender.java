@@ -3,8 +3,8 @@ package eionet.gdem.notifications;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.Utils;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -106,8 +106,7 @@ public class UNSEventSender {
             boolean isEnabled = StringUtils.isNotBlank(isDisabledStr) && isDisabledStr.trim().equals("false");
             return !isEnabled;
         } else {
-            boolean result = BooleanUtils.toBoolean(isDisabledStr);
-            return result;
+            return BooleanUtils.toBoolean(isDisabledStr);
         }
     }
 

@@ -7,7 +7,7 @@ import eionet.gdem.dcm.remote.HttpMethodResponseWrapper;
 import eionet.gdem.services.MessageService;
 import eionet.gdem.services.RunScriptAutomaticService;
 import eionet.gdem.utils.Utils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;

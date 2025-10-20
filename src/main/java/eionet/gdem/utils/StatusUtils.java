@@ -2,7 +2,7 @@ package eionet.gdem.utils;
 
 import eionet.gdem.Constants;
 import eionet.gdem.rabbitMQ.model.CdrJobExecutionStatus;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;
 import java.util.Set;

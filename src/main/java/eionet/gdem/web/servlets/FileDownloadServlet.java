@@ -4,7 +4,7 @@ import eionet.acl.SignOnException;
 import eionet.gdem.Constants;
 import eionet.gdem.Properties;
 import eionet.gdem.utils.SecurityUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;

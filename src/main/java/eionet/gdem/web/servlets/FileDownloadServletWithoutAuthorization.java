@@ -1,7 +1,7 @@
 package eionet.gdem.web.servlets;
 
 import eionet.gdem.Properties;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
