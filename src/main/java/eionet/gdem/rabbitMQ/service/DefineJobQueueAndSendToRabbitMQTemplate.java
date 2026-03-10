@@ -5,6 +5,8 @@ import eionet.gdem.jpa.Entities.JobEntry;
 import eionet.gdem.jpa.Entities.QueryEntry;
 import eionet.gdem.jpa.errors.DatabaseException;
 import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 public interface DefineJobQueueAndSendToRabbitMQTemplate {
 
@@ -16,7 +18,17 @@ public interface DefineJobQueueAndSendToRabbitMQTemplate {
     default void execute(QueryEntry queryEntry, JobEntry jobEntry, WorkerJobRabbitMQRequestMessage message) throws XMLConvException, DatabaseException {
         checkHeavyOrLight(queryEntry, jobEntry);
         checkRules(queryEntry, jobEntry);
-        sendMsgToRabbitMQ(jobEntry, message);
         updateDatabase(jobEntry);
+        // send message to rabbitmq after the transaction is committed as there could be race conditions where the job executor
+        // queries the db for the status of the job before the transaction is committed, resulting to job not found errors
+        // (as the job does not exist in the db yet)
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        sendMsgToRabbitMQ(jobEntry, message);
+                    }
+                }
+        );
     }
 }
