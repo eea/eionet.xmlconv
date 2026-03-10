@@ -206,10 +206,10 @@ public class GenericFixedTimeScheduledTasks {
      * corresponding schema's maxExecutionTime, meaning the task sets job's n_status=7 (status for interrupted) and internal_status=4 (cancelled).
      * The task also changes worker's status to 2 (failed).
      * Actual Job Interruption happens in 2 ways:
-     * - If a jobExecutor as already picked a job that should be interrupted, we mark this JobExecutor-worker as 'Failed',
-     * So as to be deleted by converters.
+     * - If a jobExecutor has already picked a job that should be interrupted, we mark this JobExecutor-worker as 'Failed',
+     * in order to be deleted by converters.
      * - If a jobExecutor picks a job whose status has changed to interrupted, before executing this job, the jobExecutor will ask converters
-     * and learn about this INterrupted status, and will then gradually reject the rabbitmq message for this job, so no other jobExecutors
+     * and learn about this interrupted status, and will then gradually reject the rabbitmq message for this job, so no other jobExecutors
      * pick it.
      */
     @Scheduled(cron = "0 */30 * * * *")  //every 30 minutes
