@@ -848,7 +848,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-slf4j-impl</artifactId>
+                <artifactId>log4j-slf4j2-impl</artifactId>
                 <version>2.25.3</version>
             </dependency>
             <!-- Graylog dependency -->
@@ -862,14 +862,14 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.36</version>
+                <version>2.0.17</version>
             </dependency>
 
             <!-- Intercepts logging from apache commons logging and redirects it to slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.36</version>
+                <version>2.0.17</version>
             </dependency>
 
             <dependency>
