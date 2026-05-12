@@ -19,19 +19,6 @@ public class QASandboxValidator implements Validator {
 
     }
 
-    public void validateSaveScript(Object o, Errors errors) {
-        QASandboxForm cForm = (QASandboxForm) o;
-
-        String scriptId = cForm.getScriptId();
-        String content = cForm.getScriptContent();
-        if (Utils.isNullStr(scriptId)) {
-            errors.rejectValue("scriptId", "error.qasandbox.missingId");
-        }
-        if (Utils.isNullStr(content)) {
-            errors.rejectValue("content", "error.qasandbox.missingContent");
-        }
-    }
-
     public void validateExtract(Object o, Errors errors) {
         QASandboxForm cForm = (QASandboxForm) o;
 
@@ -65,7 +52,7 @@ public class QASandboxValidator implements Validator {
         }
 
         if (Utils.isNullStr(content) && !cForm.isShowScripts()) {
-            errors.rejectValue("content", "error.qasandbox.missingContent");
+            errors.rejectValue("scriptContent", "error.qasandbox.missingContent");
         }
         if (Utils.isNullStr(schemaUrl) && cForm.isShowScripts()) {
             errors.rejectValue("schemaUrl", "error.qasandbox.error.qasandbox.missingSchemaUrl");
