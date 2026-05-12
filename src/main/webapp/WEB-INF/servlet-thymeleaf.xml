@@ -22,14 +22,14 @@
         <!--context:exclude-filter type="regex" expression="eionet\.gdem\.web\.spring\..*"/-->
     </context:component-scan>
 
-    <bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
+    <bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
         <property name="prefix" value="/WEB-INF/view/"/>
         <property name="suffix" value=".html" />
         <property name="templateMode" value="HTML" />
         <property name="cacheable" value="false" />
     </bean>
 
-    <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+    <bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
         <property name="templateResolver" ref="templateResolver" />
         <property name="enableSpringELCompiler" value="true" />
         <property name="additionalDialects">
@@ -39,7 +39,7 @@
         </property>
     </bean>
 
-    <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+    <bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
         <property name="templateEngine" ref="templateEngine" />
         <property name="order" value="1" />
         <!--<property name="viewNames" value="*.html,*.xhtml" />-->
