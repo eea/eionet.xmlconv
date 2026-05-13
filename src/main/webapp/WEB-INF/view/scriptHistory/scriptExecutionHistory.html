@@ -32,7 +32,7 @@
                         style="text-decoration:underline;color:#306886;float:left;">Export to CSV
                 </button>
                 <div class="tablePageEntriesSize" style="float: right;">
-                    <form th:action="@{${#httpServletRequest.requestURI}}" method="get">
+                    <form method="get">
                         <label for="pageVersionEntries">Entries per page:</label>
                         <select name="pageVersionEntries" id="pageVersionEntries" onchange="this.form.submit()">
                             <option th:if="${versionTableSize > 10}" th:selected="${pageVersionEntries} == ${10}"
@@ -88,7 +88,7 @@
                         <li class="page-item">
                             <a class="page-link"
                                th:classappend="${!versionTable.paging.isPrevEnabled()? 'disabledButton' : 'blueButton' }"
-                               th:href="@{${#httpServletRequest.requestURI} + '?versionPageNumber=' + ${history.paging.pageNumber - 1} + '&versionSize='+ ${pageVersionEntries}}"
+                               th:href="@{'?versionPageNumber=' + ${history.paging.pageNumber - 1} + '&versionSize='+ ${pageVersionEntries}}"
                                tabindex="-1">Previous</a>
                         </li>
                         <th:block th:each="item : ${versionTable.paging.getItems()}">
@@ -96,7 +96,7 @@
                                 th:classappend="${item.index == versionTable.paging.pageNumber? 'active' : ''}"
                                 th:if="${item.pageItemType.name() == 'PAGE'}">
                                 <a class="page-link"
-                                   th:href="@{${#httpServletRequest.requestURI} + '?versionPageNumber=' + ${item.index} + '&versionSize='+ ${pageVersionEntries}}"
+                                   th:href="@{'?versionPageNumber=' + ${item.index} + '&versionSize='+ ${pageVersionEntries}}"
                                    th:text="${item.index}"></a>
                             </li>
                             <li class="page-item disabled" th:if="${item.pageItemType.name() == 'DOTS'}">
@@ -106,7 +106,7 @@
                         <li class="page-item">
                             <a class="page-link"
                                th:classappend="${!versionTable.paging.isNextEnabled()? 'disabledButton' : 'blueButton' }"
-                               th:href="@{${#httpServletRequest.requestURI} + '?versionPageNumber=' + ${versionTable.paging.pageNumber + 1} + '&versionSize='+ ${pageVersionEntries}}">Next</a>
+                               th:href="@{'?versionPageNumber=' + ${versionTable.paging.pageNumber + 1} + '&versionSize='+ ${pageVersionEntries}}">Next</a>
                         </li>
                     </ul>
                 </nav>
@@ -126,7 +126,7 @@
                         style="text-decoration:underline;color:#306886;float:left;">Export to CSV
                 </button>
                 <div class="tablePageEntriesSize" style="float: right;">
-                    <form th:action="@{${#httpServletRequest.requestURI}}" method="get">
+                    <form method="get">
                         <label for="pageHistoryEntries">Entries per page:</label>
                         <select name="pageHistoryEntries" id="pageHistoryEntries" onchange="this.form.submit()">
                             <option th:if="${historyTableSize > 10}" th:selected="${pageHistoryEntries} == ${10}"
@@ -199,7 +199,7 @@
                         <li class="page-item">
                             <a class="page-link"
                                th:classappend="${!history.paging.isPrevEnabled()? 'disabledButton' : 'blueButton' }"
-                               th:href="@{${#httpServletRequest.requestURI} + '?historyPageNumber=' + ${history.paging.pageNumber - 1} + '&historySize='+ ${pageHistoryEntries}}"
+                               th:href="@{'?historyPageNumber=' + ${history.paging.pageNumber - 1} + '&historySize='+ ${pageHistoryEntries}}"
                                tabindex="-1">Previous</a>
                         </li>
                         <th:block th:each="item : ${history.paging.getItems()}">
@@ -207,7 +207,7 @@
                                 th:classappend="${item.index == history.paging.pageNumber? 'active' : ''}"
                                 th:if="${item.pageItemType.name() == 'PAGE'}">
                                 <a class="page-link"
-                                   th:href="@{${#httpServletRequest.requestURI} + '?historyPageNumber=' + ${item.index} + '&historySize='+ ${pageHistoryEntries}}"
+                                   th:href="@{'?historyPageNumber=' + ${item.index} + '&historySize='+ ${pageHistoryEntries}}"
                                    th:text="${item.index}"></a>
                             </li>
                             <li class="page-item disabled" th:if="${item.pageItemType.name() == 'DOTS'}">
@@ -217,7 +217,7 @@
                         <li class="page-item">
                             <a class="page-link"
                                th:classappend="${!history.paging.isNextEnabled()? 'disabledButton' : 'blueButton' }"
-                               th:href="@{${#httpServletRequest.requestURI} + '?historyPageNumber=' + ${history.paging.pageNumber + 1} + '&historySize='+ ${pageHistoryEntries}}">Next</a>
+                               th:href="@{'?historyPageNumber=' + ${history.paging.pageNumber + 1} + '&historySize='+ ${pageHistoryEntries}}">Next</a>
                         </li>
                     </ul>
                 </nav>
