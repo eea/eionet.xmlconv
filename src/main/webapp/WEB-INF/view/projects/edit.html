@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head-old :: head}" />
-<body th:include="~{fragments/layout-old :: layout(~{::div})}">
+<head th:replace="~{fragments/head-old :: head}"></head>
+<body th:replace="~{fragments/layout-old :: layout(~{::div})}">
 <div>
     <p th:each="message, pos : ${messages}" th:text="${message}"></p>
     <form action="#" th:action="@{/projects/{id}/edit(id=${id})}" th:object="${project}" method="post">
@@ -9,7 +9,9 @@
         <input type="text" th:field="*{name}"/>
         <label>Obligation: </label>
         <select th:field="*{{obligations}}" multiple="multiple">
-            <option th:each="obligation : ${obligations}" th:value="${{obligation}}" th:text="${obligation.url}">Obligation URL</option>
+            <option th:each="obligation : ${obligations}" th:value="${{obligation}}" th:text="${obligation.url}">
+                Obligation URL
+            </option>
         </select>
         <button>Save</button>
     </form>

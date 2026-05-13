@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head-old :: head}" />
-<body th:include="~{fragments/layout-old :: layout(~{::div})}">
-
+<head th:replace="~{fragments/head-old :: head}"></head>
+<body th:replace="~{fragments/layout-old :: layout(~{::div})}">
 <!-- replace deprecated tab menu -->
 <div style="width:100%;">
-  <div id="tabbedmenu">
-    <ul>
-      <li id="currenttab"><a th:href="@{/admin/purge}" th:text="#{label.admin.purge}"></a></li>
-    </ul>
-  </div>
-  <div>
-    <p th:each="message, pos : ${successMessages}" th:text="${message}"></p>
-    <p th:each="message, pos : ${errorMessages}" th:text="${message}"></p>
-    <form action="#" th:action="@{/admin/purge}" th:object="${form}" method="post">
-      <fieldset>
-        <legend th:text="#{label.admin.purge.title}"></legend>
-      </fieldset>
-      <input type="submit" th:value="Save"/>
-      <input type="reset" th:value="Reset"/>
-    </form>
-  </div>
+    <div id="tabbedmenu">
+        <ul>
+            <li id="currenttab"><a th:href="@{/admin/purge}" th:text="#{label.admin.purge}"></a></li>
+        </ul>
+    </div>
+    <div>
+        <p th:each="message, pos : ${successMessages}" th:text="${message}"></p>
+        <p th:each="message, pos : ${errorMessages}" th:text="${message}"></p>
+        <form action="#" th:action="@{/admin/purge}" th:object="${form}" method="post">
+            <fieldset>
+                <legend th:text="#{label.admin.purge.title}"></legend>
+            </fieldset>
+            <input type="submit" th:value="Save"/>
+            <input type="reset" th:value="Reset"/>
+        </form>
+    </div>
 </div>
 </body>
 </html>

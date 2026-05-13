@@ -1,47 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="head">
-  <title th:text="${#vars['title']}"></title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <!--  EEA central styles -->
-  <link rel="stylesheet" type="text/css" th:href="@{https://www.eionet.europa.eu/styles/eionet2007/print.css}" media="print" />
-  <link rel="stylesheet" type="text/css" th:href="@{https://www.eionet.europa.eu/styles/eionet2007/handheld.css}" media="handheld" />
-  <link rel="stylesheet" type="text/css" th:href="@{https://www.eionet.europa.eu/styles/eionet2007/screen.css}" media="screen" />
+    <head th:fragment="head">
+        <title th:text="${#vars['title']}"></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!--  EEA central styles -->
+        <link rel="stylesheet" type="text/css" th:href="@{https://www.eionet.europa.eu/styles/eionet2007/print.css}" media="print" />
+        <link rel="stylesheet" type="text/css" th:href="@{https://www.eionet.europa.eu/styles/eionet2007/handheld.css}" media="handheld" />
+        <link rel="stylesheet" type="text/css" th:href="@{https://www.eionet.europa.eu/styles/eionet2007/screen.css}" media="screen" />
 
-  <!--  local style -->
-  <link rel="stylesheet" type="text/css" th:href="@{/static/css/main.css}" media="screen" />
-  <link rel="stylesheet" type="text/css" th:href="@{/static/css/xmlconv.css}" media="screen" />
-  <link rel="stylesheet" type="text/css" th:href="@{/static/webjars/foundation/dist/css/foundation.min.css}" media="screen" />
-  <link rel="shortcut icon" th:href="@{/static/images/favicon.ico}" type="image/x-icon" />
+        <!--  local style -->
+        <link rel="stylesheet" type="text/css" th:href="@{/static/css/main.css}" media="screen" />
+        <link rel="stylesheet" type="text/css" th:href="@{/static/css/xmlconv.css}" media="screen" />
+        <link rel="stylesheet" type="text/css" th:href="@{/static/webjars/foundation/dist/css/foundation.min.css}" media="screen" />
+        <link rel="shortcut icon" th:href="@{/static/images/favicon.ico}" type="image/x-icon" />
 
-  <!-- jQuery javascripts and css-->
-  <script type="text/javascript" th:src="@{/static/webjars/jquery/jquery.min.js}"></script>
-  <script type="text/javascript" th:src="@{/static/webjars/jquery-ui/jquery-ui.js}"></script>
-  <script type="text/javascript" th:src="@{/static/webjars/jquery-validation/jquery.validate.js}"></script>
-  <link th:href="@{/static/webjars/jquery-ui/jquery-ui.css}" rel="stylesheet" type="text/css"/>
+        <!-- jQuery javascripts and css-->
+        <script type="text/javascript" th:src="@{/static/webjars/jquery/jquery.min.js}"></script>
+        <script type="text/javascript" th:src="@{/static/webjars/jquery-ui/jquery-ui.js}"></script>
+        <script type="text/javascript" th:src="@{/static/webjars/jquery-validation/jquery.validate.js}"></script>
+        <link th:href="@{/static/webjars/jquery-ui/jquery-ui.css}" rel="stylesheet" type="text/css" />
 
-  <!-- local javascripts -->
-  <script type="text/javascript" th:src="@{/static/js/admin.js}"></script>
-  <script type="text/javascript" th:src="@{/static/js/pageops.js}"></script>
+        <!-- local javascripts -->
+        <script type="text/javascript" th:src="@{/static/js/admin.js}"></script>
+        <script type="text/javascript" th:src="@{/static/js/pageops.js}"></script>
 
-  <link rel="stylesheet" type="text/css" th:href="@{/static/js/DataTables/media/css/jquery.dataTables.min.css}"></link>
-  <link rel="stylesheet" type="text/css" th:href="@{/static/webjars/font-awesome/web-fonts-with-css/css/fontawesome-all.css}"></link>
-  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/jquery.dataTables.min.js}"></script>
+        <link rel="stylesheet" type="text/css" th:href="@{/static/js/DataTables/media/css/jquery.dataTables.min.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/static/webjars/font-awesome/web-fonts-with-css/css/fontawesome-all.css}" />
+        <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/jquery.dataTables.min.js}"></script>
 
-  <!--export buttons-->
-  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/dataTables.buttons.min.js}"></script>
-  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/jszip.min.js}"></script>
-  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/buttons.html5.min.js}"></script>
-  <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/buttons.colVis.min.js}"></script>
+        <!--export buttons-->
+        <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/dataTables.buttons.min.js}"></script>
+        <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/jszip.min.js}"></script>
+        <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/buttons.html5.min.js}"></script>
+        <script type="text/javascript" th:src="@{/static/js/DataTables/media/js/exportButtons/buttons.colVis.min.js}"></script>
 
-  <script type="text/javascript" src="/static/webjars/vue/2.6.14/vue.min.js"></script>
-  <script type="text/javascript" src="/static/webjars/axios/0.19.0/dist/axios.min.js"></script>
-  <script type="text/javascript" src="/static/webjars/vuetify/2.6.13/dist/vuetify.js"></script>
-  <link type="text/css" href="/static/webjars/vuetify/2.6.13/dist/vuetify.min.css" rel="stylesheet">
-  <link type="text/css" href="/static/webjars/mdi__font/6.2.95/css/materialdesignicons.min.css" rel="stylesheet">
+        <script type="text/javascript" src="/static/webjars/vue/2.6.14/vue.min.js"></script>
+        <script type="text/javascript" src="/static/webjars/axios/0.19.0/dist/axios.min.js"></script>
+        <script type="text/javascript" src="/static/webjars/vuetify/2.6.13/dist/vuetify.js"></script>
+        <link type="text/css" href="/static/webjars/vuetify/2.6.13/dist/vuetify.min.css" rel="stylesheet">
+        <link type="text/css" href="/static/webjars/mdi__font/6.2.95/css/materialdesignicons.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" type="text/css" th:href="@{/static/css/vueTable.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/static/css/vueTable.css}" />
 
-</head>
-<body></body>
+      </head>
+    <body></body>
 </html>
