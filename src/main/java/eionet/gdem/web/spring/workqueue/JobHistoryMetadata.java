@@ -6,6 +6,9 @@ public class JobHistoryMetadata {
     private String date_added;
     private String job_executor_name;
 
+    public JobHistoryMetadata() {
+    }
+
     public JobHistoryMetadata(String status_name, String date_added, String job_executor_name) {
         this.status_name = status_name;
         this.date_added = date_added;
