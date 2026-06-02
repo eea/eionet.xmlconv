@@ -392,6 +392,25 @@ public class GenericFixedTimeScheduledTasks {
     }
 
     /**
+     * The task runs every 3 minutes and checks if a worker has status WORKER_RECEIVED and does not have a job that has been
+     * received by the worker. It then proceeds to delete the worker and its heart beat queue.
+     */
+    @Scheduled(cron = "0 */3 * * * *")
+    public void deleteStuckWorkers() throws DatabaseException {
+        LOGGER.info("Task for deleting stuck workers is running");
+        List<JobExecutor> jobExecutors = jobExecutorService.findByStatus(SchedulingConstants.WORKER_RECEIVED);
+        for (JobExecutor jobExecutor : jobExecutors) {
+            JobEntry job = jobService.findById(jobExecutor.getJobId());
+            if (job == null || !(job.getnStatus() == Constants.XQ_PROCESSING
+                    && job.getIntSchedulingStatus().getId() == SchedulingConstants.INTERNAL_STATUS_PROCESSING)) {
+                jobExecutorService.deleteByName(jobExecutor.getName());
+                workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
+                LOGGER.info("Deleted stuck worker: {}", jobExecutor.getName());
+            }
+        }
+    }
+
+    /**
      * The task runs every 30 minutes. It finds jobs with n_status=2 and internal_status=2 and checks if these jobs have been
      * in the queue with these statuses for 30 minutes. If so, a notification is sent to uns and an alert entry is added in
      * the alerts table.
