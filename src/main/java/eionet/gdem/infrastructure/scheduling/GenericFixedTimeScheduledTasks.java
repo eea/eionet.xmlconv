@@ -105,7 +105,7 @@ public class GenericFixedTimeScheduledTasks {
 
     @Transactional
     @Scheduled(cron = "0 */5 * * * *") //Every 5 minutes
-    public void schedulePeriodicUpdateOfDurationOfJobsInProcessingStatus() throws SQLException, GeneralSecurityException {
+    public void schedulePeriodicUpdateOfDurationOfJobsInProcessingStatus() {
         try {
             //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2,  INTERNAL_STATUS_ID=3)
             Map<String, Timestamp> jobsInfo = xqJobDao.getJobsWithTimestamps(Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING);
@@ -128,7 +128,7 @@ public class GenericFixedTimeScheduledTasks {
 
     @Transactional
     @Scheduled(cron = "0 0 */4 * * *") //Every 4 hours
-    public void schedulePeriodicNotificationsForLongRunningJobs() throws Exception {
+    public void schedulePeriodicNotificationsForLongRunningJobs() {
         try {
             //Retrieve jobs from T_XQJOBS with status PROCESSING (XQ_PROCESSING = 2, INTERNAL_STATUS_ID=3) and duration more than Properties.LONG_RUNNING_JOBS_EVENT
             String[] jobsIds = xqJobDao.getLongRunningJobs(Properties.longRunningJobThreshold, Constants.XQ_PROCESSING, SchedulingConstants.INTERNAL_STATUS_PROCESSING);
