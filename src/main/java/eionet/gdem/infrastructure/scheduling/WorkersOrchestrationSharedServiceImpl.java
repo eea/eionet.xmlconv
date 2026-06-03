@@ -197,7 +197,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                     break;
                 }
             }
-            LOGGER.info("Deleted {} {} workers", workersDeleted, jobExecutorType);
+            LOGGER.info("Deleted {} {} workers", workersDeleted - 1, jobExecutorType);
         }
     }
 
