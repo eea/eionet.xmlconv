@@ -395,17 +395,23 @@ public class GenericFixedTimeScheduledTasks {
      * The task runs every 3 minutes and checks if a worker has status WORKER_RECEIVED and does not have a job that has been
      * received by the worker. It then proceeds to delete the worker and its heart beat queue.
      */
+    @Transactional
     @Scheduled(cron = "0 */3 * * * *")
-    public void deleteStuckWorkers() throws DatabaseException {
+    public void deleteStuckWorkers() {
         LOGGER.info("Task for deleting stuck workers is running");
         List<JobExecutor> jobExecutors = jobExecutorService.findByStatus(SchedulingConstants.WORKER_RECEIVED);
         for (JobExecutor jobExecutor : jobExecutors) {
-            JobEntry job = jobService.findById(jobExecutor.getJobId());
-            if (job == null || !(job.getnStatus() == Constants.XQ_PROCESSING
-                    && job.getIntSchedulingStatus().getId() == SchedulingConstants.INTERNAL_STATUS_PROCESSING)) {
-                jobExecutorService.deleteByName(jobExecutor.getName());
-                workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
-                LOGGER.info("Deleted stuck worker: {}", jobExecutor.getName());
+            try {
+                JobEntry job = jobService.findById(jobExecutor.getJobId());
+                if (job == null || !(job.getnStatus() == Constants.XQ_PROCESSING
+                        && job.getIntSchedulingStatus().getId() == SchedulingConstants.INTERNAL_STATUS_PROCESSING)) {
+                    jobExecutorService.deleteByName(jobExecutor.getName());
+                    workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
+                    LOGGER.info("Deleted stuck worker: {}", jobExecutor.getName());
+                }
+            } catch (DatabaseException e) {
+                LOGGER.error("Task deleteStuckWorkers failed for jobExecutor with name: {}. Error: {}",
+                        jobExecutor.getName(), e.getMessage());
             }
         }
     }
