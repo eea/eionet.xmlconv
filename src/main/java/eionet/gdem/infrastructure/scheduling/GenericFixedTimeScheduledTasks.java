@@ -393,7 +393,7 @@ public class GenericFixedTimeScheduledTasks {
 
     /**
      * The task runs every 3 minutes and checks if a worker has status WORKER_RECEIVED and does not have a job that has been
-     * received by the worker. It then proceeds to delete the worker and its heart beat queue.
+     * received by the worker. It then proceeds to delete the pod from Rancher and database.
      */
     @Transactional
     @Scheduled(cron = "0 */3 * * * *")
@@ -405,8 +405,16 @@ public class GenericFixedTimeScheduledTasks {
                 JobEntry job = jobService.findById(jobExecutor.getJobId());
                 if (job == null || !(job.getnStatus() == Constants.XQ_PROCESSING
                         && job.getIntSchedulingStatus().getId() == SchedulingConstants.INTERNAL_STATUS_PROCESSING)) {
-                    jobExecutorService.deleteByName(jobExecutor.getName());
-                    workersOrchestrationSharedService.deleteWorkerHeartBeatQueue(jobExecutor.getHeartBeatQueue());
+                    String  deploymentName = jobExecutor.getJobExecutorType().getDeploymentName();
+                    workersOrchestrationSharedService.deleteFromRancherAndDatabase(jobExecutor, deploymentName);
+
+                    Integer runningPods = rancherApiService.getRunningPods(deploymentName);
+                    if (runningPods == 0) {
+                        Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
+                            rancherApiService.scaleDeployment(deploymentName, 1);
+                        });
+                        decorateRunnable.run();
+                    }
                     LOGGER.info("Deleted stuck worker: {}", jobExecutor.getName());
                 }
             } catch (DatabaseException e) {
