@@ -1,0 +1,408 @@
+.skiplink, .noprint {display:none}
+
+#pagehead {
+	width: 100%;
+	height: 80px;
+}
+
+#logo {
+	float:right;
+	width: 7.5cm;
+	height: 1.5cm;
+}
+
+#leftcolumn, #rightcolumn, #tabbedmenu,
+#menuribbon, #toolribbon, #operations {
+	display:none     
+}
+
+
+html, body {
+        margin:0px;
+	padding:0px;
+	font-family: "New baskerville", times, serif;
+	font-size: 10pt; 
+	font-style: normal; 
+	line-height: normal; 
+	background-color: #FFFFFF;
+}
+
+#networktitle {
+	color: #009590;
+	font-family: Avenir, Helvetica, sans-serif;
+	font-size: 14pt;
+	font-weight: bold;
+}
+
+#sitetitle {
+	color: #005E9D;
+	font-family: Avenir, Helvetica, sans-serif;
+	font-size: 10pt;
+	font-weight: bold;
+}
+
+#sitetagline {
+	display:none;
+}
+
+.breadcrumbtrail {
+	display:none;
+}
+
+a:link, a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: Avenir, Helvetica, sans-serif;
+	font-style: normal; 
+	font-weight: bold; 
+	text-decoration: none
+}
+
+h1 {
+	font-size: 14pt; 
+	line-height: 120%; 
+}
+
+h2 {
+	font-size: 12pt; 
+	line-height: normal; 
+}
+
+h3 {
+	font-size: 11pt; 
+	line-height: normal;
+}
+
+h4, h5, h6 {
+	font-size: 10pt; 
+	line-height: normal; 
+	padding-left: 0.5em;
+}
+
+ul.menu { /* Simple menu of items */
+	list-style: none;
+	list-style-image: none;
+	padding:0;
+	margin:0;
+}
+
+td, th {
+	font-family: Avenir, Helvetica, sans-serif; 
+	font-size: 10pt; 
+	font-style: normal; 
+	line-height: normal; 
+	text-decoration: none;
+	empty-cells: show;
+	widows: 3; orphans: 3; /* not understood by IE6 */
+}
+
+th {
+	font-weight: bold; 
+	text-align: left;
+}
+
+.sortable, .datatable {
+	font-family: Verdana, Avenir, Helvetica, sans-serif; 
+	font-size: 10pt; 
+	margin: 1em 0.5em;
+	border-collapse: collapse;
+	border-top:    1.5pt solid black;
+	border-bottom: 1.5pt solid black;
+	empty-cells: show;
+}
+
+.sortable td, .datatable td {
+	border-bottom: 1pt solid black;
+	padding: 0.3em;
+}
+
+.sortable th, .datatable th {
+	color: black;
+	font-weight: bold; 
+	text-align: center;
+	border-bottom: 2pt solid black;
+	padding: 0.3em;
+}
+
+.sortable th.scope-row, .datatable th.scope-row { /* IE6 doesn't understand [scope="row"] */
+	text-align: left;
+	border-bottom: 1pt solid black;
+}
+
+.sortable th[scope="row"], .datatable th[scope="row"] {
+	text-align: left;
+	border-bottom: 1pt solid black;
+}
+
+table .number {
+	text-align: right;
+}
+
+table .center {
+	text-align: center;
+}
+
+table .sum {
+	font-weight: bold;
+}
+
+/* Sortable table columns */
+.sortable img {
+	display: none;
+}
+
+kbd, dt {
+	font-weight: bold;
+}
+
+#identification {
+	position: absolute;
+	left: 50px;
+	top: 0;
+	right: 50px
+}
+
+#workarea, #pagefoot {
+	clear: right;
+	padding-left: 2px;
+	padding-right: 2px;
+	width: auto;
+}
+
+
+#pagefoot p {
+	padding: 0.1em;
+	margin:0;
+}
+
+#emas-msg {
+	float:right;
+}
+
+
+
+/* IE doesn't use the THEAD and TFOOT tags properly by default when
+printing (ie: repeating those sections on every page for really long
+tables when printing). You can fix this through css like this: */
+
+thead { display: table-header-group; }
+tfoot { display: table-footer-group; }
+
+#rdfcalendar {
+	background-color: #FFFFCC;
+	width :	140px;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #000000;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	speak-header: always;
+	text-align : center;
+}
+
+#rdfcalendar th {
+	padding: 0;
+	text-align : center;
+}
+#rdfcalendar th.title {
+	color:	white;
+	background: #666666;
+	font-size: 13px;
+	text-align: center;
+}
+
+#rdfcalendar th.month a {
+	/* "cal_css['month_']" */
+	font-size: 14px;
+}
+
+#rdfcalendar tr.week th {
+	/* "cal_css['week_']" */
+	color: #FF0000;
+	font-size: 12px;
+	padding: 0;
+	text-align: right;
+}
+
+/********** Style for the title, month and week End **********/
+
+
+/********** Style for the current day, normal day and event day Begin **********/
+
+#rdfcalendar td {
+	background-color: #FFFFCC;
+	border-color: #000000;
+	border-style: solid;
+	border-width: 0px;
+	color: #000000;
+	font-size: 10px;
+	vertical-align: top;
+	text-align: right;
+}
+
+#rdfcalendar td a {
+	display: block;
+	background-color :	#FFFFCC;
+	border :	0px solid black;
+}
+
+#rdfcalendar td.today {
+	background-color :	#FFFF66;
+/*	border-width :		1px;*/
+	font-size :			10px;
+}
+
+
+/* Admonitions follow DocBook: caution, important, note, tip and warning
+   plus system and error */
+
+.tip-msg, .note-msg,
+.important-msg, .caution-msg, .warning-msg,
+.error-msg {
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	margin: 0.5em 2em;
+	font-weight: bold;
+}
+.tip-msg strong, .note-msg strong,
+.important-msg strong, .caution-msg strong, .warning-msg strong {
+	font-weight: bold;
+}
+
+.tip-msg p, .note-msg p,
+.important-msg p, .caution-msg p, .warning-msg p {
+	font-weight: normal;
+	margin: 0.2em 0;
+}
+
+.system-msg {
+	border: 2px dashed black;
+	padding: 0.5em;
+	margin: 0.5em 2em;
+	font-weight: bold;
+}
+
+.tip-msg {
+	border-left: 3pt solid #6c8ec0;
+	color: #6c8ec0;
+}
+
+.note-msg {
+	border-left: 3pt solid black;
+}
+
+.important-msg {
+	border-left: 3pt solid black;
+}
+
+.caution-msg {
+	border-left: 3pt solid black;
+}
+
+.warning-msg {
+	border-left: 3pt solid red;
+}
+
+.error-msg {
+	border-left: 3pt solid red;
+	color: #800000;
+	font-size: 110%;
+	font-weight: bold;
+}
+
+.advice-msg, .advise-msg {
+	padding: 0.2em;
+	border: 1px solid #aaa;
+	background-color: #f7f7f7;
+}
+
+.notfound-msg {
+	padding: 1em 0.2em;
+	border: 1px solid #aaa;
+	background-color: #ffaa90;
+	font-weight: bold;
+}
+/* standard figure, used for articles and pages.
+   can be floated left or right with additional 
+   class figure-right or figure-left
+ */
+
+/* Remove the border around images */
+a img {
+	border: none;
+}
+
+.figure, .figure-plus {
+	font-size: x-small;
+	text-indent: 0;
+}
+.figure-title, .figure-nr {
+	font-weight: bold;
+}
+.figure-image {
+	text-align:center;
+}
+.figure-source-copyright {
+	text-align:right;
+}
+
+.figure-plus-container {
+	padding: 0px;
+	margin: 10px 5px 5px 4px;
+	width:33%;
+}
+
+.figure-plus {
+	display: block;
+	position: relative;
+	background-color: #f9f9f9;
+	border: 1px solid #a9a9a9;
+	padding: 4px;
+}
+
+/* floating left or right */
+.figure-right {
+	float: right;
+	margin-left:6px; 
+}
+
+.figure-left {
+	float: left;
+	margin-right:6px; 
+}
+
+/* standard elements with shadow background */
+
+.dropshadow, .figure {
+	padding: 0;
+	margin: 10px 5px 5px 4px;
+}
+
+/* standard elements which are shadowed and therefore moved up*/
+.shadowed, .figure img {
+	display: block;
+	position: relative;
+	background-color: #fff;
+	margin: 0px;
+	border: 1px solid #a9a9a9;
+	padding: 4px;
+}
+
+
+img.scaled {
+	width: 100%;
+/*	height: 100%; */
+}
+
+img.border {
+	border: 1px solid #a9a9a9;
+	padding: 4px;
+}
+
+img.centered {
+	display: block;
+	margin: 0px auto;
+}
+

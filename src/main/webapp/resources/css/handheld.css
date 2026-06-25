@@ -1,0 +1,209 @@
+.nohandheld  {display:none }
+
+body {
+	margin:0;
+	padding: 3px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10pt; 
+	font-style: normal; 
+	line-height: normal; 
+	background: #ffffff;
+	color: #000000;
+}
+
+#eealink, #ewlink, #printlink, #fullscreenlink, #acronymlink, #rsslink {
+	display: none;
+}
+
+#freesrchfld {
+	width: 100px;
+}
+#networktitle {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+#sitetitle {
+	color: #006666;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+#sitetagline {
+	display: none;
+}
+
+/* Remove the border around images */
+
+a img {
+	border: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-style: normal; 
+	font-weight: bold; 
+	text-decoration: none
+}
+
+h1 {
+	font-size: 14pt; 
+	line-height: 120%; 
+}
+
+h2 {
+	font-size: 12pt; 
+	line-height: normal; 
+}
+
+h3 {
+	font-size: 11pt; 
+	line-height: normal; 
+}
+
+h4, h5, h6 {
+	font-size: 10pt; 
+	line-height: normal; 
+
+}
+ul.menu { /* Simple menu of items */
+	list-style: none;
+	list-style-image: none;
+	padding:0;
+	margin:0;
+}
+
+.localnav h2 {
+	color: black;
+	font-size: 110%; 
+	font-style: normal; 
+	line-height: normal; 
+	padding-top: 0;
+	margin-bottom: 0px;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.breadcrumbtrail {
+	border: 1px solid black;
+}
+.breadcrumbhead {
+	display: inline;
+}
+.breadcrumbitem {
+	display: inline;
+	padding-right: 11px;
+	margin-right: 3px;
+	background-image: url(../images/handheld/bcarrow.gif);
+	background-repeat: no-repeat;
+	background-position: 100% 4px;
+
+}
+.breadcrumbitemlast {
+	text-align: center;
+}
+
+.quickjumps {
+   padding-left: 1em;
+   margin-left: 0.5em;
+   padding-bottom: 15px;
+   padding-top: 1em;
+   border: 1px solid black; 
+   background-color : #CCCCCC; 
+}
+
+/* Page head styles */
+#pagehead {
+	background-image: none;
+	background: #f0f0f0;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+#pagefoot {
+	clear:right;
+	border-top: 1px solid black;
+}
+
+#logo {
+	display: none;
+}
+
+#tabbedmenu {
+	border-bottom: thin solid #ff9400;
+	font-size: 0.9em;
+	line-height:normal;
+}
+#tabbedmenu ul {
+	margin:0;
+	padding-top:10px;
+	list-style:none;
+}
+#tabbedmenu li {
+	display: inline;
+	background: yellow;
+	margin:0 1px;
+	padding:0 1em;
+	border: 1px solid black;
+}
+#tabbedmenu a {
+	text-decoration: none;
+	font-weight: bold;
+	color: black;
+}
+#tabbedmenu #currenttab {
+	background: #ff9400;
+}
+#tabbedmenu #currenttab a {
+	text-decoration: none;
+	font-weight: bold;
+}
+#tabbedmenu #currenttab span {
+	text-decoration: none;
+	font-weight: bold;
+}
+
+/* Sortable table columns */
+.sortable {
+	font-size: 0.9em;
+	line-height:normal;
+}
+.sortable th {
+	background: #ccc;
+	border: 2px outset #999;
+	margin:0;
+	padding:0;
+	white-space: nowrap;
+	vertical-align: top;
+}
+.sortable a:link, .sortable a:visited, .sortable span {
+	display:block;
+	text-decoration: none;
+	font-weight: normal;
+	color: black;
+	padding:1px 1em;
+}
+
+.sortable th a:hover {
+	color:white;
+	background: #aaa;
+}
+
+.system-msg {
+	border: 2px dashed black;
+	padding: 0.5em;
+	font-weight: bold;
+}
+
+.error-msg {
+	border: 2px dashed red;
+	padding: 0.5em 0.5em 0.5em 30px;
+	background: url(../images/error.gif) 0.5em center no-repeat;
+	margin: 0.5em 2em;
+	color: #800000;
+	font-size: 110%;
+	font-weight: bold;
+}
+
