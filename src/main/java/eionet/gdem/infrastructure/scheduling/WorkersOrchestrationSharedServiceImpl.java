@@ -67,9 +67,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
         final int replicas = (runningPods + newWorkers > maxJobExecutorsAllowed) ?
                 maxJobExecutorsAllowed : runningPods + newWorkers;
 
-        Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> {
-            rancherApiService.scaleDeployment(deploymentName, replicas);
-        });
+        Runnable decorateRunnable = circuitBreaker.decorateRunnable(() -> rancherApiService.scaleDeployment(deploymentName, replicas));
         decorateRunnable.run();
         int scale = replicas - runningPods;
         LOGGER.info("Created {} new worker(s)", scale);
@@ -182,7 +180,7 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
             LOGGER.info("Preparing to delete {} {} workers", workersToDelete, jobExecutorType);
             int workersDeleted = 1;
             for (JobExecutor worker : readyWorkers) {
-                while (workersDeleted <= workersToDelete) {
+                if (workersDeleted <= workersToDelete) {
                     runningPods = rancherApiService.getRunningPods(deploymentName);
                     if (runningPods == 1) {
                         LOGGER.info("Only one worker instance found. No deletion required. Task Exiting.");
@@ -194,7 +192,6 @@ public class WorkersOrchestrationSharedServiceImpl implements WorkersOrchestrati
                         LOGGER.error("Error Deleting worker {}. Exception: {}", worker.getName(), e);
                     }
                     workersDeleted++;
-                    break;
                 }
             }
             LOGGER.info("Deleted {} {} workers", workersDeleted - 1, jobExecutorType);
