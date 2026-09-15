@@ -30,12 +30,12 @@ public class AsyncFmeJobServiceImpl implements AsyncFmeJobService {
         headers.add("Authorization", FME_TOKEN_HEADER + Properties.fmeToken);
         HttpEntity<Object> entity = new HttpEntity<>(headers);
         try {
-            ResponseEntity<Object> response = restTemplate.exchange(Properties.fmeUrl + "/id/" + fmeJobId, HttpMethod.GET, entity, Object.class);
+            ResponseEntity<Object> response = restTemplate.exchange(Properties.fmeUrl + fmeJobId, HttpMethod.GET, entity, Object.class);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return true;
             }
         } catch (Exception e) {
-            LOGGER.error("Error while trying to find status in fme server of job with fme job id " + fmeJobId);
+            LOGGER.error("Error while trying to find status in fme server of job with fme job id {}", fmeJobId);
         }
         return false;
     }
@@ -47,15 +47,15 @@ public class AsyncFmeJobServiceImpl implements AsyncFmeJobService {
 
         HttpEntity<Object> entity = new HttpEntity<>(headers);
         try {
-            ResponseEntity<String> response = restTemplate.exchange(Properties.fmeUrl + "/active/" + fmeJobId, HttpMethod.DELETE, entity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(Properties.fmeUrl + fmeJobId + "/cancel", HttpMethod.POST, entity, String.class);
             int statusCode = response.getStatusCode().value();
             if (statusCode == HttpStatus.NO_CONTENT.value()) {
-                LOGGER.info("Fme asynchronous job with fme job id " + fmeJobId + " successfully cancelled in fme server");
+                LOGGER.info("Fme asynchronous job with fme job id {} successfully cancelled in fme server", fmeJobId);
             } else if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                LOGGER.info("Fme asynchronous job with fme job id " + fmeJobId + " not found in fme server");
+                LOGGER.info("Fme asynchronous job with fme job id {} not found in fme server", fmeJobId);
             }
         } catch (Exception e) {
-            LOGGER.error("Error while trying to cancel fme asynchronous job with fme job id " + fmeJobId + " in fme server: " + e.getMessage());
+            LOGGER.error("Error while trying to cancel fme asynchronous job with fme job id {} in fme server: {}", fmeJobId, e.getMessage());
         }
     }
 
