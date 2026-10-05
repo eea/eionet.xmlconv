@@ -41,25 +41,23 @@ public class CdrResponseMessageFactoryServiceImpl implements CdrResponseMessageF
 
     @Override
     public void createCdrResponseMessageAndSendToQueueOrPendingJobsTable(JobEntry jobEntry){
-        CdrJobResponseMessage cdrJobResponseMessage = setupBasicCdrJobResponseMessage(jobEntry);
-
-        if(jobEntry.getnStatus() != Constants.XQ_READY && jobEntry.getnStatus() != Constants.XQ_FATAL_ERR && jobEntry.getnStatus() != Constants.XQ_LIGHT_ERR){
+        if (jobEntry.getnStatus() != Constants.XQ_READY && jobEntry.getnStatus() != Constants.XQ_FATAL_ERR && jobEntry.getnStatus() != Constants.XQ_LIGHT_ERR) {
+            CdrJobResponseMessage cdrJobResponseMessage = setupBasicCdrJobResponseMessage(jobEntry);
             if(jobEntry.getnStatus() == Constants.DELETED){
                 //create job result message and set it up
                 CdrJobResultMessage jobResult = new CdrJobResultMessage();
                 jobResult.setFeedbackMessage(Constants.JOB_FEEDBACK_MESSAGE_DELETED);
                 cdrJobResponseMessage.setJobResult(jobResult);
-            }
-            else {
+            } else {
                 cdrJobResponseMessage.setJobResult(null);
             }
-            LOGGER.info("Created response for cdr request for job id " + cdrJobResponseMessage.getJobId() + " and status " + cdrJobResponseMessage.getJobStatus() + " Job status is " + StatusUtils.getStatusNameByNumber(jobEntry.getnStatus()));
-            //send cdrJobResponseMessage to queue
+            LOGGER.info("Created response for cdr request for job id {} and status {}.",
+                    cdrJobResponseMessage.getJobId(), cdrJobResponseMessage.getJobStatus());
+            // send cdrJobResponseMessage to queue
             cdrJobResultMessageSender.sendMessageToRabbitMQ(cdrJobResponseMessage);
-        }
-        else{
-            //store job as pending until results are ready.
-            LOGGER.info("Storing job with id " + jobEntry.getId() + " as pending until results are ready");
+        } else {
+            // store job as pending until results are ready.
+            LOGGER.info("Storing job with id {} as pending until results are ready", jobEntry.getId());
             PendingCdrJobEntry pendingCdrJobEntry = new PendingCdrJobEntry(jobEntry.getId(), jobEntry.getUuid(), jobEntry.getnStatus(), new Timestamp(new Date().getTime()));
             pendingCdrJobsService.savePendingEntry(pendingCdrJobEntry);
         }

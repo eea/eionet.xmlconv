@@ -13,6 +13,7 @@ import eionet.gdem.rabbitMQ.model.WorkerJobRabbitMQRequestMessage;
 import eionet.gdem.rabbitMQ.service.CdrResponseMessageFactoryService;
 import eionet.gdem.rabbitMQ.service.HandleHeavyJobsService;
 import eionet.gdem.rabbitMQ.service.WorkerAndJobStatusHandlerService;
+import eionet.gdem.services.JobResultHandlerService;
 import eionet.gdem.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,9 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
 
     @Autowired
     CdrResponseMessageFactoryService cdrResponseMessageFactoryService;
+
+    @Autowired
+    private JobResultHandlerService jobResultHandlerService;
 
     /**
      * time in milliseconds
@@ -117,6 +121,7 @@ public class DeadLetterQueueMessageReceiver implements MessageListener {
                     workerAndJobStatusHandlerService.saveOrUpdateJobExecutor(jobExecutor, jobExecutorHistory);
                     Long durationOfJob = Utils.getDifferenceBetweenTwoTimestampsInMs(new Timestamp(new Date().getTime()), jobEntry.getTimestamp());
                     queryMetadataService.storeScriptInformation(jobEntry.getQueryId(), jobEntry.getFile(), jobEntry.getScriptType(), durationOfJob, Constants.XQ_FATAL_ERR, Integer.parseInt(script.getJobId()), null, script.getOrigFileUrl(), jobEntry.getXmlSize());
+                    jobResultHandlerService.setResultFileContentToFailed(jobEntry);
                     if (jobEntry.getAddedFromQueue() != null && jobEntry.getAddedFromQueue()) {
                         cdrResponseMessageFactoryService.createCdrResponseMessageAndSendToQueueOrPendingJobsTable(jobEntry);
                     }
