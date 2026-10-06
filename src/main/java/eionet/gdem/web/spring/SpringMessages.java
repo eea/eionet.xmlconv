@@ -2,11 +2,7 @@ package eionet.gdem.web.spring;
 
 import java.util.ArrayList;
 
-/**
- *
- *
- */
-public class SpringMessages extends ArrayList {
+public class SpringMessages extends ArrayList<String> {
 
     public static final String SUCCESS_MESSAGES = "successMessages";
     public static final String ERROR_MESSAGES = "errorMessages";

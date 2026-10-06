@@ -448,7 +448,7 @@ public final class Utils {
         if (xmlEscapes == null) {
             setXmlEscapes();
         }
-        Character c = new Character(text.charAt(pos));
+        Character c = text.charAt(pos);
 
         for (String esc : xmlEscapes.values()) {
             if (pos + esc.length() < text.length()) {
@@ -492,11 +492,11 @@ public final class Utils {
      */
     private static void setXmlEscapes() {
         xmlEscapes = new HashMap<Character, String>();
-        xmlEscapes.put(new Character('&'), "&amp;");
-        xmlEscapes.put(new Character('<'), "&lt;");
-        xmlEscapes.put(new Character('>'), "&gt;");
-        xmlEscapes.put(new Character('"'), "&quot;");
-        xmlEscapes.put(new Character('\''), "&apos;");
+        xmlEscapes.put('&', "&amp;");
+        xmlEscapes.put('<', "&lt;");
+        xmlEscapes.put('>', "&gt;");
+        xmlEscapes.put('"', "&quot;");
+        xmlEscapes.put('\'', "&apos;");
         xmlEscapes.put('\u001A', "?");
     }
 
@@ -1054,7 +1054,7 @@ public final class Utils {
 
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < dstBytes.length; i++) {
-            Byte byteWrapper = new Byte(dstBytes[i]);
+            Byte byteWrapper = dstBytes[i];
             int k = byteWrapper.intValue();
             String s = Integer.toHexString(k);
             if (s.length() == 1) {
@@ -1100,7 +1100,7 @@ public final class Utils {
 
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < dstBytes.length; i++) {
-            Byte byteWrapper = new Byte(dstBytes[i]);
+            Byte byteWrapper = dstBytes[i];
             int k = byteWrapper.intValue();
             String s = Integer.toHexString(k);
             if (s.length() == 1) {
@@ -1331,8 +1331,7 @@ public final class Utils {
 
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < dstBytes.length; i++) {
-            Byte byteWrapper = new Byte(dstBytes[i]);
-            int k = byteWrapper.intValue();
+            Byte byteWrapper = dstBytes[i];
             String s = Integer.toHexString(byteWrapper.intValue());
             if (s.length() == 1) {
                 s = "0" + s;

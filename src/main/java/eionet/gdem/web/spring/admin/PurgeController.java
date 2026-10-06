@@ -78,9 +78,12 @@ public class PurgeController {
         } catch (DCMException e) {
             throw new RuntimeException("Unknown error: " + messageService.getMessage(e.getErrorCode()));
         }
-        String[] numbers = {String.valueOf(nofDays.intValue()), String.valueOf(deleted)};
 
-        messages.add(messageService.getMessage("label.admin.purge.successful", numbers));
+        messages.add(messageService.getMessage(
+                "label.admin.purge.successful",
+                String.valueOf(nofDays.intValue()),
+                String.valueOf(deleted)));
+
         redirectAttributes.addFlashAttribute(SpringMessages.SUCCESS_MESSAGES, messages);
         return "redirect:/admin/purge";
     }

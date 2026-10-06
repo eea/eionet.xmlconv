@@ -453,12 +453,7 @@ public class Properties {
     public static String getStringProperty(String key) {
         try {
             return configurationService.resolveValue(key);
-        }
-        catch (CircularReferenceException ex) {
-            LOGGER.error(ex.getMessage());
-            return null;
-        }
-        catch (UnresolvedPropertyException ex) {
+        } catch (CircularReferenceException | UnresolvedPropertyException ex) {
             LOGGER.error(ex.getMessage());
             return null;
         }
@@ -484,6 +479,7 @@ public class Properties {
         String value = getStringProperty(key);
         return Boolean.parseBoolean(value);
     }
+
     private static long getLongProperty(String key) {
         String value = getStringProperty(key);
 

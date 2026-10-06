@@ -74,7 +74,7 @@ public class PushTag extends TagSupport {
      */
     public void setLevel(String level) {
         try {
-            this.level = new Integer(level).toString();
+            this.level = Integer.valueOf(level).toString();
         } catch (NumberFormatException e) {
             // logger.error(e);
             this.level = "1";

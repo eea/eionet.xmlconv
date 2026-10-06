@@ -100,8 +100,6 @@ public class XslGenerator {
             result = os.toByteArray();
         } catch (MalformedURLException mfe) {
             throw new XMLConvException("Bad URL : " + mfe.toString(), mfe);
-        } catch (IOException ioe) {
-            throw new XMLConvException("Error opening URL " + ioe.toString(), ioe);
         } catch (Exception e) {
             throw new XMLConvException("Error converting: " + e.toString(), e);
         }

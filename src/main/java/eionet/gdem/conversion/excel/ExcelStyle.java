@@ -129,7 +129,7 @@ public class ExcelStyle implements ExcelStyleIF {
             str_size = str_size.substring(0, str_size.indexOf("pt"));
         }
         try {
-            short_size = new Short(str_size);
+            short_size = Short.valueOf(str_size);
         } catch (Exception e) {
             return;
         }
