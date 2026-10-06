@@ -95,15 +95,6 @@
         <servlet-name>thymeleafDispatcher</servlet-name>
         <url-pattern>/new/*</url-pattern>
     </servlet-mapping>
-<!--    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.css</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.js</url-pattern>
-    </servlet-mapping>-->
-
 
     <servlet>
         <servlet-name>JSPDispatcher</servlet-name>
@@ -133,10 +124,6 @@
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>Main</servlet-name>
-        <servlet-class>eionet.gdem.deprecated.Main</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>RpcRouter</servlet-name>
         <servlet-class>eionet.rpcserver.servlets.XmlRpcRouter</servlet-class>
     </servlet>
@@ -149,21 +136,9 @@
         <url-pattern>/qaSandbox/upload</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Main</servlet-name>
-        <url-pattern>/main</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>RpcRouter</servlet-name>
         <url-pattern>/RpcRouter</url-pattern>
     </servlet-mapping>
-<!--    <error-page>
-        <error-code>500</error-code>
-        <location>/error/500.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>404</error-code>
-        <location>/error/404.jsp</location>
-    </error-page>-->
 
     <error-page>
         <location>/error</location>
@@ -173,7 +148,6 @@
         <session-timeout>240</session-timeout>
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
-
 
     <jsp-config>
         <taglib>
