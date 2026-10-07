@@ -69,7 +69,6 @@
     <T_CONVTYPE CONV_TYPE="EXCEL" CONTENT_TYPE="application/vnd.ms-excel" FILE_EXT="xls" DESCRIPTION=""/>
     <T_CONVTYPE CONV_TYPE="PDF" CONTENT_TYPE="application/pdf" FILE_EXT="pdf" DESCRIPTION=""/>
     <T_CONVTYPE CONV_TYPE="SQL" CONTENT_TYPE="text/plain" FILE_EXT="sql" DESCRIPTION=""/>
-    <T_CONVTYPE CONV_TYPE="ODS" CONTENT_TYPE="application/vnd.oasis.opendocument.spreadsheet" FILE_EXT="ods" DESCRIPTION="OpenDocument Spreadsheet"/>
     <T_CONVTYPE CONV_TYPE="TEXT" CONTENT_TYPE="text/plain" FILE_EXT="txt" DESCRIPTION="Simple text files - tab, comma, ... separated values"/>
     <T_CONVTYPE CONV_TYPE="RDF" CONTENT_TYPE="application/rdf+xml" FILE_EXT="rdf" DESCRIPTION="Semantic Web resources"/>
 

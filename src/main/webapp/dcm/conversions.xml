@@ -18,11 +18,4 @@
                 <stylesheet>XML.xsl</stylesheet>
                 <ignore_if_manual>false</ignore_if_manual>
         </conversion>
-        <conversion id="5">
-                <description>OpenDocument Spreadsheet</description>
-                <result_type>ODS</result_type>
-                <stylesheet>OpenDocumentSpreadsheet.xsl</stylesheet>
-                <use_local>true</use_local>
-                <ignore_if_manual>false</ignore_if_manual>
-        </conversion>
 </conversions>

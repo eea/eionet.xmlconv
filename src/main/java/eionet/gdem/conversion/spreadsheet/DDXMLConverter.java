@@ -46,7 +46,6 @@ import eionet.gdem.conversion.datadict.DDElement;
 import eionet.gdem.conversion.datadict.DD_XMLInstance;
 import eionet.gdem.conversion.datadict.DD_XMLInstanceHandler;
 import eionet.gdem.conversion.datadict.DataDictUtil;
-import eionet.gdem.conversion.odf.OpenDocumentUtils;
 import eionet.gdem.dcm.BusinessConstants;
 import eionet.gdem.dto.ConversionLogDto;
 import eionet.gdem.dto.ConversionLogDto.ConversionLogType;
@@ -55,8 +54,7 @@ import eionet.gdem.utils.Utils;
 
 /**
  * Abstract class contains the logic for converting spreadsheet like datafiles into DataDictionary XML Instance format. The
- * spreadsheets should be extracted from DD and include XML Schema information. Currently supported formats are MS Excel and
- * OpenDocument Spreadsheet.
+ * spreadsheets should be extracted from DD and include XML Schema information. Currently supported format is MS Excel.
  * @author Unknown
  * @author George Sofianos
  */
@@ -122,23 +120,9 @@ public abstract class DDXMLConverter {
             }
         }
 
-        if (!converter.isInitialized()) {
-            // If it is a zip file, then it is OpenDocument
-            try {
-                if (OpenDocumentUtils.isSpreadsheetFile(new FileInputStream(inFile))) {
-                    converter = new Ods2Xml();
-                    converter.initConverter(inFile);
-                    LOGGER.debug("OpenDocument spreadsheet");
-                }
-            } catch (Exception e) {
-                LOGGER.debug("OpenDocument spreadsheet failed", e);
-            }
-        }
         if (converter == null || !converter.isInitialized()) {
-            LOGGER.error("Could not detect the format of source file. "
-                    + "Converter waits MS Excel or OpenDocument Spreadsheet file.");
-            throw new XMLConvException(
-            "Could not detect the format of source file. Converter waits MS Excel or OpenDocument Spreadsheet file.");
+            LOGGER.error("Could not detect the format of source file. Converter waits MS Excel file.");
+            throw new XMLConvException("Could not detect the format of source file. Converter waits MS Excel.");
         }
         converter.startConverter(resultObject, sheetParam);
         return converter;

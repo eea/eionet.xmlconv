@@ -21,7 +21,6 @@ import eionet.gdem.conversion.converters.ConvertContext;
 import eionet.gdem.conversion.converters.ConvertStrategy;
 import eionet.gdem.conversion.converters.ExcelConverter;
 import eionet.gdem.conversion.converters.HTMLConverter;
-import eionet.gdem.conversion.converters.OdsConverter;
 import eionet.gdem.conversion.converters.PDFConverter;
 import eionet.gdem.conversion.converters.TextConverter;
 import eionet.gdem.conversion.converters.XMLConverter;
@@ -439,8 +438,6 @@ public class ConvertXMLMethod extends RemoteServiceMethod {
             cs = new ExcelConverter();
         } else if (cnvTypeOut.equals("XML")) {
             cs = new XMLConverter();
-        } else if (cnvTypeOut.equals("ODS")) {
-            cs = new OdsConverter();
         } else {
             cs = new TextConverter();
         }

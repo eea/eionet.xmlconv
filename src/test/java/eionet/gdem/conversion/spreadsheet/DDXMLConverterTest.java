@@ -137,22 +137,7 @@ public class DDXMLConverterTest {
         assertTestConvertDD_MultipleValuesresults(conversionResult);
 
     }
-    @Test
-    public void testConvertDDOdsToXml_MultipleValues() throws Exception {
-        File inFile = new File(this.getClass().getClassLoader().getResource(TestConstants.SEED_MULTIVALUES_ODS)
-                .getFile());
-        MockDDXMLConverter converter = new MockDDXMLConverter(new Ods2Xml(), inFile);
-        Map<String, String> dataset = new HashMap<String, String>();
-        dataset.put("id", "6585");
-        dataset.put("status", "Released");
-        dataset.put("isLatestReleased", "true");
-        converter.setDataset(dataset);
 
-        ConversionResultDto conversionResult =
-            converter.convertDD_XML_split(null, null);
-        assertTestConvertDD_MultipleValuesresults(conversionResult);
-    }
-    
     private void assertTestConvertDD_MultipleValuesresults(ConversionResultDto conversionResult) throws Exception {
         assertEquals(ConversionResultDto.STATUS_OK, conversionResult.getStatusCode());
         assertNotNull(conversionResult.getConvertedFileByFileName("GW-Body_Characterisation.xml"));

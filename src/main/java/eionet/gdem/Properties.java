@@ -55,8 +55,6 @@ public class Properties {
     public static String tmpfileDir = null;
     /** Folder for XSLs. */
     public static String xslFolder = null;
-    /** Folder for OpenDocument helper files. */
-    public static String odsFolder = null;
     /** Folder for QA scripts. */
     public static String queriesFolder = null;
     /** Folder for XML Schema files. */

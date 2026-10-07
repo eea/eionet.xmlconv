@@ -48,8 +48,7 @@ public interface SourceReaderIF {
     /**
      * Initialize the Source file from InputStream
      *
-     * @param input
-     *            input Excel or OpenDocument File
+     * @param input Excel
      * @throws XMLConvException If an error occurs.
      */
     void initReader(File input) throws XMLConvException;

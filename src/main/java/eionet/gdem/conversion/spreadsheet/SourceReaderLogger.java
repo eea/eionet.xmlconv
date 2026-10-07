@@ -51,7 +51,7 @@ public class SourceReaderLogger {
      * Enum storing reader type messages.
      */
     public enum ReaderTypeEnum {
-        EXCEL("MS Excel"), ODS("OpenOffice Spreadsheet");
+        EXCEL("MS Excel");
         private String message;
 
         /**
@@ -71,9 +71,6 @@ public class SourceReaderLogger {
      * Conversion result object where to write log messages.
      */
     private ConversionResultDto conversionResult;
-    /**
-     * Reader type indicating whether it is Excel or OpenDocument conversion
-     */
     private ReaderTypeEnum readerType;
 
     /**

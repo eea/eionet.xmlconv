@@ -6,8 +6,6 @@ import eionet.gdem.dcm.XslGenerator;
 import eionet.gdem.dto.ConversionDto;
 import eionet.gdem.exceptions.DCMException;
 import eionet.gdem.services.MessageService;
-import eionet.gdem.web.spring.schemas.SchemaManager;
-import eionet.gdem.web.spring.stylesheet.StylesheetListHolder;
 import eionet.gdem.web.spring.stylesheet.StylesheetListLoader;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -21,10 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 
-/**
- *
- *
- */
 @Controller
 @RequestMapping("/conversions")
 public class GeneratedConversionsController {
@@ -39,7 +33,6 @@ public class GeneratedConversionsController {
 
     @GetMapping("/generated")
     public String list(Model model, HttpServletRequest request) {
-
         try {
             model.addAttribute("conversions", StylesheetListLoader.getGeneratedList(request));
         } catch (DCMException e) {
@@ -51,7 +44,6 @@ public class GeneratedConversionsController {
     @GetMapping(value = "/generated/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public byte[] getConversion(@PathVariable String id, @RequestParam(value = "conv", required = false) String convId) {
-
         String metaXSLFolder = Properties.metaXSLFolder;
         String tableDefURL = Properties.ddURL;
 
@@ -61,26 +53,9 @@ public class GeneratedConversionsController {
             String url = tableDefURL + "/GetTableDef?id=" + id;
             return IOUtils.toByteArray(XslGenerator.convertXML(url, format));
         } catch (Exception ge) {
-            LOGGER.error("", ge);
-//            errors.add(messageService.getMessage("label.stylesheet.error.generation"));
-//            model.addAttribute("dcm.errors", errors);
-            return null;
+            LOGGER.error("Error getting conversion.", ge);
+            return new byte[0];
         }
     }
 
-    @GetMapping(value = "/generated", params = { "schemaUrl" })
-    public String show(@ModelAttribute("schemaUrl") String schemaUrl, Model model) {
-
-        // TODO fix this - not working
-        SchemaManager sm = new SchemaManager();
-        StylesheetListHolder st = null;
-        try {
-            st = sm.getSchemaStylesheetsList(schemaUrl);
-        } catch (DCMException e) {
-            throw new RuntimeException(messageService.getMessage("label.exception.unknown"));
-        }
-        model.addAttribute("conversions", st);
-
-        return "/schemas/conversions";
-    }
 }

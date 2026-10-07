@@ -1,5 +1,5 @@
 /**
- * Classes for converting data to OpenDocument Spreadsheet format.
+ * Classes for converting spreadsheet datafiles.
  */
 
 package eionet.gdem.conversion.spreadsheet;

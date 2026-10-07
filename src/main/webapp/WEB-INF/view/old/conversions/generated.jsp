@@ -11,15 +11,13 @@
 
   <div style="width: 97%">
     <table class="datatable results" width="100%">
-      <col style="width:7%"/>
-      <col style="width:10%"/>
+      <col style="width:17%"/>
       <col style="width:20%"/>
       <col style="width:10%"/>
       <col style="width:10%"/>
       <col style="width:43%"/>
       <thead>
       <tr>
-        <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.action"/></th>
         <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.table"/></th>
         <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.dataset"/></th>
         <th scope="col" class="scope-col"><spring:message code="label.table.stylesheet.datasetReleased"/></th>
@@ -30,11 +28,6 @@
       <tbody>
       <c:forEach varStatus="i" items="${conversions.ddStylesheets}" var="conversion">
         <tr class="${i.index % 2 == 1 ? 'zebraeven' : 'zebraodd'}">
-          <td align="center">
-            <a href="/conversions/generated?schemaUrl=${conversion.schema}">
-              <img src="<c:url value='/static/images/properties.gif'/>" altKey="label.table.stylesheet" title="view stylesheets"/>
-            </a>
-          </td>
           <td title="${conversion.table}">
               ${conversion.table}
           </td>
