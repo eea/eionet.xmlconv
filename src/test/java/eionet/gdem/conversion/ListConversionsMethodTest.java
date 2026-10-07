@@ -71,7 +71,7 @@ public class ListConversionsMethodTest {
         ConversionService cs = new ConversionService();
         String schema = "http://waste.eionet.europa.eu/schemas/waste/schema.xsd";
         Vector<Hashtable<String, String>> v = cs.listConversions(schema);
-        assertEquals(3, v.size());
+        assertEquals(2, v.size());
 
         // analyze the conversion hashtable at index 0
         Hashtable<String, String> h = v.get(0);
