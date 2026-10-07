@@ -41,8 +41,8 @@
             <a href="${conversion.schema}" title="${conversion.schema}">${conversion.id}</a>
           </td>
           <td>
-            <c:forEach items="${conversion.stylesheets}" var="conv">
-              <a href="${conv.xsl}" title="${conv.description}">${conv.description}</a>&#160;
+            <c:forEach items="${conversion.stylesheets}" var="conv" varStatus="index">
+              <a href="${conv.xsl}" title="${conv.description}">${conv.description}</a><c:if test="${!index.last}">,&#160;</c:if>
             </c:forEach>
           </td>
         </tr>
