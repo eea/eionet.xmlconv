@@ -3,12 +3,11 @@
  */
 package eionet.gdem.conversion;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Hashtable;
-
-import org.dbunit.IDatabaseTester;
+import eionet.gdem.test.ApplicationTestContext;
+import eionet.gdem.test.DbHelper;
+import eionet.gdem.test.TestConstants;
+import eionet.gdem.test.TestUtils;
+import eionet.gdem.utils.Utils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,13 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import eionet.gdem.test.ApplicationTestContext;
-import eionet.gdem.test.DbHelper;
-import eionet.gdem.test.TestConstants;
-import eionet.gdem.test.TestUtils;
-import eionet.gdem.utils.Utils;
-
 import javax.sql.DataSource;
+import java.util.Hashtable;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This unittest tests the Conversion Service convert method.
