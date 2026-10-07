@@ -167,7 +167,7 @@ public class ExcelConversionHandler implements ExcelConversionHandlerIF {
             } else if (type.equals("boolean")) {
                 if (str_value != null) {
                     try {
-                        boolean_value = new Boolean(str_value);
+                        boolean_value = Boolean.parseBoolean(str_value);
                         isBoolean = true;
                     } catch (Exception e) {
                         // the value is not boolean, it will be inserted as a string

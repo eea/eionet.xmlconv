@@ -217,7 +217,7 @@ public class WorkqueueManager {
             job.setUrl((jobData[0] == null) ? "" : jobData[0]);
             job.setScriptFile((jobData[1] == null) ? "" : jobData[1]);
             job.setResultFile((jobData[2] == null) ? "" : jobData[2]);
-            job.setStatus((jobData[3] == null) ? 0 : new Integer(jobData[3]));
+            job.setStatus((jobData[3] == null) ? 0 : Integer.parseInt(jobData[3]));
             job.setSrcFile((jobData[4] == null) ? "" : jobData[4]);
             job.setScriptId((jobData[5] == null) ? "" : jobData[5]);
             job.setJobId((jobData[6] == null) ? "" : jobData[6]);
@@ -400,7 +400,7 @@ public class WorkqueueManager {
             job = new WorkqueueJob();
             job.setJobId((jobData[0] == null) ? "" : jobData[0]);
             job.setUrl((jobData[1] == null) ? "" : jobData[1]);
-            job.setDuration((jobData[2] == null) ? 0 : new Long(jobData[2]));
+            job.setDuration((jobData[2] == null) ? 0 : Long.parseLong(jobData[2]));
         }
         return job;
     }
